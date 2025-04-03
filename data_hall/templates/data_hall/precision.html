@@ -1,0 +1,164 @@
+{% extends 'data_hall/base.html' %}
+
+{% block title %}精准招商 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<!-- 标题介绍 -->
+<section class="container mx-auto px-6 mb-12">
+  <h1 class="text-3xl font-bold mb-4 gradient-text">精准招商</h1>
+  <p class="text-gray-300 max-w-3xl">
+    基于产业链图谱和产业地图分析，为地方政府提供精准的企业引进建议，助力区域产业升级。
+  </p>
+</section>
+
+<!-- 地区选择 -->
+<section class="container mx-auto px-6 mb-8">
+  <div class="bg-[#132144] p-6 rounded-lg">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-gray-300 mb-2">省份</label>
+        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+          <option value="">请选择省份</option>
+          <option value="beijing">北京市</option>
+          <option value="shanghai">上海市</option>
+          <option value="guangdong">广东省</option>
+          <option value="jiangsu">江苏省</option>
+          <option value="zhejiang">浙江省</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-2">城市</label>
+        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+          <option value="">请选择城市</option>
+          <option value="guangzhou">广州市</option>
+          <option value="shenzhen">深圳市</option>
+          <option value="hangzhou">杭州市</option>
+          <option value="nanjing">南京市</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-2">区县</label>
+        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+          <option value="">请选择区县</option>
+          <option value="tianhe">天河区</option>
+          <option value="nanshan">南山区</option>
+          <option value="xihu">西湖区</option>
+          <option value="gulou">鼓楼区</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 产业地图 -->
+<section class="container mx-auto px-6 mb-8">
+  <div class="bg-[#132144] p-6 rounded-lg">
+    <h2 class="text-xl font-bold mb-4 text-white">产业地图</h2>
+    <div id="map-chart" class="w-full h-[400px]"></div>
+  </div>
+</section>
+
+<!-- 推荐企业 -->
+<section class="container mx-auto px-6">
+  <div class="bg-[#132144] p-6 rounded-lg">
+    <h2 class="text-xl font-bold mb-4 text-white">推荐企业</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 企业卡片 1 -->
+      <div class="bg-[#0A1A3A] p-6 rounded-lg">
+        <h3 class="text-lg font-bold mb-2 text-white">科技创新企业A</h3>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><span class="text-[var(--accent)]">行业：</span>人工智能</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">地区：</span>北京</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">融资轮次：</span>B轮</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">匹配度：</span>95%</p>
+        </div>
+        <button class="w-full bg-[var(--accent)] text-white py-2 rounded-lg hover:bg-[var(--secondary)] transition-colors">
+          联系企业
+        </button>
+      </div>
+
+      <!-- 企业卡片 2 -->
+      <div class="bg-[#0A1A3A] p-6 rounded-lg">
+        <h3 class="text-lg font-bold mb-2 text-white">生物科技企业B</h3>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><span class="text-[var(--accent)]">行业：</span>生物科技</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">地区：</span>上海</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">融资轮次：</span>C轮</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">匹配度：</span>92%</p>
+        </div>
+        <button class="w-full bg-[var(--accent)] text-white py-2 rounded-lg hover:bg-[var(--secondary)] transition-colors">
+          联系企业
+        </button>
+      </div>
+
+      <!-- 企业卡片 3 -->
+      <div class="bg-[#0A1A3A] p-6 rounded-lg">
+        <h3 class="text-lg font-bold mb-2 text-white">新能源企业C</h3>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><span class="text-[var(--accent)]">行业：</span>新能源</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">地区：</span>广东</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">融资轮次：</span>A轮</p>
+          <p class="text-gray-300"><span class="text-[var(--accent)]">匹配度：</span>88%</p>
+        </div>
+        <button class="w-full bg-[var(--accent)] text-white py-2 rounded-lg hover:bg-[var(--secondary)] transition-colors">
+          联系企业
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化地图
+    var chartDom = document.getElementById('map-chart');
+    var myChart = echarts.init(chartDom);
+    
+    // 地图配置
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c}家企业'
+        },
+        visualMap: {
+            min: 0,
+            max: 100,
+            text: ['高', '低'],
+            realtime: false,
+            calculable: true,
+            inRange: {
+                color: ['#132144', '#1B335A', '#2A4A7A']
+            }
+        },
+        series: [{
+            name: '企业分布',
+            type: 'map',
+            map: 'china',
+            roam: true,
+            emphasis: {
+                label: {
+                    show: true
+                }
+            },
+            data: [
+                {name: '北京', value: 85},
+                {name: '上海', value: 78},
+                {name: '广东', value: 92},
+                {name: '江苏', value: 65},
+                {name: '浙江', value: 70}
+            ]
+        }]
+    };
+
+    // 使用配置项设置图表
+    myChart.setOption(option);
+
+    // 响应式调整
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+});
+</script>
+{% endblock %} 

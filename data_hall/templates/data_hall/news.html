@@ -1,0 +1,134 @@
+{% extends 'data_hall/base.html' %}
+
+{% block title %}产业资讯 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<!-- 标题介绍 -->
+<section class="container mx-auto px-6 mb-12">
+  <h1 class="text-3xl font-bold mb-4 gradient-text">产业资讯</h1>
+  <p class="text-gray-300 max-w-3xl">
+    实时追踪新势力企业发展动态，深度解析产业趋势，为您提供最新、最全面的产业资讯。
+  </p>
+</section>
+
+<!-- 新闻分类 -->
+<section class="container mx-auto px-6 mb-8">
+  <div class="flex flex-wrap gap-4">
+    <button class="px-4 py-2 bg-[var(--accent)] text-white rounded-lg">全部</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">政策解读</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">企业动态</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">产业分析</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">创新研究</button>
+  </div>
+</section>
+
+<!-- 新闻列表 -->
+<section class="container mx-auto px-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- 新闻卡片 1 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">政策解读</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-15</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">国家发改委发布新政策，支持新势力企业发展</h3>
+        <p class="text-gray-300 mb-4">近日，国家发改委发布《关于促进新势力企业创新发展的指导意见》，提出多项支持措施...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+
+    <!-- 新闻卡片 2 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">企业动态</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-14</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">某AI企业完成新一轮融资，估值突破百亿</h3>
+        <p class="text-gray-300 mb-4">国内领先的AI企业宣布完成新一轮融资，由知名投资机构领投，估值突破百亿元...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+
+    <!-- 新闻卡片 3 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">产业分析</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-13</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">2024年新势力企业发展趋势分析</h3>
+        <p class="text-gray-300 mb-4">随着技术的不断进步和政策的持续支持，新势力企业正迎来新的发展机遇...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+
+    <!-- 新闻卡片 4 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">创新研究</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-12</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">量子计算领域取得重大突破</h3>
+        <p class="text-gray-300 mb-4">国内研究团队在量子计算领域取得重大突破，实现了新的量子比特控制方法...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+
+    <!-- 新闻卡片 5 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">企业动态</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-11</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">某生物科技企业发布新产品</h3>
+        <p class="text-gray-300 mb-4">国内领先的生物科技企业发布新一代基因测序产品，技术指标达到国际领先水平...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+
+    <!-- 新闻卡片 6 -->
+    <article class="bg-[#132144] rounded-lg overflow-hidden hover:bg-[#1B335A] transition-colors">
+      <img src="https://via.placeholder.com/400x200" alt="新闻图片" class="w-full h-48 object-cover">
+      <div class="p-6">
+        <div class="flex items-center mb-4">
+          <span class="text-sm text-[var(--accent)]">政策解读</span>
+          <span class="mx-2 text-gray-500">•</span>
+          <span class="text-sm text-gray-400">2024-03-10</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">科技部发布科技创新支持政策</h3>
+        <p class="text-gray-300 mb-4">科技部发布《关于支持科技创新的若干政策措施》，进一步加大对新势力企业的支持力度...</p>
+        <a href="#" class="text-[var(--accent)] hover:text-[var(--secondary)]">阅读更多</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 分页 -->
+<section class="container mx-auto px-6 mt-8">
+  <div class="flex justify-center space-x-2">
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">
+      上一页
+    </button>
+    <button class="px-4 py-2 bg-[var(--accent)] text-white rounded-lg">1</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">2</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">3</button>
+    <button class="px-4 py-2 bg-[#132144] text-gray-300 rounded-lg hover:bg-[#1B335A] transition-colors">
+      下一页
+    </button>
+  </div>
+</section>
+{% endblock %} 

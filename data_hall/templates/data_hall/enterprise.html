@@ -1,0 +1,137 @@
+{% extends 'data_hall/base.html' %}
+
+{% block title %}企业库 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<!-- 标题介绍 -->
+<section class="container mx-auto px-6 mb-12">
+  <h1 class="text-3xl font-bold mb-4 gradient-text">企业库</h1>
+  <p class="text-gray-300 max-w-3xl">
+    收录中国新势力企业详细信息，包括企业概况、融资情况、专利技术等数据。
+  </p>
+</section>
+
+<!-- 搜索和筛选 -->
+<section class="container mx-auto px-6 mb-8">
+  <div class="bg-[#132144] p-6 rounded-lg">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="md:col-span-2">
+        <input type="text" placeholder="搜索企业名称、行业、地区..." 
+               class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+      </div>
+      <div>
+        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+          <option value="">行业分类</option>
+          <option value="ai">人工智能</option>
+          <option value="biotech">生物科技</option>
+          <option value="newenergy">新能源</option>
+          <option value="semiconductor">半导体</option>
+        </select>
+      </div>
+      <div>
+        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
+          <option value="">融资阶段</option>
+          <option value="seed">种子轮</option>
+          <option value="a">A轮</option>
+          <option value="b">B轮</option>
+          <option value="c">C轮及以上</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 企业列表 -->
+<section class="container mx-auto px-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- 企业卡片1 -->
+    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-white">智联科技</h3>
+          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">人工智能</span>
+        </div>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>北京</p>
+          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2018年</p>
+          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：B轮</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-400">
+            <span class="mr-4"><i class="fas fa-users mr-1"></i>200-500人</span>
+            <span><i class="fas fa-chart-line mr-1"></i>营收增长30%</span>
+          </div>
+          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
+            查看详情 <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 企业卡片2 -->
+    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-white">生物创新</h3>
+          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">生物科技</span>
+        </div>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>上海</p>
+          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2019年</p>
+          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：A轮</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-400">
+            <span class="mr-4"><i class="fas fa-users mr-1"></i>50-200人</span>
+            <span><i class="fas fa-chart-line mr-1"></i>营收增长25%</span>
+          </div>
+          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
+            查看详情 <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 企业卡片3 -->
+    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-white">新能源科技</h3>
+          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">新能源</span>
+        </div>
+        <div class="space-y-2 mb-4">
+          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>深圳</p>
+          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2020年</p>
+          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：C轮</p>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-400">
+            <span class="mr-4"><i class="fas fa-users mr-1"></i>500-1000人</span>
+            <span><i class="fas fa-chart-line mr-1"></i>营收增长40%</span>
+          </div>
+          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
+            查看详情 <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分页 -->
+  <div class="mt-8 flex justify-center">
+    <nav class="flex items-center space-x-2">
+      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">
+        <i class="fas fa-chevron-left"></i>
+      </a>
+      <a href="#" class="px-4 py-2 text-white bg-[var(--accent)] rounded-lg">1</a>
+      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">2</a>
+      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">3</a>
+      <span class="px-4 py-2 text-gray-300">...</span>
+      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">10</a>
+      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">
+        <i class="fas fa-chevron-right"></i>
+      </a>
+    </nav>
+  </div>
+</section>
+{% endblock %} 

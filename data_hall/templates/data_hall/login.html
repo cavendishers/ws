@@ -1,0 +1,58 @@
+{% extends 'data_hall/base.html' %}
+
+{% block title %}登录 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[var(--primary)]">
+    <div class="max-w-md w-full space-y-8 bg-[#132144] p-8 rounded-lg shadow-lg">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+                登录您的账户
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-400">
+                或
+                <a href="#" class="font-medium text-[var(--secondary)] hover:text-[var(--accent)]">
+                    注册新账户
+                </a>
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" action="#" method="POST">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="username" class="sr-only">用户名</label>
+                    <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 bg-[#0A1A3A] placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-[var(--secondary)] focus:border-[var(--secondary)] focus:z-10 sm:text-sm" placeholder="用户名">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">密码</label>
+                    <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 bg-[#0A1A3A] placeholder-gray-500 text-white rounded-b-md focus:outline-none focus:ring-[var(--secondary)] focus:border-[var(--secondary)] focus:z-10 sm:text-sm" placeholder="密码">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-[var(--secondary)] focus:ring-[var(--secondary)] border-gray-700 rounded bg-[#0A1A3A]">
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-300">
+                        记住我
+                    </label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-[var(--secondary)] hover:text-[var(--accent)]">
+                        忘记密码?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-[var(--primary)] bg-[var(--secondary)] hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary)]">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-lock text-[var(--primary)]"></i>
+                    </span>
+                    登录
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

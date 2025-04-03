@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>中国新势力企业态势感知系统 - 商业快讯</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #0A1A3A;   /* 深蓝基调 */
+      --secondary: #FFD700; /* 金色点缀 */
+      --accent: #00C1D4;    /* 亮青色 */
+    }
+    body {
+      background-color: var(--primary);
+    }
+    .glow-effect {
+      box-shadow: 0 0 20px rgba(0,193,212,0.2);
+    }
+    /* 时间轴的竖线与圆点样式 */
+    .timeline-container {
+      position: relative;
+      padding-left: 2rem; /* 给左侧留出空间放竖线 */
+      margin-bottom: 1.5rem; /* 分隔每条信息 */
+    }
+    .timeline-container::before {
+      content: "";
+      position: absolute;
+      left: 0.375rem; /* 竖线的位置 */
+      top: 0;
+      bottom: 0;
+      width: 2px; /* 竖线粗细 */
+      background-color: rgba(255, 255, 255, 0.2); /* 竖线颜色 */
+    }
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 9999px; /* 圆形 */
+      background-color: var(--accent);
+      margin-left: -0.03rem; /* 使圆点居中竖线 */
+      margin-top: 0.25rem;   /* 使圆点略微下移 */
+    }
+  </style>
+</head>
+<body class="bg-[var(--primary)] text-gray-100 font-sans">
+  <!-- 导航栏 -->
+  <nav class="fixed w-full bg-[rgba(10,26,58,0.95)] backdrop-blur-md z-50 border-b border-[rgba(255,255,255,0.1)]">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <svg class="w-8 h-8 text-[var(--secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span class="text-xl font-bold">新势力感知系统</span>
+      </div>
+      <div class="hidden xl:flex space-x-8">
+        <a href="index.html" class="hover:text-[var(--secondary)] transition-colors">首页</a>
+        <a href="ranking.html" class="hover:text-[var(--secondary)]">新势力榜单</a>
+        <div class="group relative">
+          <button class="hover:text-[var(--secondary)]">
+            产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
+          </button>
+          <div class="absolute hidden group-hover:block bg-[#132144] p-4 rounded-lg w-48 space-y-3">
+            <a href="industry.html" class="block hover:text-[var(--accent)]">产业链图谱</a>
+            <a href="enterprise.html" class="block hover:text-[var(--accent)]">企业库</a>
+            <a href="precision.html" class="block hover:text-[var(--accent)]">精准招商</a>
+          </div>
+        </div>
+        <a href="map.html" class="hover:text-[var(--secondary)]">产业地图</a>
+        <a href="report.html" class="hover:text-[var(--secondary)] font-semibold">产业报告</a>
+        <!-- 当前页面：商业快讯，高亮显示 -->
+        <a href="news.html" class="hover:text-[var(--secondary)] text-[var(--secondary)]">商业快讯</a>
+      </div>
+      <div class="flex items-center space-x-4">
+        <button class="bg-[var(--secondary)] text-[var(--primary)] px-5 py-2 rounded-md font-medium hover:bg-opacity-90">登录</button>
+        <i class="fas fa-bars xl:hidden text-xl"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主体内容 -->
+  <main class="pt-20 pb-16">
+    <section class="container mx-auto px-6">
+      <!-- Tab 切换按钮 -->
+      <div class="flex space-x-6 border-b border-gray-700 mb-6">
+        <button id="tabNews" class="pb-2 text-base font-semibold text-[var(--secondary)] border-b-2 border-[var(--secondary)]">
+          商业快讯
+        </button>
+        <button id="tabFocus" class="pb-2 text-base font-semibold text-gray-400 hover:text-gray-100">
+          关注企业
+        </button>
+      </div>
+
+      <!-- 商业快讯列表（时间轴） -->
+      <div id="newsContent">
+        <!-- JS 将在此处动态渲染内容 -->
+      </div>
+
+      <!-- 关注企业列表（时间轴） -->
+      <div id="focusContent" class="hidden">
+        <!-- JS 将在此处动态渲染内容 -->
+      </div>
+    </section>
+  </main>
+
+  <!-- JS: 获取 JSON 数据并渲染 -->
+  <script>
+    // Tab 切换
+    const tabNews = document.getElementById('tabNews');
+    const tabFocus = document.getElementById('tabFocus');
+    const newsContent = document.getElementById('newsContent');
+    const focusContent = document.getElementById('focusContent');
+
+    tabNews.addEventListener('click', () => {
+      tabNews.classList.add('text-[var(--secondary)]', 'border-b-2', 'border-[var(--secondary)]');
+      tabNews.classList.remove('text-gray-400');
+      tabFocus.classList.remove('text-[var(--secondary)]', 'border-b-2', 'border-[var(--secondary)]');
+      tabFocus.classList.add('text-gray-400');
+      newsContent.classList.remove('hidden');
+      focusContent.classList.add('hidden');
+    });
+
+    tabFocus.addEventListener('click', () => {
+      tabFocus.classList.add('text-[var(--secondary)]', 'border-b-2', 'border-[var(--secondary)]');
+      tabFocus.classList.remove('text-gray-400');
+      tabNews.classList.remove('text-[var(--secondary)]', 'border-b-2', 'border-[var(--secondary)]');
+      tabNews.classList.add('text-gray-400');
+      focusContent.classList.remove('hidden');
+      newsContent.classList.add('hidden');
+    });
+
+    // 从后端获取商业快讯、关注企业数据
+    fetch('/api/commercialNews.json')
+      .then(res => res.json())
+      .then(data => {
+        renderNews(data.businessNews || [], newsContent);
+        renderNews(data.focusCompanies || [], focusContent);
+      })
+      .catch(err => {
+        console.error('获取商业快讯数据出错:', err);
+        // 如果接口不可用，使用示例数据
+        const mockData = getMockData();
+        renderNews(mockData.businessNews, newsContent);
+        renderNews(mockData.focusCompanies, focusContent);
+      });
+
+    // 渲染时间轴新闻
+    function renderNews(newsList, container) {
+      container.innerHTML = '';
+      newsList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'timeline-container';
+        div.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="text-sm text-gray-400 mb-1">
+            ${item.date} ${item.time}
+          </div>
+          <h3 class="font-semibold text-base mb-1">${item.title}</h3>
+          <p class="text-sm text-gray-300 leading-relaxed">${item.content}</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            ${item.tags?.map(tag => `
+              <span class="inline-block bg-[#1A2B5E] px-2 py-1 rounded text-xs text-gray-200 hover:bg-[var(--accent)] cursor-pointer" onclick="handleTagClick('${tag}')">
+                ${tag}
+              </span>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // 标签点击处理
+    function handleTagClick(tagName) {
+      alert('您点击了企业标签: ' + tagName);
+    }
+
+    // 示例数据（增加更多条记录）
+    function getMockData() {
+      return {
+        "businessNews": [
+          {
+            "time": "15:00",
+            "date": "2025-04-02",
+            "title": "张小泉股价震荡，市值回落",
+            "content": "4月2日，张小泉股价在开盘后出现短暂下跌，市场情绪受到一定影响。投资者应保持关注。",
+            "tags": ["张小泉", "A股", "消费"]
+          },
+          {
+            "time": "16:30",
+            "date": "2025-04-02",
+            "title": "某AI公司完成新一轮数亿元融资",
+            "content": "据内部消息，该AI公司主攻自然语言处理，计划在今年底实现盈亏平衡，市场预期乐观。",
+            "tags": ["AI公司", "融资", "自然语言处理"]
+          },
+          {
+            "time": "09:15",
+            "date": "2025-04-03",
+            "title": "新能源汽车市场快速扩张",
+            "content": "随着政策扶持和技术革新，新能源汽车行业迎来爆发式增长，相关企业业绩不断攀升。",
+            "tags": ["新能源汽车", "市场扩张", "政策扶持"]
+          },
+          {
+            "time": "11:00",
+            "date": "2025-04-03",
+            "title": "半导体行业需求激增，供应紧张",
+            "content": "全球半导体供应链受到多重因素影响，市场需求激增引发供应紧张现象，相关企业正在加大产能。",
+            "tags": ["半导体", "供应链", "市场需求"]
+          },
+          {
+            "time": "14:20",
+            "date": "2025-04-04",
+            "title": "生物医药公司获重大突破",
+            "content": "某生物医药公司在疫苗研发领域取得重大突破，预计将在未来几个月内推出新产品。",
+            "tags": ["生物医药", "疫苗研发", "突破"]
+          },
+          {
+            "time": "10:05",
+            "date": "2025-04-04",
+            "title": "云计算巨头发布新服务",
+            "content": "一家云计算巨头近日发布了面向中小企业的新服务，旨在降低技术门槛，拓宽市场份额。",
+            "tags": ["云计算", "新服务", "中小企业"]
+          },
+          {
+            "time": "13:30",
+            "date": "2025-04-05",
+            "title": "通信设备企业迎来快速增长",
+            "content": "受5G普及推动，多家通信设备企业实现快速增长，市场前景被广泛看好。",
+            "tags": ["通信设备", "5G", "增长"]
+          },
+          {
+            "time": "17:45",
+            "date": "2025-04-05",
+            "title": "智能硬件公司推出革命性产品",
+            "content": "一家智能硬件公司推出革命性产品，改变了用户交互方式，引发行业关注。",
+            "tags": ["智能硬件", "产品革新", "用户体验"]
+          }
+        ],
+        "focusCompanies": [
+          {
+            "time": "09:00",
+            "date": "2025-04-01",
+            "title": "关注企业A最新动态",
+            "content": "企业A正在筹备境外上市事宜，预计募资规模将达30亿元人民币，引发市场广泛关注。",
+            "tags": ["企业A", "上市", "募资"]
+          },
+          {
+            "time": "10:20",
+            "date": "2025-04-01",
+            "title": "关注企业B将布局新能源电池领域",
+            "content": "企业B计划在华东地区建设新的电池生产线，以满足快速增长的市场需求，前景看好。",
+            "tags": ["企业B", "新能源", "电池"]
+          },
+          {
+            "time": "13:45",
+            "date": "2025-04-02",
+            "title": "关注企业C启动国际化战略",
+            "content": "企业C宣布启动国际化战略，计划在欧美市场扩展业务，进一步提升品牌影响力。",
+            "tags": ["企业C", "国际化", "扩展"]
+          },
+          {
+            "time": "15:30",
+            "date": "2025-04-02",
+            "title": "关注企业D获得重大投资",
+            "content": "企业D近期获得一笔重大投资，预计将加速技术研发和市场推广，投资者持谨慎乐观态度。",
+            "tags": ["企业D", "投资", "技术研发"]
+          },
+          {
+            "time": "08:50",
+            "date": "2025-04-03",
+            "title": "关注企业E发布全新产品线",
+            "content": "企业E在今年春季发布了全新产品线，涵盖智能硬件与物联网解决方案，备受期待。",
+            "tags": ["企业E", "产品发布", "物联网"]
+          },
+          {
+            "time": "11:10",
+            "date": "2025-04-03",
+            "title": "关注企业F宣布战略合作",
+            "content": "企业F与多家行业龙头宣布战略合作，共同布局新兴市场，提升整体竞争力。",
+            "tags": ["企业F", "战略合作", "新兴市场"]
+          },
+          {
+            "time": "14:00",
+            "date": "2025-04-04",
+            "title": "关注企业G获得专利授权",
+            "content": "企业G近期获得多项专利授权，进一步巩固了其在核心技术领域的领先地位。",
+            "tags": ["企业G", "专利", "技术领先"]
+          },
+          {
+            "time": "16:15",
+            "date": "2025-04-04",
+            "title": "关注企业H发布年度报告",
+            "content": "企业H发布了最新年度报告，显示出强劲的市场增长和盈利能力，吸引了众多投资者关注。",
+            "tags": ["企业H", "年度报告", "盈利增长"]
+          }
+        ]
+      };
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends 'data_hall/base.html' %}
+
+{% block title %}中国新势力企业态势感知系统 - 首页{% endblock %}
+
+{% block content %}
+<!-- 首页 Hero -->
+<section id="home" class="min-h-[90vh] hero-bg flex items-center">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
+            <span class="gradient-text">
+                中国新势力企业态势感知系统
+            </span>
+        </h1>
+        <p class="text-lg text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            基于多维数据分析与产业研究算法，精准识别15大前沿领域潜力企业，
+            <br />
+            为产业布局与投资决策提供智能支持
+        </p>
+        <div class="flex justify-center space-x-6">
+            <a href="{% url 'data_hall:ranking' %}" class="btn-primary">
+                查看榜单 <i class="ml-2 fas fa-chart-line"></i>
+            </a>
+            <a href="{% url 'data_hall:industry' %}" class="btn-outline">
+                产业图谱 <i class="ml-2 fas fa-project-diagram"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %} 

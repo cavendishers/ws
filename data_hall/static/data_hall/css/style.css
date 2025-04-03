@@ -1,0 +1,144 @@
+:root {
+  --primary: #0A1A3A;  /* 深蓝基调 */
+  --secondary: #FFD700; /* 金色点缀 */
+  --accent: #00C1D4;    /* 亮青色 */
+}
+
+body {
+  background-color: var(--primary);
+  color: #f3f4f6;
+  font-family: sans-serif;
+}
+
+.hero-bg {
+  background: linear-gradient(
+      135deg,
+      rgba(10, 26, 58, 0.9) 30%,
+      rgba(0, 193, 212, 0.2)
+    ),
+    url("data:image/svg+xml,<svg viewBox='0 0 1440 900' xmlns='http://www.w3.org/2000/svg'><path fill='%2300C1D4' fill-opacity='0.05' d='M0 706l48-21c48-21 144-63 240-84 96-21 192-21 288-15 96 6 192 24 288 27 96 3 192-9 288-24s192-39 240-48l48-9v900H0z'/></svg>");
+  background-size: cover;
+  aspect-ratio: 16/9;
+}
+
+.navbar {
+  position: fixed;
+  width: 100%;
+  background-color: rgba(10, 26, 58, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.nav-link {
+  color: #f3f4f6;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--secondary);
+}
+
+.nav-link.active {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: var(--secondary);
+  color: var(--primary);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: rgba(255, 215, 0, 0.9);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+.industry-btn {
+  background-color: #0A1A3A;
+  color: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.industry-btn:hover, .industry-btn.active {
+  background-color: var(--secondary);
+  color: var(--primary);
+  border-color: var(--secondary);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--secondary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* 响应式设计 */
+@media (max-width: 1280px) {
+  .desktop-menu {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+}
+
+@media (min-width: 1281px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(0,193,212,0.2);
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #132144;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 0 20px rgba(0, 193, 212, 0.2);
+  transform: translateY(-5px);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+} 

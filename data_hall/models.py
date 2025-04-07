@@ -19,19 +19,19 @@ class User(models.Model):
 
 
 class CompanyInfo(models.Model):
-    keyno = models.AutoField(db_column='KeyNo', primary_key=True, db_comment='唯一标识符')  # Field name made lowercase.
-    company_name = models.CharField(db_column='Company_name', max_length=255, db_comment='公司名称')  # Field name made lowercase.
-    company_birth = models.CharField(db_column='Company_birth', max_length=64, blank=True, null=True, db_comment='公司成立年份')  # Field name made lowercase.
-    insured_num = models.CharField(db_column='Insured_num', max_length=255, blank=True, null=True, db_comment='参保人数')  # Field name made lowercase.
-    latitude = models.CharField(db_column='Latitude', max_length=255, blank=True, null=True, db_comment='纬度')  # Field name made lowercase.
-    longitude = models.CharField(db_column='Longitude', max_length=255, blank=True, null=True, db_comment='经度')  # Field name made lowercase.
-    industry = models.CharField(db_column='Industry', max_length=255, blank=True, null=True, db_comment='公司所属产业')  # Field name made lowercase.
-    province = models.CharField(db_column='Province', max_length=255, blank=True, null=True, db_comment='所在省份')  # Field name made lowercase.
-    city = models.CharField(db_column='City', max_length=255, blank=True, null=True, db_comment='所在城市')  # Field name made lowercase.
-    county = models.CharField(db_column='County', max_length=255, blank=True, null=True, db_comment='所在区县')  # Field name made lowercase.
+    keyno = models.CharField(db_column='KeyNo',max_length=64,primary_key=True, db_comment='唯一标识符')  # Field name made lowercase.
+    company_name = models.CharField(db_column='Company_name', max_length=128, db_comment='公司名称')  # Field name made lowercase.
+    company_birth = models.CharField(db_column='Company_birth', max_length=20, blank=True, null=True, db_comment='公司成立年份')  # Field name made lowercase.
+    insured_num = models.CharField(db_column='Insured_num', max_length=20, blank=True, null=True, db_comment='参保人数')  # Field name made lowercase.
+    latitude = models.CharField(db_column='Latitude', max_length=32, blank=True, null=True, db_comment='纬度')  # Field name made lowercase.
+    longitude = models.CharField(db_column='Longitude', max_length=32, blank=True, null=True, db_comment='经度')  # Field name made lowercase.
+    industry = models.CharField(db_column='Industry', max_length=20, blank=True, null=True, db_comment='公司所属产业')  # Field name made lowercase.
+    province = models.CharField(db_column='Province', max_length=20, blank=True, null=True, db_comment='所在省份')  # Field name made lowercase.
+    city = models.CharField(db_column='City', max_length=32, blank=True, null=True, db_comment='所在城市')  # Field name made lowercase.
+    county = models.CharField(db_column='County', max_length=32, blank=True, null=True, db_comment='所在区县')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'company_info'
 
     def __str__(self):

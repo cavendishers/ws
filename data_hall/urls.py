@@ -13,4 +13,8 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     path('news/', views.news, name='news'),
     path('login/', views.login, name='login'),
+    path('api/filter-data/', views.get_filter_data, name='filter-data'),
+    path('api/company-stats/', views.get_company_stats, name='company-stats'),
+    path('api/company-locations/', views.get_company_locations, name='company-locations'),
+    path('api/county-company-counts/', views.get_county_company_counts, name='county-company-counts'),
 ] 

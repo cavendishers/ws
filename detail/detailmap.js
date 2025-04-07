@@ -2,7 +2,8 @@ const canvas = document.getElementById('map');
 const ctx = canvas.getContext('2d');
 let geoData = null;
 let tooltip = null;
-let transformMatrix = {
+// 将transformMatrix暴露为全局变量
+window.transformMatrix = {
     scale: 1,
     translateX: 0,
     translateY: 0
@@ -31,16 +32,48 @@ function createTooltip() {
     console.log('Tooltip created and added to body');
 }
 
+// 在地图加载完成后，主动加载公司数据
+function initCompanyMarkers() {
+    // 确保canvas和ctx存在
+    if (!canvas || !ctx) {
+        console.error('Canvas或ctx不存在，无法初始化公司标记');
+        return;
+    }
+    
+    console.log('开始初始化公司标记...');
+    
+    try {
+        // 创建公司标记实例
+        companyMarkers = new CompanyMarkers(canvas, ctx);
+        console.log('公司标记类初始化成功');
+        
+        // 主动加载公司数据
+        companyMarkers.loadCompanies().then(companies => {
+            console.log('初始化时成功加载公司数据:', companies);
+            // 加载完成后重绘地图
+            drawMap();
+        });
+    } catch (error) {
+        console.error('初始化公司标记时出错:', error);
+    }
+}
+
 // 加载GeoJSON数据
+console.log('开始加载GeoJSON数据...');
 fetch('hangzhou.geojson')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP 错误! 状态: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         geoData = data;
         console.log('GeoJSON数据加载完成:', geoData);
         createTooltip(); // 确保在数据加载后创建tooltip
         
         // 初始化公司标记
-        companyMarkers = new CompanyMarkers(canvas, ctx);
+        initCompanyMarkers();
         
         // 初始绘制地图
         drawMap();
@@ -51,7 +84,10 @@ fetch('hangzhou.geojson')
             if (companyMarkers && (!companyMarkers.companies || companyMarkers.companies.length === 0)) {
                 // 如果公司数据还没加载，再次尝试加载
                 companyMarkers.loadCompanies().then(() => {
+                    console.log('延迟加载公司数据完成，重新绘制地图');
                     drawMap();
+                }).catch(error => {
+                    console.error('延迟加载公司数据失败:', error);
                 });
             } else {
                 drawMap();
@@ -67,6 +103,16 @@ fetch('hangzhou.geojson')
     })
     .catch(error => {
         console.error('加载GeoJSON数据失败:', error);
+        // 尝试使用备用方法加载公司数据
+        try {
+            companyMarkers = new CompanyMarkers(canvas, ctx);
+            companyMarkers.loadCompanies().then(() => {
+                console.log('GeoJSON加载失败，但成功加载了公司数据');
+                drawMap();
+            });
+        } catch (error) {
+            console.error('备用方法加载公司数据也失败:', error);
+        }
     });
 
 // 坐标转换函数
@@ -80,8 +126,8 @@ function convertGeoToCartesian(lon, lat) {
 // 转换屏幕坐标到地图坐标
 function screenToMapCoordinates(screenX, screenY) {
     // 反转变换矩阵
-    const x = (screenX - transformMatrix.translateX) / transformMatrix.scale;
-    const y = (screenY - transformMatrix.translateY) / transformMatrix.scale;
+    const x = (screenX - window.transformMatrix.translateX) / window.transformMatrix.scale;
+    const y = (screenY - window.transformMatrix.translateY) / window.transformMatrix.scale;
     return [x, y];
 }
 
@@ -125,9 +171,9 @@ function drawMap() {
     let translateY = (canvas.height - height * scale) / 2 - transformedBounds.minY * scale;
     
     // 保存变换矩阵
-    transformMatrix.scale = scale;
-    transformMatrix.translateX = translateX;
-    transformMatrix.translateY = translateY;
+    window.transformMatrix.scale = scale;
+    window.transformMatrix.translateX = translateX;
+    window.transformMatrix.translateY = translateY;
 
     // 应用变换
     ctx.save();
@@ -203,7 +249,24 @@ function drawMap() {
     // 绘制公司标记 - 始终在最上层
     if (companyMarkers && companyMarkers.companies && companyMarkers.companies.length > 0) {
         console.log('正在绘制公司标记...公司数量:', companyMarkers.companies.length);
-        companyMarkers.drawMarkers(scale, translateX, translateY);
+        try {
+            // 确保变换矩阵已正确设置
+            console.log('绘制时的变换矩阵:', {
+                scale: scale,
+                translateX: translateX,
+                translateY: translateY
+            });
+            
+            // 绘制前强制确保公司数据存在
+            if (companyMarkers.companies.length > 0) {
+                companyMarkers.drawMarkers(scale, translateX, translateY);
+                console.log('公司标记绘制成功');
+            } else {
+                console.warn('公司数据存在但长度为0');
+            }
+        } catch (error) {
+            console.error('绘制公司标记时出错:', error, error.stack);
+        }
     } else {
         console.log('没有公司标记可供绘制，companyMarkers:', companyMarkers);
     }
@@ -289,7 +352,7 @@ function handleMouseMove(e) {
     let found = false;
     
     // 检查是否在公司标记附近
-    const isNearCompany = companyMarkers && companyMarkers.isNearCompany(mapPoint, transformMatrix.scale);
+    const isNearCompany = companyMarkers && companyMarkers.isNearCompany(mapPoint, window.transformMatrix.scale);
     if (isNearCompany) {
         // 如果鼠标在公司标记附近，可以显示公司相关的tooltip
         // 这里可以添加逻辑来显示公司的tooltip信息
@@ -362,9 +425,187 @@ canvas.removeEventListener('mousemove', handleMouseMove);
 // 添加新的事件监听器
 canvas.addEventListener('mousemove', handleMouseMove);
 
+// 测试函数：直接在画布上绘制测试点
+function drawTestDots() {
+    if (!ctx) return;
+    
+    console.log('绘制测试点...');
+    
+    // 清除画布
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // 绘制边框
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    
+    // 绘制中心点
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    // 绘制大红点（中心）
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 10, 0, Math.PI * 2);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+    
+    // 绘制四个角落的点
+    const points = [
+        { x: 50, y: 50, color: 'blue' },
+        { x: canvas.width - 50, y: 50, color: 'green' },
+        { x: 50, y: canvas.height - 50, color: 'yellow' },
+        { x: canvas.width - 50, y: canvas.height - 50, color: 'purple' }
+    ];
+    
+    points.forEach(point => {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = point.color;
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.stroke();
+        
+        ctx.fillStyle = 'white';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`(${point.x}, ${point.y})`, point.x, point.y + 20);
+    });
+    
+    console.log('测试点绘制完成');
+}
+
+// 立即添加测试按钮和绘制测试点
+(function initializeMap() {
+    // 检查canvas是否存在
+    if (!canvas || !ctx) {
+        console.error('无法找到canvas或ctx');
+        return;
+    }
+
+    console.log('页面立即初始化，绘制测试公司点...');
+    
+    // 直接绘制测试点
+    drawTestDots();
+    
+    // 创建测试公司数据
+    const testCompanies = [
+        {
+            name: '测试公司1',
+            latitude: 30.259924,
+            longitude: 120.130095
+        },
+        {
+            name: '测试公司2',
+            latitude: 30.319104,
+            longitude: 120.150116
+        },
+        {
+            name: '测试公司3',
+            latitude: 30.206428,
+            longitude: 120.210095
+        }
+    ];
+    
+    // 直接绘制公司点
+    drawCompanyPoints(testCompanies);
+    
+    // 添加测试按钮
+    document.body.insertAdjacentHTML('beforeend', `
+        <button id="test-draw-button" style="
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10000;
+            padding: 5px 10px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        ">测试绘制</button>
+    `);
+    
+    // 绑定测试按钮事件
+    const button = document.getElementById('test-draw-button');
+    if (button) {
+        button.addEventListener('click', () => {
+            console.log('测试按钮被点击');
+            drawTestDots();
+            drawCompanyPoints(testCompanies);
+        });
+    }
+})();
+
+// 直接绘制公司点函数 - 不依赖复杂的转换
+function drawCompanyPoints(companies) {
+    if (!ctx) return;
+    
+    console.log('直接绘制公司点...');
+    
+    // 获取canvas尺寸
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // 简单的线性映射 - 杭州经纬度范围约为：
+    // 经度: 119.9-120.4, 纬度: 30.1-30.4
+    const lonMin = 119.9;
+    const lonMax = 120.4;
+    const latMin = 30.1;
+    const latMax = 30.4;
+    
+    // 计算比例尺，留出边距
+    const margin = 50;
+    const scaleX = (width - 2 * margin) / (lonMax - lonMin);
+    const scaleY = (height - 2 * margin) / (latMax - latMin);
+    
+    companies.forEach(company => {
+        // 将经纬度转换为画布坐标
+        const x = margin + (company.longitude - lonMin) * scaleX;
+        const y = height - margin - (company.latitude - latMin) * scaleY; // 反转y轴
+        
+        console.log(`绘制公司点: ${company.name}, 坐标: (${x}, ${y})`);
+        
+        // 绘制公司点
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // 绘制公司名称
+        ctx.fillStyle = 'white';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        
+        const textWidth = ctx.measureText(company.name).width;
+        const padding = 3;
+        
+        // 绘制文字背景
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(
+            x - textWidth/2 - padding,
+            y + 10 - padding,
+            textWidth + 2*padding,
+            16 + 2*padding
+        );
+        
+        // 绘制文字
+        ctx.fillStyle = 'white';
+        ctx.fillText(company.name, x, y + 10);
+    });
+}
+
 // 确保页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     createTooltip();
+    initializeMap();
 });
 
 // 添加点击事件用于调试

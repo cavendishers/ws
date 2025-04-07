@@ -14,6 +14,13 @@ let transformMatrix = {
 let hoveredRegion = null;
 let companyMarkers = null;
 
+// 定义全局变量，使其对其他脚本可见
+window.transformMatrix = {
+    scale: 1,
+    translateX: 0,
+    translateY: 0
+};
+
 // 设置canvas尺寸
 function resizeCanvas() {
     const container = document.getElementById('map-container');
@@ -30,36 +37,51 @@ function createTooltip() {
     
     tooltip = document.createElement('div');
     tooltip.className = 'tooltip';
-    tooltip.style.display = 'none';
     tooltip.style.position = 'fixed';
+    tooltip.style.display = 'none';
     tooltip.style.pointerEvents = 'none';
+    tooltip.style.backgroundColor = 'rgba(44, 62, 80, 0.95)';
+    tooltip.style.color = 'white';
+    tooltip.style.padding = '15px';
+    tooltip.style.borderRadius = '8px';
+    tooltip.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+    tooltip.style.fontSize = '14px';
+    tooltip.style.zIndex = '10000';
+    tooltip.style.minWidth = '200px';
+    tooltip.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+    tooltip.style.transition = 'opacity 0.3s ease';
+    tooltip.style.opacity = '1';
+    
     document.body.appendChild(tooltip);
+    console.log('Tooltip创建成功');
+    
+    return tooltip;
 }
 
 // 加载GeoJSON数据
 async function loadGeoData() {
     try {
+        console.log('开始加载GeoJSON数据...');
         const response = await fetch('/static/data_hall/map/hangzhou.geojson');
+        if (!response.ok) {
+            throw new Error(`HTTP 错误! 状态: ${response.status}`);
+        }
         geoData = await response.json();
         console.log('GeoJSON数据加载完成:', geoData);
         
         // 初始化公司标记
-        companyMarkers = new CompanyMarkers(canvas, ctx);
+        // companyMarkers = new CompanyMarkers(canvas, ctx);
         
         // 初始绘制地图
-        drawMap();
+        // drawMap();
         
-        // 设置定期重绘
-        setInterval(() => {
-            if (companyMarkers && companyMarkers.companies && companyMarkers.companies.length > 0) {
-                drawMap();
-            }
-        }, 3000);
+        return true; // 返回成功标志
     } catch (error) {
         console.error('加载GeoJSON数据失败:', error);
         // 使用模拟数据
         geoData = getMockGeoData();
-        drawMap();
+        console.log('使用模拟GeoJSON数据');
+        return true; // 即使使用模拟数据也返回成功
     }
 }
 
@@ -120,168 +142,6 @@ function screenToMapCoordinates(screenX, screenY) {
     return [x, y];
 }
 
-// 绘制地图
-function drawMap() {
-    if (!geoData) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 计算边界框
-    let transformedBounds = {
-        minX: Infinity,
-        minY: Infinity,
-        maxX: -Infinity,
-        maxY: -Infinity
-    };
-
-    // 预处理所有坐标点
-    geoData.features.forEach(feature => {
-        feature.transformedCoordinates = [];
-        feature.geometry.coordinates[0].forEach(coord => {
-            const [x, y] = convertGeoToCartesian(coord[0], coord[1]);
-            feature.transformedCoordinates.push([x, y]);
-            transformedBounds.minX = Math.min(transformedBounds.minX, x);
-            transformedBounds.minY = Math.min(transformedBounds.minY, y);
-            transformedBounds.maxX = Math.max(transformedBounds.maxX, x);
-            transformedBounds.maxY = Math.max(transformedBounds.maxY, y);
-        });
-    });
-    
-    let width = transformedBounds.maxX - transformedBounds.minX;
-    let height = transformedBounds.maxY - transformedBounds.minY;
-    
-    // 计算缩放比例以适应屏幕
-    let scaleX = (canvas.width * 0.9) / width;
-    let scaleY = (canvas.height * 0.9) / height;
-    let scale = Math.min(scaleX, scaleY);
-    
-    // 计算平移量使地图居中
-    let translateX = (canvas.width - width * scale) / 2 - transformedBounds.minX * scale;
-    let translateY = (canvas.height - height * scale) / 2 - transformedBounds.minY * scale;
-    
-    // 保存变换矩阵
-    transformMatrix.scale = scale;
-    transformMatrix.translateX = translateX;
-    transformMatrix.translateY = translateY;
-
-    // 应用变换
-    ctx.save();
-    ctx.translate(translateX, translateY);
-    ctx.scale(scale, scale);
-
-    // 绘制区域
-    geoData.features.forEach((feature, index) => {
-        const coordinates = feature.transformedCoordinates;
-        const isHovered = hoveredRegion === feature.properties.Name;
-        
-        // 计算动画进度
-        if (!feature.hoverProgress) feature.hoverProgress = 0;
-        const targetProgress = isHovered ? 1 : 0;
-        feature.hoverProgress += (targetProgress - feature.hoverProgress) * 0.2;
-
-        if (isHovered) {
-            ctx.save();
-            const shadowBlur = 15 * feature.hoverProgress;
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = shadowBlur;
-            ctx.shadowOffsetX = 5 * feature.hoverProgress / scale;
-            ctx.shadowOffsetY = 5 * feature.hoverProgress / scale;
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(coordinates[0][0], coordinates[0][1]);
-        
-        for (let i = 1; i < coordinates.length; i++) {
-            ctx.lineTo(coordinates[i][0], coordinates[i][1]);
-        }
-        
-        ctx.closePath();
-
-        // 使用更美观的颜色方案
-        // 基础颜色：深蓝色系
-        const baseColor = {
-            r: 19,
-            g: 33,
-            b: 68
-        };
-        
-        // 悬停颜色：亮蓝色系
-        const hoverColor = {
-            r: 0,
-            g: 193,
-            b: 212
-        };
-        
-        // 计算当前颜色
-        const currentColor = {
-            r: baseColor.r + (hoverColor.r - baseColor.r) * feature.hoverProgress,
-            g: baseColor.g + (hoverColor.g - baseColor.g) * feature.hoverProgress,
-            b: baseColor.b + (hoverColor.b - baseColor.b) * feature.hoverProgress
-        };
-        
-        // 填充区域
-        const alpha = 0.6 + (0.2 * feature.hoverProgress);
-        ctx.fillStyle = `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${alpha})`;
-        ctx.fill();
-
-        // 绘制边框
-        const strokeAlpha = 0.8 + (0.2 * feature.hoverProgress);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${strokeAlpha})`;
-        ctx.lineWidth = (2 + feature.hoverProgress) / scale;
-        ctx.stroke();
-
-        if (isHovered) {
-            ctx.restore();
-        }
-    });
-
-    // 绘制区域名称
-    geoData.features.forEach((feature) => {
-        const coordinates = feature.transformedCoordinates;
-        const isHovered = hoveredRegion === feature.properties.Name;
-        const center = getPolygonCenter(coordinates);
-        
-        const baseFontSize = 14;
-        const maxFontSize = 18;
-        const fontSize = (baseFontSize + (maxFontSize - baseFontSize) * feature.hoverProgress) / scale;
-        
-        // 文字颜色：从灰色到白色
-        const textColor = `rgba(${255 * feature.hoverProgress}, ${255 * feature.hoverProgress}, ${255 * feature.hoverProgress}, 1)`;
-        
-        const text = feature.properties.Name;
-        ctx.fillStyle = textColor;
-        ctx.font = `${fontSize}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(text, center[0], center[1]);
-    });
-
-    // 绘制公司标记
-    if (companyMarkers && companyMarkers.companies && companyMarkers.companies.length > 0) {
-        companyMarkers.drawMarkers(scale, translateX, translateY);
-    }
-
-    ctx.restore();
-
-    // 如果有动画正在进行，继续重绘
-    if (geoData.features.some(feature => 
-        Math.abs(feature.hoverProgress - (hoveredRegion === feature.properties.Name ? 1 : 0)) > 0.01
-    )) {
-        requestAnimationFrame(drawMap);
-    }
-}
-
-// 计算多边形的中心点
-function getPolygonCenter(coordinates) {
-    let sumX = 0;
-    let sumY = 0;
-    coordinates.forEach(coord => {
-        sumX += coord[0];
-        sumY += coord[1];
-    });
-    return [sumX / coordinates.length, sumY / coordinates.length];
-}
-
 // 检查点是否在多边形内
 function isPointInPolygon(point, polygon) {
     let inside = false;
@@ -297,6 +157,126 @@ function isPointInPolygon(point, polygon) {
     }
     
     return inside;
+}
+
+// 绘制地图
+function drawMap() {
+    if (!geoData) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 计算边界框
+    let bounds = {
+        minX: Infinity,
+        minY: Infinity,
+        maxX: -Infinity,
+        maxY: -Infinity
+    };
+
+    // 预处理所有坐标点
+    geoData.features.forEach(feature => {
+        feature.transformedCoordinates = [];
+        feature.geometry.coordinates[0].forEach(coord => {
+            const [x, y] = convertGeoToCartesian(coord[0], coord[1]);
+            feature.transformedCoordinates.push([x, y]);
+            bounds.minX = Math.min(bounds.minX, x);
+            bounds.minY = Math.min(bounds.minY, y);
+            bounds.maxX = Math.max(bounds.maxX, x);
+            bounds.maxY = Math.max(bounds.maxY, y);
+        });
+    });
+    
+    let width = bounds.maxX - bounds.minX;
+    let height = bounds.maxY - bounds.minY;
+    
+    // 计算缩放比例以适应屏幕
+    let scaleX = (canvas.width * 0.9) / width;
+    let scaleY = (canvas.height * 0.9) / height;
+    let scale = Math.min(scaleX, scaleY);
+    
+    // 计算平移量使地图居中
+    let translateX = (canvas.width - width * scale) / 2 - bounds.minX * scale;
+    let translateY = (canvas.height - height * scale) / 2 - bounds.minY * scale;
+    
+    // 保存变换矩阵
+    transformMatrix.scale = scale;
+    transformMatrix.translateX = translateX;
+    transformMatrix.translateY = translateY;
+    
+    // 应用变换
+    ctx.save();
+    ctx.translate(translateX, translateY);
+    ctx.scale(scale, scale);
+
+    // 获取所有区县的公司数量
+    const companyCountPromises = geoData.features.map(feature => 
+        getCountyCompanyCount(feature.properties.Name)
+    );
+
+    Promise.all(companyCountPromises).then(companyCounts => {
+        // 找出最大公司数量，用于计算颜色深浅
+        const maxCompanyCount = Math.max(...companyCounts);
+        
+        // 绘制区域
+        geoData.features.forEach((feature, index) => {
+            const coordinates = feature.transformedCoordinates;
+            const isHovered = hoveredRegion === feature.properties.Name;
+            const companyCount = companyCounts[index];
+            
+            // 计算颜色深浅比例（0-1之间）
+            const colorIntensity = maxCompanyCount > 0 ? companyCount / maxCompanyCount : 0;
+            
+            ctx.beginPath();
+            ctx.moveTo(coordinates[0][0], coordinates[0][1]);
+            
+            for (let i = 1; i < coordinates.length; i++) {
+                ctx.lineTo(coordinates[i][0], coordinates[i][1]);
+            }
+            
+            ctx.closePath();
+
+            if (isHovered) {
+                // 悬停状态：使用高亮颜色
+                ctx.fillStyle = `rgba(0, 193, 212, 0.8)`;
+            } else {
+                // 非悬停状态：根据公司数量设置颜色深浅
+                // 使用更深的颜色范围，增加对比度
+                const baseColor = {
+                    r: 0 + (19 - 0) * (1 - colorIntensity),   // 从0到19
+                    g: 193 + (20 - 193) * (1 - colorIntensity), // 从193到20
+                    b: 212 + (50 - 212) * (1 - colorIntensity)  // 从212到50
+                };
+                // 增加颜色饱和度
+                ctx.fillStyle = `rgba(${Math.round(baseColor.r)}, ${Math.round(baseColor.g)}, ${Math.round(baseColor.b)}, 0.9)`;
+            }
+            
+            ctx.fill();
+
+            // 绘制边框
+            ctx.strokeStyle = isHovered ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = isHovered ? 3 / scale : 2 / scale;
+            ctx.stroke();
+        });
+
+        // 恢复上下文
+        ctx.restore();
+
+        // 绘制公司标记
+        if (companyMarkers && companyMarkers.companies && companyMarkers.companies.length > 0) {
+            companyMarkers.drawMarkers(scale, translateX, translateY);
+        }
+    });
+}
+
+// 计算多边形的中心点
+function getPolygonCenter(coordinates) {
+    let sumX = 0;
+    let sumY = 0;
+    coordinates.forEach(coord => {
+        sumX += coord[0];
+        sumY += coord[1];
+    });
+    return [sumX / coordinates.length, sumY / coordinates.length];
 }
 
 // 更新数据面板内容
@@ -334,7 +314,9 @@ function updateDataPanel(feature) {
 
 // 鼠标移动事件处理
 function handleMouseMove(e) {
-    if (!geoData || !tooltip) return;
+    if (!geoData) {
+        return;
+    }
     
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -343,16 +325,9 @@ function handleMouseMove(e) {
     const mapPoint = screenToMapCoordinates(mouseX, mouseY);
     let found = false;
     
-    // 检查是否在公司标记附近
-    const isNearCompany = companyMarkers && companyMarkers.isNearCompany(mapPoint, transformMatrix.scale);
-    if (isNearCompany) {
-        // 可以添加公司相关的tooltip显示逻辑
-    }
-    
     for (const feature of geoData.features) {
         if (isPointInPolygon(mapPoint, feature.transformedCoordinates)) {
             const name = feature.properties.Name;
-            const code = feature.properties.Code;
             
             if (hoveredRegion !== name) {
                 hoveredRegion = name;
@@ -360,36 +335,15 @@ function handleMouseMove(e) {
                 updateDataPanel(feature);
             }
 
-            // 更新tooltip
-            tooltip.innerHTML = `
-                <div class="tooltip-title">${name}</div>
-                <div class="tooltip-content">
-                    <div class="tooltip-data">
-                        <div>行政区划代码：${code}</div>
-                        <div>GDP：328.4亿元</div>
-                        <div>人口：52.3万人</div>
-                        <div>企业数量：12,458家</div>
-                    </div>
-                </div>
-            `;
+            // 显示tooltip
+            showTooltip(e, name, '加载中...');
             
-            // 设置tooltip位置
-            let left = e.clientX + 15;
-            let top = e.clientY + 15;
-            
-            // 确保tooltip不会超出视口
-            const tooltipRect = tooltip.getBoundingClientRect();
-            if (left + tooltipRect.width > window.innerWidth) {
-                left = e.clientX - tooltipRect.width - 15;
-            }
-            if (top + tooltipRect.height > window.innerHeight) {
-                top = e.clientY - tooltipRect.height - 15;
-            }
-            
-            tooltip.style.left = left + 'px';
-            tooltip.style.top = top + 'px';
-            tooltip.style.display = 'block';
-            tooltip.style.opacity = '1';
+            // 获取公司数量
+            getCountyCompanyCount(name).then(count => {
+                if (hoveredRegion === name) {
+                    showTooltip(e, name, count);
+                }
+            });
             
             found = true;
             break;
@@ -401,13 +355,119 @@ function handleMouseMove(e) {
             hoveredRegion = null;
             drawMap();
         }
-        tooltip.style.opacity = '0';
-        setTimeout(() => {
-            if (tooltip.style.opacity === '0') {
-                tooltip.style.display = 'none';
-            }
-        }, 300);
+        hideTooltip();
     }
+}
+
+// 隐藏tooltip
+function hideTooltip() {
+    if (tooltip) {
+        tooltip.style.display = 'none';
+        tooltip.style.opacity = '0';
+        tooltip.innerHTML = ''; // 清空内容
+        tooltip.style.visibility = 'hidden'; // 添加visibility属性
+        tooltip.style.pointerEvents = 'none'; // 确保不会捕获鼠标事件
+        
+        // 移除tooltip元素
+        if (document.body.contains(tooltip)) {
+            document.body.removeChild(tooltip);
+            tooltip = null;
+        }
+    }
+}
+
+// 显示tooltip
+function showTooltip(event, countyName, companyCount) {
+    if (!tooltip || !document.body.contains(tooltip)) {
+        tooltip = createTooltip();
+    }
+    
+    // 更新tooltip内容
+    tooltip.innerHTML = `
+        <div class="tooltip-title">${countyName}</div>
+        <div class="tooltip-content">
+            <div class="tooltip-data">
+                <div>公司数量：<span style="color: #3498db; font-weight: bold;">${companyCount}</span> 家</div>
+            </div>
+        </div>
+    `;
+    
+    // 设置tooltip位置
+    let left = event.clientX + 15;
+    let top = event.clientY + 15;
+    
+    // 确保tooltip不会超出视口
+    const tooltipRect = tooltip.getBoundingClientRect();
+    if (left + tooltipRect.width > window.innerWidth) {
+        left = event.clientX - tooltipRect.width - 15;
+    }
+    if (top + tooltipRect.height > window.innerHeight) {
+        top = event.clientY - tooltipRect.height - 15;
+    }
+    
+    tooltip.style.visibility = 'visible'; // 添加visibility属性
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.display = 'block';
+    tooltip.style.opacity = '1';
+    tooltip.style.pointerEvents = 'none'; // 确保不会捕获鼠标事件
+}
+
+// 缓存区县公司数量
+let countyCompanyCountsCache = {};
+let countyCompanyCountsLastFetch = 0;
+
+// 获取区县公司数量
+async function getCountyCompanyCount(countyName) {
+    const now = Date.now();
+    
+    // 获取筛选条件
+    const industryFilter = document.getElementById('industryFilter');
+    const cityFilter = document.getElementById('cityFilter');
+    const countyFilter = document.getElementById('countyFilter');
+    
+    const industry = industryFilter ? industryFilter.value : '';
+    const city = cityFilter ? cityFilter.value : '';
+    const county = countyFilter ? countyFilter.value : '';
+    
+    // 构建缓存键，包含筛选条件
+    const cacheKey = `${industry}_${city}_${county}`;
+    
+    // 如果缓存过期（超过1分钟）或不存在，则重新获取
+    if (now - countyCompanyCountsLastFetch > 60000 || !countyCompanyCountsCache[cacheKey]) {
+        try {
+            // 构建查询参数
+            const params = new URLSearchParams();
+            if (industry) params.append('industry', industry);
+            if (city) params.append('city', city);
+            if (county) params.append('county', county);
+            
+            // 发起API请求
+            const response = await fetch(`/api/county-company-counts/?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // 更新缓存
+            countyCompanyCountsCache[cacheKey] = {};
+            data.county_stats.forEach(item => {
+                countyCompanyCountsCache[cacheKey][item.county] = item.count;
+            });
+            countyCompanyCountsLastFetch = now;
+            
+        } catch (error) {
+            console.error('获取区县公司数量失败:', error);
+            // 如果API请求失败，但缓存中有数据，继续使用缓存
+            if (!countyCompanyCountsCache[cacheKey]) {
+                countyCompanyCountsCache[cacheKey] = {};
+            }
+        }
+    }
+    
+    // 从缓存中返回数量，如果没有则返回0
+    return countyCompanyCountsCache[cacheKey][countyName] || 0;
 }
 
 // 初始化图表
@@ -699,15 +759,236 @@ function initCharts() {
     });
 }
 
+// 加载统计数据
+async function loadStats() {
+    try {
+        console.log('Map: 开始加载统计数据...');
+        // 获取筛选条件
+        const industry = document.getElementById('industryFilter').value;
+        const city = document.getElementById('cityFilter').value;
+        const county = document.getElementById('countyFilter').value;
+        
+        // 构建查询参数
+        const params = new URLSearchParams();
+        if (industry) params.append('industry', industry);
+        if (city) params.append('city', city);
+        if (county) params.append('county', county);
+        
+        console.log('Map: 筛选条件:', { industry, city, county });
+        
+        const response = await fetch(`/api/company-stats/?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Map: 获取到的统计数据:', data);
+        
+        // 更新产业分布图表
+        updateIndustryChart(data.industry_stats);
+        
+        // 更新区县分布图表
+        updateCountyChart(data.county_stats);
+        
+        // 重新绘制地图
+        drawMap();
+        
+        console.log('Map: 统计数据加载完成');
+    } catch (error) {
+        console.error('Map: 加载统计数据失败:', error);
+    }
+}
+
+// 更新产业分布图表
+function updateIndustryChart(stats) {
+    const chartData = stats.map(item => ({
+        name: item.industry || '未知产业',
+        value: item.count
+    }));
+    
+    if (distributionChart) {
+        distributionChart.dispose();
+    }
+    
+    distributionChart = echarts.init(document.getElementById('distributionChart'));
+    distributionChart.setOption({
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 10,
+            data: chartData.map(item => item.name),
+            textStyle: {
+                color: '#ccc'
+            }
+        },
+        series: [{
+            name: '产业分布',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                show: false,
+                position: 'center'
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: '14',
+                    fontWeight: 'bold',
+                    color: '#fff'
+                }
+            },
+            labelLine: {
+                show: false
+            },
+            data: chartData,
+            itemStyle: {
+                borderRadius: 5,
+                borderColor: '#132144',
+                borderWidth: 2
+            }
+        }]
+    });
+}
+
+// 更新区县分布图表
+function updateCountyChart(stats) {
+    const chartData = stats.map(item => ({
+        name: item.county || '未知区县',
+        value: item.count
+    }));
+    
+    if (regionChart) {
+        regionChart.dispose();
+    }
+    
+    regionChart = echarts.init(document.getElementById('regionChart'));
+    regionChart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01],
+            axisLine: {
+                lineStyle: {
+                    color: '#ccc'
+                }
+            },
+            axisLabel: {
+                color: '#ccc'
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: chartData.map(item => item.name),
+            axisLine: {
+                lineStyle: {
+                    color: '#ccc'
+                }
+            },
+            axisLabel: {
+                color: '#ccc'
+            }
+        },
+        series: [{
+            name: '企业数量',
+            type: 'bar',
+            data: chartData.map(item => item.value),
+            itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: '#132144' },
+                    { offset: 1, color: '#00C1D4' }
+                ])
+            }
+        }]
+    });
+}
+
+// 设置筛选监听器
+function setupFilterListeners() {
+    const industryFilter = document.getElementById('industryFilter');
+    const cityFilter = document.getElementById('cityFilter');
+    const countyFilter = document.getElementById('countyFilter');
+    
+    const filters = [industryFilter, cityFilter, countyFilter];
+    filters.forEach(filter => {
+        filter.addEventListener('change', () => {
+            // 清除区县公司数量缓存
+            countyCompanyCountsCache = {};
+            countyCompanyCountsLastFetch = 0;
+            
+            // 更新统计数据和地图
+            loadStats();
+            
+            // 重新加载公司标记
+            if (companyMarkers) {
+                companyMarkers.loadCompanies().then(() => {
+                    drawMap();
+                });
+            }
+        });
+    });
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('页面加载完成，开始初始化地图...');
+    
+    // 先进行Canvas尺寸设置
     resizeCanvas();
-    createTooltip();
-    loadGeoData();
-    initCharts();
+    
+    // 创建tooltip
+    tooltip = createTooltip();
+    
+    // 步骤1: 加载地理数据
+    loadGeoData().then(success => {
+        if (!success) {
+            console.error('地理数据加载失败');
+            return;
+        }
+        
+        console.log('地理数据加载成功，初始化公司标记...');
+        // 步骤2: 初始化公司标记
+        if (typeof CompanyMarkers === 'function') {
+            companyMarkers = new CompanyMarkers(canvas, ctx);
+            // 加载公司数据
+            companyMarkers.loadCompanies().then(() => {
+                console.log('公司数据加载完成，绘制地图...');
+                // 步骤3: 初始绘制地图
+                drawMap();
+            });
+        } else {
+            console.error('CompanyMarkers类不存在');
+        }
+        
+        // 步骤4: 加载统计数据
+        loadStats();
+        
+        // 步骤5: 设置筛选监听器
+        setupFilterListeners();
+    });
     
     // 添加事件监听器
     canvas.addEventListener('mousemove', handleMouseMove);
+    // 添加鼠标离开地图区域的事件监听器
+    canvas.addEventListener('mouseleave', () => {
+        hoveredRegion = null;
+        hideTooltip();
+        drawMap();
+    });
     window.addEventListener('resize', () => {
         resizeCanvas();
         drawMap();

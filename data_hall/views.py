@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Count
-from .models import CompanyInfo
+from .models import CompanyInfo, CompanyRanking
 from django.db.models import Q
+import json
 
 def index(request):
     """首页视图"""
@@ -55,15 +56,17 @@ def login(request):
 
 def get_filter_data(request):
     """获取筛选选项数据"""
-    # 排除空值，并进行排序
-    industries = CompanyInfo.objects.values_list('industry', flat=True).distinct().exclude(industry__isnull=True).exclude(industry='')
-    cities = CompanyInfo.objects.values_list('city', flat=True).distinct().exclude(city__isnull=True).exclude(city='')
-    counties = CompanyInfo.objects.values_list('county', flat=True).distinct().exclude(county__isnull=True).exclude(county='')
+    # 获取所有不重复的行业
+    industries = list(CompanyInfo.objects.exclude(industry='').values_list('industry', flat=True).distinct())
+    # 获取所有不重复的省份
+    provinces = list(CompanyInfo.objects.exclude(province='').values_list('province', flat=True).distinct())
+    # 获取所有不重复的城市
+    cities = list(CompanyInfo.objects.exclude(city='').values_list('city', flat=True).distinct())
     
     return JsonResponse({
-        'industries': list(industries),
-        'cities': list(cities),
-        'counties': list(counties)
+        'industries': industries,
+        'provinces': provinces,
+        'cities': cities
     })
 
 def get_company_stats(request):
@@ -245,3 +248,198 @@ def get_company_yearly_stats(request):
     return JsonResponse({
         'yearly_stats': result
     })
+
+def get_company_rankings(request):
+    """获取企业排名数据"""
+    # 获取筛选参数
+    industry = request.GET.get('industry')
+    limit = request.GET.get('limit', 20)  # 默认返回前20名
+    
+    try:
+        limit = int(limit)
+    except ValueError:
+        limit = 20
+    
+    # 构建查询条件
+    query = Q()
+    if industry and industry != '':
+        query &= Q(company__industry=industry)
+    
+    # 查询企业排名数据，按综合得分降序排序
+    rankings = (
+        CompanyRanking.objects.filter(query)
+        .select_related('company')
+        .order_by('-comprehensive_score')[:limit]
+    )
+    
+    # 构建返回数据
+    result = []
+    for idx, ranking in enumerate(rankings, 1):
+        result.append({
+            'rank': idx,
+            'name': ranking.company.company_name,
+            'devPotential': float(ranking.dev_potential),
+            'expansionSpeed': float(ranking.expansion_speed),
+            'innovation': float(ranking.innovation),
+            'capitalAttention': float(ranking.capital_attention),
+            'teamBackground': float(ranking.team_background),
+            'comprehensiveScore': float(ranking.comprehensive_score)
+        })
+    
+    # 添加调试信息
+    print(f"排名查询条件: industry={industry}, limit={limit}")
+    print(f"排名结果数量: {len(result)}")
+    
+    return JsonResponse({
+        'rankings': result
+    })
+
+def get_enterprise_list(request):
+    """获取企业列表数据"""
+    try:
+        # 获取分页参数
+        page = int(request.GET.get('page', 1))
+        page_size = int(request.GET.get('page_size', 20))
+        
+        # 获取筛选参数
+        name = request.GET.get('name', '')
+        industry = request.GET.get('industry', '')
+        province = request.GET.get('province', '')
+        city = request.GET.get('city', '')
+        
+        # 构建查询条件
+        query = Q()
+        if name:
+            query &= Q(company_name__icontains=name)
+        if industry:
+            query &= Q(industry=industry)
+        if province:
+            query &= Q(province=province)
+        if city:
+            query &= Q(city=city)
+        
+        # 计算总数和总页数
+        total_count = CompanyInfo.objects.filter(query).count()
+        total_pages = (total_count + page_size - 1) // page_size
+        
+        # 获取当前页的数据
+        start = (page - 1) * page_size
+        end = start + page_size
+        companies = CompanyInfo.objects.filter(query)[start:end]
+        
+        # 构建返回数据
+        data = []
+        for company in companies:
+            data.append({
+                'name': company.company_name or '',
+                'province': company.province or '',
+                'city': company.city or '',
+                'industry': company.industry or '',
+                'subTrack': company.std_industr_small_category or '',
+                'regYear': company.company_birth[:4] if company.company_birth else '',
+                'financing': '未知',  # 暂时不显示融资轮次
+                'devPotential': 0,  # 暂时不显示评分
+                'expansionSpeed': 0,
+                'innovation': 0,
+                'capitalAttention': 0,
+                'teamBackground': 0
+            })
+        
+        # 获取行业分布数据
+        industry_stats = []
+        if industry:  # 如果选择了具体行业，显示细分行业分布
+            sub_industries = CompanyInfo.objects.filter(query).exclude(
+                std_industr_small_category__isnull=True
+            ).exclude(
+                std_industr_small_category=''
+            ).values('std_industr_small_category').annotate(
+                count=Count('keyno')
+            ).order_by('-count')
+            
+            for sub in sub_industries:
+                industry_stats.append({
+                    'name': sub['std_industr_small_category'],
+                    'value': sub['count']
+                })
+        else:  # 如果未选择具体行业，显示所有行业分布
+            industries = CompanyInfo.objects.filter(query).exclude(
+                industry__isnull=True
+            ).exclude(
+                industry=''
+            ).values('industry').annotate(
+                count=Count('keyno')
+            ).order_by('-count')
+            
+            for ind in industries:
+                industry_stats.append({
+                    'name': ind['industry'],
+                    'value': ind['count']
+                })
+        
+        return JsonResponse({
+            'data': data,
+            'total_count': total_count,
+            'current_page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'industry_stats': industry_stats
+        })
+        
+    except Exception as e:
+        print(f"Error in get_enterprise_list: {str(e)}")  # 添加错误日志
+        return JsonResponse({
+            'error': str(e)
+        }, status=500)
+
+def get_precision_list(request):
+    """获取精准招商企业匹配列表"""
+    # 获取筛选参数，如地区、行业等
+    industry = request.GET.get('industry', '')
+    region = request.GET.get('region', '')
+    
+    # 构建查询条件
+    query = Q()
+    if industry and industry != '全部':
+        query &= Q(industry=industry)
+    if region and region != '全部':
+        query &= Q(province=region) | Q(city=region) | Q(county=region)
+    
+    # 查询企业数据
+    companies = CompanyInfo.objects.filter(query).values(
+        'keyno', 'company_name', 'industry', 'std_industr_small_category',
+        'company_birth', 'tag'
+    )[:50]  # 限制返回数量
+    
+    # 构建返回数据
+    result = []
+    for company in companies:
+        # 模拟匹配度评分（1-5分）
+        # 实际项目中应根据企业数据和地区特点计算实际匹配度
+        match_scores = {
+            'marketFit': round(2 + 3 * (hash(company['keyno']) % 100) / 100, 2),
+            'supplyChainFit': round(2 + 3 * (hash(company['keyno'] + '1') % 100) / 100, 2),
+            'networkFit': round(2 + 3 * (hash(company['keyno'] + '2') % 100) / 100, 2),
+            'resourceFit': round(2 + 3 * (hash(company['keyno'] + '3') % 100) / 100, 2),
+        }
+        
+        # 模拟融资轮次
+        financing_rounds = ['天使轮', 'Pre-A轮', 'A轮', 'B轮', 'C轮', 'D轮及以上']
+        financing = financing_rounds[hash(company['keyno']) % len(financing_rounds)]
+        
+        result.append({
+            'name': company['company_name'],
+            'industry': company['industry'] or '',
+            'subTrack': company['std_industr_small_category'] or '',
+            'regYear': company['company_birth'][:4] if company['company_birth'] else '',
+            'financing': financing,
+            'marketFit': match_scores['marketFit'],
+            'supplyChainFit': match_scores['supplyChainFit'],
+            'networkFit': match_scores['networkFit'],
+            'resourceFit': match_scores['resourceFit']
+        })
+    
+    # 添加调试信息
+    print(f"精准招商查询条件: industry={industry}, region={region}")
+    print(f"精准招商结果数量: {len(result)}")
+    
+    return JsonResponse(result, safe=False)

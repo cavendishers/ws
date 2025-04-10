@@ -17,34 +17,34 @@
 </head>
 <body class="bg-[var(--primary)] text-gray-100 font-sans">
     <!-- 导航栏 -->
-    <nav class="fixed w-full navbar z-50">
+    <nav class="fixed w-full bg-[rgba(2,4,10,0.75)] backdrop-blur-md border-b border-[rgba(0,191,255,0.15)] z-50">
         <div class="container mx-auto px-6 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <svg class="w-8 h-8 text-[var(--secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span class="text-xl font-bold">新势力感知系统</span>
+                <div class="w-8 h-8 bg-gradient-to-br from-[var(--button-highlight)] to-blue-400 rounded-md flex items-center justify-center shadow-md">
+                    <span class="text-white font-bold text-lg">S</span>
+                </div>
+                <span class="text-xl font-bold text-[var(--text-primary)]">新势力感知系统</span>
             </div>
-            <div class="hidden xl:flex space-x-8">
-                <a href="{% url 'data_hall:index' %}" class="hover:text-[var(--secondary)] transition-colors">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="hover:text-[var(--secondary)]">新势力榜单</a>
-                <div class="group relative">
-                    <button class="hover:text-[var(--secondary)] text-[var(--secondary)] font-semibold">
+            <div class="hidden xl:flex space-x-8 text-[var(--text-secondary)] items-center">
+                <a href="{% url 'data_hall:index' %}" class="hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold">首页</a>
+                <a href="{% url 'data_hall:ranking' %}" class="hover:text-[var(--button-highlight)]">新势力榜单</a>
+                <div class="relative group" id="industry-dropdown-container">
+                    <button id="industry-dropdown-btn" class="hover:text-[var(--button-highlight)] flex items-center px-4 py-2 -mx-4 -my-2">
                         产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
                     </button>
-                    <div class="absolute hidden group-hover:block bg-[#132144] p-4 rounded-lg w-48 space-y-3">
-                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-[var(--accent)]">产业链图谱</a>
-                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-[var(--accent)]">企业库</a>
-                        <a href="{% url 'data_hall:precision' %}" class="block hover:text-[var(--accent)]">精准招商</a>
+                    <div id="industry-dropdown" class="absolute hidden group-hover:block bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
+                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
+                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
+                        <a href="{% url 'data_hall:precision' %}" class="block hover:text-blue-400 text-sm py-2">精准招商</a>
                     </div>
                 </div>
-                <a href="{% url 'data_hall:map' %}" class="hover:text-[var(--secondary)]">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="hover:text-[var(--secondary)]">产业报告</a>
-                <a href="{% url 'data_hall:news' %}" class="hover:text-[var(--secondary)]">商业快讯</a>
+                <a href="{% url 'data_hall:map' %}" class="hover:text-[var(--button-highlight)]">产业地图</a>
+                <a href="{% url 'data_hall:report' %}" class="hover:text-[var(--button-highlight)]">产业报告</a>
+                <a href="{% url 'data_hall:news' %}" class="hover:text-[var(--button-highlight)]">商业快讯</a>
             </div>
             <div class="flex items-center space-x-4">
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--secondary)] text-[var(--primary)] px-5 py-2 rounded-md font-medium hover:bg-opacity-90">登录</a>
-                <button class="mobile-menu-button xl:hidden text-xl">
+                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
+                <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -52,29 +52,37 @@
     </nav>
 
     <!-- 移动端菜单 -->
-    <div class="mobile-menu fixed inset-0 bg-[rgba(10,26,58,0.95)] z-50 hidden">
+    <div class="mobile-menu fixed inset-0 bg-[rgba(2,4,10,0.95)] z-50 hidden">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center space-x-3">
-                    <svg class="w-8 h-8 text-[var(--secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    <span class="text-xl font-bold">新势力感知系统</span>
+                    <div class="w-8 h-8 bg-gradient-to-br from-[var(--button-highlight)] to-blue-400 rounded-md flex items-center justify-center shadow-md">
+                        <span class="text-white font-bold text-lg">S</span>
+                    </div>
+                    <span class="text-xl font-bold text-[var(--text-primary)]">新势力感知系统</span>
                 </div>
-                <button class="mobile-menu-close text-xl">
+                <button class="mobile-menu-close text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="flex flex-col space-y-6">
-                <a href="{% url 'data_hall:index' %}" class="text-lg hover:text-[var(--secondary)]">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="text-lg hover:text-[var(--secondary)]">新势力榜单</a>
-                <a href="{% url 'data_hall:industry' %}" class="text-lg hover:text-[var(--secondary)]">产业链图谱</a>
-                <a href="{% url 'data_hall:enterprise' %}" class="text-lg hover:text-[var(--secondary)]">企业库</a>
-                <a href="{% url 'data_hall:precision' %}" class="text-lg hover:text-[var(--secondary)]">精准招商</a>
-                <a href="{% url 'data_hall:map' %}" class="text-lg hover:text-[var(--secondary)]">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="text-lg hover:text-[var(--secondary)]">产业报告</a>
-                <a href="{% url 'data_hall:news' %}" class="text-lg hover:text-[var(--secondary)]">商业快讯</a>
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--secondary)] text-[var(--primary)] px-5 py-2 rounded-md font-medium hover:bg-opacity-90 text-center">登录</a>
+                <a href="{% url 'data_hall:index' %}" class="text-lg hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold">首页</a>
+                <a href="{% url 'data_hall:ranking' %}" class="text-lg hover:text-[var(--button-highlight)]">新势力榜单</a>
+                <div class="relative">
+                    <button id="mobile-industry-btn" class="text-lg hover:text-[var(--button-highlight)] flex items-center justify-between w-full">
+                        <span>产业链</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="mobile-industry-dropdown" class="pl-4 space-y-3 mt-2 hidden">
+                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
+                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
+                        <a href="{% url 'data_hall:precision' %}" class="block hover:text-blue-400 text-sm py-2">精准招商</a>
+                    </div>
+                </div>
+                <a href="{% url 'data_hall:map' %}" class="text-lg hover:text-[var(--button-highlight)]">产业地图</a>
+                <a href="{% url 'data_hall:report' %}" class="text-lg hover:text-[var(--button-highlight)]">产业报告</a>
+                <a href="{% url 'data_hall:news' %}" class="text-lg hover:text-[var(--button-highlight)]">商业快讯</a>
+                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
             </div>
         </div>
     </div>
@@ -103,6 +111,58 @@
 
     <!-- 自定义脚本 -->
     <script src="{% static 'data_hall/js/main.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航栏下拉菜单
+            const industryContainer = document.getElementById('industry-dropdown-container');
+            const industryBtn = document.getElementById('industry-dropdown-btn');
+            const industryDropdown = document.getElementById('industry-dropdown');
+            const mobileIndustryBtn = document.getElementById('mobile-industry-btn');
+            const mobileIndustryDropdown = document.getElementById('mobile-industry-dropdown');
+
+            // 桌面端下拉菜单
+            industryBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                industryDropdown.classList.toggle('hidden');
+            });
+
+            // 移动端下拉菜单
+            mobileIndustryBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileIndustryDropdown.classList.toggle('hidden');
+            });
+
+            // 点击外部关闭下拉菜单
+            document.addEventListener('click', (e) => {
+                if (!industryContainer.contains(e.target)) {
+                    industryDropdown.classList.add('hidden');
+                }
+                if (!mobileIndustryBtn.contains(e.target) && !mobileIndustryDropdown.contains(e.target)) {
+                    mobileIndustryDropdown.classList.add('hidden');
+                }
+            });
+
+            // 移动端菜单
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenuClose = document.querySelector('.mobile-menu-close');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+            });
+
+            mobileMenuClose.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+
+            // 点击外部关闭移动端菜单
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html> 

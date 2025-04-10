@@ -44,3 +44,37 @@ class CompanyInfo(models.Model):
     def __str__(self):
         return self.company_name
 
+# 创建企业排名模型
+class CompanyRanking(models.Model):
+    company = models.OneToOneField(CompanyInfo, on_delete=models.CASCADE, related_name='ranking', verbose_name='关联企业')
+    dev_potential = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='发展潜力', help_text='0-100分')
+    expansion_speed = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='扩张速度', help_text='0-100分')
+    innovation = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='创新能力', help_text='0-100分')
+    capital_attention = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='资本关注', help_text='0-100分')
+    team_background = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='团队背景', help_text='0-100分')
+    comprehensive_score = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='综合得分', help_text='0-100分')
+    rank = models.PositiveIntegerField(verbose_name='排名', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+    
+    class Meta:
+        verbose_name = '企业排名'
+        verbose_name_plural = '企业排名'
+        ordering = ['rank']
+        
+    def save(self, *args, **kwargs):
+        # 如果没有设置综合得分，自动计算五个维度的平均值作为综合得分
+        if not self.comprehensive_score:
+            self.comprehensive_score = (
+                self.dev_potential + 
+                self.expansion_speed + 
+                self.innovation + 
+                self.capital_attention + 
+                self.team_background
+            ) / 5
+        super().save(*args, **kwargs)
+        
+    def __str__(self):
+        return f"{self.company.company_name} - 排名: {self.rank}"
+
+

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>中国新势力企业态势感知系统 - 首页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Color Palette */
+            --bg-primary-fallback: #02040A;
+            --bg-secondary: #0A1020;
+            --accent-primary: #6366F1;
+            --accent-secondary: #8B5CF6;
+            --button-highlight: #00BFFF; /* Cyan */
+            --button-inactive: #202840;
+            --text-primary: #FFFFFF;
+            --text-secondary: #D0D7E0;
+            --text-dark: #1F2937;
+            /* Overlay Specific */
+            --overlay-bg: #FFFFFF;
+            --overlay-border: #E5E7EB;
+            --overlay-text-primary: #111827;
+            --overlay-text-secondary: #6B7280;
+            --overlay-accent: #3B82F6; /* Blue */
+            --overlay-user-bg: #DBEAFE; /* Light blue for user messages */
+            --overlay-user-text: #1E40AF; /* Dark blue for user text */
+            --overlay-ai-bg: #F3F4F6; /* Light gray for AI messages */
+        }
+
+        body {
+            background-image: url('background.jpg'); /* <<< ENSURE PATH IS CORRECT */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: var(--bg-primary-fallback);
+            color: var(--text-primary);
+            font-family: 'Noto Sans SC', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar for Overlay Content */
+        .overlay-content-scroll::-webkit-scrollbar { width: 6px; }
+        .overlay-content-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px;}
+        .overlay-content-scroll::-webkit-scrollbar-thumb { background: var(--overlay-accent); border-radius: 3px;}
+        .overlay-content-scroll::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+
+        #ai-search-overlay { z-index: 100; }
+        nav { z-index: 50; }
+
+        /* Optional overlay for text readability */
+        .content-column-right {
+            /* background-color: rgba(2, 4, 10, 0.3); */
+            /* backdrop-filter: blur(2px); */
+            position: relative;
+            z-index: 1;
+        }
+        .content-layer { position: relative; z-index: 1; }
+
+        /* AI Chat Bubble Styling */
+        .chat-bubble { max-width: 85%; }
+        .chat-bubble-user { background-color: var(--overlay-user-bg); color: var(--overlay-user-text); border-radius: 1rem 1rem 0.25rem 1rem; }
+        .chat-bubble-ai { background-color: var(--overlay-ai-bg); color: var(--overlay-text-primary); border-radius: 1rem 1rem 1rem 0.25rem; }
+
+    </style>
+</head>
+<body class="text-[var(--text-primary)] font-sans">
+
+    <!-- Navigation Bar (Structure remains the same) -->
+    <nav class="fixed w-full bg-[rgba(2,4,10,0.75)] backdrop-blur-md border-b border-[rgba(0,191,255,0.15)] z-50">
+        <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                 <div class="w-8 h-8 bg-gradient-to-br from-[var(--button-highlight)] to-blue-400 rounded-md flex items-center justify-center shadow-md">
+                     <span class="text-white font-bold text-lg">S</span>
+                 </div>
+                <span class="text-xl font-bold text-[var(--text-primary)]">新势力感知系统</span>
+            </div>
+            <div class="hidden xl:flex space-x-8 text-[var(--text-secondary)] items-center">
+                <a href="index.html" class="hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold">首页</a>
+                <a href="ranking.html" class="hover:text-[var(--button-highlight)]">新势力榜单</a>
+                <div class="group relative">
+                    <button class="hover:text-[var(--button-highlight)] flex items-center">
+                        产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute hidden group-hover:block bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)]">
+                        <a href="industry.html" class="block hover:text-blue-400 text-sm">产业链图谱</a>
+                        <a href="enterprise.html" class="block hover:text-blue-400 text-sm">企业库</a>
+                        <a href="precision.html" class="block hover:text-blue-400 text-sm">精准招商</a>
+                    </div>
+                </div>
+                <a href="map.html" class="hover:text-[var(--button-highlight)]">产业地图</a>
+                <a href="report.html" class="hover:text-[var(--button-highlight)]">产业报告</a>
+                <a href="news.html" class="hover:text-[var(--button-highlight)]">商业快讯</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">
+                    登录
+                </button>
+                <button id="mobile-menu-button" class="p-2 xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+         <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-[rgba(2,4,10,0.95)] px-6 pb-4 space-y-1 border-t border-[rgba(0,191,255,0.15)]">
+             <a href="index.html" class="block hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold py-2">首页</a>
+            <a href="ranking.html" class="block hover:text-[var(--button-highlight)] py-2">新势力榜单</a>
+             <div>
+                <button class="mobile-submenu-toggle w-full text-left hover:text-[var(--button-highlight)] flex justify-between items-center py-2">
+                    <span>产业链</span> <i class="ml-1 fas fa-chevron-down text-xs"></i>
+                </button>
+                <div class="pl-4 space-y-1 mt-1 hidden">
+                    <a href="industry.html" class="block hover:text-blue-400 text-sm py-1">产业链图谱</a>
+                    <a href="enterprise.html" class="block hover:text-blue-400 text-sm py-1">企业库</a>
+                    <a href="precision.html" class="block hover:text-blue-400 text-sm py-1">精准招商</a>
+                </div>
+            </div>
+             <a href="map.html" class="block hover:text-[var(--button-highlight)] py-2">产业地图</a>
+            <a href="report.html" class="block hover:text-[var(--button-highlight)] py-2">产业报告</a>
+            <a href="news.html" class="block hover:text-[var(--button-highlight)] py-2">商业快讯</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Structure remains the same) -->
+    <section id="home" class="min-h-screen flex items-center pt-24 pb-16 md:pt-32 md:pb-24">
+        <div class="container mx-auto px-6 h-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
+                <!-- {/* Left Column */} -->
+                <div class="flex flex-col justify-center h-full text-center md:text-left py-8 z-10">
+                     <!-- {/* AI Search Trigger */} -->
+                    <div id="ai-search-trigger" class="relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm cursor-pointer hover:border-[var(--button-highlight)] transition-all duration-300 group p-1 max-w-xl mx-auto md:mx-0 mb-12">
+                        <span class="text-gray-500 text-base flex-grow text-left px-4 py-2">试着问我一些问题吧...</span>
+                        <button class="bg-[var(--button-highlight)] text-white px-5 h-10 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-2">
+                             <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                        </button>
+                    </div>
+                    <!-- {/* Product Buttons */} -->
+                    <div id="product-buttons" class="max-w-xl mx-auto md:mx-0">
+                         <h3 class="text-lg font-semibold text-[var(--text-secondary)] mb-4">系统功能</h3>
+                         <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                             <button data-target="index.html" class="prod-btn bg-[var(--button-highlight)] text-white px-4 py-2 rounded-full text-sm transition-colors">首页</button>
+                             <button data-target="ranking.html" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">新势力榜单</button>
+                             <button data-target="industry.html" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业链</button>
+                             <button data-target="map.html" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业地图</button>
+                             <button data-target="report.html" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业报告</button>
+                             <button data-target="news.html" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">商业快讯</button>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- {/* Right Column */}-->
+				<div class="flex items-center justify-center h-full p-8 md:p-12 content-column-right">
+					 <div class="content-layer text-center md:text-left max-w-xl">
+						<h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-normal tracking-tight">
+							 <span class="block text-white">
+								中国新势力企业
+							</span>
+							 <span class="block bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent mt-1 sm:mt-2">
+								态势感知系统
+							</span>
+						</h1>
+						<p class="text-lg text-white leading-relaxed">
+							基于AI深度分析引擎与产业研究算法，精准识别潜力企业，为产业研究与投资决策提供智能支持。
+						</p>
+					</div>
+				</div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Search Overlay -->
+    <div id="ai-search-overlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300 ease-in-out">
+        <div class="bg-[var(--overlay-bg)] rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col relative transform transition-all duration-300 ease-in-out scale-95 opacity-0" id="ai-overlay-content">
+            <button id="ai-search-close" class="absolute top-4 right-5 text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-text-primary)] text-2xl z-10"><i class="fas fa-times"></i></button>
+            <!-- {/* Content Area with Scrolling */}-->
+            <div id="overlay-scroll-container" class="p-6 md:p-8 flex-grow overflow-y-auto overlay-content-scroll"> {/* Changed class name for clarity */}
+                 <h2 class="text-xl font-semibold text-[var(--overlay-text-primary)] mb-2">AI 智能体</h2>
+                 <p class="text-sm text-[var(--overlay-text-secondary)] mb-6">我可以帮助您快速解答产业、企业相关问题，试试下面的问题吧：</p>
+
+                 <!-- {/* Recommendation Grid (Remains the same) */} -->
+                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <!-- {/* 查趋势 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查趋势</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">近几年新势力企业呈现怎么样的变化趋势？</button>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">哪些行业的新势力企业增长最快？</button>
+                    </div>
+                    <!-- {/* 查产业 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查产业</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">合成生物哪些细分赛道的新势力企业最多？代表企业是哪些？</button>
+                    </div>
+                    <!-- {/* 查市场动态 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查市场动态</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">最近一年获得B轮以上融资的新势力企业有哪些？</button>
+                    </div>
+                    <!-- {/* 查技术能力 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查技术能力</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">新势力企业中有哪些企业是专精特新企业？</button>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">有哪些解决国外卡脖子技术的产品？</button>
+                    </div>
+                    <!-- {/* 查未来趋势 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查未来趋势</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</button>
+                    </div>
+                    <!-- {/* 查应用场景 */} -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-[var(--overlay-border)]">
+                      <h3 class="font-semibold text-[var(--overlay-text-primary)] mb-2 text-base">查应用场景</h3>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">低空经济企业有哪些应用场景？</button>
+                      <button class="recommendation-btn block w-full text-left text-[var(--overlay-text-secondary)] hover:text-[var(--overlay-accent)] text-sm py-1">政府扶持可以哪几方面展开？</button>
+                    </div>
+                  </div>
+
+                 <!-- {/* --- START: Chat History Area --- */} -->
+                 <div id="ai-response-area" class="mt-4 space-y-4">
+                     {/* Chat messages will be dynamically added here */}
+                 </div>
+                 <!-- {/* --- END: Chat History Area --- */}
+
+            </div>
+            <!-- {/* Input Area */} -->
+            <div class="p-4 md:p-6 border-t border-[var(--overlay-border)] bg-gray-50 rounded-b-xl">
+                <div class="relative flex items-center">
+                    <input type="text" id="ai-search-input-overlay" placeholder="输入您的问题，按 Enter 或点击发送" class="w-full bg-white border border-[var(--overlay-border)] rounded-lg py-2 px-4 text-[var(--text-dark)] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[var(--overlay-accent)] pr-24"/>
+                    <button id="ai-search-submit-overlay" class="absolute right-2 bg-[var(--overlay-accent)] text-white px-4 py-1 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-1.5">
+                         <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                    </button>
+                </div>
+                 <p class="text-xs text-gray-400 mt-2 text-center">AI生成内容仅供参考，请结合实际情况判断。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // --- DOM Elements ---
+        const aiSearchTrigger = document.getElementById('ai-search-trigger');
+        const aiSearchOverlay = document.getElementById('ai-search-overlay');
+        const aiSearchClose = document.getElementById('ai-search-close');
+        const aiSearchInputOverlay = document.getElementById('ai-search-input-overlay');
+        const aiSearchSubmitOverlay = document.getElementById('ai-search-submit-overlay');
+        const recommendationButtons = document.querySelectorAll('.recommendation-btn');
+        const aiResponseArea = document.getElementById('ai-response-area'); // Area where chat bubbles appear
+        const aiOverlayContent = document.getElementById('ai-overlay-content');
+        const overlayScrollContainer = document.getElementById('overlay-scroll-container'); // The scrollable div
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const productButtons = document.querySelectorAll('.prod-btn');
+
+        // --- State ---
+        let chatHistory = []; // Array to store { sender: 'user'/'ai', text: 'message' }
+
+        // --- Mobile Menu Logic ---
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            const mobileSubMenuToggles = mobileMenu.querySelectorAll('.mobile-submenu-toggle');
+            mobileSubMenuToggles.forEach(toggle => {
+                const subMenu = toggle.nextElementSibling;
+                if (subMenu && subMenu.classList.contains('pl-4')) {
+                    subMenu.classList.add('hidden');
+                    const initialIcon = toggle.querySelector('i');
+                    if(initialIcon) initialIcon.classList.replace('fa-chevron-up','fa-chevron-down');
+                    toggle.addEventListener('click', (e) => {
+                        subMenu.classList.toggle('hidden');
+                        const icon = e.currentTarget.querySelector('i');
+                        if (icon) {
+                             if(subMenu.classList.contains('hidden')){ icon.classList.replace('fa-chevron-up','fa-chevron-down'); }
+                             else { icon.classList.replace('fa-chevron-down','fa-chevron-up'); }
+                        }
+                    });
+                }
+            });
+        }
+
+        // --- AI Search Overlay Logic ---
+        function openSearchOverlay() {
+            chatHistory = []; // Clear history when opening
+            aiResponseArea.innerHTML = ''; // Clear visual chat area
+            aiSearchInputOverlay.value = ''; // Clear input field
+            aiSearchOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                aiOverlayContent.classList.remove('scale-95', 'opacity-0');
+            });
+            aiSearchInputOverlay.focus();
+        }
+
+        function closeSearchOverlay() {
+            aiOverlayContent.classList.add('scale-95', 'opacity-0');
+            aiOverlayContent.addEventListener('transitionend', () => {
+                aiSearchOverlay.classList.add('hidden');
+            }, { once: true });
+        }
+
+        if (aiSearchTrigger) aiSearchTrigger.addEventListener('click', openSearchOverlay);
+        if (aiSearchClose) aiSearchClose.addEventListener('click', closeSearchOverlay);
+        if (aiSearchOverlay) {
+            aiSearchOverlay.addEventListener('click', (event) => {
+                if (event.target === aiSearchOverlay) closeSearchOverlay();
+            });
+        }
+
+        // --- Chat History & Scrolling ---
+        function scrollToBottom() {
+            if (overlayScrollContainer) {
+                overlayScrollContainer.scrollTop = overlayScrollContainer.scrollHeight;
+            }
+        }
+
+        // Function to render a single message bubble
+        function renderMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', 'items-start', 'space-x-3', 'text-sm');
+
+            const icon = document.createElement('i');
+            icon.classList.add('fas', 'text-xl', 'pt-1'); // Consistent icon size
+
+            const textBubble = document.createElement('p');
+            textBubble.classList.add('chat-bubble', 'px-4', 'py-2', 'leading-relaxed');
+            textBubble.textContent = text; // Use textContent for security
+
+            if (sender === 'user') {
+                messageDiv.classList.add('justify-end'); // Align user messages to the right
+                icon.classList.add('fa-user-circle', 'text-[var(--overlay-text-secondary)]', 'order-2'); // Icon on the right
+                textBubble.classList.add('chat-bubble-user', 'order-1'); // Text on the left
+                messageDiv.appendChild(textBubble);
+                messageDiv.appendChild(icon);
+            } else { // AI or system message
+                messageDiv.classList.add('justify-start'); // Align AI messages to the left
+                icon.classList.add('fa-robot', 'text-[var(--overlay-accent)]'); // AI icon on the left
+                textBubble.classList.add('chat-bubble-ai');
+                // Add thinking animation if it's a thinking message
+                if (text === '正在思考中...') {
+                     textBubble.classList.add('animate-pulse');
+                     textBubble.id = 'thinking-bubble'; // Give it an ID to find and remove later
+                }
+                messageDiv.appendChild(icon);
+                messageDiv.appendChild(textBubble);
+            }
+
+            aiResponseArea.appendChild(messageDiv);
+            scrollToBottom(); // Scroll after adding message
+        }
+
+        // Function to remove the thinking bubble
+        function removeThinkingBubble() {
+            const thinkingBubble = document.getElementById('thinking-bubble');
+            if (thinkingBubble && thinkingBubble.parentElement) {
+                 thinkingBubble.parentElement.remove(); // Remove the entire message div containing the bubble
+            }
+        }
+
+
+        // Handle AI Search Submission (Updated for History)
+        function handleSearchSubmit() {
+            const query = aiSearchInputOverlay.value.trim();
+            if (!query) return; // Do nothing if input is empty
+
+            // 1. Add user message to history and render
+            chatHistory.push({ sender: 'user', text: query });
+            renderMessage('user', query);
+            aiSearchInputOverlay.value = ''; // Clear input immediately
+
+            // 2. Show "Thinking" bubble (not added to history)
+            renderMessage('ai', '正在思考中...');
+
+            // 3. Simulate Backend Call & Response Handling
+            console.log("Sending query to backend:", query);
+            setTimeout(() => {
+                 // 4. Remove "Thinking" bubble
+                 removeThinkingBubble();
+
+                 // 5. Get AI response (replace with actual API result)
+                 const aiResponse = `这是对"${query}"的模拟回复。这里会展示 AI 分析的结果，可能会包含文字、图表链接或建议。`;
+
+                 // 6. Add AI response to history and render
+                 chatHistory.push({ sender: 'ai', text: aiResponse });
+                 renderMessage('ai', aiResponse);
+
+            }, 1500); // Simulate 1.5 second delay
+        }
+
+        if (aiSearchSubmitOverlay) aiSearchSubmitOverlay.addEventListener('click', handleSearchSubmit);
+        if (aiSearchInputOverlay) {
+            aiSearchInputOverlay.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearchSubmit();
+                }
+            });
+        }
+
+        // Handle clicking on recommendation buttons
+        recommendationButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const queryText = button.textContent.trim();
+                // Don't clear input here, directly submit
+                aiSearchInputOverlay.value = queryText; // Set input value for clarity if needed
+                handleSearchSubmit(); // Directly submit the recommended query
+                aiSearchInputOverlay.focus(); // Keep focus in the input after submitting recommendation
+            });
+        });
+
+        // Product Button Interaction (Remains the same)
+        productButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                productButtons.forEach(btn => {
+                    btn.classList.replace('bg-[var(--button-highlight)]', 'bg-[var(--button-inactive)]');
+                    btn.classList.replace('text-white', 'text-[var(--text-secondary)]');
+                    btn.classList.add('hover:bg-opacity-80', 'hover:text-white');
+                });
+                button.classList.replace('bg-[var(--button-inactive)]', 'bg-[var(--button-highlight)]');
+                button.classList.replace('text-[var(--text-secondary)]', 'text-white');
+                button.classList.remove('hover:bg-opacity-80', 'hover:text-white');
+                // const targetUrl = button.dataset.target;
+                // if (targetUrl) { window.location.href = targetUrl; }
+            });
+        });
+
+    </script>
+
+</body>
+</html>

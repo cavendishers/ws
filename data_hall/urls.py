@@ -18,4 +18,7 @@ urlpatterns = [
     path('api/company-locations/', views.get_company_locations, name='company-locations'),
     path('api/county-company-counts/', views.get_county_company_counts, name='county-company-counts'),
     path('api/company-yearly-stats/', views.get_company_yearly_stats, name='company-yearly-stats'),
+    path('api/company-rankings/', views.get_company_rankings, name='company_rankings'),
+    path('api/enterpriseList.json', views.get_enterprise_list, name='enterprise_list'),
+    path('api/precisionList.json', views.get_precision_list, name='precision_list'),
 ] 

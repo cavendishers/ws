@@ -25,11 +25,18 @@ class CompanyInfo(models.Model):
     insured_num = models.CharField(db_column='Insured_num', max_length=20, blank=True, null=True, db_comment='参保人数')  # Field name made lowercase.
     latitude = models.CharField(db_column='Latitude', max_length=32, blank=True, null=True, db_comment='纬度')  # Field name made lowercase.
     longitude = models.CharField(db_column='Longitude', max_length=32, blank=True, null=True, db_comment='经度')  # Field name made lowercase.
-    industry = models.CharField(db_column='Industry', max_length=20, blank=True, null=True, db_comment='公司所属产业')  # Field name made lowercase.
+    industry = models.CharField(db_column='Industry', max_length=32, blank=True, null=True, db_comment='公司所属产业')  # Field name made lowercase.
+    industry_sub = models.CharField(db_column='Industry_sub', max_length=64, blank=True, null=True, db_comment='公司所属产业子类')  # Field name made lowercase.
     province = models.CharField(db_column='Province', max_length=20, blank=True, null=True, db_comment='所在省份')  # Field name made lowercase.
     city = models.CharField(db_column='City', max_length=32, blank=True, null=True, db_comment='所在城市')  # Field name made lowercase.
     county = models.CharField(db_column='County', max_length=32, blank=True, null=True, db_comment='所在区县')  # Field name made lowercase.
-
+    std_industr_category = models.CharField(db_column='Std_industr_category', max_length=32, blank=True, null=True, db_comment='国标行业门类')  # Field name made lowercase.
+    std_industr_big_category = models.CharField(db_column='Std_industr_sub_category', max_length=64, blank=True, null=True, db_comment='国标行业大类')  # Field name made lowercase.
+    std_industr_mid_category = models.CharField(db_column='std_industr_mid_category', max_length=64, blank=True, null=True, db_comment='国标行业中类')  # Field name made lowercase.
+    std_industr_small_category = models.CharField(db_column='std_industr_small_category', max_length=64, blank=True, null=True, db_comment='国标行业小类')  # Field name made lowercase.
+    tag = models.CharField(db_column='tag', max_length=255, blank=True, null=True, db_comment='标签')
+    company_scale = models.CharField(db_column='Company_scale', max_length=32, blank=True, null=True, db_comment='公司规模')  # Field name made lowercase.
+      # Field name made lowercase.
     class Meta:
         managed = True
         db_table = 'company_info'

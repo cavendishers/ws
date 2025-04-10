@@ -27,7 +27,18 @@ def precision(request):
 
 def map_view(request):
     """产业地图页面"""
-    return render(request, 'data_hall/map.html')
+    # 从数据库中获取筛选选项数据
+    industries = CompanyInfo.objects.values_list('industry', flat=True).distinct().exclude(industry__isnull=True).exclude(industry='')
+    cities = CompanyInfo.objects.values_list('city', flat=True).distinct().exclude(city__isnull=True).exclude(city='')
+    counties = CompanyInfo.objects.values_list('county', flat=True).distinct().exclude(county__isnull=True).exclude(county='')
+    
+    context = {
+        'industries': [{'id': industry, 'name': industry} for industry in industries],
+        'cities': [{'id': city, 'name': city} for city in cities],
+        'counties': [{'id': county, 'name': county} for county in counties],
+    }
+    
+    return render(request, 'data_hall/map.html', context)
 
 def report(request):
     """产业报告页面"""
@@ -167,4 +178,70 @@ def get_county_company_counts(request):
     # 返回数据
     return JsonResponse({
         'county_stats': list(county_stats)
+    })
+
+def get_company_yearly_stats(request):
+    """获取近十年企业创立分布情况"""
+    # 获取筛选参数
+    industry = request.GET.get('industry')
+    city = request.GET.get('city')
+    county = request.GET.get('county')
+    
+    # 构建查询条件
+    query = Q()
+    if industry and industry != '':
+        query &= Q(industry=industry)
+    if city and city != '':
+        query &= Q(city=city)
+    if county and county != '':
+        query &= Q(county=county)
+    
+    # 额外排除company_birth为空的记录
+    query &= ~Q(company_birth__isnull=True)
+    query &= ~Q(company_birth='')
+    
+    # 固定年份为2024年，确保统计到2024年
+    current_year = 2024
+    
+    # 计算近十年的年份列表
+    years = list(range(current_year - 9, current_year + 1))
+    
+    # 创建年份数据字典
+    yearly_stats = {str(year): 0 for year in years}
+    
+    # 查询数据
+    companies = CompanyInfo.objects.filter(query)
+    
+    # 按年份分组统计
+    for company in companies:
+        try:
+            # 尝试提取年份，考虑不同的日期格式
+            birth_year = None
+            if company.company_birth:
+                # 尝试直接获取年份
+                if len(company.company_birth) == 4 and company.company_birth.isdigit():
+                    birth_year = int(company.company_birth)
+                # 尝试从"YYYY-MM-DD"格式提取
+                elif '-' in company.company_birth:
+                    birth_year = int(company.company_birth.split('-')[0])
+                # 尝试从"YYYY/MM/DD"格式提取
+                elif '/' in company.company_birth:
+                    birth_year = int(company.company_birth.split('/')[0])
+            
+            # 如果年份在近十年范围内，增加计数
+            if birth_year and str(birth_year) in yearly_stats:
+                yearly_stats[str(birth_year)] += 1
+        except (ValueError, IndexError):
+            # 忽略无法解析的日期
+            continue
+    
+    # 转换为返回的格式
+    result = [{"year": year, "count": count} for year, count in yearly_stats.items()]
+    
+    # 添加调试信息
+    print(f"年度统计查询条件: industry={industry}, city={city}, county={county}")
+    print(f"年度统计结果: {result}")
+    
+    return JsonResponse({
+        'yearly_stats': result
     })

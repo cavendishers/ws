@@ -5,189 +5,125 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'data_hall/css/map.css' %}">
+<style>
+    :root {
+        --primary: #0A1A3A;
+        --secondary: #FFD700;
+        --accent: #00C1D4;
+    }
+    .glow-effect {
+        box-shadow: 0 0 20px rgba(0,193,212,0.2);
+    }
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- 筛选控件 -->
-    <div class="bg-[#132144] p-4 rounded-xl mb-4 shadow-lg">
+<!-- 筛选区 -->
+<section class="container mx-auto px-6 mb-8">
+    <div class="bg-[#132144] p-4 rounded-xl glow-effect mb-4 text-sm">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">产业</label>
-                <select id="industryFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[#00C1D4] focus:border-transparent transition duration-150 ease-in-out">
+                <label class="block text-gray-300 mb-1">产业</label>
+                <select id="industryFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
                     <option value="">全部产业</option>
+                    {% for industry in industries %}
+                    <option value="{{ industry.id }}">{{ industry.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">城市</label>
-                <select id="cityFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[#00C1D4] focus:border-transparent transition duration-150 ease-in-out">
+                <label class="block text-gray-300 mb-1">城市</label>
+                <select id="cityFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
                     <option value="">全部城市</option>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">地区</label>
-                <select id="countyFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[#00C1D4] focus:border-transparent transition duration-150 ease-in-out">
+                <label class="block text-gray-300 mb-1">地区</label>
+                <select id="countyFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
                     <option value="">全部地区</option>
+                    {% for county in counties %}
+                    <option value="{{ county.id }}">{{ county.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- 主体内容 -->
-
-    <!-- 标题 -->
-    <section class="container mx-auto px-6 mb-8">
-        <h1 class="text-3xl font-bold mb-4">产业地图 - 杭州市示例</h1>
-        <p class="text-gray-300 max-w-4xl">
-            通过地图与多维度图表展示杭州市 13 个区县产业分布情况，<br />
-            包括时间维度的企业数量变化、专利数量、融资规模、企业类型分布、以及区域对比等。
-        </p>
-    </section>
-
-    <!-- 地图 + 图表布局 -->
-    <section class="container mx-auto px-6">
-        <!-- 两列布局：左侧地图，右侧图表 -->
-        <div class="grid gap-6 xl:grid-cols-[600px_minmax(0,1fr)]">
-            <!-- 左侧地图容器 -->
-            <div class="bg-[#132144] p-6 rounded-xl glow-effect">
-                <h2 class="text-lg font-bold mb-4">杭州市地图</h2>
-                <div id="map-container" style="width: 100%; height: 600px;">
-                    <canvas id="map"></canvas>
-                </div>
-            </div>
-
-            <!-- 右侧图表容器：可分多行多列 -->
-            <div class="grid grid-cols-2 gap-4">
-                <!-- 分布柱状图（按时间） -->
-                <div class="bg-[#132144] p-4 rounded-xl glow-effect">
-                    <h3 class="mb-2 text-lg font-bold">企业分布趋势</h3>
-                    <div id="distributionChart" style="width: 100%; height: 200px;"></div>
-                </div>
-
-                <!-- 专利数量（按时间） -->
-                <div class="bg-[#132144] p-4 rounded-xl glow-effect">
-                    <h3 class="mb-2 text-lg font-bold">专利数量趋势</h3>
-                    <div id="patentChart" style="width: 100%; height: 200px;"></div>
-                </div>
-
-                <!-- 融资数量（按时间） -->
-                <div class="bg-[#132144] p-4 rounded-xl glow-effect">
-                    <h3 class="mb-2 text-lg font-bold">融资规模趋势</h3>
-                    <div id="financingChart" style="width: 100%; height: 200px;"></div>
-                </div>
-
-                <!-- 企业类型分布（上市、独角兽、小巨人等） -->
-                <div class="bg-[#132144] p-4 rounded-xl glow-effect">
-                    <h3 class="mb-2 text-lg font-bold">企业类型分布</h3>
-                    <div id="enterpriseTypeChart" style="width: 100%; height: 200px;"></div>
-                </div>
-
-                <!-- 区域分布（杭州市13个区县） -->
-                <div class="bg-[#132144] p-4 rounded-xl glow-effect col-span-2">
-                    <h3 class="mb-2 text-lg font-bold">各区县企业数量对比</h3>
-                    <div id="regionChart" style="width: 100%; height: 200px;"></div>
-                </div>
+<!-- 上部：地图和右侧两个柱状图 -->
+<section class="container mx-auto px-6 mb-8">
+    <div class="grid gap-6 xl:grid-cols-2">
+        <!-- 左侧：地图区域 -->
+        <div class="bg-[#132144] p-6 rounded-xl glow-effect">
+            <h2 class="text-lg font-bold mb-4">杭州市地图</h2>
+            <div id="map-container" style="width: 100%; height: 600px;">
+                <canvas id="map"></canvas>
             </div>
         </div>
-    </section>
-</div>
+
+        <!-- 右侧：垂直排列2个柱状图 -->
+        <div class="grid gap-6">
+            <!-- 近十年企业数量趋势图 -->
+            <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+                <h3 class="text-lg font-bold mb-2">近十年企业数量趋势</h3>
+                <div class="relative">
+                    <div id="distributionChart" style="width: 100%; height: 250px;"></div>
+                </div>
+            </div>
+            <!-- 产业链分布情况图 -->
+            <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+                <h3 class="text-lg font-bold mb-2">产业链分布情况</h3>
+                <div id="enterpriseTypeChart" style="width: 100%; height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 下部：新势力企业名单和各区县企业数量对比 -->
+<section class="container mx-auto px-6">
+    <div class="grid gap-6 xl:grid-cols-2">
+        <!-- 新势力企业名单表格 -->
+        <div class="bg-[#132144] p-4 rounded-xl glow-effect overflow-auto">
+            <h2 class="text-xl font-bold mb-4">新势力企业名单</h2>
+            <table class="w-full table-auto min-w-[600px] text-sm leading-tight">
+                <thead class="bg-[#1A2B5E]">
+                    <tr>
+                        <th class="px-4 py-3">序号</th>
+                        <th class="px-4 py-3">企业名称</th>
+                        <th class="px-4 py-3">城市</th>
+                        <th class="px-4 py-3">区县</th>
+                        <th class="px-4 py-3">新势力分</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1A2B5E]" id="enterpriseListTbody">
+                    <!-- 数据由后端或示例数据渲染 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 各区县企业数量对比柱状图 -->
+        <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+            <h2 class="text-xl font-bold mb-4">各区县企业数量对比</h2>
+            <div id="regionChart" style="width: 100%; height: 300px;"></div>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    // 加载筛选选项
-    async function loadFilterOptions() {
-        try {
-            console.log('开始加载筛选选项...');
-            const response = await fetch('/api/filter-data/');
-            const data = await response.json();
-            
-            console.log('获取到的筛选选项数据:', data);
-            
-            // 填充产业选项
-            const industrySelect = document.getElementById('industryFilter');
-            data.industries.forEach(industry => {
-                if (industry) {
-                    const option = document.createElement('option');
-                    option.value = industry;
-                    option.textContent = industry;
-                    industrySelect.appendChild(option);
-                }
-            });
-            
-            // 填充城市选项
-            const citySelect = document.getElementById('cityFilter');
-            data.cities.forEach(city => {
-                if (city) {
-                    const option = document.createElement('option');
-                    option.value = city;
-                    option.textContent = city;
-                    citySelect.appendChild(option);
-                }
-            });
-            
-            // 填充地区选项
-            const countySelect = document.getElementById('countyFilter');
-            data.counties.forEach(county => {
-                if (county) {
-                    const option = document.createElement('option');
-                    option.value = county;
-                    option.textContent = county;
-                    countySelect.appendChild(option);
-                }
-            });
-            
-            console.log('筛选选项加载完成');
-            
-            // 设置筛选监听器
-            setupFilterListeners();
-        } catch (error) {
-            console.error('加载筛选选项失败:', error);
-        }
-    }
-
-    // 设置筛选监听器
-    function setupFilterListeners() {
-        console.log('设置筛选监听器...');
-        const industryFilter = document.getElementById('industryFilter');
-        const cityFilter = document.getElementById('cityFilter');
-        const countyFilter = document.getElementById('countyFilter');
-        
-        const filters = [industryFilter, cityFilter, countyFilter];
-        filters.forEach(filter => {
-            filter.addEventListener('change', () => {
-                console.log('筛选条件变化:', {
-                    industry: industryFilter.value,
-                    city: cityFilter.value,
-                    county: countyFilter.value
-                });
-                
-                // 同时更新统计数据和地图
-                if (window.loadStats) {
-                    window.loadStats();
-                }
-                
-                // 更新公司标记
-                if (window.companyMarkers && window.companyMarkers.loadCompanies) {
-                    window.companyMarkers.loadCompanies().then(() => {
-                        // 重新绘制地图
-                        if (window.drawMap) {
-                            window.drawMap();
-                        }
-                    });
-                }
-            });
-        });
-        console.log('筛选监听器设置完成');
-    }
-
-    // 页面加载完成后执行
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM加载完成，开始初始化...');
-        loadFilterOptions();
-    });
-</script>
-
+<!-- 添加ECharts库引用 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="{% static 'data_hall/js/company_markers.js' %}"></script>
 <script src="{% static 'data_hall/js/map.js' %}"></script>
 {% endblock %} 

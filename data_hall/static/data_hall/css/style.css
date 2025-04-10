@@ -2,14 +2,55 @@
   --primary: #0A1A3A;  /* 深蓝基调 */
   --secondary: #FFD700; /* 金色点缀 */
   --accent: #00C1D4;    /* 亮青色 */
+  
+  /* 从前端index.html中添加的新样式变量 */
+  --bg-primary-fallback: #02040A;
+  --bg-secondary: #0A1020;
+  --accent-primary: #6366F1;
+  --accent-secondary: #8B5CF6;
+  --button-highlight: #00BFFF; /* Cyan */
+  --button-inactive: #202840;
+  --text-primary: #FFFFFF;
+  --text-secondary: #D0D7E0;
+  --text-dark: #1F2937;
 }
 
 body {
   background-color: var(--primary);
   color: #f3f4f6;
-  font-family: sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  background-image: url("../img/bg.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: var(--bg-primary-fallback);
 }
 
+/* 新增内容 */
+/* Scrollbar for Overlay Content */
+.overlay-content-scroll::-webkit-scrollbar { width: 6px; }
+.overlay-content-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px;}
+.overlay-content-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px;}
+.overlay-content-scroll::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+
+#ai-search-overlay { z-index: 100; }
+nav { z-index: 50; }
+
+/* Optional overlay for text readability */
+.content-column-right {
+  position: relative;
+  z-index: 1;
+}
+.content-layer { position: relative; z-index: 1; }
+
+/* AI Chat Bubble Styling */
+.chat-bubble { max-width: 85%; }
+.chat-bubble-user { background-color: var(--overlay-user-bg); color: var(--overlay-user-text); border-radius: 1rem 1rem 0.25rem 1rem; }
+.chat-bubble-ai { background-color: var(--overlay-ai-bg); color: var(--overlay-text-primary); border-radius: 1rem 1rem 1rem 0.25rem; }
+
+/* 原有样式继续保留 */
 .hero-bg {
   background: linear-gradient(
       135deg,
@@ -24,10 +65,10 @@ body {
 .navbar {
   position: fixed;
   width: 100%;
-  background-color: rgba(10, 26, 58, 0.95);
+  background-color: rgba(2, 4, 10, 0.75);
   backdrop-filter: blur(8px);
   z-index: 50;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 191, 255, 0.15);
 }
 
 .container {
@@ -142,3 +183,108 @@ body {
     padding-right: 1rem;
   }
 } 
+
+.leading-relaxed {
+  color: #000;
+}
+
+/* 导航栏滚动效果 */
+.navbar-scrolled {
+  background-color: rgba(2, 4, 10, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 页面锁定时的样式 */
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+/* 聊天窗口样式优化 */
+#ai-search-overlay {
+  z-index: 1000; /* 确保覆盖在所有元素上方 */
+}
+
+#overlay-scroll-container {
+  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+  overscroll-behavior: contain; /* 防止滚动传播 */
+}
+
+.overlay-content-scroll:focus {
+  outline: none;
+}
+
+/* 导航下拉菜单样式 */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-container:hover > button {
+  color: var(--button-highlight);
+}
+
+.dropdown-container:hover #industryDropdown {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+#industryDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 160px;
+  background-color: rgba(2, 4, 10, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 10px 0;
+  z-index: 100;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+#industryDropdown.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+#industryDropdown a {
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.2s;
+}
+
+#industryDropdown a:hover {
+  background-color: rgba(0, 191, 255, 0.1);
+}
+
+/* 容器样式 */
+.container-fluid {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#map-container {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 191, 255, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}

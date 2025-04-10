@@ -1,29 +1,333 @@
 {% extends 'data_hall/base.html' %}
+{% load static %}
 
 {% block title %}中国新势力企业态势感知系统 - 首页{% endblock %}
 
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<!-- 首页 Hero -->
-<section id="home" class="min-h-[90vh] hero-bg flex items-center">
-    <div class="container mx-auto px-6 text-center">
-        <h1 class="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
-            <span class="gradient-text">
-                中国新势力企业态势感知系统
-            </span>
-        </h1>
-        <p class="text-lg text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-            基于多维数据分析与产业研究算法，精准识别15大前沿领域潜力企业，
-            <br />
-            为产业布局与投资决策提供智能支持
-        </p>
-        <div class="flex justify-center space-x-6">
-            <a href="{% url 'data_hall:ranking' %}" class="btn-primary">
-                查看榜单 <i class="ml-2 fas fa-chart-line"></i>
-            </a>
-            <a href="{% url 'data_hall:industry' %}" class="btn-outline">
-                产业图谱 <i class="ml-2 fas fa-project-diagram"></i>
-            </a>
+<!-- Hero Section -->
+<section id="home" class="min-h-screen flex items-center pb-16  md:pb-24">
+    <div class="container mx-auto px-6 h-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
+            <!-- Left Column -->
+            <div class="flex flex-col justify-center h-full text-center md:text-left py-8 z-10">
+                <!-- AI Search Trigger -->
+                <div id="ai-search-trigger" class="relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm cursor-pointer hover:border-[var(--button-highlight)] transition-all duration-300 group p-1 max-w-xl mx-auto md:mx-0 mb-12">
+                    <span class="text-gray-500 text-base flex-grow text-left px-4 py-2">试着问我一些问题吧...</span>
+                    <button class="bg-[var(--button-highlight)] text-white px-5 h-10 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-2">
+                        <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                    </button>
+                </div>
+                <!-- Product Buttons -->
+                <div id="product-buttons" class="max-w-xl mx-auto md:mx-0">
+                    <h3 class="text-lg font-semibold text-[var(--text-secondary)] mb-4">系统功能</h3>
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                        <a href="{% url 'data_hall:index' %}" class="prod-btn bg-[var(--button-highlight)] text-white px-4 py-2 rounded-full text-sm transition-colors">首页</a>
+                        <a href="{% url 'data_hall:ranking' %}" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">新势力榜单</a>
+                        <a href="{% url 'data_hall:industry' %}" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业链</a>
+                        <a href="{% url 'data_hall:map' %}" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业地图</a>
+                        <a href="{% url 'data_hall:report' %}" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业报告</a>
+                        <a href="{% url 'data_hall:news' %}" class="prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">商业快讯</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="flex items-center justify-center h-full p-8 md:p-12 content-column-right">
+                <div class="content-layer text-center md:text-left max-w-xl">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-normal tracking-tight">
+                        <span class="block text-white">
+                            中国新势力企业
+                        </span>
+                        <span class="block bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent mt-1 sm:mt-2">
+                            态势感知系统
+                        </span>
+                    </h1>
+                    <p class="text-lg text-white leading-relaxed">
+                        基于AI深度分析引擎与产业研究算法，精准识别潜力企业，为产业研究与投资决策提供智能支持。
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+<!-- AI Search Overlay -->
+<div id="ai-search-overlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300 ease-in-out">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col relative transform transition-all duration-300 ease-in-out scale-95 opacity-0" id="ai-overlay-content">
+        <button id="ai-search-close" class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 text-2xl z-10"><i class="fas fa-times"></i></button>
+        <!-- Content Area with Scrolling -->
+        <div id="overlay-scroll-container" class="p-6 md:p-8 flex-grow overflow-y-auto overlay-content-scroll">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">AI 智能体</h2>
+            <p class="text-sm text-gray-500 mb-6">我可以帮助您快速解答产业、企业相关问题，试试下面的问题吧：</p>
+
+            <!-- Recommendation Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <!-- 查趋势 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查趋势</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">近几年新势力企业呈现怎么样的变化趋势？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">哪些行业的新势力企业增长最快？</button>
+                </div>
+                <!-- 查产业 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查产业</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">合成生物哪些细分赛道的新势力企业最多？代表企业是哪些？</button>
+                </div>
+                <!-- 查市场动态 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查市场动态</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">最近一年获得B轮以上融资的新势力企业有哪些？</button>
+                </div>
+                <!-- 查技术能力 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查技术能力</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">新势力企业中有哪些企业是专精特新企业？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">有哪些解决国外卡脖子技术的产品？</button>
+                </div>
+                <!-- 查未来趋势 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查未来趋势</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</button>
+                </div>
+                <!-- 查应用场景 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查应用场景</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">低空经济企业有哪些应用场景？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">政府扶持可以哪几方面展开？</button>
+                </div>
+            </div>
+
+            <!-- Chat History Area -->
+            <div id="ai-response-area" class="mt-4 space-y-4">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+        </div>
+        <!-- Input Area -->
+        <div class="p-4 md:p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            <div class="relative flex items-center">
+                <input type="text" id="ai-search-input-overlay" placeholder="输入您的问题，按 Enter 或点击发送" class="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 pr-24"/>
+                <button id="ai-search-submit-overlay" class="absolute right-2 bg-blue-500 text-white px-4 py-1 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-1.5">
+                    <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2 text-center">AI生成内容仅供参考，请结合实际情况判断。</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // DOM Elements
+    const aiSearchTrigger = document.getElementById('ai-search-trigger');
+    const aiSearchOverlay = document.getElementById('ai-search-overlay');
+    const aiSearchClose = document.getElementById('ai-search-close');
+    const aiSearchInputOverlay = document.getElementById('ai-search-input-overlay');
+    const aiSearchSubmitOverlay = document.getElementById('ai-search-submit-overlay');
+    const recommendationButtons = document.querySelectorAll('.recommendation-btn');
+    const aiResponseArea = document.getElementById('ai-response-area');
+    const aiOverlayContent = document.getElementById('ai-overlay-content');
+    const overlayScrollContainer = document.getElementById('overlay-scroll-container');
+    
+    // State
+    let chatHistory = []; // Array to store { sender: 'user'/'ai', text: 'message' }
+    
+    // 阻止聊天窗口内的滚动传播到外部页面
+    if (overlayScrollContainer) {
+        overlayScrollContainer.addEventListener('wheel', function(e) {
+            if (window.appUtils && window.appUtils.isOverlayOpen()) {
+                e.stopPropagation();
+            }
+        }, { passive: false });
+    }
+    
+    // AI Search Overlay Logic
+    function openSearchOverlay() {
+        chatHistory = []; // Clear history when opening
+        if (aiResponseArea) aiResponseArea.innerHTML = ''; // Clear visual chat area
+        if (aiSearchInputOverlay) aiSearchInputOverlay.value = ''; // Clear input field
+        if (aiSearchOverlay) {
+            aiSearchOverlay.classList.remove('hidden');
+            
+            // 使用全局工具设置覆盖层状态
+            if (window.appUtils) {
+                window.appUtils.setOverlayOpen(true);
+            }
+            
+            requestAnimationFrame(() => {
+                if (aiOverlayContent) {
+                    aiOverlayContent.classList.remove('scale-95', 'opacity-0');
+                }
+            });
+            if (aiSearchInputOverlay) aiSearchInputOverlay.focus();
+        }
+    }
+
+    function closeSearchOverlay() {
+        if (aiOverlayContent) {
+            aiOverlayContent.classList.add('scale-95', 'opacity-0');
+            aiOverlayContent.addEventListener('transitionend', () => {
+                if (aiSearchOverlay) {
+                    aiSearchOverlay.classList.add('hidden');
+                    
+                    // 使用全局工具设置覆盖层状态
+                    if (window.appUtils) {
+                        window.appUtils.setOverlayOpen(false);
+                    }
+                }
+            }, { once: true });
+        } else if (aiSearchOverlay) {
+            aiSearchOverlay.classList.add('hidden');
+            
+            // 使用全局工具设置覆盖层状态
+            if (window.appUtils) {
+                window.appUtils.setOverlayOpen(false);
+            }
+        }
+    }
+
+    if (aiSearchTrigger) aiSearchTrigger.addEventListener('click', openSearchOverlay);
+    if (aiSearchClose) aiSearchClose.addEventListener('click', closeSearchOverlay);
+    if (aiSearchOverlay) {
+        aiSearchOverlay.addEventListener('click', (event) => {
+            if (event.target === aiSearchOverlay) closeSearchOverlay();
+        });
+        
+        // 阻止聊天窗口的点击事件冒泡
+        aiSearchOverlay.addEventListener('mousedown', (e) => {
+            if (e.target === aiSearchOverlay) {
+                e.stopPropagation();
+            }
+        });
+    }
+
+    // 添加ESC键关闭窗口
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && window.appUtils && window.appUtils.isOverlayOpen()) {
+            closeSearchOverlay();
+        }
+    });
+
+    // Chat History & Scrolling
+    function scrollToBottom() {
+        // 首先检查覆盖层是否打开，然后再尝试滚动
+        if (window.appUtils && window.appUtils.isOverlayOpen() && overlayScrollContainer) {
+            overlayScrollContainer.scrollTop = overlayScrollContainer.scrollHeight;
+        }
+    }
+
+    // Function to render a single message bubble
+    function renderMessage(sender, text) {
+        // 先确保覆盖层打开且aiResponseArea存在
+        if (!(window.appUtils && window.appUtils.isOverlayOpen()) || !aiResponseArea) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('flex', 'items-start', 'space-x-3', 'text-sm');
+
+        const icon = document.createElement('i');
+        icon.classList.add('fas', 'text-xl', 'pt-1'); // Consistent icon size
+
+        const textBubble = document.createElement('p');
+        textBubble.classList.add('chat-bubble', 'px-4', 'py-2', 'leading-relaxed');
+        textBubble.textContent = text; // Use textContent for security
+
+        if (sender === 'user') {
+            messageDiv.classList.add('justify-end'); // Align user messages to the right
+            icon.classList.add('fa-user-circle', 'text-gray-500', 'order-2'); // Icon on the right
+            textBubble.classList.add('chat-bubble-user', 'order-1'); // Text on the left
+            messageDiv.appendChild(textBubble);
+            messageDiv.appendChild(icon);
+        } else { // AI or system message
+            messageDiv.classList.add('justify-start'); // Align AI messages to the left
+            icon.classList.add('fa-robot', 'text-blue-500'); // AI icon on the left
+            textBubble.classList.add('chat-bubble-ai');
+            // Add thinking animation if it's a thinking message
+            if (text === '正在思考中...') {
+                textBubble.classList.add('animate-pulse');
+                textBubble.id = 'thinking-bubble'; // Give it an ID to find and remove later
+            }
+            messageDiv.appendChild(icon);
+            messageDiv.appendChild(textBubble);
+        }
+
+        aiResponseArea.appendChild(messageDiv);
+        scrollToBottom(); // Scroll after adding message
+    }
+
+    // Function to remove the thinking bubble
+    function removeThinkingBubble() {
+        // 先确保覆盖层打开
+        if (!(window.appUtils && window.appUtils.isOverlayOpen())) return;
+        
+        const thinkingBubble = document.getElementById('thinking-bubble');
+        if (thinkingBubble && thinkingBubble.parentElement) {
+            thinkingBubble.parentElement.remove(); // Remove the entire message div containing the bubble
+        }
+    }
+
+    // Handle AI Search Submission
+    function handleSearchSubmit() {
+        // 先确保覆盖层打开且输入框存在
+        if (!(window.appUtils && window.appUtils.isOverlayOpen()) || !aiSearchInputOverlay) return;
+        
+        const query = aiSearchInputOverlay.value.trim();
+        if (!query) return; // Do nothing if input is empty
+
+        // 1. Add user message to history and render
+        chatHistory.push({ sender: 'user', text: query });
+        renderMessage('user', query);
+        aiSearchInputOverlay.value = ''; // Clear input immediately
+
+        // 2. Show "Thinking" bubble (not added to history)
+        renderMessage('ai', '正在思考中...');
+
+        // 3. Simulate Backend Call & Response Handling
+        console.log("Sending query to backend:", query);
+        setTimeout(() => {
+            // 检查覆盖层是否仍然打开
+            if (!(window.appUtils && window.appUtils.isOverlayOpen())) return;
+            
+            // 4. Remove "Thinking" bubble
+            removeThinkingBubble();
+
+            // 5. Get AI response (replace with actual API result)
+            const aiResponse = `这是对"${query}"的模拟回复。这里会展示 AI 分析的结果，可能会包含文字、图表链接或建议。`;
+
+            // 6. Add AI response to history and render
+            chatHistory.push({ sender: 'ai', text: aiResponse });
+            renderMessage('ai', aiResponse);
+
+        }, 1500); // Simulate 1.5 second delay
+    }
+
+    if (aiSearchSubmitOverlay) aiSearchSubmitOverlay.addEventListener('click', handleSearchSubmit);
+    if (aiSearchInputOverlay) {
+        aiSearchInputOverlay.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearchSubmit();
+            }
+        });
+    }
+
+    // Handle clicking on recommendation buttons
+    recommendationButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 确保覆盖层打开
+            if (!(window.appUtils && window.appUtils.isOverlayOpen()) || !aiSearchInputOverlay) return;
+            
+            const queryText = button.textContent.trim();
+            // Don't clear input here, directly submit
+            aiSearchInputOverlay.value = queryText; // Set input value for clarity if needed
+            handleSearchSubmit(); // Directly submit the recommended query
+            aiSearchInputOverlay.focus(); // Keep focus in the input after submitting recommendation
+        });
+    });
+</script>
 {% endblock %} 

@@ -380,15 +380,53 @@ function updateIndustryChart(industry) {
     }
 }
 
+// 全局变量
+let isOverlayOpenGlobal = false;
+
 // 导航栏滚动效果
 window.addEventListener('scroll', function() {
-    const navbar = document.querySelector('.navbar');
+    const navbar = document.querySelector('nav');
     if (window.scrollY > 50) {
         navbar.classList.add('navbar-scrolled');
     } else {
         navbar.classList.remove('navbar-scrolled');
     }
 });
+
+// 页面滚动锁定/解锁功能
+function lockScroll() {
+    if (!document.body.classList.contains('overflow-hidden')) {
+        const scrollY = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        document.body.classList.add('overflow-hidden');
+    }
+}
+
+function unlockScroll() {
+    if (document.body.classList.contains('overflow-hidden')) {
+        const scrollY = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.classList.remove('overflow-hidden');
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+}
+
+// 暴露给其他模块使用
+window.appUtils = {
+    isOverlayOpen: () => isOverlayOpenGlobal,
+    setOverlayOpen: (isOpen) => {
+        isOverlayOpenGlobal = isOpen;
+        if (isOpen) {
+            lockScroll();
+        } else {
+            unlockScroll();
+        }
+    }
+};
 
 // 平滑滚动
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

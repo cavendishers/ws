@@ -1,137 +1,385 @@
 {% extends 'data_hall/base.html' %}
+{% load static %}
 
 {% block title %}企业库 - 中国新势力企业态势感知系统{% endblock %}
 
 {% block content %}
-<!-- 标题介绍 -->
-<section class="container mx-auto px-6 mb-12">
-  <h1 class="text-3xl font-bold mb-4 gradient-text">企业库</h1>
-  <p class="text-gray-300 max-w-3xl">
-    收录中国新势力企业详细信息，包括企业概况、融资情况、专利技术等数据。
-  </p>
-</section>
+  <!-- 主体内容 -->
+  <main class="pt-20 pb-16">
+    <section class="container mx-auto px-6">
+      <!-- 标题 -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold">企业库</h1>
+        <p class="text-gray-300 mt-2">
+          快速筛选并查看各类企业信息，包括地域、产业、融资轮次、潜力评估等
+        </p>
+      </div>
 
-<!-- 搜索和筛选 -->
-<section class="container mx-auto px-6 mb-8">
-  <div class="bg-[#132144] p-6 rounded-lg">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="md:col-span-2">
-        <input type="text" placeholder="搜索企业名称、行业、地区..." 
-               class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
-      </div>
-      <div>
-        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
-          <option value="">行业分类</option>
-          <option value="ai">人工智能</option>
-          <option value="biotech">生物科技</option>
-          <option value="newenergy">新能源</option>
-          <option value="semiconductor">半导体</option>
-        </select>
-      </div>
-      <div>
-        <select class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700">
-          <option value="">融资阶段</option>
-          <option value="seed">种子轮</option>
-          <option value="a">A轮</option>
-          <option value="b">B轮</option>
-          <option value="c">C轮及以上</option>
-        </select>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 企业列表 -->
-<section class="container mx-auto px-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- 企业卡片1 -->
-    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-white">智联科技</h3>
-          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">人工智能</span>
-        </div>
-        <div class="space-y-2 mb-4">
-          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>北京</p>
-          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2018年</p>
-          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：B轮</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-400">
-            <span class="mr-4"><i class="fas fa-users mr-1"></i>200-500人</span>
-            <span><i class="fas fa-chart-line mr-1"></i>营收增长30%</span>
+      <!-- 筛选区 -->
+      <div class="bg-[#132144] p-4 rounded-xl glow-effect mb-8 text-sm">
+        <!-- 第一行：搜索 -->
+        <div class="flex items-center space-x-4 mb-4">
+          <!-- 搜索框 -->
+          <div class="flex-1">
+            <input
+              type="text"
+              placeholder="请输入企业名称"
+              class="w-full bg-[#1A2B5E] px-4 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="searchInput"
+            />
           </div>
-          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
-            查看详情 <i class="fas fa-arrow-right ml-1"></i>
-          </a>
+          <button
+            class="bg-[var(--accent)] text-[var(--primary)] px-5 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors"
+            id="searchBtn"
+          >
+            搜索
+          </button>
         </div>
-      </div>
-    </div>
 
-    <!-- 企业卡片2 -->
-    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-white">生物创新</h3>
-          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">生物科技</span>
-        </div>
-        <div class="space-y-2 mb-4">
-          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>上海</p>
-          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2019年</p>
-          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：A轮</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-400">
-            <span class="mr-4"><i class="fas fa-users mr-1"></i>50-200人</span>
-            <span><i class="fas fa-chart-line mr-1"></i>营收增长25%</span>
+        <!-- 第二行：领域、省份、城市、企业规模、融资轮次等下拉框或标签 -->
+        <div class="flex flex-wrap gap-4">
+          <!-- 领域 -->
+          <div>
+            <label class="block text-gray-300 mb-1">领域</label>
+            <select
+              class="bg-[#1A2B5E] px-3 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="industry"
+            >
+              <option value="">全部</option>
+            </select>
           </div>
-          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
-            查看详情 <i class="fas fa-arrow-right ml-1"></i>
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <!-- 企业卡片3 -->
-    <div class="bg-[#132144] rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold text-white">新能源科技</h3>
-          <span class="px-3 py-1 bg-[#2A4A7A] text-white rounded-full text-sm">新能源</span>
-        </div>
-        <div class="space-y-2 mb-4">
-          <p class="text-gray-300"><i class="fas fa-map-marker-alt mr-2"></i>深圳</p>
-          <p class="text-gray-300"><i class="fas fa-calendar-alt mr-2"></i>成立时间：2020年</p>
-          <p class="text-gray-300"><i class="fas fa-money-bill-wave mr-2"></i>最新融资：C轮</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-400">
-            <span class="mr-4"><i class="fas fa-users mr-1"></i>500-1000人</span>
-            <span><i class="fas fa-chart-line mr-1"></i>营收增长40%</span>
+          <!-- 省份 -->
+          <div>
+            <label class="block text-gray-300 mb-1">省份</label>
+            <select
+              class="bg-[#1A2B5E] px-3 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="province"
+            >
+              <option value="">全部</option>
+            </select>
           </div>
-          <a href="#" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
-            查看详情 <i class="fas fa-arrow-right ml-1"></i>
-          </a>
+
+          <!-- 城市 -->
+          <div>
+            <label class="block text-gray-300 mb-1">城市</label>
+            <select
+              class="bg-[#1A2B5E] px-3 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="city"
+            >
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <!-- 企业规模 -->
+          <div>
+            <label class="block text-gray-300 mb-1">企业规模</label>
+            <select
+              class="bg-[#1A2B5E] px-3 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="scale"
+            >
+              <option value="">不限</option>
+              <option value="0-20人">0-20人</option>
+              <option value="20-99人">20-99人</option>
+              <option value="100-499人">100-499人</option>
+              <option value="500-999人">500-999人</option>
+              <option value="1000-9999人">1000-9999人</option>
+              <option value="10000人以上">10000人以上</option>
+            </select>
+          </div>
+
+          <!-- 融资轮次 -->
+          <div>
+            <label class="block text-gray-300 mb-1">融资轮次</label>
+            <select
+              class="bg-[#1A2B5E] px-3 py-2 rounded-md focus:ring-2 focus:ring-[var(--accent)]"
+              id="financing"
+            >
+              <option value="">不限</option>
+              <option value="天使轮">天使轮</option>
+              <option value="A轮">A轮</option>
+              <option value="B轮">B轮</option>
+              <option value="C轮">C轮</option>
+              <option value="D轮及以上">D轮及以上</option>
+              <option value="IPO">IPO</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- 分页 -->
-  <div class="mt-8 flex justify-center">
-    <nav class="flex items-center space-x-2">
-      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">
-        <i class="fas fa-chevron-left"></i>
-      </a>
-      <a href="#" class="px-4 py-2 text-white bg-[var(--accent)] rounded-lg">1</a>
-      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">2</a>
-      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">3</a>
-      <span class="px-4 py-2 text-gray-300">...</span>
-      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">10</a>
-      <a href="#" class="px-4 py-2 text-gray-300 hover:text-white bg-[#132144] rounded-lg">
-        <i class="fas fa-chevron-right"></i>
-      </a>
-    </nav>
-  </div>
-</section>
+      <!-- 主体布局：左侧企业列表 + 右侧图表 -->
+      <div class="grid lg:grid-cols-[1.75fr_1fr] gap-6">
+        <!-- 企业列表区 -->
+        <div class="bg-[#132144] p-4 rounded-xl glow-effect overflow-auto">
+          <!-- 优化排版：使用较小字号，最小宽度较大以防列挤压 -->
+          <table class="w-full table-auto min-w-[1100px] text-sm leading-tight" id="enterpriseTable">
+            <thead class="bg-[#1A2B5E]">
+              <tr>
+                <th class="px-4 py-3 whitespace-nowrap">企业名称</th>
+                <th class="px-4 py-3 whitespace-nowrap">省份</th>
+                <th class="px-4 py-3 whitespace-nowrap">城市</th>
+                <th class="px-4 py-3 whitespace-nowrap">产业领域</th>
+                <th class="px-4 py-3 whitespace-nowrap">细分赛道</th>
+                <th class="px-4 py-3 whitespace-nowrap">注册年份</th>
+                <th class="px-4 py-3 whitespace-nowrap">融资轮次</th>
+                <th class="px-4 py-3 whitespace-nowrap">发展潜力</th>
+                <th class="px-4 py-3 whitespace-nowrap">扩张速度</th>
+                <th class="px-4 py-3 whitespace-nowrap">创新能力</th>
+                <th class="px-4 py-3 whitespace-nowrap">资本关注</th>
+                <th class="px-4 py-3 whitespace-nowrap">团队背景</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1A2B5E]" id="enterpriseTbody">
+              <!-- 数据行将通过JS动态加载 -->
+            </tbody>
+          </table>
+
+          <!-- 分页控件 -->
+          <div class="flex justify-center items-center mt-4 space-x-2">
+            <button id="prevPage" class="bg-[#1A2B5E] text-gray-300 px-3 py-1 rounded hover:bg-[#2A3B6E] disabled:opacity-50 disabled:cursor-not-allowed">
+              上一页
+            </button>
+            <span id="pageInfo" class="text-gray-300">第 <span id="currentPage">1</span> 页，共 <span id="totalPages">1</span> 页</span>
+            <button id="nextPage" class="bg-[#1A2B5E] text-gray-300 px-3 py-1 rounded hover:bg-[#2A3B6E] disabled:opacity-50 disabled:cursor-not-allowed">
+              下一页
+            </button>
+          </div>
+        </div>
+
+        <!-- 右侧图表区 -->
+        <div class="space-y-6">
+          <!-- 行业分布图 (环形) -->
+          <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+            <div id="industryChart" style="width: 100%; height: 400px;"></div>
+          </div>
+          <!-- 融资轮次分布图 (环形) -->
+          <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+            <h3 class="text-base font-bold mb-2">融资轮次分布</h3>
+            <div id="financingChart" style="width: 100%; height: 220px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPage = 1;
+const pageSize = 20;
+let totalPages = 1;
+let industryChart = null;  // 添加图表实例变量
+
+// 加载筛选选项
+function loadFilterOptions() {
+    // 加载行业选项
+    fetch('/api/filter-data/')
+        .then(response => response.json())
+        .then(data => {
+            const industrySelect = document.getElementById('industry');
+            data.industries.forEach(industry => {
+                const option = document.createElement('option');
+                option.value = industry;
+                option.textContent = industry;
+                industrySelect.appendChild(option);
+            });
+        });
+
+    // 加载省份选项
+    fetch('/api/filter-data/')
+        .then(response => response.json())
+        .then(data => {
+            const provinceSelect = document.getElementById('province');
+            data.provinces.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+        });
+
+    // 加载城市选项
+    fetch('/api/filter-data/')
+        .then(response => response.json())
+        .then(data => {
+            const citySelect = document.getElementById('city');
+            data.cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        });
+}
+
+// 初始化行业分布图表
+function initIndustryChart(data) {
+    const chartDom = document.getElementById('industryChart');
+    if (!chartDom) {
+        console.error('Chart container not found');
+        return null;
+    }
+    
+    const myChart = echarts.init(chartDom);
+    
+    const option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'horizontal',
+            bottom: 0,
+            type: 'scroll',
+            textStyle: {
+                color: '#fff'
+            },
+            pageIconColor: '#fff',
+            pageTextStyle: {
+                color: '#fff'
+            },
+            pageButtonItemGap: 5,
+            pageButtonGap: 5,
+            pageButtonPosition: 'end',
+            pageFormatter: '{current}/{total}',
+            pageIcons: {
+                horizontal: ['M0,0L12,-10L12,10z', 'M0,0L-12,-10L-12,10z']
+            }
+        },
+        series: [
+            {
+                name: '企业数量',
+                type: 'pie',
+                radius: ['30%', '55%'],
+                center: ['50%', '47%'],
+                data: data,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                },
+                label: {
+                    show: true,
+                    formatter: '{b}: {c} ({d}%)',
+                    color: '#fff',
+                    fontSize: 10
+                },
+                labelLine: {
+                    show: true
+                }
+            }
+        ]
+    };
+    
+    myChart.setOption(option);
+    return myChart;
+}
+
+// 加载企业数据
+function loadEnterpriseData(page = 1) {
+    const search = document.getElementById('searchInput').value;
+    const industry = document.getElementById('industry').value;
+    const province = document.getElementById('province').value;
+    const city = document.getElementById('city').value;
+
+    const params = new URLSearchParams({
+        page: page,
+        page_size: pageSize,
+        name: search,
+        industry: industry,
+        province: province,
+        city: city
+    });
+
+    fetch(`/api/enterpriseList.json?${params}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+
+            const tbody = document.getElementById('enterpriseTbody');
+            tbody.innerHTML = '';
+
+            data.data.forEach(company => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-2">${company.name}</td>
+                    <td class="px-4 py-2">${company.province}</td>
+                    <td class="px-4 py-2">${company.city}</td>
+                    <td class="px-4 py-2">${company.industry}</td>
+                    <td class="px-4 py-2">${company.subTrack}</td>
+                    <td class="px-4 py-2">${company.regYear}</td>
+                    <td class="px-4 py-2">${company.financing}</td>
+                    <td class="px-4 py-2">${company.devPotential}</td>
+                    <td class="px-4 py-2">${company.expansionSpeed}</td>
+                    <td class="px-4 py-2">${company.innovation}</td>
+                    <td class="px-4 py-2">${company.capitalAttention}</td>
+                    <td class="px-4 py-2">${company.teamBackground}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 更新分页信息
+            currentPage = data.current_page;
+            totalPages = data.total_pages;
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+
+            // 更新分页按钮状态
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+
+            // 更新行业分布图表
+            if (industryChart) {
+                industryChart.dispose();
+            }
+            industryChart = initIndustryChart(data.industry_stats);
+            
+            // 添加窗口大小变化时的重绘
+            window.addEventListener('resize', function() {
+                if (industryChart) {
+                    industryChart.resize();
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+    loadFilterOptions();
+    loadEnterpriseData();
+
+    // 搜索按钮点击事件
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        loadEnterpriseData(1);
+    });
+
+    // 筛选条件变化事件
+    ['industry', 'province', 'city'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+            loadEnterpriseData(1);
+        });
+    });
+
+    // 分页按钮事件
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+            loadEnterpriseData(currentPage - 1);
+        }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            loadEnterpriseData(currentPage + 1);
+        }
+    });
+});
+</script>
 {% endblock %} 

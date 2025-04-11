@@ -26,21 +26,21 @@
                 <span class="text-xl font-bold text-[var(--text-primary)]">新势力感知系统</span>
             </div>
             <div class="hidden xl:flex space-x-8 text-[var(--text-secondary)] items-center">
-                <a href="{% url 'data_hall:index' %}" class="hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="hover:text-[var(--button-highlight)]">新势力榜单</a>
+                <a href="{% url 'data_hall:index' %}" class="{% if request.resolver_match.url_name == 'index' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
+                <a href="{% url 'data_hall:ranking' %}" class="{% if request.resolver_match.url_name == 'ranking' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
                 <div class="relative group" id="industry-dropdown-container">
-                    <button id="industry-dropdown-btn" class="hover:text-[var(--button-highlight)] flex items-center px-4 py-2 -mx-4 -my-2">
+                    <button id="industry-dropdown-btn" class="{% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center px-4 py-2 -mx-4 -my-2">
                         产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
                     </button>
                     <div id="industry-dropdown" class="absolute hidden group-hover:block bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
                         <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
                         <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
-                        <a href="{% url 'data_hall:precision' %}" class="block hover:text-blue-400 text-sm py-2">精准招商</a>
                     </div>
                 </div>
-                <a href="{% url 'data_hall:map' %}" class="hover:text-[var(--button-highlight)]">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="hover:text-[var(--button-highlight)]">产业报告</a>
-                <a href="{% url 'data_hall:news' %}" class="hover:text-[var(--button-highlight)]">商业快讯</a>
+                <a href="{% url 'data_hall:map' %}" class="{% if request.resolver_match.url_name == 'map' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
+                <a href="{% url 'data_hall:report' %}" class="{% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
+                <a href="{% url 'data_hall:precision' %}" class="{% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
+                <a href="{% url 'data_hall:news' %}" class="{% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
             </div>
             <div class="flex items-center space-x-4">
                 <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
@@ -66,22 +66,22 @@
                 </button>
             </div>
             <div class="flex flex-col space-y-6">
-                <a href="{% url 'data_hall:index' %}" class="text-lg hover:text-[var(--button-highlight)] text-[var(--button-highlight)] font-semibold">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="text-lg hover:text-[var(--button-highlight)]">新势力榜单</a>
+                <a href="{% url 'data_hall:index' %}" class="text-lg {% if request.resolver_match.url_name == 'index' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
+                <a href="{% url 'data_hall:ranking' %}" class="text-lg {% if request.resolver_match.url_name == 'ranking' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
                 <div class="relative">
-                    <button id="mobile-industry-btn" class="text-lg hover:text-[var(--button-highlight)] flex items-center justify-between w-full">
+                    <button id="mobile-industry-btn" class="text-lg {% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center justify-between w-full">
                         <span>产业链</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div id="mobile-industry-dropdown" class="pl-4 space-y-3 mt-2 hidden">
                         <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
                         <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
-                        <a href="{% url 'data_hall:precision' %}" class="block hover:text-blue-400 text-sm py-2">精准招商</a>
                     </div>
                 </div>
-                <a href="{% url 'data_hall:map' %}" class="text-lg hover:text-[var(--button-highlight)]">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="text-lg hover:text-[var(--button-highlight)]">产业报告</a>
-                <a href="{% url 'data_hall:news' %}" class="text-lg hover:text-[var(--button-highlight)]">商业快讯</a>
+                <a href="{% url 'data_hall:map' %}" class="text-lg {% if request.resolver_match.url_name == 'map' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
+                <a href="{% url 'data_hall:report' %}" class="text-lg {% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
+                <a href="{% url 'data_hall:precision' %}" class="text-lg {% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
+                <a href="{% url 'data_hall:news' %}" class="text-lg {% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
                 <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
             </div>
         </div>
@@ -93,11 +93,11 @@
     </main>
 
     <!-- 页脚 -->
-    <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)]">
+    <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)]" style="margin-top: 2rem;">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
-                    <p class="text-gray-400">&copy; 2024 中国新势力企业态势感知系统. 保留所有权利.</p>
+                    <p class="text-gray-400">&copy; 2025 中国新势力企业态势感知系统. 保留所有权利.</p>
                 </div>
                 <div class="flex space-x-6">
                     <a href="#" class="text-gray-400 hover:text-[var(--secondary)]">关于我们</a>

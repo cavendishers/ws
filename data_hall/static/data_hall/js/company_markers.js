@@ -185,7 +185,7 @@ class CompanyMarkers {
             
             // 绘制红点
             this.ctx.beginPath();
-            this.ctx.arc(x, y, 4, 0, Math.PI * 2); // 固定大小
+            this.ctx.arc(x, y, 2.5, 0, Math.PI * 2); // 固定大小
             this.ctx.fillStyle = 'red';
             this.ctx.fill();
             this.ctx.strokeStyle = 'white';

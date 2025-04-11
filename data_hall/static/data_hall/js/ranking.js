@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
   loadRankingData();
   
   // 绑定导出数据按钮事件
-  const exportBtn = document.querySelector('.bg-[var(--button-highlight)]');
+  const exportBtn = document.getElementById('exportDataBtn');
   if (exportBtn) {
     exportBtn.addEventListener('click', exportRankingData);
+  } else {
+    console.error('未找到导出按钮');
   }
 });
 

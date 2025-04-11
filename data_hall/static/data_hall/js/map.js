@@ -307,25 +307,23 @@ function drawMap() {
         ctx.closePath();
 
         if (isHovered) {
-            // 悬停状态：使用高亮颜色
-            ctx.fillStyle = `rgba(0, 193, 212, 0.8)`;
+            // 悬停状态：使用更鲜艳的高亮颜色
+            ctx.fillStyle = `rgba(0, 220, 255, 0.95)`;
         } else {
-            // 非悬停状态：根据公司数量设置颜色深浅
-            // 使用更深的颜色范围，增加对比度
+            // 非悬停状态：使用更鲜艳的渐变色
             const baseColor = {
-                r: 0 + (19 - 0) * (1 - colorIntensity),   // 从0到19
-                g: 193 + (20 - 193) * (1 - colorIntensity), // 从193到20
-                b: 212 + (50 - 212) * (1 - colorIntensity)  // 从212到50
+                r: 26 + (55 - 26) * colorIntensity,   // 从暗到亮
+                g: 115 + (195 - 115) * colorIntensity, // 增加绿色成分
+                b: 170 + (255 - 170) * colorIntensity  // 增加蓝色成分
             };
-            // 增加颜色饱和度
             ctx.fillStyle = `rgba(${Math.round(baseColor.r)}, ${Math.round(baseColor.g)}, ${Math.round(baseColor.b)}, 0.9)`;
         }
         
         ctx.fill();
 
         // 绘制边框
-        ctx.strokeStyle = isHovered ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = isHovered ? 3 / scale : 2 / scale;
+        ctx.strokeStyle = isHovered ? 'rgba(255, 255, 255, 1)' : 'rgba(180, 230, 255, 0.7)';
+        ctx.lineWidth = isHovered ? 3 / scale : 1.5 / scale;
         ctx.stroke();
     });
 
@@ -750,8 +748,8 @@ function initCharts() {
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 初始化为0
             itemStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    { offset: 0, color: '#132144' },
-                    { offset: 1, color: '#00C1D4' }
+                    { offset: 0, color: '#00C1D4' },
+                    { offset: 1, color: '#132144' }
                 ])
             },
             label: {
@@ -996,7 +994,7 @@ function updateChartsWithCachedData() {
     }
 }
 
-// 更新产业分布图表
+// 更新产业链分布图表
 function updateIndustryChart(stats) {
     // 提取产业数据
     const chartData = stats.map(item => ({

@@ -1,6 +1,11 @@
 {% extends 'data_hall/base.html' %}
+{% load static %}
 
 {% block title %}产业链 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'data_hall/css/industry.css' %}">
+{% endblock %}
 
 {% block content %}
 <!-- 标题介绍 -->
@@ -12,128 +17,85 @@
 </section>
 
 <!-- 产业链网格布局（20个卡片示例） -->
-<section class="container mx-auto px-6">
+<section class="container mx-auto px-6" style="min-height: 30rem;">
   <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
     <!-- 卡片 1 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">集成电路</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" style="background-image: url('{% static "data_hall/img/人工智能.jpg" %}');background-size: cover;" data-industry="人工智能">
+      <h3 class="text-lg font-bold mb-2 text-white">人工智能</h3>
       <p class="text-sm text-gray-300">企业数：12,500</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 2 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">数据要素</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/医药生物.jpg" %}') ;background-size: cover;" data-industry="未来医疗">
+      <h3 class="text-lg font-bold mb-2">未来医疗</h3>
       <p class="text-sm text-gray-300">企业数：8,200</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 3 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">5G</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/物联网.jpg" %}'); background-size: cover;" data-industry="物联网">
+      <h3 class="text-lg font-bold mb-2">物联网</h3>
       <p class="text-sm text-gray-300">企业数：6,700</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 4 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">半导体</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/数字经济.jpg" %}'); background-size: cover;" data-industry="数字经济">
+      <h3 class="text-lg font-bold mb-2">数字经济</h3>
       <p class="text-sm text-gray-300">企业数：5,200</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 5 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">半导体材料</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/机器人.jpg" %}'); background-size: cover;" data-industry="机器人">
+      <h3 class="text-lg font-bold mb-2">机器人</h3>
       <p class="text-sm text-gray-300">企业数：4,500</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 6 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">人工智能</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/大数据.jpg" %}'); background-size: cover;" data-industry="大数据">
+      <h3 class="text-lg font-bold mb-2">大数据</h3>
       <p class="text-sm text-gray-300">企业数：6,800</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 7 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/云计算.jpg" %}'); background-size: cover;" data-industry="云计算">
       <h3 class="text-lg font-bold mb-2">云计算</h3>
       <p class="text-sm text-gray-300">企业数：7,200</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
     <!-- 卡片 8 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">物联网</h3>
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/半导体.jpg" %}'); background-size: cover;" data-industry="半导体">
+      <h3 class="text-lg font-bold mb-2">半导体</h3>
       <p class="text-sm text-gray-300">企业数：5,900</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
     </div>
-    <!-- 卡片 9 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">新能源</h3>
-      <p class="text-sm text-gray-300">企业数：6,300</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 10 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">生物医药</h3>
-      <p class="text-sm text-gray-300">企业数：5,100</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 11 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">大数据</h3>
-      <p class="text-sm text-gray-300">企业数：7,700</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 12 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">区块链</h3>
-      <p class="text-sm text-gray-300">企业数：4,800</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 13 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">智能制造</h3>
-      <p class="text-sm text-gray-300">企业数：5,500</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 14 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">无人驾驶</h3>
-      <p class="text-sm text-gray-300">企业数：6,000</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 15 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">虚拟现实</h3>
-      <p class="text-sm text-gray-300">企业数：4,000</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 16 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">增强现实</h3>
-      <p class="text-sm text-gray-300">企业数：4,200</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 17 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">机器人</h3>
-      <p class="text-sm text-gray-300">企业数：5,300</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 18 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">网络安全</h3>
-      <p class="text-sm text-gray-300">企业数：5,600</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 19 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">智慧城市</h3>
-      <p class="text-sm text-gray-300">企业数：4,900</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
-    <!-- 卡片 20 -->
-    <div class="bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors">
-      <h3 class="text-lg font-bold mb-2">数字化转型</h3>
-      <p class="text-sm text-gray-300">企业数：6,100</p>
-      <img src="https://via.placeholder.com/50" alt="icon" class="mt-4">
-    </div>
+    
   </div>
 </section>
+
+<!-- 模态框 -->
+<div id="industryModal" class="modal">
+  <div class="modal-content">
+    <div class="flex justify-between items-center mb-4">
+      <h2 id="modalTitle" class="text-2xl font-bold text-white"></h2>
+      <span class="close">&times;</span>
+    </div>
+    <div id="modalContent" class="mt-4">
+      <div class="h-[500px] bg-[#0A1A3A] rounded-lg flex items-center justify-center">
+        <img id="industryChainImage" src="" alt="产业链图谱" class="max-w-full max-h-full object-contain" />
+      </div>
+      <div class="mt-6 text-gray-300">
+        <h3 class="text-xl font-semibold mb-2">产业概况</h3>
+        <p id="industryDescription" class="mb-4">加载中...</p>
+        
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div class="bg-[#1A2B5E] p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">核心企业</h4>
+            <ul id="coreEnterprises" class="list-disc pl-4">
+              <li>加载中...</li>
+            </ul>
+          </div>
+          <div class="bg-[#1A2B5E] p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">发展趋势</h4>
+            <p id="industryTrend">加载中...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/industry.js' %}"></script>
 {% endblock %} 

@@ -49,7 +49,6 @@ def news(request):
     """商业快讯页面"""
     return render(request, 'data_hall/news.html')
 
-@login_required
 def login(request):
     """登录页面"""
     return render(request, 'data_hall/login.html')

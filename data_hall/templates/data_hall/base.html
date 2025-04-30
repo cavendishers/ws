@@ -43,7 +43,21 @@
                 <a href="{% url 'data_hall:news' %}" class="{% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
             </div>
             <div class="flex items-center space-x-4">
+                {% if request.session.user_id %}
+                <div class="relative group">
+                    <button class="flex items-center space-x-1 bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">
+                        <span>{{ request.session.username }}</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute hidden group-hover:block right-0 bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
+                        <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
+                        <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
+                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                    </div>
+                </div>
+                {% else %}
                 <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
+                {% endif %}
                 <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -82,7 +96,18 @@
                 <a href="{% url 'data_hall:report' %}" class="text-lg {% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
                 <a href="{% url 'data_hall:precision' %}" class="text-lg {% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
                 <a href="{% url 'data_hall:news' %}" class="text-lg {% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
+                {% if request.session.user_id %}
+                <div class="border-t border-[rgba(255,255,255,0.1)] pt-4 mt-4">
+                    <p class="text-lg text-[var(--button-highlight)]">{{ request.session.username }}</p>
+                    <div class="pl-4 space-y-3 mt-2">
+                        <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
+                        <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
+                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                    </div>
+                </div>
+                {% else %}
                 <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
+                {% endif %}
             </div>
         </div>
     </div>

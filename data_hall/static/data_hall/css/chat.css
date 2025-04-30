@@ -1,0 +1,50 @@
+/* 聊天界面样式 */
+.chat-bubble {
+  border-radius: 1rem;
+  max-width: 80%;
+  word-break: break-word;
+  white-space: pre-wrap; /* 保留换行符 */
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.chat-bubble-user {
+  background-color: #2563EB;
+  color: #FFFFFF;
+  border-top-right-radius: 0;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.chat-bubble-ai {
+  background-color: #F3F4F6;
+  color: #374151;
+  border-top-left-radius: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 设置代码格式 */
+.chat-bubble-ai code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.1em 0.3em;
+  border-radius: 0.2em;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+/* 确保聊天区域有足够的空间显示换行内容 */
+#ai-response-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 思考中气泡的动画效果 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+} 

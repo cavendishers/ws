@@ -77,4 +77,29 @@ class CompanyRanking(models.Model):
     def __str__(self):
         return f"{self.company.company_name} - 排名: {self.rank}"
 
+# 创建企业融资情况模型
+class CompanyFinancing(models.Model):
+    # 公司唯一标识，与CompanyInfo表关联
+    company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE, related_name='financings', verbose_name='关联企业', db_column='keyno')
+    financing_round = models.CharField(max_length=50, verbose_name='融资轮次',null=True, blank=True)
+    financing_amount = models.CharField(max_length=50, verbose_name='融资金额',null=True, blank=True)
+    financing_date = models.DateField(verbose_name='融资日期', null=True, blank=True)
+    investor_id = models.CharField(max_length=64, verbose_name='投资方ID', null=True, blank=True)
+    investor_name = models.CharField(max_length=128, verbose_name='投资方名称', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+    
+    class Meta:
+        verbose_name = '企业融资情况'
+        verbose_name_plural = '企业融资情况'
+        ordering = ['-financing_date']
+        indexes = [
+            models.Index(fields=['company']),
+            models.Index(fields=['financing_date']),
+            models.Index(fields=['financing_round']),
+        ]
+    
+    def __str__(self):
+        return f"{self.company.company_name} - {self.financing_round} - {self.financing_date}"
+
 

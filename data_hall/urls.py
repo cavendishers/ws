@@ -13,6 +13,7 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     path('news/', views.news, name='news'),
     path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
     path('api/filter-data/', views.get_filter_data, name='filter-data'),
     path('api/company-stats/', views.get_company_stats, name='company-stats'),
     path('api/company-locations/', views.get_company_locations, name='company-locations'),
@@ -21,4 +22,7 @@ urlpatterns = [
     path('api/company-rankings/', views.get_company_rankings, name='company_rankings'),
     path('api/enterpriseList.json', views.get_enterprise_list, name='enterprise_list'),
     path('api/precisionList.json', views.get_precision_list, name='precision_list'),
+    path('api/ai/chat', views.ai_chat, name='ai_chat'),
+    path('api/top-companies/', views.get_top_companies, name='top_companies'),
+    path('api/yearly-stats/', views.get_yearly_stats, name='yearly_stats'),
 ] 

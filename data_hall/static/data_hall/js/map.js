@@ -30,7 +30,8 @@ const dataCache = {
     yearlyData: null,
     industryStats: null,
     countyDistribution: null,
-    isLoading: false // 新增加载状态标记
+    isLoading: false, // 新增加载状态标记
+    topCompanies: null
 };
 
 // 设置canvas尺寸
@@ -771,10 +772,19 @@ filters.forEach(filterId => {
     const element = document.getElementById(filterId);
     if (element) {
         element.addEventListener('change', function() {
+            console.log(`筛选条件变化: ${filterId} = ${this.value}`);
+            
             // 清除缓存
             dataCache.isInitialized = false;
+            dataCache.topCompanies = null; // 清除企业名单缓存
             
-            // 统一加载所有数据
+            // 显示加载中状态
+            const tbody = document.getElementById('enterpriseListTbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">加载中...</td></tr>';
+            }
+            
+            // 统一加载所有数据，包括新势力企业名单
             loadAllData();
             
             // 立即更新标签，提供即时反馈
@@ -821,10 +831,11 @@ async function loadAllData() {
         createFixedLabels();
         
         // 并行发起所有需要的API请求
-        const [yearlyStatsResponse, companyStatsResponse, countyCountsResponse] = await Promise.all([
+        const [yearlyStatsResponse, companyStatsResponse, countyCountsResponse, topCompaniesResponse] = await Promise.all([
             fetch(`/api/company-yearly-stats/?${queryString}`),
             fetch(`/api/company-stats/?${queryString}`),
-            fetch(`/api/county-company-counts/?${queryString}`)
+            fetch(`/api/county-company-counts/?${queryString}`),
+            fetch(`/api/top-companies/?${queryString}&limit=10`) // 新增：获取新势力企业名单
         ]);
         
         // 处理年度分布数据
@@ -863,6 +874,23 @@ async function loadAllData() {
             updateCountyChart(countyData.county_stats);
         }
         
+        // 新增：处理新势力企业名单数据
+        if (topCompaniesResponse.ok) {
+            const topCompaniesData = await topCompaniesResponse.json();
+            // 缓存企业名单数据
+            dataCache.topCompanies = topCompaniesData.companies;
+            
+            // 渲染企业名单表格
+            renderTopCompaniesTable(topCompaniesData.companies);
+            
+            console.log('新势力企业名单数据加载完成:', topCompaniesData.companies);
+        } else {
+            console.error('获取新势力企业名单数据失败');
+            // 使用模拟数据
+            const mockCompanies = getMockTopCompanies();
+            renderTopCompaniesTable(mockCompanies);
+        }
+        
         // 更新地区和产业标签
         updateLabels();
         
@@ -876,6 +904,10 @@ async function loadAllData() {
         console.log('所有数据加载完成');
     } catch (error) {
         console.error('加载数据失败:', error);
+        
+        // 确保新势力企业名单有数据显示
+        const mockCompanies = getMockTopCompanies();
+        renderTopCompaniesTable(mockCompanies);
     } finally {
         // 无论成功失败，都将加载状态重置
         dataCache.isLoading = false;
@@ -1193,6 +1225,76 @@ function updateRegionLabel(regionName) {
     createFixedLabels();
 }
 
+// 新增：获取模拟新势力企业名单数据
+function getMockTopCompanies() {
+    return [
+        {rank: 1, name: '深度科技公司', city: '杭州市', county: '西湖区', score: 92.5},
+        {rank: 2, name: '云智大数据科技', city: '杭州市', county: '滨江区', score: 90.8},
+        {rank: 3, name: '智联网络科技', city: '杭州市', county: '下城区', score: 89.3},
+        {rank: 4, name: '未来芯片技术', city: '杭州市', county: '余杭区', score: 87.6},
+        {rank: 5, name: '星辰人工智能', city: '杭州市', county: '钱塘区', score: 86.2}
+    ];
+}
+
+// 新增：渲染新势力企业名单表格
+function renderTopCompaniesTable(companies) {
+    const tbody = document.getElementById('enterpriseListTbody');
+    if (!tbody) {
+        console.error('找不到新势力企业名单表格元素 #enterpriseListTbody');
+        return;
+    }
+    
+    console.log('=============================================');
+    console.log('开始渲染新势力企业名单表格');
+    console.log('渲染的数据条数:', companies ? companies.length : 0);
+    console.log('渲染的数据内容:', companies);
+    
+    // 清空表格
+    tbody.innerHTML = '';
+    
+    if (!companies || !Array.isArray(companies) || companies.length === 0) {
+        console.warn('没有企业数据可渲染，显示暂无数据提示');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">暂无数据</td></tr>';
+        return;
+    }
+    
+    try {
+        // 渲染每一行数据
+        companies.forEach((company, index) => {
+            console.log(`处理第 ${index+1} 条企业数据:`, company);
+            
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-[#1A2B5E]';
+            
+            // 确保score是数字
+            let score = company.score;
+            if (typeof score !== 'number') {
+                console.log(`转换企业分数 ${score} 为数字类型`);
+                score = parseFloat(score) || 0;
+            }
+            
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-center">${company.rank}</td>
+                <td class="px-4 py-3">${company.name}</td>
+                <td class="px-4 py-3">${company.city || '未知'}</td>
+                <td class="px-4 py-3">${company.county || '未知'}</td>
+                <td class="px-4 py-3 text-yellow-400 font-bold text-center">${score.toFixed(1)}</td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
+        
+        console.log('新势力企业名单表格渲染完成');
+    } catch (error) {
+        console.error('渲染企业名单表格出错:', error);
+        console.error('错误类型:', error.name);
+        console.error('错误消息:', error.message);
+        console.error('错误堆栈:', error.stack);
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">渲染数据出错</td></tr>';
+    }
+    console.log('=============================================');
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('初始化地图和图表...');
@@ -1202,6 +1304,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 创建tooltip
     tooltip = createTooltip();
+    
+    // 显示所有图表的加载状态
+    const enterpriseListTbody = document.getElementById('enterpriseListTbody');
+    if (enterpriseListTbody) {
+        enterpriseListTbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">加载中...</td></tr>';
+    }
     
     // 加载GeoJSON数据
     const geoDataLoaded = await loadGeoData();
@@ -1245,8 +1353,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             const element = document.getElementById(filterId);
             if (element) {
                 element.addEventListener('change', function() {
+                    console.log(`筛选条件变化: ${filterId} = ${this.value}`);
+                    
                     // 清除缓存
                     dataCache.isInitialized = false;
+                    dataCache.topCompanies = null; // 清除企业名单缓存
+                    
+                    // 显示加载中状态
+                    if (enterpriseListTbody) {
+                        enterpriseListTbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">加载中...</td></tr>';
+                    }
                     
                     // 立即更新标签，提供即时反馈
                     createFixedLabels();

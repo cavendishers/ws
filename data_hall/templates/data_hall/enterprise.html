@@ -127,6 +127,7 @@
                 <th class="px-4 py-3 whitespace-nowrap">创新能力</th>
                 <th class="px-4 py-3 whitespace-nowrap">资本关注</th>
                 <th class="px-4 py-3 whitespace-nowrap">团队背景</th>
+                <th class="px-4 py-3 whitespace-nowrap text-yellow-400">综合得分</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-[#1A2B5E]" id="enterpriseTbody">
@@ -149,13 +150,15 @@
         <!-- 右侧图表区 -->
         <div class="space-y-6">
           <!-- 行业分布图 (环形) -->
+          
           <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+            <h3 class="text-base font-bold mb-2">行业赛道分布</h3>
             <div id="industryChart" style="width: 100%; height: 400px;"></div>
           </div>
           <!-- 融资轮次分布图 (环形) -->
           <div class="bg-[#132144] p-4 rounded-xl glow-effect">
             <h3 class="text-base font-bold mb-2">融资轮次分布</h3>
-            <div id="financingChart" style="width: 100%; height: 220px;"></div>
+            <div id="financingChart" style="width: 100%; height: 500px;"></div>
           </div>
         </div>
       </div>
@@ -283,6 +286,8 @@ function loadEnterpriseData(page = 1) {
     const industry = document.getElementById('industry').value;
     const province = document.getElementById('province').value;
     const city = document.getElementById('city').value;
+    const scale = document.getElementById('scale').value;
+    const financing = document.getElementById('financing').value;
 
     const params = new URLSearchParams({
         page: page,
@@ -290,7 +295,9 @@ function loadEnterpriseData(page = 1) {
         name: search,
         industry: industry,
         province: province,
-        city: city
+        city: city,
+        scale: scale,
+        financing: financing
     });
 
     fetch(`/api/enterpriseList.json?${params}`)
@@ -319,6 +326,7 @@ function loadEnterpriseData(page = 1) {
                     <td class="px-4 py-2">${company.innovation}</td>
                     <td class="px-4 py-2">${company.capitalAttention}</td>
                     <td class="px-4 py-2">${company.teamBackground}</td>
+                    <td class="px-4 py-2 text-yellow-400 font-bold">${company.comprehensiveScore}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -339,6 +347,9 @@ function loadEnterpriseData(page = 1) {
             }
             industryChart = initIndustryChart(data.industry_stats);
             
+            // 更新融资轮次分布图表
+            initFinancingChart(data.financing_stats);
+            
             // 添加窗口大小变化时的重绘
             window.addEventListener('resize', function() {
                 if (industryChart) {
@@ -349,6 +360,63 @@ function loadEnterpriseData(page = 1) {
         .catch(error => {
             console.error('Error:', error);
         });
+}
+
+// 初始化融资轮次分布图表
+function initFinancingChart(data) {
+    const chartDom = document.getElementById('financingChart');
+    if (!chartDom) {
+        console.error('Financing chart container not found');
+        return null;
+    }
+    
+    const myChart = echarts.init(chartDom);
+    
+    const option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'horizontal',
+            bottom: 0,
+            textStyle: {
+                color: '#fff'
+            },
+            pageIconColor: '#fff',
+            pageTextStyle: {
+                color: '#fff'
+            }
+        },
+        series: [
+            {
+                type: 'pie',
+                radius: ['30%', '55%'],
+                center: ['50%', '47%'],
+                data: data,
+                label: {
+                    color: '#fff',
+                    formatter: '{b}: {c}'
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    
+    myChart.setOption(option);
+    
+    // 添加窗口大小变化时的重绘
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+    
+    return myChart;
 }
 
 // 初始化
@@ -362,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 筛选条件变化事件
-    ['industry', 'province', 'city'].forEach(id => {
+    ['industry', 'province', 'city', 'scale', 'financing'].forEach(id => {
         document.getElementById(id).addEventListener('change', () => {
             loadEnterpriseData(1);
         });

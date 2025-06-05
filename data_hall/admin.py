@@ -5,3 +5,4 @@ from .models import User, CompanyInfo, CompanyRanking
 admin.site.register(User)
 admin.site.register(CompanyInfo)
 admin.site.register(CompanyRanking)
+

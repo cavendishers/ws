@@ -63,61 +63,56 @@ document.addEventListener('DOMContentLoaded', function() {
   // 为每个卡片添加点击事件
   const industryCards = document.querySelectorAll('.industry-card');
   industryCards.forEach(card => {
-    card.addEventListener('click', function() {
+    card.addEventListener('click', function(event) {
+      // 防止事件冒泡和默认行为
+      event.preventDefault();
+      event.stopPropagation();
+      
       const industry = this.getAttribute('data-industry');
-      if (industry && industryData[industry]) {
-        // 填充模态框内容
-        modalTitle.textContent = industry + '产业链';
+      console.log('点击了产业卡片:', industry);
+      
+      if (industry) {
+        // 确保industry不为空
+        // 直接跳转到industry_detail页面
+        const detailUrl = `/industry/detail/${encodeURIComponent(industry)}/`;
+        console.log('准备跳转到:', detailUrl);
         
-        // 设置产业链图片
-        industryChainImage.src = industryData[industry].image || '';
-        
-        // 设置产业描述
-        industryDescription.textContent = industryData[industry].description || '暂无描述';
-        
-        // 设置核心企业列表
-        if (industryData[industry].coreEnterprises && industryData[industry].coreEnterprises.length) {
-          coreEnterprises.innerHTML = industryData[industry].coreEnterprises.map(name => `<li>${name}</li>`).join('');
-        } else {
-          coreEnterprises.innerHTML = '<li>暂无数据</li>';
-        }
-        
-        // 设置发展趋势
-        industryTrend.textContent = industryData[industry].trend || '暂无数据';
-        
-        // 显示模态框
-        modal.style.display = 'block';
-        setTimeout(() => {
-          modal.classList.add('show');
-        }, 10);
+        // 直接执行跳转，不使用模态框
+        window.location.href = detailUrl;
+      } else {
+        console.error('产业名称为空或未定义');
       }
     });
   });
   
-  // 点击关闭按钮关闭模态框
-  closeBtn.addEventListener('click', function() {
-    closeModal();
-  });
-  
-  // 点击模态框背景关闭模态框
-  modal.addEventListener('click', function(event) {
-    if (event.target === modal) {
+  // 移除模态框相关代码，因为我们直接跳转而不显示模态框
+  // 但保留模态框代码以备后用，只是不会调用它
+  if (modal) {
+    // 点击关闭按钮关闭模态框
+    closeBtn.addEventListener('click', function() {
       closeModal();
+    });
+    
+    // 点击模态框背景关闭模态框
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+    
+    // 关闭模态框函数
+    function closeModal() {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
     }
-  });
-  
-  // 关闭模态框函数
-  function closeModal() {
-    modal.classList.remove('show');
-    setTimeout(() => {
-      modal.style.display = 'none';
-    }, 300);
+    
+    // 按ESC键关闭模态框
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && modal.style.display === 'block') {
+        closeModal();
+      }
+    });
   }
-  
-  // 按ESC键关闭模态框
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' && modal.style.display === 'block') {
-      closeModal();
-    }
-  });
 }); 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Count
-from .models import CompanyInfo, CompanyRanking, CompanyFinancing, User
+from .models import CompanyInfo, CompanyRanking, CompanyFinancing, User, IndustryChain
 from django.db.models import Q
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -18,8 +18,14 @@ def ranking(request):
     return render(request, 'data_hall/ranking.html')
 
 def industry(request):
-    """产业链图谱页面"""
-    return render(request, 'data_hall/industry.html')
+    """产业链页面"""
+    # 从数据库获取所有产业链
+    industries = IndustryChain.objects.all()
+    
+    context = {
+        'industries': industries,
+    }
+    return render(request, 'data_hall/industry.html', context)
 
 def enterprise(request):
     """企业库页面"""
@@ -785,3 +791,28 @@ def logout(request):
     
     # 重定向到首页
     return redirect('data_hall:index')
+    
+def industry_detail(request, industry_name=None):
+    """产业链详情页面"""
+    # 如果没有指定产业名称，则默认为'新能源汽车'
+    if not industry_name:
+        industry_name = request.GET.get('industry', '新能源汽车')
+    
+    # 从数据库中获取所有产业链名称
+    available_industries = list(IndustryChain.objects.values_list('name', flat=True))
+    
+    # 如果数据库中没有数据，使用默认值
+    if not available_industries:
+        available_industries = ['新能源汽车']
+    
+    # 如果指定的产业链名称不在数据库中，使用第一个可用的产业链
+    if industry_name not in available_industries:
+        industry_name = available_industries[0]
+        
+    # 构建上下文数据
+    context = {
+        'industry_name': industry_name,
+        'available_industries': available_industries,  # 传递所有可用的产业链名称到模板
+    }
+    
+    return render(request, 'data_hall/industry_detail.html', context)

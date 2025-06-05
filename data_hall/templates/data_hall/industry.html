@@ -16,50 +16,17 @@
   </p>
 </section>
 
-<!-- 产业链网格布局（20个卡片示例） -->
+<!-- 产业链网格布局 -->
 <section class="container mx-auto px-6" style="min-height: 30rem;">
   <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-    <!-- 卡片 1 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" style="background-image: url('{% static "data_hall/img/人工智能.jpg" %}');background-size: cover;" data-industry="人工智能">
-      <h3 class="text-lg font-bold mb-2 text-white">人工智能</h3>
-      <p class="text-sm text-gray-300">企业数：12,500</p>
+    {% for industry in industries %}
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" 
+         style="background-image: url('{% static "data_hall/img/"|add:industry.name|add:".jpg" %}');background-size: cover;" 
+         data-industry="{{ industry.name }}">
+      <h3 class="text-lg font-bold mb-2 text-white">{{ industry.name }}</h3>
+      <p class="text-sm text-gray-300">企业数：{{ industry.company_count }}</p>
     </div>
-    <!-- 卡片 2 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/医药生物.jpg" %}') ;background-size: cover;" data-industry="未来医疗">
-      <h3 class="text-lg font-bold mb-2">未来医疗</h3>
-      <p class="text-sm text-gray-300">企业数：8,200</p>
-    </div>
-    <!-- 卡片 3 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/物联网.jpg" %}'); background-size: cover;" data-industry="物联网">
-      <h3 class="text-lg font-bold mb-2">物联网</h3>
-      <p class="text-sm text-gray-300">企业数：6,700</p>
-    </div>
-    <!-- 卡片 4 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/数字经济.jpg" %}'); background-size: cover;" data-industry="数字经济">
-      <h3 class="text-lg font-bold mb-2">数字经济</h3>
-      <p class="text-sm text-gray-300">企业数：5,200</p>
-    </div>
-    <!-- 卡片 5 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/机器人.jpg" %}'); background-size: cover;" data-industry="机器人">
-      <h3 class="text-lg font-bold mb-2">机器人</h3>
-      <p class="text-sm text-gray-300">企业数：4,500</p>
-    </div>
-    <!-- 卡片 6 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/大数据.jpg" %}'); background-size: cover;" data-industry="大数据">
-      <h3 class="text-lg font-bold mb-2">大数据</h3>
-      <p class="text-sm text-gray-300">企业数：6,800</p>
-    </div>
-    <!-- 卡片 7 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/云计算.jpg" %}'); background-size: cover;" data-industry="云计算">
-      <h3 class="text-lg font-bold mb-2">云计算</h3>
-      <p class="text-sm text-gray-300">企业数：7,200</p>
-    </div>
-    <!-- 卡片 8 -->
-    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors" style="background-image: url('{% static "data_hall/img/半导体.jpg" %}'); background-size: cover;" data-industry="半导体">
-      <h3 class="text-lg font-bold mb-2">半导体</h3>
-      <p class="text-sm text-gray-300">企业数：5,900</p>
-    </div>
-    
+    {% endfor %}
   </div>
 </section>
 

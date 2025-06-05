@@ -1,0 +1,201 @@
+{"NodeLevel": 0, "NodeCode": "IC0001", "NodeName": "新能源汽车", "IndustryChainStype": 1, "IndustryChainStypeDesc": "上中下游型", "Children": [
+    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001001", "NodeName": "关键原材料、组件及生产设备", "NodeType": 1, "NodeLevel": 1, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 36955, "NodeNumDesc": "上游", "Children": [
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001006", "NodeName": "关键原材料", "NodeType": 1, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 35155, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001007", "NodeName": "锂矿", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 4, "ProductCode": "PRD0020297", "ProductName": "锂矿", "ParentNodeCode": "IC0001006", "IndustryChainStype": 1, "ProductDefine": "锂矿是指含有锂元素的矿石，主要来源于锂辉石、锂云母等矿石类型。锂作为一种重要的稀有金属，广泛应用于电池（尤其是电动汽车电池）、航空航天、陶瓷、玻璃、制药等领域。随着可再生能源和电动汽车行业的快速发展，锂的需求持续增长，市场空间巨大。锂矿的开采和加工对全球能源转型和绿色经济具有重要战略意义。", "CompanyCount": 109, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001008", "NodeName": "石墨", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 4, "ProductCode": "PRD0065394", "ProductName": "石墨", "ParentNodeCode": "IC0001006", "IndustryChainStype": 1, "ProductDefine": "石墨是一种非金属矿物，主要由碳元素组成，具有层状结构。它在自然界中以鳞片状和土状两种形态存在。石墨因其独特的导电、导热性能，以及良好的润滑性和化学稳定性，被广泛应用于电池、润滑剂、耐火材料、铅笔芯、原子能工业和高温密封等领域。全球石墨市场持续增长，尤其在新能源技术的发展中，如锂离子电池和燃料电池，石墨作为关键原料，其市场需求和应用前景十分广阔。", "CompanyCount": 3129, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001009", "NodeName": "聚偏氟乙烯", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 4, "ProductCode": "PRD0066271", "ProductName": "聚偏氟乙烯", "ParentNodeCode": "IC0001006", "IndustryChainStype": 1, "ProductDefine": "聚偏氟乙烯（Polyvinylidene Fluoride，简称PVDF）是一种高性能的氟聚合物，来源于化学合成。它以其卓越的耐化学性、耐热性、耐候性和电绝缘性而闻名，常用于工业领域的各种应用。PVDF广泛应用于化工管道、阀门、泵，以及电子行业的电线电缆、半导体设备，还常见于水处理膜和太阳能电池背板等。由于其独特的性能，聚偏氟乙烯在建筑、航空航天、汽车和医疗等行业也有一定的市场空间。", "CompanyCount": 27, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001010", "NodeName": "六氟磷酸锂", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 3, "ProductCode": "PRD0005429", "ProductName": "六氟磷酸锂", "ParentNodeCode": "IC0001006", "IndustryChainStype": 1, "ProductDefine": "六氟磷酸锂是一种无机化合物，化学式为LiPF6，是锂离子电池电解液的重要组成部分。它是通过氟化磷酸锂与六氟化硫反应制得的。六氟磷酸锂在电池行业中扮演着关键角色，因为它能溶解于多种有机溶剂，形成高离子导电的电解液，从而提高锂离子电池的性能，包括高电压、高能量密度和良好的循环稳定性。随着电动汽车和可再生能源存储系统的发展，六氟磷酸锂的市场需求持续增长，市场空间广阔。", "CompanyCount": 48, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001012", "NodeName": "橡塑制品", "NodeType": 2, "NodeLevel": 3, "NodeNum": 5, "NodeImportant": 5, "ProductCode": "PRD0059247", "ProductName": "橡塑制品", "ParentNodeCode": "IC0001006", "IndustryChainStype": 1, "ProductDefine": "橡塑制品是指以橡胶和塑料为主要原料，经过加工制成的各种产品。这些制品广泛应用于生活的各个领域，包括汽车工业、建筑行业、电线电缆、医疗设备、日常生活用品等。橡塑制品凭借其耐腐蚀、抗老化、绝缘性能好、重量轻、可塑性强等特点，具有很高的实用价值和市场潜力。全球橡塑制品市场持续增长，反映出其在现代工业和消费市场中的重要地位。", "CompanyCount": 31863, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001013", "NodeName": "电池材料", "NodeType": 1, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 351, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001014", "NodeName": "动力电池正极材料", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 2, "ProductCode": "PRD0111594", "ProductName": "动力电池正极材料", "ParentNodeCode": "IC0001013", "IndustryChainStype": 1, "ProductDefine": "动力电池正极材料是锂离子电池的关键组成部分，主要负责存储和释放电能。它通常由锂化合物构成，如锂镍钴锰氧化物（NMC）、锂镍钴铝氧化物（NCA）、磷酸铁锂（LFP）等。这些材料的选择直接影响电池的能量密度、循环寿命、安全性能和成本。随着电动汽车和可再生能源存储系统的快速发展，动力电池正极材料市场呈现出巨大的增长潜力。全球各大公司正在研发新的材料配方，以提高电池性能并降低对稀有金属的依赖，从而满足日益增长的市场需求和环保要求。", "CompanyCount": 49, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001015", "NodeName": "石墨负极材料", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0022707", "ProductName": "石墨负极材料", "ParentNodeCode": "IC0001013", "IndustryChainStype": 1, "ProductDefine": "石墨负极材料是锂离子电池的重要组成部分，主要由天然石墨或人造石墨制成。它在电池中起到存储和释放锂离子的作用，是电池充放电过程中的主要工作物质。石墨负极材料因其高比容量、良好的电化学稳定性和循环性能而广泛应用于消费电子、电动汽车和储能系统等领域。随着锂离子电池技术的发展，对石墨负极材料的性能要求不断提升，包括提高能量密度、延长循环寿命和优化安全性能等。全球石墨负极材料市场持续增长，受到新能源汽车和可再生能源存储需求的驱动，未来市场空间广阔。", "CompanyCount": 106, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001016", "NodeName": "动力电池隔膜材料", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0111595", "ProductName": "动力电池隔膜材料", "ParentNodeCode": "IC0001013", "IndustryChainStype": 1, "ProductDefine": "动力电池隔膜材料是锂离子电池的关键组件之一，位于电池的正负极之间，主要功能是隔离正负极，防止短路，同时允许离子在充放电过程中自由通过，以保证电池的正常工作。这种材料通常由微孔聚烯烃或陶瓷涂覆聚烯烃等高分子材料制成，具有良好的热稳定性和电解液吸附能力。隔膜的性能直接影响电池的安全性、循环寿命和能量密度，因此在新能源汽车、储能系统等领域的应用中具有重要价值。随着电动汽车市场的快速发展，动力电池隔膜材料的市场空间持续扩大，技术也在不断进步，以满足更高能量密度和更安全的电池需求。", "CompanyCount": 32, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001017", "NodeName": "电解液", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 3, "ProductCode": "PRD0111596", "ProductName": "电解液", "ParentNodeCode": "IC0001013", "IndustryChainStype": 1, "ProductDefine": "电解液是锂离子电池的关键组成部分，主要由高纯度的溶质、溶剂和添加剂组成。它在电池中起到离子导体的作用，允许正负极之间的锂离子自由移动，从而实现电池的充放电过程。电解液的性能直接影响电池的电导率、循环稳定性、安全性和低温性能。在新能源汽车、储能系统以及便携式电子设备等领域有广泛应用，市场空间随着全球锂离子电池需求的增长而持续扩大。", "CompanyCount": 172, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001018", "NodeName": "锂电设备", "NodeType": 2, "NodeLevel": 2, "NodeNum": 3, "NodeImportant": 4, "ProductCode": "PRD0015919", "ProductName": "锂电设备", "ParentNodeCode": "IC0001001", "IndustryChainStype": 1, "ProductDefine": "锂电设备是指用于锂离子电池制造过程中的专业设备，包括电芯生产、电池组装、电池检测等各个阶段。这些设备涵盖了搅拌机、涂布机、卷绕机、叠片机、注液机、化成柜、分容测试仪等，用于实现锂离子电池的材料混合、极片制作、电芯组装、电解液注入以及性能测试等关键步骤。锂电设备的先进性直接影响到电池的性能、一致性与生产效率，广泛应用于新能源汽车、储能系统、消费电子以及工业移动设备等领域，随着全球锂离子电池市场的快速增长，锂电设备市场拥有巨大的发展潜力和广阔的市场空间。", "CompanyCount": 455, "Children": []
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001019", "NodeName": "核心电子元器件", "NodeType": 1, "NodeLevel": 2, "NodeNum": 4, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 297, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001020", "NodeName": "IGBT模块", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 3, "ProductCode": "PRD0002751", "ProductName": "IGBT模块", "ParentNodeCode": "IC0001019", "IndustryChainStype": 1, "ProductDefine": "IGBT（Insulated Gate Bipolar Transistor）模块是一种电力电子器件，主要用于功率转换和控制。它结合了MOSFET的高速开关特性和双极晶体管的高电流密度及低饱和电压优点。IGBT模块通常由多个IGBT芯片与二极管、电阻、电容等元件集成在同一块基板上，形成一个完整的电力开关组件。广泛应用在工业控制、新能源、电力牵引、变频器、家电等领域，是实现高效能、低损耗电力系统的关键组件，具有广阔的市场空间和重要的技术地位。", "CompanyCount": 205, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001021", "NodeName": "汽车驱动芯片", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0111597", "ProductName": "汽车驱动芯片", "ParentNodeCode": "IC0001019", "IndustryChainStype": 1, "ProductDefine": "汽车驱动芯片是用于控制汽车电子系统的关键部件，它在汽车的电气化和智能化中起着核心作用。这类芯片通常包括微控制器（MCU）、电源管理芯片、传感器和执行器等，用于管理发动机、刹车系统、车载娱乐、自动驾驶功能等。随着电动汽车和高级驾驶辅助系统（ADAS）的发展，汽车驱动芯片的市场需求正在快速增长，市场空间巨大。这些芯片需要满足高温、高振动和安全性的严格要求，以确保汽车的稳定运行和乘客安全。", "CompanyCount": 45, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001022", "NodeName": "车载MCU", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0107253", "ProductName": "车载MCU", "ParentNodeCode": "IC0001019", "IndustryChainStype": 1, "ProductDefine": "车载MCU（Microcontroller Unit），即汽车微控制单元，是汽车电子系统中的核心组件，负责执行运算和控制任务，广泛应用于车辆的动力总成、车身控制、安全系统、信息娱乐等多个领域。随着汽车向电动化、智能化、网联化的快速发展，车载MCU的需求量和性能要求都在不断提升。车载MCU的价值体现在其对车辆性能、安全性和驾驶体验的显著影响。它们不仅提高了汽车的燃油效率和操控性能，还增强了车辆的安全性和舒适性。", "CompanyCount": 68, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001023", "NodeName": "电控系统组件", "NodeType": 1, "NodeLevel": 2, "NodeNum": 5, "NodeImportant": 2, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 751, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001024", "NodeName": "汽车逆变器", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 2, "ProductCode": "PRD0111598", "ProductName": "车载逆变器", "ParentNodeCode": "IC0001023", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 61, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001026", "NodeName": "新能源汽车电机控制器", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 2, "ProductCode": "PRD0111600", "ProductName": "新能源汽车电机控制器", "ParentNodeCode": "IC0001023", "IndustryChainStype": 1, "ProductDefine": "新能源汽车电机控制器是电动汽车核心部件之一，它负责协调和管理电动车辆的动力系统。该控制器接收来自驾驶者的指令，然后调节电机的转速和扭矩，以驱动汽车或为电池充电。它采用先进的电力电子技术和控制算法，确保高效、平稳的车辆运行，并优化能源消耗。随着新能源汽车市场的快速发展，电机控制器的市场需求持续增长，具有广阔的市场空间和重要的环保价值。", "CompanyCount": 109, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001027", "NodeName": "汽车传感器", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 4, "ProductCode": "PRD0008425", "ProductName": "汽车传感器", "ParentNodeCode": "IC0001023", "IndustryChainStype": 1, "ProductDefine": "汽车传感器是汽车电子系统的重要组成部分，用于监测汽车各项运行参数，如速度、温度、压力、位置、气体浓度等。这些传感器收集的数据帮助车载电脑进行精确控制，确保引擎性能、排放控制、安全驾驶及舒适性。随着汽车智能化的发展，汽车传感器的种类和应用日益广泛，包括氧传感器、曲轴位置传感器、ABS传感器、温度传感器等，市场前景广阔，是现代汽车工业不可或缺的技术产品。", "CompanyCount": 590, "Children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001002", "NodeName": "核心零部件及整车制造", "NodeType": 1, "NodeLevel": 1, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 56483, "NodeNumDesc": "中游", "Children": [
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001004", "NodeName": "核心零部件", "NodeType": 1, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001002", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 41594, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001028", "NodeName": "汽车动力电池", "NodeType": 1, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001004", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 1342, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001029", "NodeName": "磷酸铁锂电池", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "PRD0002580", "ProductName": "磷酸铁锂电池", "ParentNodeCode": "IC0001028", "IndustryChainStype": 1, "ProductDefine": "磷酸铁锂电池是一种采用磷酸铁锂作为正极材料的锂离子电池。这种电池因其安全性高、循环寿命长、热稳定性好以及环保无污染的特性而被广泛应用于电动汽车、储能系统、电动工具和便携式电子设备等领域。磷酸铁锂电池的额定电压通常为3.2V，能量密度介于150-180Wh/kg，尽管其能量密度相对较低，但凭借其优秀的安全性能和经济性，尤其是在大型储能和动力应用中，磷酸铁锂电池市场前景广阔。", "CompanyCount": 242, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001030", "NodeName": "三元锂电池", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 1, "ProductCode": "PRD0000338", "ProductName": "三元锂电池", "ParentNodeCode": "IC0001028", "IndustryChainStype": 1, "ProductDefine": "三元锂电池是一种采用镍钴锰或镍钴铝为正极材料的锂离子电池，因其正极材料的化学成分主要由三种金属元素构成，故称为三元。这类电池具有高能量密度、长寿命、良好的温度性能和高充电效率等特点。广泛应用于电动汽车、无人机、笔记本电脑、智能手机等消费电子产品，以及储能系统中。随着新能源汽车市场的快速发展，三元锂电池的市场需求和市场空间持续扩大，成为全球电池技术发展的重要方向。", "CompanyCount": 82, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001031", "NodeName": "镍氢电池", "NodeType": 2, "NodeLevel": 4, "NodeNum": 3, "NodeImportant": 5, "ProductCode": "PRD0015722", "ProductName": "镍氢电池", "ParentNodeCode": "IC0001028", "IndustryChainStype": 1, "ProductDefine": "镍氢电池是一种二次电池（可充电电池），其主要构成包括镍氢负极、氢氧化镍正极和碱性电解质。这种电池的起源可以追溯到20世纪80年代，是镍镉电池的升级版，具有更高的能量密度和更少的环境污染。镍氢电池广泛应用于各种电子设备，如手机、照相机、电动工具以及混合动力汽车。尽管已经被锂离子电池在某些领域中取代，但在需要高功率输出和耐高温的设备中，镍氢电池仍具有优势。全球市场对镍氢电池的需求依然存在，尤其是在特定的工业和汽车应用中。", "CompanyCount": 520, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001032", "NodeName": "燃料电池", "NodeType": 2, "NodeLevel": 4, "NodeNum": 4, "NodeImportant": 5, "ProductCode": "PRD0004882", "ProductName": "燃料电池", "ParentNodeCode": "IC0001028", "IndustryChainStype": 1, "ProductDefine": "燃料电池是一种将化学能直接转化为电能的装置，具有高效率、低污染的特点。燃料电池的燃料来源多样，包括氢气、甲醇、天然气等。燃料电池的价值在于其高能量转换效率和环境友好性。目前，燃料电池技术正处于快速发展阶段。未来，燃料电池的发展趋势预计将呈现成本降低、技术进步、基础设施建设完善以及在更多领域的应用推广。预计到2029年，中国燃料电池市场规模将超过150亿元。随着技术的进步和成本的降低，燃料电池有望在交通、能源、军事等多个领域得到更广泛的应用。", "CompanyCount": 587, "Children": []
+                            }
+                        ]
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001033", "NodeName": "电动汽车驱动电机", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 2, "ProductCode": "PRD0012414", "ProductName": "电动汽车驱动电机", "ParentNodeCode": "IC0001004", "IndustryChainStype": 1, "ProductDefine": "电动汽车驱动电机是电动汽车的核心部件之一，它将电能转化为机械能，驱动车辆行驶。这种电机通常采用永磁同步电机或交流异步电机技术，具有高效率、高扭矩密度和宽速域等特点。它的工作性能直接影响电动汽车的加速性能、续航里程和驾驶体验。随着电动汽车市场的快速发展，驱动电机的市场需求持续增长，各大制造商不断研发创新，以满足更高能量效率、更小体积和更低成本的要求。", "CompanyCount": 77, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001034", "NodeName": "永磁同步电机", "NodeType": 3, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001033", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001035", "NodeName": "交流异步电机", "NodeType": 3, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 4, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001033", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": []
+                            }
+                        ]
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001036", "NodeName": "新能源汽车电子控制系统", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 2, "ProductCode": "PRD0111601", "ProductName": "新能源汽车电子控制系统", "ParentNodeCode": "IC0001004", "IndustryChainStype": 1, "ProductDefine": "新能源汽车电子控制系统是专门为电动汽车和混合动力汽车设计的核心组件，它集成了动力系统、电池管理系统、充电系统和驱动电机控制系统等。该系统通过高效管理能源流动，确保车辆的性能、安全和续航能力。它利用先进的传感器和算法，实现对车辆动力、能耗、温度等关键参数的实时监控和智能调节，优化驾驶体验。随着新能源汽车市场的快速发展，该系统的市场空间巨大，是汽车制造商和科技公司竞相研发的关键技术之一。", "CompanyCount": 368, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001037", "NodeName": "其他零部件", "NodeType": 1, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001004", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 40179, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001038", "NodeName": "汽车底盘系统", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 3, "ProductCode": "PRD0020773", "ProductName": "汽车底盘系统", "ParentNodeCode": "IC0001037", "IndustryChainStype": 1, "ProductDefine": "汽车底盘系统是汽车的重要组成部分，主要包括传动系统、行驶系统、转向系统和制动系统。它承载着汽车的发动机、变速器等主要部件，将动力传递到车轮，使汽车能够行驶。底盘系统负责车辆的操控稳定性、行驶安全性和舒适性。其设计和性能直接影响汽车的驾驶性能和整体质量。随着汽车技术的发展，底盘系统也在向智能化、轻量化和高效能方向进化，以满足现代汽车对节能减排和驾驶体验的需求。", "CompanyCount": 10428, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001039", "NodeName": "汽车电子电气系统", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0017095", "ProductName": "汽车电子电气系统", "ParentNodeCode": "IC0001037", "IndustryChainStype": 1, "ProductDefine": "汽车电子电气系统是现代汽车的核心组成部分，它整合了电子技术、计算机技术、通信技术和控制技术。系统包括电源、配电、车载网络、电子控制单元（ECU）、传感器、执行器等部件，用于管理发动机性能、安全系统、车载娱乐、导航、自动驾驶等功能。随着汽车智能化和电动化的趋势，汽车电子电气系统的复杂性和重要性日益提升，市场空间广阔，是汽车技术创新的关键领域。", "CompanyCount": 15950, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001040", "NodeName": "车轮及轮胎", "NodeType": 2, "NodeLevel": 4, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0021147", "ProductName": "车轮及轮胎", "ParentNodeCode": "IC0001037", "IndustryChainStype": 1, "ProductDefine": "车轮及轮胎是汽车的重要组成部分，车轮主要负责支撑车辆并传递发动机的动力，使车辆能够行驶。轮胎是车轮的橡胶部分，它与路面接触，提供牵引力和缓冲，确保行驶安全和舒适。轮胎根据用途可分为轿车轮胎、卡车轮胎、越野轮胎等，其性能指标包括耐磨性、抓地力、排水性等。全球轮胎市场庞大，受汽车产量、道路条件和消费者安全意识影响，持续稳定增长，同时，随着环保和节能要求的提高，低滚动阻力和绿色轮胎的发展趋势明显。", "CompanyCount": 12995, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001041", "NodeName": "汽车车身件", "NodeType": 2, "NodeLevel": 4, "NodeNum": 4, "NodeImportant": 3, "ProductCode": "PRD0020201", "ProductName": "汽车车身件", "ParentNodeCode": "IC0001037", "IndustryChainStype": 1, "ProductDefine": "汽车车身件是指构成汽车车身结构的各种零部件，包括车身覆盖件（如车门、引擎盖、后备箱盖等）和车身结构件（如车架、翼子板、车顶等）。这些部件主要由金属或复合材料制成，旨在提供车身的形状、保护车内乘客并确保车辆的结构强度和安全性。车身件不仅影响汽车的外观设计，还对空气动力学性能、碰撞防护以及车辆的重量和燃油效率有重要影响。汽车车身件市场随着汽车产量的增长和技术的进步（如轻量化材料的应用）而持续发展，具有广阔的市场空间和创新潜力。", "CompanyCount": 1811, "Children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001005", "NodeName": "新能源汽车整车", "NodeType": 2, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0016697", "ProductName": "新能源汽车整车", "ParentNodeCode": "IC0001002", "IndustryChainStype": 1, "ProductDefine": "新能源汽车整车是指采用非传统燃油动力系统的汽车，主要包括纯电动汽车、插电式混合动力汽车和燃料电池汽车等。这些车辆利用电力、太阳能、氢能等清洁能源作为动力来源，旨在减少对化石燃料的依赖，降低尾气排放，实现环保和可持续的交通方式。随着电池技术的进步和政策支持，新能源汽车市场在全球范围内迅速扩张，拥有巨大的市场潜力和应用价值，是未来汽车行业的重要发展方向。", "CompanyCount": 15245, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001042", "NodeName": "新能源乘用车", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "PRD0111602", "ProductName": "新能源乘用车", "ParentNodeCode": "IC0001005", "IndustryChainStype": 1, "ProductDefine": "新能源乘用车主要指采用非常规的车用燃料，如电力、氢气、太阳能等，以及先进的车辆动力系统技术的汽车。它们以低排放、高能效和可持续发展为特点，包括电动汽车（BEV）、插电式混合动力汽车（PHEV）和燃料电池汽车（FCEV）等类型。新能源乘用车在全球范围内受到政策支持和市场追捧，旨在减少对化石燃料的依赖，降低交通领域的碳排放，推动绿色出行。随着电池技术的进步和充电基础设施的完善，这一市场的增长潜力巨大，预计未来将在全球汽车市场中占据越来越重要的地位。", "CompanyCount": 129, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001043", "NodeName": "纯电动乘用车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "PRD0058204", "ProductName": "纯电动乘用车", "ParentNodeCode": "IC0001042", "IndustryChainStype": 1, "ProductDefine": "纯电动乘用车是一种以电力为驱动能源的私人交通工具，它不依赖燃油，而是通过车载电池储存的电能来运行。这种车辆通常配备高能量密度的锂离子电池，具有零排放、低运行成本和安静驾驶的优点。随着电池技术的进步和环保政策的推动，纯电动乘用车在全球市场中的接受度和销量正在迅速增长，尤其在城市交通中成为一种可持续的出行解决方案。它们不仅有助于减少空气污染，还在降低碳排放、应对气候变化方面发挥着重要作用。", "CompanyCount": 93, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001044", "NodeName": "混合动力乘用车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 1, "ProductCode": "PRD0111603", "ProductName": "混合动力乘用车", "ParentNodeCode": "IC0001042", "IndustryChainStype": 1, "ProductDefine": "混合动力乘用车是一种结合了传统内燃机和电动机的车辆，它利用电池和发动机共同驱动，以实现更高的燃油效率和更低的排放。这种车辆可以在行驶过程中回收能量，为电池充电，无需外部充电设施。混合动力乘用车提供了更环保的出行选择，尤其适合城市驾驶，既能节省燃油成本，又能减少对环境的影响。在全球环保法规日益严格的背景下，混合动力乘用车市场具有广阔的发展空间和潜力。", "CompanyCount": 34, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001045", "NodeName": "燃料电池乘用车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0074183", "ProductName": "燃料电池乘用车", "ParentNodeCode": "IC0001042", "IndustryChainStype": 1, "ProductDefine": "燃料电池乘用车是一种使用氢气和空气中的氧通过燃料电池堆发生化学反应产生电力驱动的汽车。核心价值在于其清洁能源特性，有助于减少温室气体排放，对抗气候变化。目前，燃料电池乘用车在全球范围内仍处于市场导入阶段，以韩国、日本和中国为代表，各国正通过政策支持和技术研发推动其商业化进程。未来，燃料电池乘用车的发展预计将聚焦于提高燃料电池性能、降低成本、加快基础设施建设以及推动商业模式创新。", "CompanyCount": 13, "Children": []
+                            }
+                        ]
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001046", "NodeName": "新能源客车", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 2, "ProductCode": "PRD0111604", "ProductName": "新能源客车", "ParentNodeCode": "IC0001005", "IndustryChainStype": 1, "ProductDefine": "新能源客车是一种采用非传统化石燃料为动力来源的公共交通工具，主要包括电动客车（纯电动、插电式混合动力）、燃料电池客车以及天然气客车等。这类客车旨在减少尾气排放，降低环境污染，符合全球可持续发展的趋势。它们广泛应用于城市公交、长途客运和企事业单位通勤，受益于政府政策支持和环保意识提升，市场前景广阔，是未来公共交通的重要发展方向。", "CompanyCount": 153, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001047", "NodeName": "纯电动客车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 2, "ProductCode": "PRD0058211", "ProductName": "纯电动客车", "ParentNodeCode": "IC0001046", "IndustryChainStype": 1, "ProductDefine": "纯电动客车是一种以电动机为动力来源，完全依赖电池进行驱动的公共交通工具。它不排放任何尾气，具有环保、节能、低噪音的特点，是实现绿色交通的重要解决方案。此类客车通常配备高能量密度的锂离子电池，通过充电站进行充电。它们广泛应用于城市公交、景区接驳、学校通勤等领域，随着电池技术的进步和政策支持，市场前景广阔，是全球新能源汽车市场中的重要组成部分。", "CompanyCount": 87, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001048", "NodeName": "燃料电池客车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 2, "ProductCode": "PRD0074241", "ProductName": "燃料电池客车", "ParentNodeCode": "IC0001046", "IndustryChainStype": 1, "ProductDefine": "燃料电池客车是一种采用氢燃料电池作为动力源的公共交通工具。它结合了传统客车的车身结构与燃料电池技术，通过氢气与氧气的化学反应产生电能，驱动电动机工作，排放物仅为水，实现了零排放和高效能。燃料电池客车具有低噪音、高能效、环保等优点，是未来绿色交通的重要解决方案，尤其在大城市和可持续发展城市中具有广阔的应用前景和市场空间。随着技术的进步和氢能基础设施的完善，燃料电池客车在全球范围内正逐渐被推广和应用。", "CompanyCount": 34, "Children": []
+                            }
+                        ]
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001049", "NodeName": "新能源货车", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0111605", "ProductName": "新能源货车", "ParentNodeCode": "IC0001005", "IndustryChainStype": 1, "ProductDefine": "新能源货车是一种采用电力、氢能、太阳能等清洁能源作为动力来源的货运车辆，旨在减少碳排放和环境污染。这些车辆通常配备先进的电池系统或燃料电池，具有低运行成本、零尾气排放和高效能的特点。随着全球对环保和可持续发展的重视，新能源货车的市场空间正在迅速扩大，尤其在城市配送、物流和邮政服务等领域应用广泛，成为未来交通运输行业的重要发展方向。", "CompanyCount": 150, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001050", "NodeName": "新能源专用车", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 3, "ProductCode": "PRD0111606", "ProductName": "新能源专用车", "ParentNodeCode": "IC0001005", "IndustryChainStype": 1, "ProductDefine": "新能源专用车是指采用非传统化石燃料，如电力、氢燃料电池、天然气等清洁能源为动力来源的专用汽车。这类车辆通常具有环保、节能、低噪音的特点，广泛应用于物流、环卫、邮政、公交等领域。随着全球对环保和可持续发展的重视，新能源专用车的市场前景广阔，不仅有助于减少空气污染，还能降低运营成本，是未来交通运输行业的重要发展方向。", "CompanyCount": 294, "Children": [
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001051", "NodeName": "新能源物流车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 4, "ProductCode": "PRD0111607", "ProductName": "新能源物流车", "ParentNodeCode": "IC0001050", "IndustryChainStype": 1, "ProductDefine": "新能源物流车是指采用电力、氢燃料电池等清洁能源作为动力来源的物流运输车辆。它们通常具有零排放、低运营成本和高效能的特点，是环保和可持续发展政策下的重要交通工具。这类车辆广泛应用于城市配送、快递服务、零售业供应链等物流领域，有效降低了城市空气污染，同时在某些国家和地区享受政策优惠，如购车补贴、免费或优先停车等。随着全球对环保要求的提高和电池技术的进步，新能源物流车的市场空间正在迅速扩大，有望成为未来物流行业的主流趋势。", "CompanyCount": 71, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001053", "NodeName": "新能源环卫车", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 4, "ProductCode": "PRD0111609", "ProductName": "新能源环卫车", "ParentNodeCode": "IC0001050", "IndustryChainStype": 1, "ProductDefine": "新能源环卫车是采用电力、氢能、太阳能等清洁能源为动力来源的环境卫生车辆，主要用于城市街道的清扫、垃圾收集与运输、路面洒水等工作。这类产品结合了环保与科技，旨在减少传统燃油环卫车对环境的污染，降低运营成本，提高工作效率。随着全球对环保和可持续发展的重视，新能源环卫车市场正逐步扩大，不仅在一线城市得到广泛应用，也在逐渐渗透到二三线城市及乡村地区，为建设绿色、智能的城市环境贡献力量。", "CompanyCount": 74, "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001003", "NodeName": "服务及应用", "NodeType": 1, "NodeLevel": 1, "NodeNum": 3, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 2069436, "NodeNumDesc": "下游", "Children": [
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001059", "NodeName": "汽车服务", "NodeType": 2, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 5, "ProductCode": "PRD0008542", "ProductName": "汽车服务", "ParentNodeCode": "IC0001003", "IndustryChainStype": 1, "ProductDefine": "汽车服务是指一系列围绕汽车的维护、保养、修理和提升的业务，包括常规的机油更换、轮胎更换、故障维修，以及保险、二手车交易、汽车美容、改装升级等。这些服务旨在确保车辆的正常运行，提高驾驶安全，延长汽车寿命，并满足车主个性化的需求。随着汽车行业的不断发展，汽车服务市场呈现出巨大的潜力和广阔的市场空间，同时，随着科技的进步，如车联网、移动维修等创新服务模式也在逐渐兴起，为消费者提供更加便捷和高效的汽车服务体验。", "CompanyCount": 2045404, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001054", "NodeName": "新能源汽车经销服务", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 4, "ProductCode": "PRD0012028", "ProductName": "新能源汽车经销服务", "ParentNodeCode": "IC0001059", "IndustryChainStype": 1, "ProductDefine": "新能源汽车经销服务专注于销售和推广电动汽车、插电式混合动力汽车等环保型汽车。该服务涵盖了从车型展示、试驾体验、购车咨询、金融方案到售后服务等一系列环节，旨在为消费者提供便捷、全面的购车体验。随着全球对减少碳排放和可持续发展的重视，新能源汽车市场正迅速扩张，拥有巨大的增长潜力和广阔的市场空间。", "CompanyCount": 509, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001061", "NodeName": "汽车修理与维护", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 5, "ProductCode": "PRD0059199", "ProductName": "汽车修理与维护", "ParentNodeCode": "IC0001059", "IndustryChainStype": 1, "ProductDefine": "汽车修理与维护是指对汽车进行故障诊断、修复以及定期保养的一系列服务。它涵盖了从简单的机油更换、轮胎旋转到复杂的发动机修复、刹车系统检查等各个方面。这些服务旨在确保车辆的性能、安全性和耐用性，预防潜在问题，延长汽车的使用寿命。随着汽车保有量的增加，汽车修理与维护市场呈现出巨大的发展空间，同时，随着技术的进步，如数字化诊断工具和环保维修方法的引入，该行业正逐步走向现代化和绿色化。", "CompanyCount": 228390, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001062", "NodeName": "汽车金融服务", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 5, "ProductCode": "PRD0008617", "ProductName": "汽车金融服务", "ParentNodeCode": "IC0001059", "IndustryChainStype": 1, "ProductDefine": "汽车金融服务是指由金融机构或汽车金融公司提供的与购车、用车相关的各种金融服务，包括购车贷款、汽车租赁、保险服务、二手车融资等。这类服务旨在帮助消费者解决购车资金问题，促进汽车销售，同时也为经销商和制造商提供资金流转支持。汽车金融服务在现代社会中扮演着重要角色，通过灵活的金融方案满足不同消费者的需求，推动了汽车市场的繁荣和发展。", "CompanyCount": 1702, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001063", "NodeName": "新能源汽车充电及换电", "NodeType": 1, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001003", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 118217, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001064", "NodeName": "新能源汽车充换电设备", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 3, "ProductCode": "PRD0111614", "ProductName": "新能源汽车充换电设备", "ParentNodeCode": "IC0001063", "IndustryChainStype": 1, "ProductDefine": "新能源汽车充换电设备是为电动汽车提供能量补给的关键设施，包括充电桩、充电站和电池更换站等。这些设备利用电力为电动汽车的电池进行充电，支持快速和慢速充电模式，满足不同用户需求。随着新能源汽车市场的快速发展，充换电设备行业也呈现出巨大的增长潜力。它们不仅有助于解决电动汽车的续航焦虑，还对推动绿色交通、减少碳排放起到重要作用。全球各地政府都在推动相关基础设施建设，以促进新能源汽车的普及和应用。", "CompanyCount": 563, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001065", "NodeName": "新能源汽车充电服务", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0012612", "ProductName": "新能源汽车充电服务", "ParentNodeCode": "IC0001063", "IndustryChainStype": 1, "ProductDefine": "新能源汽车充电服务是针对电动汽车的能源补给解决方案，包括公共充电桩、私人充电桩安装及运营、充电APP等。服务涵盖快速充电、慢速充电等多种模式，满足不同用户需求。通过智能化的充电网络，用户可以便捷地查找、预约和支付充电服务。随着新能源汽车市场的快速发展，充电服务市场潜力巨大，是推动绿色出行、减少碳排放的关键基础设施。", "CompanyCount": 89125, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001066", "NodeName": "动力电池回收利用", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 4, "ProductCode": "PRD0111615", "ProductName": "动力电池回收利用", "ParentNodeCode": "IC0001063", "IndustryChainStype": 1, "ProductDefine": "动力电池回收利用是指对电动汽车等新能源车辆使用过的电池进行回收、拆解、处理和再利用的过程。这一过程旨在减少环境污染，最大化资源利用率，以及提取和回收有价值的金属元素，如锂、钴、镍等。随着电动汽车市场的快速发展，动力电池回收利用的市场空间日益扩大，成为可持续发展和循环经济的重要组成部分。该行业不仅有助于减少对新材料的需求，降低生产成本，同时也有助于解决废弃电池处理的环境问题。", "CompanyCount": 30251, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001067", "NodeName": "应用领域", "NodeType": 3, "NodeLevel": 2, "NodeNum": 3, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001003", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": [
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001068", "NodeName": "公交汽车客运", "NodeType": 3, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001067", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001069", "NodeName": "网约车客运", "NodeType": 3, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001067", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0001", "IndustryChainName": "新能源汽车", "NodeCode": "IC0001070", "NodeName": "出租车客运", "NodeType": 3, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0001067", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 0, "Children": []
+                    }
+                ]
+            }
+        ]
+    }
+], "CompanyCount": 2143142, "IndustryChainName": "新能源汽车", "IndustryChainDefine": "新能源汽车是指使用可再生能源或非化石燃料、或仍使用常规车用燃料但采用新型动力装置作为能源的汽车，基于动力系统区别，一般有纯电动汽车、增程式电动汽车、插电式混合动力汽车、燃料电池汽车等产品类型。新能源汽车产业链上游主要包括锂矿、石墨矿、金属及非金属材料以及各电子器件等制造整车与重要零部件所需的原材料，中游涵盖核心的“三电系统”与其他零部件、整车制造，下游则主要是为新能源汽车日常运行、流通等提供的充换电服务、经销及维保服务。目前新能源汽车全球销量约1500万辆、中国独占约60%的份额且渗透率突破40%，产品上则是以纯电动汽车、充电模式为主；未来，预计短期内中国新能源汽车市场将持续繁荣，同时围绕动力系统以及充换电效率提升的技术革新将是行业发展关键。", "AreaCompanyInfo": [
+    {"Value": "GD", "Count": 278158, "Desc": "广东省", "Items": [
+            {"Value": "roundCount", "Count": 426, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 125, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 869, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 1675, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "SD", "Count": 193743, "Desc": "山东省", "Items": [
+            {"Value": "roundCount", "Count": 114, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 31, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 648, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 1086, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "JS", "Count": 145884, "Desc": "江苏省", "Items": [
+            {"Value": "roundCount", "Count": 330, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 64, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 545, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 1616, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "ZJ", "Count": 118548, "Desc": "浙江省", "Items": [
+            {"Value": "roundCount", "Count": 265, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 92, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 560, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 1339, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "HB", "Count": 113796, "Desc": "河北省", "Items": [
+            {"Value": "roundCount", "Count": 25, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 10, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 189, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 420, "Desc": "高新技术"
+            }
+        ]
+    }
+]
+}

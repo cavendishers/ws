@@ -103,3 +103,107 @@ class CompanyFinancing(models.Model):
         return f"{self.company.company_name} - {self.financing_round} - {self.financing_date}"
 
 
+
+#新增产业链数据模型
+class IndustryChain(models.Model):
+    """产业链模型 (对应industry_chain表)"""
+    name = models.CharField("产业链名称", max_length=255, unique=True)
+    code = models.CharField("产业链代码", max_length=20, unique=True, help_text="例如：IC0076")
+    description = models.TextField("描述", blank=True)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "产业链"
+        verbose_name_plural = "产业链"
+        db_table = "industry_chain"  # 显式指定表名
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['code'])
+        ]  # 名称和代码索引优化查询
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+    
+    @property
+    def company_count(self):
+        """
+        计算该产业链下所有链点关联的企业数量
+        通过ChainPointCompany表计算，去重后的企业总数
+        """
+        from django.db.models import Count
+        # 获取所有关联到此产业链的链点的公司ID（去重）
+        company_count = ChainPointCompany.objects.filter(
+            chain_point__industry_chain=self
+        ).values('company').distinct().count()
+        return company_count
+
+class ChainPoint(models.Model):
+    """链点模型 (对应chain_point表)"""
+    
+    name = models.CharField("链点名称", max_length=255)
+    code = models.CharField("节点代码", max_length=20, unique=True, help_text="例如：IC0076001")
+    level = models.CharField("层级", max_length=255)
+    parent = models.ForeignKey(
+        'self', 
+        verbose_name="父链点",
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='children'  # 支持反向查询子节点
+    )
+    industry_chain = models.ForeignKey(
+        IndustryChain, 
+        verbose_name="所属产业链",
+        on_delete=models.CASCADE,
+        related_name='chain_points'
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "链点"
+        verbose_name_plural = "链点"
+        db_table = "chain_point"
+        indexes = [
+            models.Index(fields=['level']),  # 层级索引
+            models.Index(fields=['parent']),  # 父节点索引
+            models.Index(fields=['code'])     # 节点代码索引
+        ]
+
+    def __str__(self):
+        return f"{self.code}-{self.name}"
+    
+    @property
+    def company_count(self):
+        """
+        计算该链点关联的企业数量
+        """
+        return self.companies.count()
+
+class ChainPointCompany(models.Model):
+    """链点-公司关联模型 (对应chain_point_company表)"""
+    chain_point = models.ForeignKey(
+        ChainPoint, 
+        verbose_name="链点",
+        on_delete=models.CASCADE,
+        related_name='companies'
+    )
+    company = models.ForeignKey(
+        CompanyInfo, 
+        verbose_name="公司",
+        on_delete=models.CASCADE,
+        related_name='chain_points'
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "链点-公司关联"
+        verbose_name_plural = "链点-公司关联"
+        db_table = "chain_point_company"
+        indexes = [
+            models.Index(fields=['chain_point', 'company'])  # 复合索引
+        ]
+
+    def __str__(self):
+        return f"{self.chain_point} ← {self.company}"

@@ -1,0 +1,662 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}{{ industry_name }}产业链图谱 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+    :root {
+        --primary: #0A1A3A;
+        --secondary: #FFD700;
+        --secondary-rgb: 255, 215, 0;
+        --accent: #00C1D4;
+        --accent-rgb: 0, 193, 212;
+        --card-bg: #132144;
+        --input-bg: #1A2B5E;
+        --text-primary-light: #FFFFFF;
+        --text-secondary-light: #D0D7E0;
+        --text-muted-light: #a0aec0;
+        --border-light: rgba(255, 255, 255, 0.15);
+        
+        /* 图谱特定颜色 */
+        --upstream-color: #2952A3;
+        --upstream-light-color: #598AE8;
+        --upstream-bg-title: #1e3a5f;
+        --upstream-border-accent: #2952A3;
+
+        --midstream-color: #1D6631;
+        --midstream-light-color: #388E3C;
+        --midstream-bg-title: #1a3b2b;
+        --midstream-border-accent: #1D6631;
+
+        --downstream-color: #7A5F1E;
+        --downstream-light-color: #A1887F;
+        --downstream-bg-title: #3b311c;
+        --downstream-border-accent: #7A5F1E;
+    }
+
+    /* 图表特定样式 */
+    .chart-view-options {
+        padding: 0px 0px;
+        background-color: var(--card-bg);
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+    }
+
+    .view-option {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-light);
+        padding: 6px 12px;
+        margin-left: -1px;
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text-secondary-light);
+    }
+    .view-option:first-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        margin-left: 0;
+    }
+    .view-option:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+    .view-option.active {
+        background-color: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+    .view-option:hover:not(.active) {
+        background-color: rgba(255,255,255,0.1);
+    }
+
+    .graph-main-content-wrapper {
+        display: flex;
+        flex-grow: 1;
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+    }
+
+    #chart-zoom-pan-container {
+        flex-grow: 1;
+        overflow: auto;
+        position: relative;
+        cursor: grab;
+        background-color: var(--primary);
+        border-radius: 4px;
+        min-height: 600px;
+    }
+
+    #industry-chain-container {
+        display: flex;
+        padding: 40px;
+        gap: 30px;
+        min-width: min-content;
+        transform-origin: 0 0;
+        transition: transform 0.1s ease-out;
+        position: relative;
+    }
+
+    .industry-column {
+        min-width: 320px;
+        padding: 0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-self: flex-start;
+        background-color: var(--primary);
+    }
+    .industry-column .column-title-container {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .industry-column .column-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--text-primary-light);
+        padding: 8px 15px;
+        display: inline-block;
+    }
+
+    /* 列特定背景 */
+    .upstream-column .column-title-container { background-color: var(--upstream-bg-title); }
+    .midstream-column .column-title-container { background-color: var(--midstream-bg-title); }
+    .downstream-column .column-title-container { background-color: var(--downstream-bg-title); }
+
+    .node-level-1 {
+        color: var(--text-primary-light);
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 16px;
+    }
+    .upstream-column .node-level-1 { background-color: var(--upstream-color); }
+    .midstream-column .node-level-1 { background-color: var(--midstream-color); }
+    .downstream-column .node-level-1 { background-color: var(--downstream-color); }
+
+    .node-level-2 {
+        color: var(--text-primary-light);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 10px;
+    }
+    .upstream-column .node-level-2 { background-color: var(--upstream-light-color); }
+    .midstream-column .node-level-2 { background-color: var(--midstream-light-color); }
+    .downstream-column .node-level-2 { background-color: var(--downstream-light-color); }
+
+    .node-level-1-items-container,
+    .node-level-2-items-container,
+    .node-level-3-items-container {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-light);
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .node-level-3, .node-level-4 {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary-light);
+        padding: 8px 10px;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 13px;
+    }
+    .node-level-3:hover, .node-level-4:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .horizontal-group-parent > .node-level-2-items-container,
+    .horizontal-group-parent > .node-level-3-items-container {
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    .horizontal-group-parent > .node-level-2-items-container > .node-level-3,
+    .horizontal-group-parent > .node-level-3-items-container > .node-level-4 {
+        flex-grow: 1;
+        min-width: 100px;
+    }
+
+    .arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: var(--text-muted-light);
+        align-self: flex-start;
+        padding-top: 180px;
+        min-width: 40px;
+    }
+
+    /* 侧边栏操作 */
+    .graph-sidebar-actions {
+        width: 70px;
+        background-color: var(--card-bg);
+        border-left: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+        margin-left: 20px;
+        border-radius: 4px;
+        height: fit-content;
+    }
+    .graph-sidebar-icon-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .graph-sidebar-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        color: var(--text-secondary-light);
+        font-size: 11px;
+        text-align: center;
+        width: 100%;
+        padding: 8px 0;
+    }
+    .graph-sidebar-item i {
+        width: 22px;
+        height: 22px;
+        margin-bottom: 4px;
+    }
+    .graph-sidebar-item:hover {
+        color: var(--accent);
+    }
+
+    /* 页脚 */
+    .graph-footer {
+        background-color: var(--card-bg);
+        text-align: center;
+        padding: 15px;
+        font-size: 12px;
+        color: var(--text-muted-light);
+        border-top: 1px solid var(--border-light);
+        margin-top: 1.5rem;
+    }
+    
+    .section-card {
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary-light);
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-4">
+    <!-- 产业链图谱 -->
+    <section class="section-card" id="industry-chain-section">
+        <h2 class="section-title">
+            <i class="fas fa-project-diagram text-[var(--accent)]"></i>
+            <span>{{ industry_name }}产业链图谱</span>
+        </h2>
+
+        <!-- 视图选项 -->
+        <div class="chart-view-options">
+            <button class="view-option active">框架图</button>
+            <button class="view-option">树状图</button>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="graph-main-content-wrapper mt-4">
+            <div id="chart-zoom-pan-container">
+                <div id="industry-chain-container">
+                    <!-- 图谱内容由JS动态生成 -->
+                </div>
+            </div>
+
+            <aside class="graph-sidebar-actions">
+                <div class="graph-sidebar-icon-group">
+                    <div class="graph-sidebar-item" title="指示器">
+                        <svg class="gauge-svg-placeholder" viewBox="0 0 50 50" width="22" height="22" style="fill:currentColor">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="4"/>
+                            <path d="M25 5 A20 20 0 0 1 43.3 16.7" fill="none" stroke="currentColor" stroke-width="4"/>
+                            <circle cx="25" cy="25" r="3" fill="currentColor"/>
+                            <line x1="25" y1="25" x2="43" y2="17" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>指示器</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="刷新">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>刷新</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="全屏">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        <span>全屏</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="去水印">
+                        <i class="fas fa-tint-slash"></i>
+                        <span>去水印</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="下载">
+                        <i class="fas fa-download"></i>
+                        <span>下载</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="保存">
+                        <i class="fas fa-save"></i>
+                        <span>保存</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+    
+    <!-- 页脚信息 -->
+    <footer class="graph-footer">
+        以上数据基于公开信息分析挖掘的成果，仅供参考，不构成任何明示或暗示的观点或保证。
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 产业链数据 
+const graphData = {
+    "Children": [
+        {
+            "NodeName": "上游",
+            "NodeLevel": 0,
+            "NodeNumDesc": "上游",
+            "Children": [
+                {
+                    "NodeName": "基础设施",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "计算资源",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "CPU/GPU", "NodeLevel": 3},
+                                {"NodeName": "服务器", "NodeLevel": 3},
+                                {"NodeName": "云计算平台", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "存储资源",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "数据中心", "NodeLevel": 3},
+                                {"NodeName": "存储设备", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "NodeName": "核心元器件",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "传感器",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "图像传感器", "NodeLevel": 3},
+                                {"NodeName": "声音传感器", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "芯片",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "AI芯片", "NodeLevel": 3},
+                                {"NodeName": "专用芯片", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "NodeName": "中游",
+            "NodeLevel": 0,
+            "NodeNumDesc": "中游",
+            "Children": [
+                {
+                    "NodeName": "技术平台",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "数据处理",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "数据清洗", "NodeLevel": 3},
+                                {"NodeName": "数据标注", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "模型框架",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "开源框架", "NodeLevel": 3},
+                                {"NodeName": "商业框架", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "NodeName": "算法研发",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "机器学习",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "监督学习", "NodeLevel": 3},
+                                {"NodeName": "无监督学习", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "深度学习",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "神经网络", "NodeLevel": 3},
+                                {"NodeName": "强化学习", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "NodeName": "下游",
+            "NodeLevel": 0,
+            "NodeNumDesc": "下游",
+            "Children": [
+                {
+                    "NodeName": "应用服务",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "行业应用",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "智能制造", "NodeLevel": 3},
+                                {"NodeName": "智慧医疗", "NodeLevel": 3},
+                                {"NodeName": "智慧金融", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "消费应用",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "智能助手", "NodeLevel": 3},
+                                {"NodeName": "智能家居", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "NodeName": "解决方案",
+                    "NodeLevel": 1,
+                    "Children": [
+                        {
+                            "NodeName": "系统集成",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "行业解决方案", "NodeLevel": 3},
+                                {"NodeName": "定制化开发", "NodeLevel": 3}
+                            ]
+                        },
+                        {
+                            "NodeName": "咨询服务",
+                            "NodeLevel": 2,
+                            "Children": [
+                                {"NodeName": "战略咨询", "NodeLevel": 3},
+                                {"NodeName": "技术咨询", "NodeLevel": 3}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('industry-chain-container');
+    const zoomPanContainer = document.getElementById('chart-zoom-pan-container');
+
+    if (!graphData || !graphData.Children) {
+        console.error('graphData is not defined or has no Children property.');
+        container.innerHTML = '<p style="color:red; text-align:center;">Error: Graph data not found.</p>';
+        return;
+    }
+    
+    renderGraph(graphData.Children, container);
+
+    let scale = 1;
+    let panning = false;
+    let pointX = 0;
+    let pointY = 0;
+    let start = { x: 0, y: 0 };
+    let translateX = 0;
+    let translateY = 0;
+
+    function setTransform() {
+        container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    zoomPanContainer.onmousedown = function (e) {
+        e.preventDefault();
+        start = { x: e.clientX - translateX, y: e.clientY - translateY };
+        panning = true;
+        zoomPanContainer.style.cursor = 'grabbing';
+    };
+
+    zoomPanContainer.onmouseup = function () {
+        panning = false;
+        zoomPanContainer.style.cursor = 'grab';
+    };
+
+    zoomPanContainer.onmouseleave = function () { // Stop panning if mouse leaves container
+        panning = false;
+        zoomPanContainer.style.cursor = 'grab';
+    };
+
+    zoomPanContainer.onmousemove = function (e) {
+        e.preventDefault();
+        if (!panning) {
+            return;
+        }
+        translateX = e.clientX - start.x;
+        translateY = e.clientY - start.y;
+        setTransform();
+    };
+
+    zoomPanContainer.onwheel = function (e) {
+        e.preventDefault();
+        const xs = (e.clientX - translateX) / scale;
+        const ys = (e.clientY - translateY) / scale;
+        const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+
+        (delta > 0) ? (scale *= 1.1) : (scale /= 1.1);
+        scale = Math.min(Math.max(0.2, scale), 4); // Min 0.2x, Max 4x zoom
+
+        translateX = e.clientX - xs * scale;
+        translateY = e.clientY - ys * scale;
+
+        setTransform();
+    };
+
+    // 添加视图选项的点击事件
+    const viewOptions = document.querySelectorAll('.view-option');
+    viewOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            viewOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+
+function renderGraph(nodes, parentElement) {
+    const mainColumnsData = {
+        "上游": [],
+        "中游": [],
+        "下游": []
+    };
+
+    // Group top-level nodes by their NodeNumDesc
+    nodes.forEach(node => {
+        if (node.NodeNumDesc && mainColumnsData[node.NodeNumDesc]) {
+            mainColumnsData[node.NodeNumDesc].push(node);
+        } else {
+            // Fallback or error handling if NodeNumDesc is unexpected
+            console.warn("Node with unexpected NodeNumDesc:", node.NodeNumDesc, node);
+        }
+    });
+    
+    const columnOrder = ["上游", "中游", "下游"];
+    columnOrder.forEach((columnName, index) => {
+        if (mainColumnsData[columnName].length > 0) {
+            const columnDiv = createColumn(columnName);
+            mainColumnsData[columnName].forEach(node => {
+                // NodeLevel 1 items are the main blocks within a column
+                const nodeElement = createNodeElement(node);
+                columnDiv.appendChild(nodeElement);
+            });
+            parentElement.appendChild(columnDiv);
+        }
+        // Add arrow if not the last column
+        if (index < columnOrder.length - 1 && mainColumnsData[columnOrder[index+1]].length > 0) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
+            arrow.innerHTML = '→';
+            parentElement.appendChild(arrow);
+        }
+    });
+}
+
+function createColumn(title) {
+    const columnDiv = document.createElement('div');
+    let columnClass = '';
+    if (title === '上游') columnClass = 'upstream-column';
+    else if (title === '中游') columnClass = 'midstream-column';
+    else if (title === '下游') columnClass = 'downstream-column';
+    
+    columnDiv.className = `industry-column ${columnClass}`;
+
+    const titleContainer = document.createElement('div');
+    titleContainer.className = 'column-title-container';
+    const titleEl = document.createElement('span');
+    titleEl.className = 'column-title';
+    titleEl.textContent = title;
+    titleContainer.appendChild(titleEl);
+    columnDiv.appendChild(titleContainer);
+    
+    return columnDiv;
+}
+
+function createNodeElement(nodeData) {
+    const nodeElement = document.createElement('div');
+    nodeElement.className = `node-level-${nodeData.NodeLevel}`;
+    nodeElement.textContent = nodeData.NodeName;
+
+    if (nodeData.Children && nodeData.Children.length > 0) {
+        const childrenContainer = document.createElement('div');
+        childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
+
+        nodeData.Children.forEach(childNode => {
+            const childElement = createNodeElement(childNode);
+            childrenContainer.appendChild(childElement);
+        });
+        nodeElement.appendChild(childrenContainer);
+    }
+    return nodeElement;
+}
+</script>
+{% endblock %}

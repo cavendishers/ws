@@ -8,6 +8,10 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from openai import OpenAI
+from django.views.decorators.http import require_http_methods
+from .models import IndustryChain, ChainPoint
+
+
 
 def index(request):
     """首页视图"""
@@ -794,6 +798,8 @@ def logout(request):
     
 def industry_detail(request, industry_name=None):
     """产业链详情页面"""
+    import json
+    
     # 如果没有指定产业名称，则默认为'新能源汽车'
     if not industry_name:
         industry_name = request.GET.get('industry', '新能源汽车')
@@ -808,11 +814,106 @@ def industry_detail(request, industry_name=None):
     # 如果指定的产业链名称不在数据库中，使用第一个可用的产业链
     if industry_name not in available_industries:
         industry_name = available_industries[0]
+    
+    # 获取产业链ID
+    industry_chain = IndustryChain.objects.filter(name=industry_name).first()
+    
+    # 如果找不到对应的产业链，返回空数据
+    chain_data = {"Children": []}
+    
+    if industry_chain:
+        # 获取该产业链的所有链点
+        all_chain_points = ChainPoint.objects.filter(industry_chain=industry_chain)
         
+        # 构建链点层级结构
+        # 首先找出顶级节点（parent为空的节点），按id排序
+        top_level_nodes = all_chain_points.filter(parent__isnull=True).order_by('id')
+        
+        # 预处理：将所有节点按level分组
+        nodes_by_level = {}
+        for point in all_chain_points:
+            level = point.level
+            if level not in nodes_by_level:
+                nodes_by_level[level] = []
+            nodes_by_level[level].append(point)
+        
+        # 根据顶级节点的顺序确定上中下游
+        upstream_nodes = []
+        midstream_nodes = []
+        downstream_nodes = []
+        
+        # 如果有至少3个顶级节点，则按顺序分配为上中下游
+        if len(top_level_nodes) >= 3:
+            # 第一个顶级节点及其子树为上游
+            upstream_nodes.append(build_node_tree(top_level_nodes[0], all_chain_points))
+            
+            # 第二个顶级节点及其子树为中游
+            midstream_nodes.append(build_node_tree(top_level_nodes[1], all_chain_points))
+            
+            # 剩余的顶级节点及其子树为下游
+            for i in range(2, len(top_level_nodes)):
+                downstream_nodes.append(build_node_tree(top_level_nodes[i], all_chain_points))
+        
+        # 如果只有2个顶级节点，则分配为上游和中游
+        elif len(top_level_nodes) == 2:
+            upstream_nodes.append(build_node_tree(top_level_nodes[0], all_chain_points))
+            midstream_nodes.append(build_node_tree(top_level_nodes[1], all_chain_points))
+        
+        # 如果只有1个顶级节点，则分配为上游
+        elif len(top_level_nodes) == 1:
+            upstream_nodes.append(build_node_tree(top_level_nodes[0], all_chain_points))
+        
+        # 构建最终的链点树结构
+        chain_data = {
+            "Children": [
+                {
+                    "NodeName": "上游",
+                    "NodeLevel": 0,
+                    "NodeNumDesc": "上游",
+                    "Children": upstream_nodes
+                },
+                {
+                    "NodeName": "中游",
+                    "NodeLevel": 0,
+                    "NodeNumDesc": "中游",
+                    "Children": midstream_nodes
+                },
+                {
+                    "NodeName": "下游",
+                    "NodeLevel": 0,
+                    "NodeNumDesc": "下游",
+                    "Children": downstream_nodes
+                }
+            ]
+        }
+    
+    # 将chain_data转换为JSON字符串
+    chain_data_json = json.dumps(chain_data)
+    
     # 构建上下文数据
     context = {
         'industry_name': industry_name,
         'available_industries': available_industries,  # 传递所有可用的产业链名称到模板
+        'chain_data': chain_data_json,  # 传递产业链数据到模板
     }
     
     return render(request, 'data_hall/industry_detail.html', context)
+
+def build_node_tree(node, all_nodes):
+    """递归构建节点树"""
+    # 找出当前节点的所有子节点
+    children = [n for n in all_nodes if n.parent_id == node.id]
+    
+    # 构建当前节点的数据结构
+    node_data = {
+        "NodeName": node.name,
+        "NodeLevel": int(node.level) if node.level.isdigit() else 1,  # 确保NodeLevel是整数
+        "Children": []
+    }
+    
+    # 递归处理所有子节点
+    for child in children:
+        child_data = build_node_tree(child, all_nodes)
+        node_data["Children"].append(child_data)
+    
+    return node_data

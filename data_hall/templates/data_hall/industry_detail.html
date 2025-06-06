@@ -299,7 +299,7 @@
                 <div id="industry-chain-container">
                     <!-- 图谱内容由JS动态生成 -->
                 </div>
-            </div>
+            </div> 
 
             <aside class="graph-sidebar-actions">
                 <div class="graph-sidebar-icon-group">
@@ -346,166 +346,8 @@
 
 {% block extra_js %}
 <script>
-// 产业链数据 
-const graphData = {
-    "Children": [
-        {
-            "NodeName": "上游",
-            "NodeLevel": 0,
-            "NodeNumDesc": "上游",
-            "Children": [
-                {
-                    "NodeName": "基础设施",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "计算资源",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "CPU/GPU", "NodeLevel": 3},
-                                {"NodeName": "服务器", "NodeLevel": 3},
-                                {"NodeName": "云计算平台", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "存储资源",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "数据中心", "NodeLevel": 3},
-                                {"NodeName": "存储设备", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "NodeName": "核心元器件",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "传感器",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "图像传感器", "NodeLevel": 3},
-                                {"NodeName": "声音传感器", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "芯片",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "AI芯片", "NodeLevel": 3},
-                                {"NodeName": "专用芯片", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "NodeName": "中游",
-            "NodeLevel": 0,
-            "NodeNumDesc": "中游",
-            "Children": [
-                {
-                    "NodeName": "技术平台",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "数据处理",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "数据清洗", "NodeLevel": 3},
-                                {"NodeName": "数据标注", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "模型框架",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "开源框架", "NodeLevel": 3},
-                                {"NodeName": "商业框架", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "NodeName": "算法研发",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "机器学习",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "监督学习", "NodeLevel": 3},
-                                {"NodeName": "无监督学习", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "深度学习",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "神经网络", "NodeLevel": 3},
-                                {"NodeName": "强化学习", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "NodeName": "下游",
-            "NodeLevel": 0,
-            "NodeNumDesc": "下游",
-            "Children": [
-                {
-                    "NodeName": "应用服务",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "行业应用",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "智能制造", "NodeLevel": 3},
-                                {"NodeName": "智慧医疗", "NodeLevel": 3},
-                                {"NodeName": "智慧金融", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "消费应用",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "智能助手", "NodeLevel": 3},
-                                {"NodeName": "智能家居", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "NodeName": "解决方案",
-                    "NodeLevel": 1,
-                    "Children": [
-                        {
-                            "NodeName": "系统集成",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "行业解决方案", "NodeLevel": 3},
-                                {"NodeName": "定制化开发", "NodeLevel": 3}
-                            ]
-                        },
-                        {
-                            "NodeName": "咨询服务",
-                            "NodeLevel": 2,
-                            "Children": [
-                                {"NodeName": "战略咨询", "NodeLevel": 3},
-                                {"NodeName": "技术咨询", "NodeLevel": 3}
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+// 从后端获取产业链数据
+const graphData = JSON.parse('{{ chain_data|escapejs }}');
 
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('industry-chain-container');
@@ -659,4 +501,5 @@ function createNodeElement(nodeData) {
     return nodeElement;
 }
 </script>
+
 {% endblock %}

@@ -491,6 +491,25 @@ function createNodeElement(nodeData) {
     if (nodeData.Children && nodeData.Children.length > 0) {
         const childrenContainer = document.createElement('div');
         childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
+        
+        // 判断是否需要水平排列
+        let shouldUseHorizontalLayout = false;
+        
+        // 如果子节点数量较多(大于等于3个)，或者子节点都是叶子节点(没有孩子)则使用水平布局
+        if (nodeData.Children.length >= 3) {
+            shouldUseHorizontalLayout = true;
+        } else if (nodeData.Children.length >= 2) {
+            // 检查子节点是否都是叶子节点或者子节点的子节点数量很少
+            const allLeafOrFewGrandchildren = nodeData.Children.every(child => 
+                !child.Children || child.Children.length <= 2
+            );
+            shouldUseHorizontalLayout = allLeafOrFewGrandchildren;
+        }
+        
+        // 应用水平布局样式
+        if (shouldUseHorizontalLayout) {
+            nodeElement.classList.add('horizontal-group-parent');
+        }
 
         nodeData.Children.forEach(childNode => {
             const childElement = createNodeElement(childNode);

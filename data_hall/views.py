@@ -814,7 +814,7 @@ def industry_detail(request, industry_name=None):
     # 如果指定的产业链名称不在数据库中，使用第一个可用的产业链
     if industry_name not in available_industries:
         industry_name = available_industries[0]
-    
+        
     # 获取产业链ID
     industry_chain = IndustryChain.objects.filter(name=industry_name).first()
     

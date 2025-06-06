@@ -1,0 +1,173 @@
+{"NodeLevel": 0, "NodeCode": "IC0026", "NodeName": "人工智能", "IndustryChainStype": 1, "IndustryChainStypeDesc": "上中下游型", "Children": [
+    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026001", "NodeName": "人工智能基础层", "NodeType": 1, "NodeLevel": 1, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 117210, "NodeNumDesc": "上游", "Children": [
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026007", "NodeName": "基础硬件", "NodeType": 1, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 20254, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026008", "NodeName": "人工智能芯片", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 3, "ProductCode": "PRD0108415", "ProductName": "人工智能芯片", "ParentNodeCode": "IC0026007", "IndustryChainStype": 1, "ProductDefine": "人工智能芯片，也称为AI芯片，是专门设计用于加速机器学习和深度学习任务的处理器。这些芯片能够高效地处理大量的数据，提高计算效率，降低能耗。它们广泛应用于数据中心、云计算、自动驾驶、智能手机、物联网设备等领域，以支持图像识别、语音识别、自然语言处理等各种智能应用。随着人工智能技术的快速发展，人工智能芯片市场具有巨大的增长潜力和广阔的市场空间，各大科技公司纷纷投入研发，以抢占行业高地。", "CompanyCount": 697, "Children": [
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026045", "NodeName": "CPU芯片", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 3, "ProductCode": "PRD0023211", "ProductName": "CPU芯片", "ParentNodeCode": "IC0026008", "IndustryChainStype": 1, "ProductDefine": "CPU（中央处理器）芯片是计算机的核心组件，负责执行计算机程序并处理各种数据。它作为计算机的大脑，控制着系统的运行，执行算术、逻辑运算以及系统管理任务。CPU由控制单元、算术逻辑单元和高速缓存等部分组成，其性能通常以时钟频率和核心数量来衡量。随着技术的发展，CPU在个人电脑、服务器以及移动设备中扮演着至关重要的角色，市场空间广阔，竞争激烈，主要制造商包括英特尔、AMD和ARM等公司。", "CompanyCount": 182, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026009", "NodeName": "GPU(图形处理器)", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0107371", "ProductName": "GPU(图形处理器)", "ParentNodeCode": "IC0026008", "IndustryChainStype": 1, "ProductDefine": "GPU，全称为Graphics Processing Unit，即图形处理器，是由NVIDIA公司首次提出的专门用于处理图形和并行计算的处理器。GPU主要负责处理计算机图形和视频处理任务，显著加速了这些任务的执行速度。在游戏、图形设计、科学计算、人工智能等领域有广泛应用。随着技术的发展，GPU已不仅仅局限于图形处理，还在深度学习、高性能计算等方面展现出强大的计算能力，成为现代计算机系统中的关键组件。", "CompanyCount": 136, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026010", "NodeName": "复杂可编程逻辑器件(FPGA)", "NodeType": 2, "NodeLevel": 4, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0112376", "ProductName": "复杂可编程逻辑器件(FPGA)", "ParentNodeCode": "IC0026008", "IndustryChainStype": 1, "ProductDefine": "复杂可编程逻辑器件（Field-Programmable Gate Array，简称FPGA）是一种高性能、高灵活性的集成电路，允许用户根据需求自定义电路。FPGA由可编程逻辑块和互连资源组成，用户可以通过编程来配置这些块以实现特定的逻辑功能。这种器件广泛应用于各种领域，如通信、数据中心、人工智能、航空航天、工业控制和消费电子等，由于其快速原型验证、并行处理能力和低延迟特性，常被用作定制化硬件解决方案，尤其是在需要快速响应和高效计算的场景中。FPGA市场持续增长，随着技术的进步，其在计算加速、5G通信和物联网等新兴领域的应用前景广阔。", "CompanyCount": 169, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026011", "NodeName": "ASIC(特殊应用IC)", "NodeType": 2, "NodeLevel": 4, "NodeNum": 4, "NodeImportant": 3, "ProductCode": "PRD0107335", "ProductName": "ASIC(特殊应用IC)", "ParentNodeCode": "IC0026008", "IndustryChainStype": 1, "ProductDefine": "ASIC（Application-Specific Integrated Circuit）是特殊应用集成电路，设计用于执行特定的电子功能。不同于通用的集成电路，ASIC是为特定用户或特定设备定制的，提供更高的性能、效率和保密性。它们广泛应用于各种领域，如比特币挖矿、通信设备、消费电子、医疗设备和航空航天等，由于其高度定制化，ASIC在满足独特需求和降低系统成本方面具有显著优势。", "CompanyCount": 51, "Children": []
+                            }
+                        ]
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026012", "NodeName": "传感器", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 4, "ProductCode": "PRD0007618", "ProductName": "传感器", "ParentNodeCode": "IC0026007", "IndustryChainStype": 1, "ProductDefine": "传感器是一种能够检测到特定信号并将其转换为可传输、处理或控制的信号的装置。它广泛应用于各个领域，如工业自动化、环境监测、医疗健康、物联网等。传感器的种类繁多，包括温度传感器、压力传感器、光学传感器、声音传感器等，每种传感器都有其特定的用途，例如温度传感器用于测量温度，光学传感器用于捕捉光信号。随着科技的发展，传感器在提高效率、保障安全和推动智能化方面发挥着越来越重要的作用，市场潜力巨大，是现代信息技术的重要组成部分。", "CompanyCount": 16044, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026046", "NodeName": "服务器", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0004794", "ProductName": "服务器", "ParentNodeCode": "IC0026007", "IndustryChainStype": 1, "ProductDefine": "服务器是一种高性能的计算机，作为网络中的节点，专门提供计算服务和数据存储。它通常拥有更高的处理能力和存储容量，用于处理来自多个客户端的请求，支持企业级应用、网站托管、大数据分析、云计算等场景。服务器在企业运营、互联网服务和数据中心中扮演着核心角色，是信息基础设施的重要组成部分，具有稳定、安全、高效的特点。", "CompanyCount": 3601, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026004", "NodeName": "算力及数据支撑", "NodeType": 1, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026001", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 97709, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026005", "NodeName": "云计算服务", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 2, "ProductCode": "PRD0007801", "ProductName": "云计算服务", "ParentNodeCode": "IC0026004", "IndustryChainStype": 1, "ProductDefine": "云计算服务是一种基于互联网的计算方式，通过共享计算资源而不是本地服务器或个人设备来处理应用。它包括基础设施即服务（IaaS）、平台即服务（PaaS）和软件即服务（SaaS），提供计算、存储、数据库、分析、网络等多元化服务。用户可以按需获取资源，扩展或缩减业务规模，降低运维成本，提高效率。云计算服务广泛应用于企业IT、大数据处理、应用程序开发、人工智能等领域，市场空间广阔，是现代科技发展的重要驱动力之一。", "CompanyCount": 87540, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026047", "NodeName": "隐私计算", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0143946", "ProductName": "隐私计算", "ParentNodeCode": "IC0026004", "IndustryChainStype": 1, "ProductDefine": "隐私计算是一种新兴的技术，它旨在保护数据隐私的同时进行数据计算和分析。该技术通过加密算法，使得数据在使用、共享和处理过程中保持加密状态，只有拥有特定密钥的授权方才能解密并访问数据内容。隐私计算在保障数据安全、防止数据泄露的同时，促进了跨机构的数据协作和价值挖掘，广泛应用在金融、医疗、互联网等多个领域，为实现数据资产化和合规数据流通提供了解决方案。", "CompanyCount": 48, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026048", "NodeName": "边缘计算", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0143947", "ProductName": "边缘计算", "ParentNodeCode": "IC0026004", "IndustryChainStype": 1, "ProductDefine": "边缘计算是一种计算架构，它将数据处理和应用程序服务从云中心移至网络的边缘，即数据生成的源头附近。这种技术旨在减少延迟，提高响应速度，同时减少对核心网络和云资源的依赖。边缘计算在物联网（IoT）、自动驾驶、远程医疗、工业自动化等领域有广泛应用，通过提供实时分析和决策，增强了数据的安全性和隐私性，并优化了对时间敏感的业务流程。随着5G网络的普及，边缘计算的市场空间将进一步扩大，成为未来智能城市和智能设备间交互的关键技术。", "CompanyCount": 52, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026049", "NodeName": "IDC服务", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 4, "ProductCode": "PRD0012034", "ProductName": "IDC服务", "ParentNodeCode": "IC0026004", "IndustryChainStype": 1, "ProductDefine": "IDC（Internet Data Center）服务，即互联网数据中心服务，是提供服务器托管、云计算、大数据存储与分析、网络安全、带宽租赁等一站式解决方案的服务。IDC服务帮助企业或组织将关键业务系统迁移到云端，提高数据安全性，降低运维成本，并实现灵活的资源扩展。它广泛应用于互联网、金融、医疗、教育、制造业等多个行业，是数字化转型和云计算基础设施的重要组成部分。", "CompanyCount": 3932, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026013", "NodeName": "数据服务", "NodeType": 1, "NodeLevel": 3, "NodeNum": 5, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026004", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 7158, "Children": [
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026014", "NodeName": "数据采集服务", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 4, "ProductCode": "PRD0012333", "ProductName": "数据采集服务", "ParentNodeCode": "IC0026013", "IndustryChainStype": 1, "ProductDefine": "数据采集服务是一种专业解决方案，旨在从各种在线和离线源收集、整理和分析大量数据。它涵盖了网络爬虫、API接口调用、传感器数据收集等多种方式，帮助企业和研究人员获取所需的信息。这些服务通常包括数据清洗、结构化处理，以及提供实时或定期的数据更新。数据采集服务广泛应用于市场研究、竞争对手分析、用户行为分析、行业趋势洞察等领域，对于决策支持和业务优化具有重要价值。", "CompanyCount": 971, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026015", "NodeName": "数据管理", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 4, "ProductCode": "PRD0082909", "ProductName": "数据管理", "ParentNodeCode": "IC0026013", "IndustryChainStype": 1, "ProductDefine": "数据管理是一种系统性的过程，它涉及到收集、存储、保护、组织、访问和分析数据，以支持业务决策和运营。这一过程涵盖了数据治理、数据质量、数据集成、数据仓库、大数据管理、数据安全和隐私等多个方面。数据管理确保数据的准确性、一致性、可靠性和及时性，帮助企业提高运营效率，发现市场趋势，优化决策，并符合法规要求。在数字化时代，数据管理已成为各类组织战略规划的关键组成部分，具有广阔的市场应用空间和价值。", "CompanyCount": 740, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026050", "NodeName": "数据统计分析服务", "NodeType": 2, "NodeLevel": 4, "NodeNum": 3, "NodeImportant": 4, "ProductCode": "PRD0012313", "ProductName": "数据统计分析服务", "ParentNodeCode": "IC0026013", "IndustryChainStype": 1, "ProductDefine": "数据统计分析服务是一种专业化的解决方案，它利用先进的统计方法和人工智能技术对大量数据进行深入挖掘和解读。该服务旨在帮助企业和组织理解其业务运营、市场趋势以及客户行为，以便做出更明智的决策。服务内容可能包括数据收集、清洗、建模、预测和可视化，广泛应用于金融、零售、医疗、互联网等多个行业，为提升效率、优化策略和发现潜在机会提供强有力的支持。", "CompanyCount": 5522, "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026002", "NodeName": "人工智能技术层", "NodeType": 1, "NodeLevel": 1, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 897, "NodeNumDesc": "中游", "Children": [
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026016", "NodeName": "技术", "NodeType": 1, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026002", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 673, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026017", "NodeName": "机器学习算法", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "PRD0114324", "ProductName": "机器学习算法", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "机器学习算法是一种人工智能技术，它使计算机系统能够从数据中学习和改进，而无需显式编程。这些算法通过识别数据中的模式和趋势，形成预测模型，用于解决分类、回归、聚类、异常检测等问题。应用广泛，包括图像识别、自然语言处理、推荐系统、金融风险评估等。随着大数据和计算能力的提升，机器学习算法在各行业中发挥着越来越重要的作用，市场空间巨大且持续增长。", "CompanyCount": 26, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026018", "NodeName": "类脑算法", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 2, "ProductCode": "PRD0060180", "ProductName": "类脑算法", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "类脑算法是模仿人脑神经网络结构和信息处理机制的计算模型，是人工智能领域的前沿研究方向。类脑算法在图像识别、自然语言处理、机器学习等领域具有潜在的应用价值。随着计算能力的提升和神经科学的进步，类脑算法有望在智能计算领域实现更多突破。", "CompanyCount": 7, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026051", "NodeName": "自然语言处理", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 3, "ProductCode": "PRD0143928", "ProductName": "自然语言处理", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "自然语言处理是一种人工智能技术，旨在使计算机能够理解、解释和生成人类日常使用的自然语言。它涉及语音识别、语义分析、句法解析、机器翻译和情感分析等多个领域。自然语言处理广泛应用于智能助手、聊天机器人、文本挖掘、信息检索、社交媒体分析和自动翻译等场景，极大地提高了效率并增强了人机交互的自然度。随着大数据和深度学习的发展，自然语言处理技术在不断进步，市场应用前景广阔。", "CompanyCount": 63, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026023", "NodeName": "语音识别", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 2, "ProductCode": "PRD0060183", "ProductName": "语音识别", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "语音识别是一种人工智能技术，它能够将人类的口头语言转化为文字或指令。这项技术基于复杂的算法和机器学习模型，能够理解和解析多种语言及方言。语音识别广泛应用于智能助手（如Siri、Alexa）、语音搜索、自动驾驶汽车、电话客服、医疗记录、教育软件以及各种无障碍技术中，极大地提高了交互效率和便利性。随着技术的不断进步，其准确性和应用场景也在持续扩大，市场潜力巨大。", "CompanyCount": 289, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026024", "NodeName": "计算机视觉", "NodeType": 2, "NodeLevel": 3, "NodeNum": 5, "NodeImportant": 1, "ProductCode": "PRD0083040", "ProductName": "计算机视觉", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "计算机视觉是一门多领域交叉学科，它利用图像处理、机器学习和深度学习等技术，使计算机和软件系统能够识别、理解和解释数字图像或视频中的视觉信息。该技术主要用于自动检测和识别物体、人脸识别、图像分类、图像分割、光学字符识别（OCR）等应用场景。计算机视觉在自动驾驶、安防监控、医疗诊断、零售业、社交媒体和娱乐等领域具有广阔的应用价值和市场空间。", "CompanyCount": 244, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026053", "NodeName": "知识图谱平台", "NodeType": 2, "NodeLevel": 3, "NodeNum": 6, "NodeImportant": 2, "ProductCode": "PRD0017931", "ProductName": "知识图谱平台", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "知识图谱平台是一种先进的数据管理和分析工具，它结合了人工智能和大数据技术，用于构建、存储和管理复杂的关系网络。该平台提供了一种结构化的方式来组织和链接各种信息，如实体、属性和关系，形成一个可视化的知识网络。它帮助企业、研究机构和个人从海量数据中提取深度见解，支持智能搜索、决策支持、自动推理和个性化推荐等应用。知识图谱平台在行业中的应用广泛，包括但不限于金融、医疗、教育、科研和信息技术，为行业决策者提供智能解决方案，提升数据驱动的决策效率和精度。", "CompanyCount": 34, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026054", "NodeName": "自动驾驶算法", "NodeType": 2, "NodeLevel": 3, "NodeNum": 7, "NodeImportant": 3, "ProductCode": "PRD0085657", "ProductName": "自动驾驶算法", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "自动驾驶算法是一种基于人工智能的复杂计算程序，它使车辆能够在无需人工操作的情况下进行安全驾驶。该算法结合了机器学习、计算机视觉、传感器融合、导航和控制理论等多种技术，能够识别环境、做出决策并执行驾驶动作。它在交通识别、障碍物避障、路线规划和实时数据分析等方面具有广泛应用，旨在提高交通安全、优化交通流量并减少人为错误。随着汽车行业向智能化转型，自动驾驶算法的市场空间巨大，未来将在共享出行、物流配送、智能交通系统等多个领域发挥关键作用。", "CompanyCount": 39, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026059", "NodeName": "机器翻译", "NodeType": 2, "NodeLevel": 3, "NodeNum": 8, "NodeImportant": 3, "ProductCode": "PRD0143929", "ProductName": "机器翻译", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "机器翻译是利用计算机程序将一种自然语言文本自动转换为另一种自然语言文本的技术。它源于人工智能领域，通过深度学习、神经网络和语言模型等方法，不断提升翻译质量和效率。机器翻译广泛应用于内容本地化、文档翻译、跨语言沟通等多个场景，有效降低了人力翻译的成本，扩大了信息交流的范围。尽管目前仍存在语义理解、文化差异等问题，但随着技术的进步，机器翻译在国际交流和商业应用中扮演着越来越重要的角色。", "CompanyCount": 28, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026060", "NodeName": "内容推荐算法", "NodeType": 2, "NodeLevel": 3, "NodeNum": 9, "NodeImportant": 3, "ProductCode": "PRD0143930", "ProductName": "内容推荐算法", "ParentNodeCode": "IC0026016", "IndustryChainStype": 1, "ProductDefine": "内容推荐算法是一种基于大数据和机器学习的技术，用于分析用户的行为、兴趣和偏好，然后在适当的时间向用户推送最相关、最可能感兴趣的内容。这种算法广泛应用于社交媒体、电子商务、新闻平台和流媒体服务等领域，旨在提高用户满意度，增加用户粘性，提升转化率和广告收入。通过不断学习和优化，内容推荐算法能够精准匹配用户需求，发掘潜在市场，为个性化体验提供强大支持。", "CompanyCount": 14, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026055", "NodeName": "平台与工具", "NodeType": 1, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026002", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 255, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026056", "NodeName": "人工智能开放平台", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 2, "ProductCode": "PRD0143944", "ProductName": "人工智能开放平台", "ParentNodeCode": "IC0026055", "IndustryChainStype": 1, "ProductDefine": "人工智能开放平台是一个综合性的技术服务平台，它将人工智能技术如机器学习、深度学习、自然语言处理等，以API或SDK的形式开放给开发者和企业。该平台通常提供数据集、模型训练、算法开发、应用集成等一站式服务，旨在降低AI应用的开发门槛，推动技术创新和业务发展。通过这个平台，开发者可以快速构建和部署智能应用，企业则能利用AI提升效率、优化用户体验，市场空间广阔，涵盖了医疗、教育、金融、零售等多个行业。", "CompanyCount": 11, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026052", "NodeName": "人工智能大模型", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 1, "ProductCode": "PRD0143931", "ProductName": "人工智能大模型", "ParentNodeCode": "IC0026055", "IndustryChainStype": 1, "ProductDefine": "人工智能大模型是一种先进的机器学习模型，其规模庞大，包含数十亿甚至数千亿的参数。这些模型通过深度学习技术训练而成，能够处理复杂的语言、图像和多模态数据。它们在自然语言处理（NLP）、计算机视觉、语音识别等领域展现出强大的性能，能够执行各种任务，如对话生成、文本理解、翻译、问答系统等。人工智能大模型的应用范围广泛，包括智能助手、自动驾驶、医疗诊断、金融风险评估等，极大地推动了人工智能的发展和各行业的数字化转型。随着技术的进步，这些模型的计算效率和精度持续提升，市场潜力巨大，是当前科技创新的重要驱动力之一。", "CompanyCount": 249, "Children": [
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026057", "NodeName": "通用大模型", "NodeType": 2, "NodeLevel": 4, "NodeNum": 1, "NodeImportant": 1, "ProductCode": "PRD0143932", "ProductName": "通用大模型", "ParentNodeCode": "IC0026052", "IndustryChainStype": 1, "ProductDefine": "通用大模型是一种人工智能技术，通常指的是经过大规模数据训练的预训练语言模型。这类模型具有广泛的知识和理解能力，能够处理各种自然语言处理任务，如问答、文本生成、情感分析等。通过在海量文本数据上学习，通用大模型能够理解和适应各种语境，为用户提供智能化的服务和解决方案。由于其泛化性能强，应用范围广泛，被广泛应用于开发各种AI应用和工具，以提升效率和用户体验。", "CompanyCount": 25, "Children": []
+                            },
+                            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026058", "NodeName": "垂直大模型", "NodeType": 2, "NodeLevel": 4, "NodeNum": 2, "NodeImportant": 3, "ProductCode": "PRD0143933", "ProductName": "垂直大模型", "ParentNodeCode": "IC0026052", "IndustryChainStype": 1, "ProductDefine": "垂直大模型是一种针对特定行业或领域设计的大型复杂模型，它整合了丰富的行业知识、数据和算法，以提供深入的洞察和预测。这种模型通常在数据分析、人工智能或机器学习的背景下使用，用于解决特定行业的问题，如金融风险评估、医疗诊断或智能城市建设。垂直大模型通过深度学习和高级分析，能够处理大量行业特有的数据，提高决策效率和精度，从而在各自的市场空间中展现出高应用价值。", "CompanyCount": 229, "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026003", "NodeName": "人工智能应用层", "NodeType": 1, "NodeLevel": 1, "NodeNum": 3, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 542462, "NodeNumDesc": "下游", "Children": [
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026025", "NodeName": "人工智能终端产品", "NodeType": 1, "NodeLevel": 2, "NodeNum": 1, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026003", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 316514, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026041", "NodeName": "机器人", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 4, "ProductCode": "PRD0006106", "ProductName": "机器人", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "机器人是一种能够执行预先编程或通过人工智能技术自主学习的多功能机械设备。它们可以被设计用于各种环境，包括工业生产、医疗协助、家庭服务、空间探索等。机器人结合了机械工程、电子工程、计算机科学等多个领域的技术，旨在提高效率、安全性和生产力，同时在某些情况下，能执行人类难以完成或危险的任务。全球机器人市场持续增长，伴随着技术进步，其应用领域不断扩展，从传统的制造业到服务业，再到个人消费市场，都有着广泛的应用价值和市场空间。", "CompanyCount": 130906, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026035", "NodeName": "智能家居产品", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 5, "ProductCode": "PRD0006010", "ProductName": "智能家居产品", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "智能家居产品是利用先进的计算机技术、网络通信技术、综合布线技术，将与家居生活有关的各种设施集成，构建高效的住宅设施与家庭日程事务的管理系统。这些产品旨在提升家居安全性、便利性、舒适性，并实现环保节能。它们包括智能照明系统、智能安防系统、智能家电、智能音箱、智能窗帘等，让家居生活更加便捷、智能。随着物联网和人工智能的发展，智能家居市场潜力巨大，全球范围内正逐渐被广大消费者接受并应用。", "CompanyCount": 32814, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026036", "NodeName": "智能安防产品", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 5, "ProductCode": "PRD0022009", "ProductName": "智能安防产品", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "智能安防产品是结合了人工智能、物联网和大数据等先进技术的现代安全防护系统。它包括智能监控摄像头、门禁系统、报警装置等，能实时监控、识别异常行为并预警潜在风险。通过云平台进行数据分析，提供24小时不间断的安全保障，同时支持远程操控和查看，提升家庭及企业的安全管理水平，市场前景广阔，尤其在智能家居和商业安全领域应用广泛。", "CompanyCount": 62188, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026037", "NodeName": "消费电子设备", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 5, "ProductCode": "PRD0025053", "ProductName": "消费电子设备", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "消费电子设备是指设计用于个人和家庭日常消费的电子设备，包括但不限于智能手机、平板电脑、电视、音响、笔记本电脑、智能穿戴设备、游戏机等。这些产品通常结合了先进的技术，提供通讯、娱乐、信息获取和生活便利等功能。消费电子设备市场在全球范围内持续增长，随着技术的不断创新，产品不断迭代，应用价值日益丰富，市场空间巨大，已成为现代生活中不可或缺的一部分。", "CompanyCount": 101859, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026040", "NodeName": "物流智能设备", "NodeType": 2, "NodeLevel": 3, "NodeNum": 5, "NodeImportant": 5, "ProductCode": "PRD0020868", "ProductName": "物流智能设备", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "物流智能设备是应用于物流行业的高科技装备，结合了自动化、物联网、人工智能等先进技术。这类设备包括自动化分拣系统、无人仓储机器人、智能货架、无人驾驶运输车等，旨在提高物流效率、减少人力成本、优化库存管理和提升配送精度。它们在电商、零售、制造业等领域有广泛应用，随着电子商务的快速发展和智慧物流的推进，市场空间巨大，是现代物流体系中的关键组成部分。", "CompanyCount": 829, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026043", "NodeName": "自动驾驶汽车", "NodeType": 2, "NodeLevel": 3, "NodeNum": 6, "NodeImportant": 5, "ProductCode": "PRD0056455", "ProductName": "自动驾驶汽车", "ParentNodeCode": "IC0026025", "IndustryChainStype": 1, "ProductDefine": "自动驾驶汽车是集成了人工智能、传感器技术、机器视觉、无线通信和GPS等高科技的智能交通工具。它们能够通过先进的算法和传感器系统实现自主导航、避障和路径规划，减少人为驾驶错误，提高道路交通安全和效率。自动驾驶汽车在共享出行、物流配送、公共交通等领域有广泛应用前景，市场潜力巨大，目前正处于快速发展阶段，各大科技公司和汽车制造商都在积极投入研发和测试。", "CompanyCount": 190, "Children": []
+                    }
+                ]
+            },
+            {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026044", "NodeName": "人工智能应用场景", "NodeType": 1, "NodeLevel": 2, "NodeNum": 2, "NodeImportant": 0, "ProductCode": "", "ProductName": "", "ParentNodeCode": "IC0026003", "IndustryChainStype": 1, "ProductDefine": "", "CompanyCount": 230937, "Children": [
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026026", "NodeName": "智慧教育", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 5, "ProductCode": "PRD0013021", "ProductName": "智慧教育", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧教育是一种利用云计算、大数据、人工智能等先进技术，对传统教育模式进行智能化升级的教育体系。它通过个性化的学习路径、互动式教学、智能评估和预测等功能，提升教学效率，优化教育资源分配，实现因材施教。智慧教育不仅在K-12教育、高等教育中广泛应用，也在职业教育、终身学习等领域展现出巨大潜力，旨在构建一个更高效、更公平、更符合21世纪需求的教育环境。", "CompanyCount": 204499, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026033", "NodeName": "智慧城市", "NodeType": 2, "NodeLevel": 3, "NodeNum": 1, "NodeImportant": 5, "ProductCode": "PRD0005216", "ProductName": "智慧城市", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧城市是一种运用物联网、云计算、大数据、人工智能等先进技术，对城市运行的各类信息进行智能采集、处理和分析，以提高城市管理效率、公共服务水平和居民生活质量的新型城市发展模式。它涵盖了交通、环保、安全、医疗、教育等多个领域，通过智能化的解决方案，实现城市资源的优化配置，促进城市的可持续发展。智慧城市在全球范围内具有广阔的市场空间，是未来城市发展的必然趋势。", "CompanyCount": 2305, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026039", "NodeName": "智慧农业", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 5, "ProductCode": "PRD0005488", "ProductName": "智慧农业", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧农业是将物联网、大数据、人工智能等现代信息技术与传统农业深度融合的产物。它通过精准感知、控制与决策管理，实现农田生产智能化、管理信息化和服务在线化。智慧农业能提高农作物的产量和质量，降低资源消耗，减少环境污染，同时提升农业的经济效益和社会效益。在全球范围内，智慧农业正逐渐成为推动农业现代化、可持续发展的重要力量，市场前景广阔，尤其在解决食品安全、资源短缺等问题上具有重大应用价值。", "CompanyCount": 3621, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026028", "NodeName": "智慧医疗", "NodeType": 2, "NodeLevel": 3, "NodeNum": 2, "NodeImportant": 5, "ProductCode": "PRD0005609", "ProductName": "智慧医疗", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧医疗是利用信息技术、人工智能、大数据等前沿科技，对传统医疗进行数字化、网络化和智能化改造的领域。它涵盖了电子病历、远程医疗、智能诊断、健康管理、药品追溯等多个方面，旨在提高医疗服务的效率、精准度和患者体验，降低医疗成本。智慧医疗通过数据共享，实现医疗资源优化配置，有助于实现预防、诊断、治疗和康复的全链条健康管理，具有广阔的市场前景和巨大的社会价值。", "CompanyCount": 1976, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026029", "NodeName": "智慧制造", "NodeType": 2, "NodeLevel": 3, "NodeNum": 3, "NodeImportant": 5, "ProductCode": "PRD0005682", "ProductName": "智慧制造", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧制造，也称为智能制造，是将物联网、大数据、人工智能等先进技术与传统制造业深度融合的产物。它通过自动化、信息化、智能化手段，实现生产过程的优化、效率提升和资源节约。智慧制造能够实现个性化定制、灵活生产，提高产品质量和生产效率，降低运营成本，同时在环保和可持续性方面表现出色。在全球范围内，智慧制造正推动着制造业的转型升级，是未来工业发展的重要趋势和市场空间巨大的领域。", "CompanyCount": 7904, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026030", "NodeName": "智慧交通", "NodeType": 2, "NodeLevel": 3, "NodeNum": 4, "NodeImportant": 5, "ProductCode": "PRD0014182", "ProductName": "智慧交通", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧交通是利用物联网、云计算、大数据、人工智能等先进技术，对传统交通体系进行智能化升级，实现交通管理、服务和设施的高效、便捷、绿色。它涵盖了智能交通管理系统、自动驾驶、交通流量预测、公共交通优化、智慧停车等多个领域，旨在解决城市交通拥堵、提高道路安全、提升出行体验并促进环保。智慧交通的应用有助于提升城市运行效率，改善市民生活质量，具有广阔的市场前景和巨大的发展潜力。", "CompanyCount": 9531, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026031", "NodeName": "智慧金融", "NodeType": 2, "NodeLevel": 3, "NodeNum": 5, "NodeImportant": 5, "ProductCode": "PRD0005358", "ProductName": "智慧金融", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智慧金融是运用大数据、云计算、人工智能、区块链等前沿科技，对传统金融业务进行智能化、数字化改造的新型金融模式。它旨在提高金融服务的效率、安全性和普惠性，实现精准风控、个性化服务和智能化投资。智慧金融涵盖了移动支付、智能投顾、区块链金融、保险科技等多个领域，正在重塑金融行业的生态，具有广阔的市场空间和创新潜力。", "CompanyCount": 2172, "Children": []
+                    },
+                    {"IndustryChainCode": "IC0026", "IndustryChainName": "人工智能", "NodeCode": "IC0026027", "NodeName": "智能传媒", "NodeType": 2, "NodeLevel": 3, "NodeNum": 6, "NodeImportant": 5, "ProductCode": "PRD0060186", "ProductName": "智能传媒", "ParentNodeCode": "IC0026044", "IndustryChainStype": 1, "ProductDefine": "智能传媒是结合人工智能技术与传统媒体的新型领域，它利用大数据分析、机器学习和自然语言处理等技术，对媒体内容进行智能化生产、分发和优化。智能传媒能够精准定位受众，实现个性化推荐，提高信息传播效率。同时，它也涉及媒体监测、舆情分析和广告投放等方面，为企业和媒体机构提供更高效、精准的传播策略。随着技术的不断发展，智能传媒在新闻业、广告业及数字娱乐等领域展现出广阔的应用前景和市场空间。", "CompanyCount": 44, "Children": []
+                    }
+                ]
+            }
+        ]
+    }
+], "CompanyCount": 654353, "IndustryChainName": "人工智能", "IndustryChainDefine": "人工智能（AI）是指通过计算机系统模拟和实现人类智能的能力。这种技术使机器能够学习、理解、推理和解决问题，无需人类直接干预。人工智能应用广泛，包括语音识别、图像处理、自然语言处理和智能决策系统等。它的目标是使机器能够执行需要人类智力的任务，提高生产效率，改善生活质量，并在医疗、交通、工业等领域发挥重要作用。", "AreaCompanyInfo": [
+    {"Value": "GD", "Count": 162093, "Desc": "广东省", "Items": [
+            {"Value": "roundCount", "Count": 1347, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 215, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 3792, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 7938, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "JS", "Count": 59280, "Desc": "江苏省", "Items": [
+            {"Value": "roundCount", "Count": 690, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 66, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 852, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 4071, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "ZJ", "Count": 45495, "Desc": "浙江省", "Items": [
+            {"Value": "roundCount", "Count": 589, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 69, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 824, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 2789, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "SD", "Count": 38725, "Desc": "山东省", "Items": [
+            {"Value": "roundCount", "Count": 175, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 30, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 828, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 1832, "Desc": "高新技术"
+            }
+        ]
+    },
+    {"Value": "BJ", "Count": 38141, "Desc": "北京市", "Items": [
+            {"Value": "roundCount", "Count": 1246, "Desc": "融资企业"
+            },
+            {"Value": "listingCount", "Count": 145, "Desc": "上市企业"
+            },
+            {"Value": "zjtxCount", "Count": 967, "Desc": "专精特新"
+            },
+            {"Value": "gxjsCount", "Count": 2653, "Desc": "高新技术"
+            }
+        ]
+    }
+]
+}

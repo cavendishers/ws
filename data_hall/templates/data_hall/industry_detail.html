@@ -7,33 +7,34 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <style>
     :root {
-        --primary: #0A1A3A;
-        --secondary: #FFD700;
-        --secondary-rgb: 255, 215, 0;
-        --accent: #00C1D4;
-        --accent-rgb: 0, 193, 212;
-        --card-bg: #132144;
-        --input-bg: #1A2B5E;
-        --text-primary-light: #FFFFFF;
-        --text-secondary-light: #D0D7E0;
-        --text-muted-light: #a0aec0;
-        --border-light: rgba(255, 255, 255, 0.15);
+        /* 主要配色 - 优化后的暗黑暗紫主题，降低对比度 */
+        --primary: #121022;
+        --secondary: #7A57D1;
+        --secondary-rgb: 122, 87, 209;
+        --accent: #5EDFDF;
+        --accent-rgb: 94, 223, 223;
+        --card-bg: #1C1630;
+        --input-bg: #272042;
+        --text-primary-light: #E8E4F4;
+        --text-secondary-light: #C7BFDE;
+        --text-muted-light: #8D80A6;
+        --border-light: rgba(122, 87, 209, 0.15);
         
-        /* 图谱特定颜色 */
-        --upstream-color: #2952A3;
-        --upstream-light-color: #598AE8;
-        --upstream-bg-title: #1e3a5f;
-        --upstream-border-accent: #2952A3;
+        /* 图谱特定颜色 - 降低亮度的科技感配色 */
+        --upstream-color: #5039A3;
+        --upstream-light-color: #7457D3;
+        --upstream-bg-title: #1E1A36;
+        --upstream-border-accent: #5D44B8;
 
-        --midstream-color: #1D6631;
-        --midstream-light-color: #388E3C;
-        --midstream-bg-title: #1a3b2b;
-        --midstream-border-accent: #1D6631;
+        --midstream-color: #1B7A84;
+        --midstream-light-color: #4BABB5;
+        --midstream-bg-title: #182F33;
+        --midstream-border-accent: #288A95;
 
-        --downstream-color: #7A5F1E;
-        --downstream-light-color: #A1887F;
-        --downstream-bg-title: #3b311c;
-        --downstream-border-accent: #7A5F1E;
+        --downstream-color: #9A3677;
+        --downstream-light-color: #B86295;
+        --downstream-bg-title: #2C1C2E;
+        --downstream-border-accent: #A44382;
     }
 
     /* 图表特定样式 */
@@ -54,6 +55,7 @@
         cursor: pointer;
         font-size: 13px;
         color: var(--text-secondary-light);
+        transition: all 0.2s ease;
     }
     .view-option:first-child {
         border-top-left-radius: 4px;
@@ -65,12 +67,13 @@
         border-bottom-right-radius: 4px;
     }
     .view-option.active {
-        background-color: var(--accent);
+        background-color: var(--secondary);
         color: white;
-        border-color: var(--accent);
+        border-color: var(--secondary);
+        box-shadow: 0 0 5px rgba(var(--secondary-rgb), 0.3);
     }
     .view-option:hover:not(.active) {
-        background-color: rgba(255,255,255,0.1);
+        background-color: rgba(122, 87, 209, 0.15);
     }
 
     .graph-main-content-wrapper {
@@ -89,6 +92,7 @@
         background-color: var(--primary);
         border-radius: 4px;
         min-height: 600px;
+        background-image: radial-gradient(circle at 10% 20%, rgba(122, 87, 209, 0.03) 0%, transparent 70%);
     }
 
     #industry-chain-container {
@@ -111,6 +115,8 @@
         gap: 15px;
         align-self: flex-start;
         background-color: var(--primary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.05);
+        border: 1px solid rgba(122, 87, 209, 0.08);
     }
     .industry-column .column-title-container {
         padding: 10px;
@@ -126,10 +132,19 @@
         display: inline-block;
     }
 
-    /* 列特定背景 */
-    .upstream-column .column-title-container { background-color: var(--upstream-bg-title); }
-    .midstream-column .column-title-container { background-color: var(--midstream-bg-title); }
-    .downstream-column .column-title-container { background-color: var(--downstream-bg-title); }
+    /* 列特定背景 - 使上中下游标题容器更协调 */
+    .upstream-column .column-title-container { 
+        background-color: #463299; 
+        box-shadow: 0 0 5px rgba(93, 68, 184, 0.1); 
+    }
+    .midstream-column .column-title-container { 
+        background-color: #1a6f79; 
+        box-shadow: 0 0 5px rgba(40, 138, 149, 0.1); 
+    }
+    .downstream-column .column-title-container { 
+        background-color: #8f2f6c; 
+        box-shadow: 0 0 5px rgba(164, 67, 130, 0.1); 
+    }
 
     .node-level-1 {
         color: var(--text-primary-light);
@@ -138,10 +153,33 @@
         font-weight: bold;
         text-align: center;
         font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
     }
-    .upstream-column .node-level-1 { background-color: var(--upstream-color); }
-    .midstream-column .node-level-1 { background-color: var(--midstream-color); }
-    .downstream-column .node-level-1 { background-color: var(--downstream-color); }
+    .upstream-column .node-level-1 { 
+        background-color: var(--upstream-color);
+        box-shadow: 0 2px 8px rgba(80, 57, 163, 0.2);
+    }
+    .midstream-column .node-level-1 { 
+        background-color: var(--midstream-color);
+        box-shadow: 0 2px 8px rgba(27, 122, 132, 0.2);
+    }
+    .downstream-column .node-level-1 { 
+        background-color: var(--downstream-color);
+        box-shadow: 0 2px 8px rgba(154, 54, 119, 0.2);
+    }
+
+    /* 减弱边缘发光效果 */
+    .node-level-1::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
 
     .node-level-2 {
         color: var(--text-primary-light);
@@ -150,10 +188,20 @@
         font-weight: 500;
         text-align: center;
         margin-top: 10px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .upstream-column .node-level-2 { background-color: var(--upstream-light-color); }
-    .midstream-column .node-level-2 { background-color: var(--midstream-light-color); }
-    .downstream-column .node-level-2 { background-color: var(--downstream-light-color); }
+    .upstream-column .node-level-2 { 
+        background-color: var(--upstream-light-color);
+        box-shadow: 0 2px 6px rgba(116, 87, 211, 0.15);
+    }
+    .midstream-column .node-level-2 { 
+        background-color: var(--midstream-light-color);
+        box-shadow: 0 2px 6px rgba(75, 171, 181, 0.15);
+    }
+    .downstream-column .node-level-2 { 
+        background-color: var(--downstream-light-color);
+        box-shadow: 0 2px 6px rgba(184, 98, 149, 0.15);
+    }
 
     .node-level-1-items-container,
     .node-level-2-items-container,
@@ -176,10 +224,13 @@
         border-radius: 4px;
         text-align: center;
         font-size: 13px;
+        transition: all 0.2s ease;
     }
     .node-level-3:hover, .node-level-4:hover {
         border-color: var(--accent);
         color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(94, 223, 223, 0.1);
     }
 
     .horizontal-group-parent > .node-level-2-items-container,
@@ -199,10 +250,11 @@
         align-items: center;
         justify-content: center;
         font-size: 30px;
-        color: var(--text-muted-light);
+        color: var(--accent);
         align-self: flex-start;
         padding-top: 180px;
         min-width: 40px;
+        text-shadow: 0 0 5px rgba(94, 223, 223, 0.3);
     }
 
     /* 侧边栏操作 */
@@ -217,6 +269,7 @@
         margin-left: 20px;
         border-radius: 4px;
         height: fit-content;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.05);
     }
     .graph-sidebar-icon-group {
         display: flex;
@@ -234,6 +287,7 @@
         text-align: center;
         width: 100%;
         padding: 8px 0;
+        transition: all 0.2s ease;
     }
     .graph-sidebar-item i {
         width: 22px;
@@ -242,6 +296,7 @@
     }
     .graph-sidebar-item:hover {
         color: var(--accent);
+        text-shadow: 0 0 3px rgba(94, 223, 223, 0.3);
     }
 
     /* 页脚 */
@@ -253,6 +308,7 @@
         color: var(--text-muted-light);
         border-top: 1px solid var(--border-light);
         margin-top: 1.5rem;
+        border-radius: 4px;
     }
     
     .section-card {
@@ -261,7 +317,8 @@
         padding: 1.5rem;
         margin-bottom: 2rem;
         border: 1px solid var(--border-light);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.08);
+        background-image: linear-gradient(135deg, rgba(122, 87, 209, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
     }
     
     .section-title {
@@ -274,6 +331,11 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+    }
+    
+    .section-title i {
+        color: var(--accent);
+        text-shadow: 0 0 3px rgba(94, 223, 223, 0.3);
     }
 </style>
 {% endblock %}
@@ -360,6 +422,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     renderGraph(graphData.Children, container);
+    
+    // 添加节点动画效果
+    animateNodes();
 
     let scale = 1;
     let panning = false;
@@ -415,15 +480,88 @@ document.addEventListener('DOMContentLoaded', function () {
         setTransform();
     };
 
-    // 添加视图选项的点击事件
+    // 添加视图选项的点击事件，增加过渡效果
     const viewOptions = document.querySelectorAll('.view-option');
     viewOptions.forEach(option => {
         option.addEventListener('click', function() {
             viewOptions.forEach(opt => opt.classList.remove('active'));
             this.classList.add('active');
+            
+            // 可以在这里添加视图切换逻辑和动画
+            if (this.textContent === '树状图') {
+                // 树状图实现逻辑，仅UI示例
+                container.style.transition = 'all 0.5s ease';
+                // 实际实现应替换为树状图的渲染逻辑
+            } else {
+                // 框架图
+                container.style.transition = 'all 0.5s ease';
+                // 重置为默认视图
+            }
+        });
+    });
+    
+    // 侧边栏功能事件
+    document.querySelectorAll('.graph-sidebar-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const action = this.getAttribute('title');
+            if (action === '全屏') {
+                toggleFullScreen(document.getElementById('industry-chain-section'));
+            } else if (action === '刷新') {
+                // 添加刷新动画
+                this.querySelector('i').classList.add('fa-spin');
+                setTimeout(() => {
+                    this.querySelector('i').classList.remove('fa-spin');
+                }, 1000);
+            }
+            // 为其他按钮添加动画反馈
+            addButtonFeedback(this);
         });
     });
 });
+
+// 添加按钮点击反馈效果
+function addButtonFeedback(element) {
+    element.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        element.style.transform = 'scale(1)';
+    }, 100);
+}
+
+// 全屏切换功能
+function toggleFullScreen(element) {
+    if (!document.fullscreenElement) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) { /* Safari */
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { /* IE11 */
+            element.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+}
+
+// 为图表元素添加入场动画
+function animateNodes() {
+    const allNodes = document.querySelectorAll('.node-level-1, .node-level-2, .node-level-3, .node-level-4');
+    allNodes.forEach((node, index) => {
+        node.style.opacity = '0';
+        node.style.transform = 'translateY(20px)';
+        node.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            node.style.opacity = '1';
+            node.style.transform = 'translateY(0)';
+        }, 100 + index * 30); // 错开动画时间，形成级联效果
+    });
+}
 
 function renderGraph(nodes, parentElement) {
     const mainColumnsData = {
@@ -486,7 +624,17 @@ function createColumn(title) {
 function createNodeElement(nodeData) {
     const nodeElement = document.createElement('div');
     nodeElement.className = `node-level-${nodeData.NodeLevel}`;
-    nodeElement.textContent = nodeData.NodeName;
+
+    // 如果是顶级分类节点（上游/中游/下游），不显示文本
+    if (nodeData.NodeNumDesc && ["上游", "中游", "下游"].includes(nodeData.NodeNumDesc)) {
+        // 不设置文本内容
+    } else {
+        // 为非顶级节点创建标题元素
+        const titleElement = document.createElement('div');
+        titleElement.className = 'node-title';
+        titleElement.textContent = nodeData.NodeName;
+        nodeElement.appendChild(titleElement);
+    }
 
     if (nodeData.Children && nodeData.Children.length > 0) {
         const childrenContainer = document.createElement('div');
@@ -517,6 +665,16 @@ function createNodeElement(nodeData) {
         });
         nodeElement.appendChild(childrenContainer);
     }
+    
+    // 添加点击交互效果
+    nodeElement.addEventListener('click', function() {
+        this.style.transition = 'transform 0.2s ease';
+        this.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 200);
+    });
+    
     return nodeElement;
 }
 </script>

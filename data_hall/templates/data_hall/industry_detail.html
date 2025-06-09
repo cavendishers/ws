@@ -104,7 +104,6 @@
         transition: transform 0.1s ease-out;
         position: relative;
     }
-
     .industry-column {
         min-width: 320px;
         padding: 0;
@@ -118,6 +117,23 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.05);
         border: 1px solid rgba(122, 87, 209, 0.08);
     }
+    
+    /* 增加不同列数的列宽度 */
+    .industry-column.width-columns-2 {
+        min-width: 650px;
+        max-width: 700px;
+    }
+    
+    .industry-column.width-columns-3 {
+        min-width: 950px;
+        max-width: 1020px;
+    }
+    
+    .industry-column.width-columns-4 {
+        min-width: 1250px;
+        max-width: 1340px;
+    }
+    
     .industry-column .column-title-container {
         padding: 10px;
         border-radius: 6px;
@@ -157,6 +173,8 @@
         position: relative;
         overflow: hidden;
     }
+
+
     .upstream-column .node-level-1 { 
         background-color: var(--upstream-color);
         box-shadow: 0 2px 8px rgba(80, 57, 163, 0.2);
@@ -214,6 +232,39 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+    }
+    
+    /* 多列布局样式 - 解决垂直堆叠高度过大问题 */
+    .node-level-1-items-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+    }
+    
+    /* 当子节点数量较多时应用多列布局 */
+    .multi-column-layout {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    /* 针对不同数量级的子节点优化列数 */
+    .columns-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .columns-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .columns-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    /* 确保多列情况下节点保持原尺寸 */
+    .multi-column-layout > .node-level-2,
+    .multi-column-layout > .node-level-3,
+    .multi-column-layout > .node-level-4 {
+        min-width: 280px;
+        max-height: fit-content;
     }
 
     .node-level-3, .node-level-4 {
@@ -408,10 +459,9 @@
 
 {% block extra_js %}
 <script>
-// 从后端获取产业链数据
-const graphData = JSON.parse('{{ chain_data|escapejs }}');
-
-document.addEventListener('DOMContentLoaded', function () {
+    // 从后端获取产业链数据
+    const graphData = JSON.parse('{{ chain_data|escapejs }}');
+    document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('industry-chain-container');
     const zoomPanContainer = document.getElementById('chart-zoom-pan-container');
 
@@ -422,9 +472,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     renderGraph(graphData.Children, container);
-    
-    // 添加节点动画效果
-    animateNodes();
 
     let scale = 1;
     let panning = false;
@@ -480,203 +527,149 @@ document.addEventListener('DOMContentLoaded', function () {
         setTransform();
     };
 
-    // 添加视图选项的点击事件，增加过渡效果
+    // 添加视图选项的点击事件
     const viewOptions = document.querySelectorAll('.view-option');
     viewOptions.forEach(option => {
         option.addEventListener('click', function() {
             viewOptions.forEach(opt => opt.classList.remove('active'));
             this.classList.add('active');
-            
-            // 可以在这里添加视图切换逻辑和动画
-            if (this.textContent === '树状图') {
-                // 树状图实现逻辑，仅UI示例
-                container.style.transition = 'all 0.5s ease';
-                // 实际实现应替换为树状图的渲染逻辑
-            } else {
-                // 框架图
-                container.style.transition = 'all 0.5s ease';
-                // 重置为默认视图
-            }
-        });
-    });
-    
-    // 侧边栏功能事件
-    document.querySelectorAll('.graph-sidebar-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const action = this.getAttribute('title');
-            if (action === '全屏') {
-                toggleFullScreen(document.getElementById('industry-chain-section'));
-            } else if (action === '刷新') {
-                // 添加刷新动画
-                this.querySelector('i').classList.add('fa-spin');
-                setTimeout(() => {
-                    this.querySelector('i').classList.remove('fa-spin');
-                }, 1000);
-            }
-            // 为其他按钮添加动画反馈
-            addButtonFeedback(this);
         });
     });
 });
 
-// 添加按钮点击反馈效果
-function addButtonFeedback(element) {
-    element.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        element.style.transform = 'scale(1)';
-    }, 100);
-}
+    function renderGraph(nodes, parentElement) {
+        const mainColumnsData = {
+            "上游": [],
+            "中游": [],
+            "下游": []
+        };
 
-// 全屏切换功能
-function toggleFullScreen(element) {
-    if (!document.fullscreenElement) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) { /* Safari */
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { /* IE11 */
-            element.msRequestFullscreen();
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-            document.msExitFullscreen();
-        }
-    }
-}
-
-// 为图表元素添加入场动画
-function animateNodes() {
-    const allNodes = document.querySelectorAll('.node-level-1, .node-level-2, .node-level-3, .node-level-4');
-    allNodes.forEach((node, index) => {
-        node.style.opacity = '0';
-        node.style.transform = 'translateY(20px)';
-        node.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        
-        setTimeout(() => {
-            node.style.opacity = '1';
-            node.style.transform = 'translateY(0)';
-        }, 100 + index * 30); // 错开动画时间，形成级联效果
-    });
-}
-
-function renderGraph(nodes, parentElement) {
-    const mainColumnsData = {
-        "上游": [],
-        "中游": [],
-        "下游": []
-    };
-
-    // Group top-level nodes by their NodeNumDesc
-    nodes.forEach(node => {
-        if (node.NodeNumDesc && mainColumnsData[node.NodeNumDesc]) {
-            mainColumnsData[node.NodeNumDesc].push(node);
-        } else {
-            // Fallback or error handling if NodeNumDesc is unexpected
-            console.warn("Node with unexpected NodeNumDesc:", node.NodeNumDesc, node);
-        }
-    });
-    
-    const columnOrder = ["上游", "中游", "下游"];
-    columnOrder.forEach((columnName, index) => {
-        if (mainColumnsData[columnName].length > 0) {
-            const columnDiv = createColumn(columnName);
-            mainColumnsData[columnName].forEach(node => {
-                // NodeLevel 1 items are the main blocks within a column
-                const nodeElement = createNodeElement(node);
-                columnDiv.appendChild(nodeElement);
-            });
-            parentElement.appendChild(columnDiv);
-        }
-        // Add arrow if not the last column
-        if (index < columnOrder.length - 1 && mainColumnsData[columnOrder[index+1]].length > 0) {
-            const arrow = document.createElement('div');
-            arrow.className = 'arrow';
-            arrow.innerHTML = '→';
-            parentElement.appendChild(arrow);
-        }
-    });
-}
-
-function createColumn(title) {
-    const columnDiv = document.createElement('div');
-    let columnClass = '';
-    if (title === '上游') columnClass = 'upstream-column';
-    else if (title === '中游') columnClass = 'midstream-column';
-    else if (title === '下游') columnClass = 'downstream-column';
-    
-    columnDiv.className = `industry-column ${columnClass}`;
-
-    const titleContainer = document.createElement('div');
-    titleContainer.className = 'column-title-container';
-    const titleEl = document.createElement('span');
-    titleEl.className = 'column-title';
-    titleEl.textContent = title;
-    titleContainer.appendChild(titleEl);
-    columnDiv.appendChild(titleContainer);
-    
-    return columnDiv;
-}
-
-function createNodeElement(nodeData) {
-    const nodeElement = document.createElement('div');
-    nodeElement.className = `node-level-${nodeData.NodeLevel}`;
-
-    // 如果是顶级分类节点（上游/中游/下游），不显示文本
-    if (nodeData.NodeNumDesc && ["上游", "中游", "下游"].includes(nodeData.NodeNumDesc)) {
-        // 不设置文本内容
-    } else {
-        // 为非顶级节点创建标题元素
-        const titleElement = document.createElement('div');
-        titleElement.className = 'node-title';
-        titleElement.textContent = nodeData.NodeName;
-        nodeElement.appendChild(titleElement);
-    }
-
-    if (nodeData.Children && nodeData.Children.length > 0) {
-        const childrenContainer = document.createElement('div');
-        childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
-        
-        // 判断是否需要水平排列
-        let shouldUseHorizontalLayout = false;
-        
-        // 如果子节点数量较多(大于等于3个)，或者子节点都是叶子节点(没有孩子)则使用水平布局
-        if (nodeData.Children.length >= 3) {
-            shouldUseHorizontalLayout = true;
-        } else if (nodeData.Children.length >= 2) {
-            // 检查子节点是否都是叶子节点或者子节点的子节点数量很少
-            const allLeafOrFewGrandchildren = nodeData.Children.every(child => 
-                !child.Children || child.Children.length <= 2
-            );
-            shouldUseHorizontalLayout = allLeafOrFewGrandchildren;
-        }
-        
-        // 应用水平布局样式
-        if (shouldUseHorizontalLayout) {
-            nodeElement.classList.add('horizontal-group-parent');
-        }
-
-        nodeData.Children.forEach(childNode => {
-            const childElement = createNodeElement(childNode);
-            childrenContainer.appendChild(childElement);
+        // Group top-level nodes by their NodeNumDesc
+        nodes.forEach(node => {
+            if (node.NodeNumDesc && mainColumnsData[node.NodeNumDesc]) {
+                mainColumnsData[node.NodeNumDesc].push(node);
+            } else {
+                // Fallback or error handling if NodeNumDesc is unexpected
+                console.warn("Node with unexpected NodeNumDesc:", node.NodeNumDesc, node);
+            }
         });
-        nodeElement.appendChild(childrenContainer);
+        
+        const columnOrder = ["上游", "中游", "下游"];
+        columnOrder.forEach((columnName, index) => {
+            if (mainColumnsData[columnName].length > 0) {
+                const columnDiv = createColumn(columnName);
+                mainColumnsData[columnName].forEach(node => {
+                    // NodeLevel 1 items are the main blocks within a column
+                    const nodeElement = createNodeElement(node);
+                    columnDiv.appendChild(nodeElement);
+                });
+                parentElement.appendChild(columnDiv);
+            }
+            // Add arrow if not the last column
+            if (index < columnOrder.length - 1 && mainColumnsData[columnOrder[index+1]].length > 0) {
+                const arrow = document.createElement('div');
+                arrow.className = 'arrow';
+                arrow.innerHTML = '→';
+                parentElement.appendChild(arrow);
+            }
+        });
+    }
+
+    function createColumn(title) {
+        const columnDiv = document.createElement('div');
+        let columnClass = '';
+        if (title === '上游') columnClass = 'upstream-column';
+        else if (title === '中游') columnClass = 'midstream-column';
+        else if (title === '下游') columnClass = 'downstream-column';
+        
+        columnDiv.className = `industry-column ${columnClass}`;
+
+        const titleContainer = document.createElement('div');
+        titleContainer.className = 'column-title-container';
+        const titleEl = document.createElement('span');
+        titleEl.className = 'column-title';
+        titleEl.textContent = title;
+        titleContainer.appendChild(titleEl);
+        columnDiv.appendChild(titleContainer);
+        
+        return columnDiv;
+    }
+
+    function createNodeElement(nodeData) {
+        const nodeElement = document.createElement('div');
+        nodeElement.className = `node-level-${nodeData.NodeLevel}`;
+        // 如果是顶级分类节点（上游/中游/下游），不显示文本
+        if (nodeData.NodeNumDesc && ["上游", "中游", "下游"].includes(nodeData.NodeNumDesc)) {
+            // 不设置文本内容
+        } else {
+            // 为非顶级节点创建标题元素
+            const titleElement = document.createElement('div');
+            titleElement.className = 'node-title';
+            titleElement.textContent = nodeData.NodeName;
+            nodeElement.appendChild(titleElement);
+        }
+
+        if (nodeData.Children && nodeData.Children.length > 0) {
+            const childrenContainer = document.createElement('div');
+            childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
+            
+            // 根据子节点数量来动态设置列数
+            if (nodeData.NodeLevel === 1) {
+                // 递归计算所有子孙节点的总数量
+                const childCount = countAllDescendants(nodeData);
+                console.log(`${nodeData.NodeName} 的所有子孙节点数量: ${childCount}`);
+                
+                // 根据子孙节点总数量动态决定分几列
+                if (childCount > 100) {
+                    childrenContainer.classList.add('columns-4');
+                    // 查找最近的industry-column父元素并设置宽度类
+                    let columnParent = nodeElement.closest('.industry-column');
+                    if (columnParent) {
+                        columnParent.classList.add('width-columns-4');
+                    }
+                } else if (childCount > 50) {
+                    childrenContainer.classList.add('columns-3');
+                    // 查找最近的industry-column父元素并设置宽度类
+                    let columnParent = nodeElement.closest('.industry-column');
+                    if (columnParent) {
+                        columnParent.classList.add('width-columns-3');
+                    }
+                } else if (childCount > 20) {
+                    childrenContainer.classList.add('columns-2');
+                    // 查找最近的industry-column父元素并设置宽度类
+                    let columnParent = nodeElement.closest('.industry-column');
+                    if (columnParent) {
+                        columnParent.classList.add('width-columns-2');
+                    }
+                } else {
+                    childrenContainer.classList.add('columns-1'); // 默认单列
+                }
+                childrenContainer.classList.add('multi-column-layout');
+            }
+
+            nodeData.Children.forEach(childNode => {
+                const childElement = createNodeElement(childNode);
+                childrenContainer.appendChild(childElement);
+            });
+            nodeElement.appendChild(childrenContainer);
+        }
+        return nodeElement;
     }
     
-    // 添加点击交互效果
-    nodeElement.addEventListener('click', function() {
-        this.style.transition = 'transform 0.2s ease';
-        this.style.transform = 'scale(1.02)';
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 200);
-    });
-    
-    return nodeElement;
-}
+    // 递归计算节点及其所有子孙节点的总数量
+    function countAllDescendants(node) {
+        if (!node.Children || node.Children.length === 0) {
+            return 0;
+        }
+        
+        let count = node.Children.length; // 直接子节点数量
+        
+        // 递归计算每个子节点的子孙节点数量
+        for (const child of node.Children) {
+            count += countAllDescendants(child);
+        }
+        
+        return count;
+    }
 </script>
-
 {% endblock %}

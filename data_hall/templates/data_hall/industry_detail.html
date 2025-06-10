@@ -5,402 +5,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<style>
-    :root {
-        /* 主要配色 - 优化后的暗黑暗紫主题，降低对比度 */
-        --primary: #121022;
-        --secondary: #7A57D1;
-        --secondary-rgb: 122, 87, 209;
-        --accent: #5EDFDF;
-        --accent-rgb: 94, 223, 223;
-        --card-bg: #1C1630;
-        --input-bg: #272042;
-        --text-primary-light: #E8E4F4;
-        --text-secondary-light: #C7BFDE;
-        --text-muted-light: #8D80A6;
-        --border-light: rgba(122, 87, 209, 0.15);
-        
-        /* 图谱特定颜色 - 降低亮度的科技感配色 */
-        --upstream-color: #5039A3;
-        --upstream-light-color: #7457D3;
-        --upstream-bg-title: #1E1A36;
-        --upstream-border-accent: #5D44B8;
-
-        --midstream-color: #1B7A84;
-        --midstream-light-color: #4BABB5;
-        --midstream-bg-title: #182F33;
-        --midstream-border-accent: #288A95;
-
-        --downstream-color: #9A3677;
-        --downstream-light-color: #B86295;
-        --downstream-bg-title: #2C1C2E;
-        --downstream-border-accent: #A44382;
-    }
-
-    /* 图表特定样式 */
-    .chart-view-options {
-        padding: 0px 0px;
-        background-color: var(--card-bg);
-        border-bottom: 1px solid var(--border-light);
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-    }
-
-    .view-option {
-        background-color: var(--input-bg);
-        border: 1px solid var(--border-light);
-        padding: 6px 12px;
-        margin-left: -1px;
-        cursor: pointer;
-        font-size: 13px;
-        color: var(--text-secondary-light);
-        transition: all 0.2s ease;
-    }
-    .view-option:first-child {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-        margin-left: 0;
-    }
-    .view-option:last-child {
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-    }
-    .view-option.active {
-        background-color: var(--secondary);
-        color: white;
-        border-color: var(--secondary);
-        box-shadow: 0 0 5px rgba(var(--secondary-rgb), 0.3);
-    }
-    .view-option:hover:not(.active) {
-        background-color: rgba(122, 87, 209, 0.15);
-    }
-
-    .graph-main-content-wrapper {
-        display: flex;
-        flex-grow: 1;
-        padding: 0;
-        overflow: hidden;
-        position: relative;
-    }
-
-    #chart-zoom-pan-container {
-        flex-grow: 1;
-        overflow: auto;
-        position: relative;
-        cursor: grab;
-        background-color: var(--primary);
-        border-radius: 4px;
-        min-height: 600px;
-        background-image: radial-gradient(circle at 10% 20%, rgba(122, 87, 209, 0.03) 0%, transparent 70%);
-    }
-
-    #industry-chain-container {
-        display: flex;
-        padding: 40px;
-        gap: 30px;
-        min-width: min-content;
-        transform-origin: 0 0;
-        transition: transform 0.1s ease-out;
-        position: relative;
-    }
-    .industry-column {
-        min-width: 320px;
-        padding: 0;
-        border-radius: 8px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        align-self: flex-start;
-        background-color: var(--primary);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.05);
-        border: 1px solid rgba(122, 87, 209, 0.08);
-    }
-    
-    /* 增加不同列数的列宽度 */
-    .industry-column.width-columns-2 {
-        min-width: 650px;
-        max-width: 700px;
-    }
-    
-    .industry-column.width-columns-3 {
-        min-width: 950px;
-        max-width: 1020px;
-    }
-    
-    .industry-column.width-columns-4 {
-        min-width: 1250px;
-        max-width: 1340px;
-    }
-    
-    .industry-column .column-title-container {
-        padding: 10px;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    .industry-column .column-title {
-        font-size: 18px;
-        font-weight: bold;
-        color: var(--text-primary-light);
-        padding: 8px 15px;
-        display: inline-block;
-    }
-
-    /* 列特定背景 - 使上中下游标题容器更协调 */
-    .upstream-column .column-title-container { 
-        background-color: #463299; 
-        box-shadow: 0 0 5px rgba(93, 68, 184, 0.1); 
-    }
-    .midstream-column .column-title-container { 
-        background-color: #1a6f79; 
-        box-shadow: 0 0 5px rgba(40, 138, 149, 0.1); 
-    }
-    .downstream-column .column-title-container { 
-        background-color: #8f2f6c; 
-        box-shadow: 0 0 5px rgba(164, 67, 130, 0.1); 
-    }
-
-    .node-level-1 {
-        color: var(--text-primary-light);
-        padding: 10px 15px;
-        border-radius: 6px;
-        font-weight: bold;
-        text-align: center;
-        font-size: 16px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        position: relative;
-        overflow: hidden;
-    }
-
-
-    .upstream-column .node-level-1 { 
-        background-color: var(--upstream-color);
-        box-shadow: 0 2px 8px rgba(80, 57, 163, 0.2);
-    }
-    .midstream-column .node-level-1 { 
-        background-color: var(--midstream-color);
-        box-shadow: 0 2px 8px rgba(27, 122, 132, 0.2);
-    }
-    .downstream-column .node-level-1 { 
-        background-color: var(--downstream-color);
-        box-shadow: 0 2px 8px rgba(154, 54, 119, 0.2);
-    }
-
-    /* 减弱边缘发光效果 */
-    .node-level-1::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    }
-
-    .node-level-2 {
-        color: var(--text-primary-light);
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-weight: 500;
-        text-align: center;
-        margin-top: 10px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .upstream-column .node-level-2 { 
-        background-color: var(--upstream-light-color);
-        box-shadow: 0 2px 6px rgba(116, 87, 211, 0.15);
-    }
-    .midstream-column .node-level-2 { 
-        background-color: var(--midstream-light-color);
-        box-shadow: 0 2px 6px rgba(75, 171, 181, 0.15);
-    }
-    .downstream-column .node-level-2 { 
-        background-color: var(--downstream-light-color);
-        box-shadow: 0 2px 6px rgba(184, 98, 149, 0.15);
-    }
-
-    .node-level-1-items-container,
-    .node-level-2-items-container,
-    .node-level-3-items-container {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-light);
-        border-radius: 4px;
-        padding: 10px;
-        margin-top: 5px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    /* 多列布局样式 - 解决垂直堆叠高度过大问题 */
-    .node-level-1-items-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 12px;
-    }
-    
-    /* 当子节点数量较多时应用多列布局 */
-    .multi-column-layout {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-    
-    /* 针对不同数量级的子节点优化列数 */
-    .columns-2 {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .columns-3 {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .columns-4 {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    /* 确保多列情况下节点保持原尺寸 */
-    .multi-column-layout > .node-level-2,
-    .multi-column-layout > .node-level-3,
-    .multi-column-layout > .node-level-4 {
-        min-width: 280px;
-        max-height: fit-content;
-    }
-
-    .node-level-3{
-        background-color: var(--input-bg);
-        width: 240px;
-        border: 1px solid var(--border-light);
-        color: var(--text-secondary-light);
-        padding: 8px 10px;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 13px;
-        transition: all 0.2s ease;
-    }
-
-    .node-level-4{
-        background-color: var(--input-bg);
-        border: 1px solid var(--border-light);
-        color: var(--text-secondary-light);
-        padding: 8px 10px;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 13px;
-        transition: all 0.2s ease;
-    }
-    .node-level-3:hover, .node-level-4:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        transform: translateY(-2px);
-        box-shadow: 0 2px 6px rgba(94, 223, 223, 0.1);
-    }
-
-    .horizontal-group-parent > .node-level-2-items-container,
-    .horizontal-group-parent > .node-level-3-items-container {
-        flex-direction: row;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-    .horizontal-group-parent > .node-level-2-items-container > .node-level-3,
-    .horizontal-group-parent > .node-level-3-items-container > .node-level-4 {
-        flex-grow: 1;
-        min-width: 100px;
-    }
-
-    .arrow {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-        color: var(--accent);
-        align-self: flex-start;
-        padding-top: 180px;
-        min-width: 40px;
-        text-shadow: 0 0 5px rgba(94, 223, 223, 0.3);
-    }
-
-    /* 侧边栏操作 */
-    .graph-sidebar-actions {
-        width: 70px;
-        background-color: var(--card-bg);
-        border-left: 1px solid var(--border-light);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 20px;
-        margin-left: 20px;
-        border-radius: 4px;
-        height: fit-content;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.05);
-    }
-    .graph-sidebar-icon-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    .graph-sidebar-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        color: var(--text-secondary-light);
-        font-size: 11px;
-        text-align: center;
-        width: 100%;
-        padding: 8px 0;
-        transition: all 0.2s ease;
-    }
-    .graph-sidebar-item i {
-        width: 22px;
-        height: 22px;
-        margin-bottom: 4px;
-    }
-    .graph-sidebar-item:hover {
-        color: var(--accent);
-        text-shadow: 0 0 3px rgba(94, 223, 223, 0.3);
-    }
-
-    /* 页脚 */
-    .graph-footer {
-        background-color: var(--card-bg);
-        text-align: center;
-        padding: 15px;
-        font-size: 12px;
-        color: var(--text-muted-light);
-        border-top: 1px solid var(--border-light);
-        margin-top: 1.5rem;
-        border-radius: 4px;
-    }
-    
-    .section-card {
-        background-color: var(--card-bg);
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        border: 1px solid var(--border-light);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(122, 87, 209, 0.08);
-        background-image: linear-gradient(135deg, rgba(122, 87, 209, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
-    }
-    
-    .section-title {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--text-primary-light);
-        margin-bottom: 0.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border-light);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-    
-    .section-title i {
-        color: var(--accent);
-        text-shadow: 0 0 3px rgba(94, 223, 223, 0.3);
-    }
-</style>
+<link rel="stylesheet" href="{% static 'data_hall/css/industry_chain.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -421,7 +26,7 @@
         <!-- 图表区域 -->
         <div class="graph-main-content-wrapper mt-4">
             <div id="chart-zoom-pan-container">
-                <div id="industry-chain-container">
+                <div id="industry-chain-container" style="visibility: hidden;">
                     <!-- 图谱内容由JS动态生成 -->
                 </div>
             </div> 
@@ -496,6 +101,58 @@
     function setTransform() {
         container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     }
+ 
+    // 自动适应视窗，展示全局视图
+    function fitToViewport() {
+        // 临时重置变换，以获取未缩放时的真实尺寸
+        container.style.transform = 'translate(0px, 0px) scale(1)';
+        
+        // 获取容器原始尺寸
+        const containerRect = container.getBoundingClientRect();
+        const zoomContainerRect = zoomPanContainer.getBoundingClientRect();
+        
+        // 计算合适的缩放比例（稍微缩小一点，留出边距）
+        const scaleX = (zoomContainerRect.width - 80) / containerRect.width;
+        const scaleY = (zoomContainerRect.height - 80) / containerRect.height;
+        scale = Math.min(scaleX, scaleY, 1); // 不要放大，只缩小
+        
+        // 确保最小缩放不会太小
+        scale = Math.max(scale, 0.25);
+        
+        // 计算水平居中位置
+        translateX = (zoomContainerRect.width - containerRect.width * scale) / 2;
+        
+        // 调整垂直位置 - 只留出少量顶部间隙而不是垂直居中
+        const topMargin = 10; // 顶部固定间隙，可以根据需要调整
+        translateY = topMargin;
+        
+        // 确保图表不会被底部裁剪
+        const scaledHeight = containerRect.height * scale;
+        if (topMargin + scaledHeight > zoomContainerRect.height) {
+            // 如果高度超出视口，调整vertical scroll而不改变缩放
+            translateY = Math.min(topMargin, zoomContainerRect.height - scaledHeight);
+        }
+        
+        // 应用变换
+        setTransform();
+        
+        // 变换完成后显示图表
+        container.style.visibility = 'visible';
+        
+        console.log(`自动适应: 缩放比例=${scale.toFixed(2)}, 位置X=${translateX.toFixed(0)}px, Y=${translateY.toFixed(0)}px`);
+    }
+    
+    // 页面加载时立即适应视窗，不使用延时
+    fitToViewport();
+    
+    // 窗口大小改变时重新适应
+    window.addEventListener('resize', fitToViewport);
+    
+    // 刷新按钮点击事件
+    document.querySelector('.graph-sidebar-item[title="刷新"]').addEventListener('click', function() {
+        // 直接刷新整个页面
+        window.location.reload();
+    });
 
     zoomPanContainer.onmousedown = function (e) {
         e.preventDefault();
@@ -547,7 +204,6 @@
             this.classList.add('active');
         });
     });
-});
 
     function renderGraph(nodes, parentElement) {
         const mainColumnsData = {
@@ -743,5 +399,6 @@
         console.log(`总节点数: ${totalNodes}, 每列最大节点数: ${maxNodesPerColumn}, 需要列数: ${requiredColumns}`);
         return requiredColumns;
     }
+});
 </script>
 {% endblock %}

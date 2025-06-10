@@ -267,7 +267,19 @@
         max-height: fit-content;
     }
 
-    .node-level-3, .node-level-4 {
+    .node-level-3{
+        background-color: var(--input-bg);
+        width: 240px;
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary-light);
+        padding: 8px 10px;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 13px;
+        transition: all 0.2s ease;
+    }
+
+    .node-level-4{
         background-color: var(--input-bg);
         border: 1px solid var(--border-light);
         color: var(--text-secondary-light);
@@ -562,6 +574,23 @@
                     // NodeLevel 1 items are the main blocks within a column
                     const nodeElement = createNodeElement(node);
                     columnDiv.appendChild(nodeElement);
+                    
+                    // 在节点添加到DOM后设置列宽
+                    if (node.NodeLevel === 1) {
+                        const childCount = countAllDescendants(node);
+                        const MAX_NODES_PER_COLUMN = 20;
+                        const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
+                        const actualColumns = Math.min(requiredColumns, 4);
+                        
+                        // 现在节点已经添加到DOM，可以找到父元素
+                        if (actualColumns > 3) {
+                            columnDiv.classList.add('width-columns-4');
+                        } else if (actualColumns > 2) {
+                            columnDiv.classList.add('width-columns-3');
+                        } else if (actualColumns > 1) {
+                            columnDiv.classList.add('width-columns-2');
+                        }
+                    }
                 });
                 parentElement.appendChild(columnDiv);
             }
@@ -598,6 +627,7 @@
     function createNodeElement(nodeData) {
         const nodeElement = document.createElement('div');
         nodeElement.className = `node-level-${nodeData.NodeLevel}`;
+        
         // 如果是顶级分类节点（上游/中游/下游），不显示文本
         if (nodeData.NodeNumDesc && ["上游", "中游", "下游"].includes(nodeData.NodeNumDesc)) {
             // 不设置文本内容
@@ -610,48 +640,83 @@
         }
 
         if (nodeData.Children && nodeData.Children.length > 0) {
-            const childrenContainer = document.createElement('div');
-            childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
-            
-            // 根据子节点数量来动态设置列数
+            // 对于第一级节点，需要特殊处理列布局
             if (nodeData.NodeLevel === 1) {
                 // 递归计算所有子孙节点的总数量
                 const childCount = countAllDescendants(nodeData);
-                console.log(`${nodeData.NodeName} 的所有子孙节点数量: ${childCount}`);
                 
-                // 根据子孙节点总数量动态决定分几列
-                if (childCount > 100) {
-                    childrenContainer.classList.add('columns-4');
-                    // 查找最近的industry-column父元素并设置宽度类
-                    let columnParent = nodeElement.closest('.industry-column');
-                    if (columnParent) {
-                        columnParent.classList.add('width-columns-4');
-                    }
-                } else if (childCount > 50) {
-                    childrenContainer.classList.add('columns-3');
-                    // 查找最近的industry-column父元素并设置宽度类
-                    let columnParent = nodeElement.closest('.industry-column');
-                    if (columnParent) {
-                        columnParent.classList.add('width-columns-3');
-                    }
-                } else if (childCount > 20) {
-                    childrenContainer.classList.add('columns-2');
-                    // 查找最近的industry-column父元素并设置宽度类
-                    let columnParent = nodeElement.closest('.industry-column');
-                    if (columnParent) {
-                        columnParent.classList.add('width-columns-2');
-                    }
-                } else {
-                    childrenContainer.classList.add('columns-1'); // 默认单列
+                // 计算需要的列数（每列最多20个节点）
+                const MAX_NODES_PER_COLUMN = 20;
+                const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
+                
+                // 创建多列容器（外层容器）
+                const columnsContainer = document.createElement('div');
+                columnsContainer.className = 'multi-columns-wrapper';
+                columnsContainer.style.display = 'flex';
+                columnsContainer.style.gap = '15px';
+                nodeElement.appendChild(columnsContainer);
+                
+                // 限制最多4列
+                const actualColumns = Math.min(requiredColumns, 4);
+                
+                // 将子节点分组，每组不超过MAX_NODES_PER_COLUMN个节点
+                const columns = [];
+                for (let i = 0; i < actualColumns; i++) {
+                    columns.push([]);
                 }
-                childrenContainer.classList.add('multi-column-layout');
+                
+                // 计算每个子节点及其子孙节点的数量，用于分配列
+                let childrenWithCounts = nodeData.Children.map(child => {
+                    const count = countAllDescendants(child) + 1; // +1 表示节点自身
+                    return { node: child, count: count };
+                });
+                
+                // 贪心算法，将节点分配到各列，尽量保持每列总节点数接近
+                let columnCounts = new Array(actualColumns).fill(0);
+                
+                // 从大到小排序，优先分配大节点
+                childrenWithCounts.sort((a, b) => b.count - a.count);
+                
+                // 分配节点到列
+                childrenWithCounts.forEach(item => {
+                    // 找出当前节点数最少的列
+                    const minColumnIndex = columnCounts.indexOf(Math.min(...columnCounts));
+                    columns[minColumnIndex].push(item.node);
+                    columnCounts[minColumnIndex] += item.count;
+                    console.log(`分配节点 ${item.node.NodeName}(${item.count}个) 到第${minColumnIndex+1}列，当前该列共${columnCounts[minColumnIndex]}个节点`);
+                });
+                
+                // 为每列创建容器并添加节点
+                for (let i = 0; i < actualColumns; i++) {
+                    if (columns[i].length > 0) {
+                        const columnDiv = document.createElement('div');
+                        columnDiv.className = `node-level-${nodeData.NodeLevel}-column column-${i+1}`;
+                        columnDiv.style.flexGrow = '1';
+                        columnDiv.style.width = `${100/actualColumns}%`;
+                        
+                        // 为该列的每个子节点创建元素
+                        columns[i].forEach(childNode => {
+                            const childElement = createNodeElement(childNode);
+                            columnDiv.appendChild(childElement);
+                        });
+                        
+                        // 添加列到容器
+                        columnsContainer.appendChild(columnDiv);
+                    }
+                }
+                
+                return nodeElement;
+            } else {
+                // 对于非第一级节点，使用原来的逻辑
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
+                
+                nodeData.Children.forEach(childNode => {
+                    const childElement = createNodeElement(childNode);
+                    childrenContainer.appendChild(childElement);
+                });
+                nodeElement.appendChild(childrenContainer);
             }
-
-            nodeData.Children.forEach(childNode => {
-                const childElement = createNodeElement(childNode);
-                childrenContainer.appendChild(childElement);
-            });
-            nodeElement.appendChild(childrenContainer);
         }
         return nodeElement;
     }
@@ -670,6 +735,13 @@
         }
         
         return count;
+    }
+    
+    // 计算每列应包含的节点数并返回分配方案
+    function distributeNodesPerColumn(totalNodes, maxNodesPerColumn) {
+        const requiredColumns = Math.ceil(totalNodes / maxNodesPerColumn);
+        console.log(`总节点数: ${totalNodes}, 每列最大节点数: ${maxNodesPerColumn}, 需要列数: ${requiredColumns}`);
+        return requiredColumns;
     }
 </script>
 {% endblock %}

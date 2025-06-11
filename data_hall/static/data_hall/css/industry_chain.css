@@ -35,6 +35,7 @@
     --node-primary: #2c5da3;
     --node-secondary: #3a75c4;
     --node-tertiary: #5a8bd0;
+    --node-light-fill: rgba(90, 139, 208, 0.15);
 }
 
 /* 全局字体样式 */
@@ -173,7 +174,7 @@ body, button, input, select, textarea {
 }
 
 .industry-column .column-title-container {
-    padding: 12px;
+    padding: 0px;
     border-radius: 12px 12px 0 0;
     margin-bottom: 0;
     text-align: center;
@@ -210,43 +211,52 @@ body, button, input, select, textarea {
 .midstream-column .node-level-4,
 .downstream-column .node-level-3,
 .downstream-column .node-level-4 {
-    background-color: var(--node-tertiary);
-    color: #ffffff;
-    border-color: var(--node-primary);
+    background-color: var(--node-light-fill);
+    color: var(--node-primary);
+    border: 1px dashed var(--node-tertiary);
 }
 
 .node-level-1 {
-    color: #ffffff;
-    padding: 14px 16px;
+    padding: 5px 0px 0px 0px;
     border-radius: 8px;
     font-weight: 600;
     text-align: center;
     font-size: 16px;
-    background-color: var(--node-primary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     letter-spacing: -0.005em;
 }
 
-.node-level-2 {
+.node-level-1 {
+    border: 1px solid var(--node-primary);
     color: #ffffff;
-    padding: 10px 14px;
+    background-color: transparent;
+}
+
+.node-level-2 {
+    padding: 5px 0px 0px 0px;
     border-radius: 8px;
     font-weight: 500;
     text-align: center;
     margin-top: 12px;
     font-size: 15px;
-    background-color: var(--node-secondary);
+    flex: 1;
     transition: all 0.25s ease;
+}
+
+.node-level-2 {
+    border: 1px solid var(--node-secondary);
+    color: #ffffff;
+    background-color: transparent;
 }
 
 .node-level-1-items-container,
 .node-level-2-items-container,
 .node-level-3-items-container {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(245, 247, 250, 0.85);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    padding: 14px;
-    margin-top: 8px;
+    padding: 20px;
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -283,10 +293,7 @@ body, button, input, select, textarea {
 }
 
 .node-level-3 {
-    background-color: var(--input-bg);
     width: 240px;
-    border: 1px solid var(--border-light);
-    color: var(--text-secondary-light);
     padding: 10px 12px;
     border-radius: 6px;
     text-align: center;
@@ -295,16 +302,25 @@ body, button, input, select, textarea {
     transition: all 0.25s ease;
 }
 
+.node-level-3:not(.has-children) {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: var(--node-primary);
+}
+
 .node-level-4 {
-    background-color: var(--input-bg);
-    border: 1px solid var(--border-light);
-    color: var(--text-secondary-light);
     padding: 10px 12px;
     border-radius: 6px;
     text-align: center;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.25s ease;
+}
+
+.node-level-4:not(.has-children) {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: var(--node-primary);
 }
 
 .node-level-3:hover, .node-level-4:hover {
@@ -454,5 +470,110 @@ body, button, input, select, textarea {
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 8px;
     padding: 15px;
-    margin-top: 10px;
+    margin-top: 5px;
+}
+
+/* 有子节点的节点样式 - 使用线框而非填充色 */
+.node-level-1.has-children {
+    color: var(--text-primary-light);
+    background-color: transparent;
+    border: 2px solid var(--node-primary);
+    position: relative;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.node-level-1.has-children::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 70%;
+    height: 40px;
+    background-color: var(--node-primary);
+    z-index: 0;
+    border-radius: 7px 7px 0 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.node-level-1.has-children .node-title {
+    position: relative;
+    z-index: 1;
+}
+
+.node-level-2.has-children {
+    color: var(--text-primary-light);
+    background-color: transparent;
+    border: 2px solid var(--node-secondary);
+    position: relative;
+    padding-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.node-level-2.has-children::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 70%;
+    height: 36px;
+    background-color: var(--node-secondary);
+    z-index: 0;
+    border-radius: 7px 7px 0 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.node-level-2.has-children .node-title {
+    position: relative;
+    z-index: 1;
+}
+
+/* level-3 和 level-4 使用虚线框 */
+.node-level-3 {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: var(--node-primary);
+}
+
+.node-level-4 {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: var(--node-primary);
+}
+
+/* level-3 和 level-4 的标题样式 */
+.node-level-3.has-children, .node-level-4.has-children {
+    position: relative;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.node-level-3.has-children::before, .node-level-4.has-children::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 70%;
+    height: 32px;
+    background-color: var(--node-tertiary);
+    z-index: 0;
+    border-radius: 5px 5px 0 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.node-level-3.has-children .node-title, .node-level-4.has-children .node-title {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* 为包含node-level-3-items-container的node-level-3元素设置实线边框 */
+.node-level-3:has(.node-level-3-items-container) {
+    border: 1px solid var(--node-tertiary);
 }

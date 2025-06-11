@@ -1,0 +1,458 @@
+/* 引入优化字体 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* 简洁单色调主题 - 蓝灰色系 */
+    --primary: #1E1F2E;
+    --secondary: #4A5568;
+    --secondary-rgb: 74, 85, 104;
+    --accent: #718096;
+    --accent-rgb: 113, 128, 150;
+    --card-bg: #2D3748;
+    --input-bg: #4A5568;
+    --text-primary-light: #F7FAFC;
+    --text-secondary-light: #E2E8F0;
+    --text-muted-light: #A0AEC0;
+    --border-light: rgba(113, 128, 150, 0.2);
+    
+    /* 统一的单色调配色 */
+    --node-bg-1: #3a75c4;
+    --node-bg-2: #4a85d4;
+    --node-bg-3: #5a95e4;
+    --node-hover: #2c5da3;
+    
+    /* 产业链三区域背景颜色设置 */
+    --upstream-bg-light: #e6f0ff;
+    --midstream-bg-light: #ebf8f4;
+    --downstream-bg-light: #fff9e6;
+    
+    /* 产业链三区域标题栏颜色设置 */
+    --upstream-title-bg: #3a75c4;
+    --midstream-title-bg: #4cb396;
+    --downstream-title-bg: #eac980;
+    
+    /* 统一蓝色系节点配色 */
+    --node-primary: #2c5da3;
+    --node-secondary: #3a75c4;
+    --node-tertiary: #5a8bd0;
+}
+
+/* 全局字体样式 */
+body, button, input, select, textarea {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.005em;
+}
+
+/* 图表特定样式 */
+.chart-view-options {
+    padding: 0px 0px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.25rem;
+}
+
+.view-option {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-light);
+    padding: 8px 16px;
+    margin-left: -1px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary-light);
+    transition: all 0.25s ease;
+}
+.view-option:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin-left: 0;
+}
+.view-option:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.view-option.active {
+    background-color: var(--secondary);
+    color: var(--text-primary-light);
+    border-color: var(--secondary);
+}
+.view-option:hover:not(.active) {
+    background-color: var(--accent);
+    color: var(--text-primary-light);
+}
+
+/* 基本布局 */
+.graph-main-content-wrapper {
+    display: flex;
+    flex-grow: 1;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+#chart-zoom-pan-container {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+    cursor: grab;
+    background-color: var(--primary);
+    border-radius: 12px;
+    min-height: 600px;
+}
+
+#industry-chain-container {
+    display: flex;
+    padding: 40px;
+    gap: 32px;
+    min-width: min-content;
+    transform-origin: 0 0;
+    transition: transform 0.2s ease;
+    position: relative;
+    background-color: #f5f7fa;
+}
+
+.industry-column {
+    min-width: 320px;
+    padding: 0;
+    border-radius: 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: flex-start;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+/* 上游部分样式 */
+.industry-column.upstream-column {
+    background-color: var(--upstream-bg-light);
+}
+
+.industry-column.upstream-column .column-title-container {
+    background-color: var(--upstream-title-bg);
+}
+
+/* 中游部分样式 */
+.industry-column.midstream-column {
+    background-color: var(--midstream-bg-light);
+}
+
+.industry-column.midstream-column .column-title-container {
+    background-color: var(--midstream-title-bg);
+}
+
+/* 下游部分样式 */
+.industry-column.downstream-column {
+    background-color: var(--downstream-bg-light);
+}
+
+.industry-column.downstream-column .column-title-container {
+    background-color: var(--downstream-title-bg);
+}
+
+/* 增加不同列数的列宽度 */
+.industry-column.width-columns-2 {
+    min-width: 650px;
+    max-width: 700px;
+}
+
+.industry-column.width-columns-3 {
+    min-width: 950px;
+    max-width: 1020px;
+}
+
+.industry-column.width-columns-4 {
+    min-width: 1250px;
+    max-width: 1340px;
+}
+
+.industry-column .column-title-container {
+    padding: 12px;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 0;
+    text-align: center;
+    background-color: var(--secondary);
+}
+
+.industry-column .column-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 10px 16px;
+    display: inline-block;
+    letter-spacing: -0.01em;
+}
+
+/* 上游节点样式 */
+.upstream-column .node-level-1,
+.midstream-column .node-level-1,
+.downstream-column .node-level-1 {
+    background-color: var(--node-primary);
+    color: #ffffff;
+}
+
+.upstream-column .node-level-2,
+.midstream-column .node-level-2,
+.downstream-column .node-level-2 {
+    background-color: var(--node-secondary);
+    color: #ffffff;
+}
+
+.upstream-column .node-level-3,
+.upstream-column .node-level-4,
+.midstream-column .node-level-3,
+.midstream-column .node-level-4,
+.downstream-column .node-level-3,
+.downstream-column .node-level-4 {
+    background-color: var(--node-tertiary);
+    color: #ffffff;
+    border-color: var(--node-primary);
+}
+
+.node-level-1 {
+    color: #ffffff;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    font-size: 16px;
+    background-color: var(--node-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.005em;
+}
+
+.node-level-2 {
+    color: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 15px;
+    background-color: var(--node-secondary);
+    transition: all 0.25s ease;
+}
+
+.node-level-1-items-container,
+.node-level-2-items-container,
+.node-level-3-items-container {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 多列布局样式 */
+.node-level-1-items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+.multi-column-layout {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.multi-column-layout > .node-level-2,
+.multi-column-layout > .node-level-3,
+.multi-column-layout > .node-level-4 {
+    min-width: 280px;
+    max-height: fit-content;
+}
+
+.node-level-3 {
+    background-color: var(--input-bg);
+    width: 240px;
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary-light);
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.node-level-4 {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary-light);
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.node-level-3:hover, .node-level-4:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.horizontal-group-parent > .node-level-2-items-container,
+.horizontal-group-parent > .node-level-3-items-container {
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.horizontal-group-parent > .node-level-2-items-container > .node-level-3,
+.horizontal-group-parent > .node-level-3-items-container > .node-level-4 {
+    flex-grow: 1;
+    min-width: 100px;
+}
+
+.arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: #718096;
+    align-self: flex-start;
+    padding-top: 180px;
+    min-width: 40px;
+}
+
+/* 侧边栏操作 */
+.graph-sidebar-actions {
+    width: 70px;
+    background-color: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    margin-left: 20px;
+    border-radius: 12px;
+    height: fit-content;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.graph-sidebar-icon-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.graph-sidebar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #718096;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+    transition: all 0.25s ease;
+}
+
+.graph-sidebar-item i {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+}
+
+.graph-sidebar-item:hover {
+    color: #4A5568;
+    background-color: #f7f8fa;
+}
+
+/* 页脚 */
+.graph-footer {
+    background-color: #ffffff;
+    text-align: center;
+    padding: 16px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #718096;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+}
+
+.section-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: -0.01em;
+}
+
+.section-title i {
+    color: #3182ce;
+}
+
+/* 简洁滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c4c9d4;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* 节点标题优化 */
+.node-title {
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: -0.005em;
+}
+
+/* 多列包装器样式 */
+.multi-columns-wrapper {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+}

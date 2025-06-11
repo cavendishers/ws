@@ -399,6 +399,28 @@
         console.log(`总节点数: ${totalNodes}, 每列最大节点数: ${maxNodesPerColumn}, 需要列数: ${requiredColumns}`);
         return requiredColumns;
     }
+    
+    // 添加全屏按钮功能
+    document.querySelector('.graph-sidebar-item[title="全屏"]').addEventListener('click', function() {
+        const chartSection = document.getElementById('industry-chain-section');
+        if (!document.fullscreenElement) {
+            if (chartSection.requestFullscreen) {
+                chartSection.requestFullscreen();
+            } else if (chartSection.webkitRequestFullscreen) { /* Safari */
+                chartSection.webkitRequestFullscreen();
+            } else if (chartSection.msRequestFullscreen) { /* IE11 */
+                chartSection.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+    });
 });
 </script>
 {% endblock %}

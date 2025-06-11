@@ -2,40 +2,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* 简洁单色调主题 - 蓝灰色系 */
-    --primary: #1E1F2E;
-    --secondary: #4A5568;
-    --secondary-rgb: 74, 85, 104;
-    --accent: #718096;
-    --accent-rgb: 113, 128, 150;
-    --card-bg: #2D3748;
-    --input-bg: #4A5568;
-    --text-primary-light: #F7FAFC;
-    --text-secondary-light: #E2E8F0;
-    --text-muted-light: #A0AEC0;
-    --border-light: rgba(113, 128, 150, 0.2);
+    /* 高级科技风主题 - 苹果风格 */
+    --primary: #1D2942;
+    --secondary: #2D3A56;
+    --secondary-rgb: 45, 58, 86;
+    --accent: #4266AC;
+    --accent-rgb: 66, 102, 172;
+    --card-bg: #2A3754;
+    --input-bg: #36435F;
+    --text-primary-light: #F2F5FC;
+    --text-secondary-light: #DCE2F0;
+    --text-muted-light: #A7B3D2;
+    --border-light: rgba(95, 125, 190, 0.25);
     
-    /* 统一的单色调配色 */
-    --node-bg-1: #3a75c4;
-    --node-bg-2: #4a85d4;
-    --node-bg-3: #5a95e4;
-    --node-hover: #2c5da3;
+    /* 优雅科技感节点配色 */
+    --node-bg-1: #4266AC;
+    --node-bg-2: #4E74BC;
+    --node-bg-3: #5A82CC;
+    --node-hover: #3A5998;
     
-    /* 产业链三区域背景颜色设置 */
-    --upstream-bg-light: #e6f0ff;
-    --midstream-bg-light: #ebf8f4;
-    --downstream-bg-light: #fff9e6;
+    /* 产业链三区域背景颜色 - 苹果风格变体 */
+    --upstream-bg-light: #293C68;
+    --midstream-bg-light: #294A50;
+    --downstream-bg-light: #434039;
     
-    /* 产业链三区域标题栏颜色设置 */
-    --upstream-title-bg: #3a75c4;
-    --midstream-title-bg: #4cb396;
-    --downstream-title-bg: #eac980;
+    /* 产业链三区域标题栏颜色 - 优雅变体 */
+    --upstream-title-bg: #4266AC;
+    --midstream-title-bg: #3C8781;
+    --downstream-title-bg: #B48F4D;
     
-    /* 统一蓝色系节点配色 */
-    --node-primary: #2c5da3;
-    --node-secondary: #3a75c4;
-    --node-tertiary: #5a8bd0;
-    --node-light-fill: rgba(90, 139, 208, 0.15);
+    /* 科技感节点配色 - 优化对比度 */
+    --node-primary: #3A5998;
+    --node-secondary: #4266AC;
+    --node-tertiary: #5A82CC;
+    --node-light-fill: rgba(90, 130, 204, 0.15);
 }
 
 /* 全局字体样式 */
@@ -100,7 +100,8 @@ body, button, input, select, textarea {
     overflow: auto;
     position: relative;
     cursor: grab;
-    background-color: var(--primary);
+    background-color: #212D48;
+    background-image: linear-gradient(to bottom, #23304D, #212D48);
     border-radius: 12px;
     min-height: 600px;
 }
@@ -113,7 +114,8 @@ body, button, input, select, textarea {
     transform-origin: 0 0;
     transition: transform 0.2s ease;
     position: relative;
-    background-color: #f5f7fa;
+    background-color: #212D48;
+    background-image: linear-gradient(to bottom, #23304D, #212D48);
 }
 
 .industry-column {
@@ -125,9 +127,9 @@ body, button, input, select, textarea {
     flex-direction: column;
     gap: 16px;
     align-self: flex-start;
-    background-color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    background-color: #2A3754;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border: 1px solid #36435F;
 }
 
 /* 上游部分样式 */
@@ -184,7 +186,7 @@ body, button, input, select, textarea {
 .industry-column .column-title {
     font-size: 22px;
     font-weight: 600;
-    color: #ffffff;
+    color: #F2F5FC;
     padding: 10px 16px;
     display: inline-block;
     letter-spacing: -0.01em;
@@ -195,14 +197,16 @@ body, button, input, select, textarea {
 .midstream-column .node-level-1,
 .downstream-column .node-level-1 {
     background-color: var(--node-primary);
-    color: #ffffff;
+    color: #F2F5FC;
+    box-shadow: 0 4px 8px rgba(61, 86, 150, 0.25);
 }
 
 .upstream-column .node-level-2,
 .midstream-column .node-level-2,
 .downstream-column .node-level-2 {
     background-color: var(--node-secondary);
-    color: #ffffff;
+    color: #F2F5FC;
+    box-shadow: 0 3px 6px rgba(77, 104, 176, 0.25);
 }
 
 .upstream-column .node-level-3,
@@ -212,7 +216,7 @@ body, button, input, select, textarea {
 .downstream-column .node-level-3,
 .downstream-column .node-level-4 {
     background-color: var(--node-light-fill);
-    color: var(--node-primary);
+    color: #DCE2F0;
     border: 1px dashed var(--node-tertiary);
 }
 
@@ -222,7 +226,7 @@ body, button, input, select, textarea {
     font-weight: 600;
     text-align: center;
     font-size: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     letter-spacing: -0.005em;
 }
 
@@ -252,8 +256,8 @@ body, button, input, select, textarea {
 .node-level-1-items-container,
 .node-level-2-items-container,
 .node-level-3-items-container {
-    background-color: rgba(245, 247, 250, 0.85);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(45, 58, 92, 0.8);
+    border: 1px solid rgba(95, 125, 190, 0.2);
     border-radius: 8px;
     padding: 20px;
     margin-top: 5px;
@@ -305,7 +309,7 @@ body, button, input, select, textarea {
 .node-level-3:not(.has-children) {
     background-color: var(--node-light-fill);
     border: 1px dashed var(--node-tertiary);
-    color: var(--node-primary);
+    color: #DCE2F0;
 }
 
 .node-level-4 {
@@ -320,12 +324,12 @@ body, button, input, select, textarea {
 .node-level-4:not(.has-children) {
     background-color: var(--node-light-fill);
     border: 1px dashed var(--node-tertiary);
-    color: var(--node-primary);
+    color: #DCE2F0;
 }
 
 .node-level-3:hover, .node-level-4:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 8px rgba(97, 131, 217, 0.2);
 }
 
 .horizontal-group-parent > .node-level-2-items-container,
@@ -346,7 +350,7 @@ body, button, input, select, textarea {
     align-items: center;
     justify-content: center;
     font-size: 32px;
-    color: #718096;
+    color: #7889B5;
     align-self: flex-start;
     padding-top: 180px;
     min-width: 40px;
@@ -355,8 +359,8 @@ body, button, input, select, textarea {
 /* 侧边栏操作 */
 .graph-sidebar-actions {
     width: 70px;
-    background-color: #ffffff;
-    border-left: 1px solid #e2e8f0;
+    background-color: #2A3754;
+    border-left: 1px solid #36435F;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -364,7 +368,7 @@ body, button, input, select, textarea {
     margin-left: 20px;
     border-radius: 12px;
     height: fit-content;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .graph-sidebar-icon-group {
@@ -379,7 +383,7 @@ body, button, input, select, textarea {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    color: #718096;
+    color: #A7B3D2;
     font-size: 12px;
     font-weight: 500;
     text-align: center;
@@ -395,39 +399,39 @@ body, button, input, select, textarea {
 }
 
 .graph-sidebar-item:hover {
-    color: #4A5568;
-    background-color: #f7f8fa;
+    color: #DCE2F0;
+    background-color: #36435F;
 }
 
 /* 页脚 */
 .graph-footer {
-    background-color: #ffffff;
+    background-color: #2A3754;
     text-align: center;
     padding: 16px;
     font-size: 13px;
     font-weight: 400;
-    color: #718096;
-    border-top: 1px solid #e2e8f0;
+    color: #A7B3D2;
+    border-top: 1px solid #36435F;
     margin-top: 1.5rem;
     border-radius: 12px;
 }
 
 .section-card {
-    background-color: #ffffff;
+    background-color: #2A3754;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #36435F;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .section-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2d3748;
+    color: #F2F5FC;
     margin-bottom: 0.8rem;
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #36435F;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -435,7 +439,7 @@ body, button, input, select, textarea {
 }
 
 .section-title i {
-    color: #3182ce;
+    color: #5A82CC;
 }
 
 /* 简洁滚动条 */
@@ -445,17 +449,17 @@ body, button, input, select, textarea {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #212D48;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #c4c9d4;
+    background: #4266AC;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
+    background: #5A82CC;
 }
 
 /* 节点标题优化 */
@@ -467,15 +471,16 @@ body, button, input, select, textarea {
 
 /* 多列包装器样式 */
 .multi-columns-wrapper {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(45, 58, 92, 0.8);
     border-radius: 8px;
     padding: 15px;
     margin-top: 5px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* 有子节点的节点样式 - 使用线框而非填充色 */
 .node-level-1.has-children {
-    color: var(--text-primary-light);
+    color: #F2F5FC;
     background-color: transparent;
     border: 2px solid var(--node-primary);
     position: relative;
@@ -483,6 +488,7 @@ body, button, input, select, textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(61, 86, 150, 0.15);
 }
 
 .node-level-1.has-children::before {
@@ -492,6 +498,7 @@ body, button, input, select, textarea {
     width: 70%;
     height: 40px;
     background-color: var(--node-primary);
+    background-image: linear-gradient(to right, #3A5998, #4366AC);
     z-index: 0;
     border-radius: 7px 7px 0 0;
     left: 50%;
@@ -504,7 +511,7 @@ body, button, input, select, textarea {
 }
 
 .node-level-2.has-children {
-    color: var(--text-primary-light);
+    color: #F2F5FC;
     background-color: transparent;
     border: 2px solid var(--node-secondary);
     position: relative;
@@ -521,6 +528,7 @@ body, button, input, select, textarea {
     width: 70%;
     height: 36px;
     background-color: var(--node-secondary);
+    background-image: linear-gradient(to right, #4266AC, #4A6DB2);
     z-index: 0;
     border-radius: 7px 7px 0 0;
     left: 50%;
@@ -536,13 +544,13 @@ body, button, input, select, textarea {
 .node-level-3 {
     background-color: var(--node-light-fill);
     border: 1px dashed var(--node-tertiary);
-    color: var(--node-primary);
+    color: #DCE2F0;
 }
 
 .node-level-4 {
     background-color: var(--node-light-fill);
     border: 1px dashed var(--node-tertiary);
-    color: var(--node-primary);
+    color: #DCE2F0;
 }
 
 /* level-3 和 level-4 的标题样式 */
@@ -561,6 +569,7 @@ body, button, input, select, textarea {
     width: 70%;
     height: 32px;
     background-color: var(--node-tertiary);
+    background-image: linear-gradient(to right, #5A82CC, #5F87D1);
     z-index: 0;
     border-radius: 5px 5px 0 0;
     left: 50%;

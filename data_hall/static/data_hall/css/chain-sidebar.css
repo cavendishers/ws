@@ -1,0 +1,356 @@
+/* 侧边栏企业库样式 */
+.chain-sidebar {
+    position: fixed;
+    top: 0;
+    right: -80%;
+    width: 80%;
+    height: 100vh;
+    background: linear-gradient(135deg, #1D2942 0%, #2A3754 100%);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
+    border-left: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.chain-sidebar.active {
+    right: 0;
+    animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.chain-sidebar.closing {
+    right: 0;
+    animation: slideOutRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* 侧边栏动画 */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* 遮罩层 */
+.chain-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.chain-sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 侧边栏头部 */
+.chain-sidebar-header {
+    padding: 24px 32px;
+    background: rgba(66, 102, 172, 0.1);
+    border-bottom: 1px solid rgba(0, 191, 255, 0.15);
+    position: relative;
+}
+
+.chain-sidebar-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary-light, #F2F5FC);
+    margin: 0;
+    padding-right: 50px;
+    line-height: 1.2;
+}
+
+.chain-sidebar-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary-light, #DCE2F0);
+    margin: 8px 0 0 0;
+    opacity: 0.8;
+}
+
+.chain-sidebar-close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: #F2F5FC;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.chain-sidebar-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* 侧边栏内容区 */
+.chain-sidebar-content {
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* 企业列表容器 */
+.enterprise-list-container {
+    padding: 24px 32px;
+}
+
+/* 加载状态 */
+.chain-sidebar-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 32px;
+    color: var(--text-secondary-light, #DCE2F0);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(66, 102, 172, 0.3);
+    border-top: 3px solid #4266AC;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 企业表格样式 */
+.enterprise-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(26, 43, 94, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.enterprise-table thead {
+    background: rgba(66, 102, 172, 0.8);
+}
+
+.enterprise-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #F2F5FC;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.enterprise-table td {
+    padding: 14px 12px;
+    color: var(--text-secondary-light, #DCE2F0);
+    font-size: 13px;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.1);
+    vertical-align: middle;
+}
+
+.enterprise-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.enterprise-table tbody tr:hover {
+    background: rgba(66, 102, 172, 0.2);
+}
+
+.enterprise-table tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* 企业名称样式 */
+.enterprise-name {
+    font-weight: 500;
+    color: #F2F5FC;
+}
+
+/* 产业关联性标签 */
+.relevance-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 40px;
+}
+
+.relevance-high {
+    background: rgba(76, 175, 80, 0.2);
+    color: #81C784;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.relevance-medium {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFD54F;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.relevance-low {
+    background: rgba(158, 158, 158, 0.2);
+    color: #BDBDBD;
+    border: 1px solid rgba(158, 158, 158, 0.3);
+}
+
+/* 分页控件 */
+.sidebar-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 32px;
+    border-top: 1px solid rgba(0, 191, 255, 0.15);
+    background: rgba(29, 41, 66, 0.8);
+    gap: 12px;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background: rgba(66, 102, 172, 0.6);
+    border: 1px solid rgba(66, 102, 172, 0.8);
+    border-radius: 6px;
+    color: #F2F5FC;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: rgba(66, 102, 172, 0.8);
+    transform: translateY(-1px);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: var(--text-secondary-light, #DCE2F0);
+    font-size: 13px;
+    margin: 0 16px;
+}
+
+/* 错误状态 */
+.chain-sidebar-error {
+    padding: 60px 32px;
+    text-align: center;
+    color: #E57373;
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.error-message {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.error-detail {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* 空状态 */
+.chain-sidebar-empty {
+    padding: 60px 32px;
+    text-align: center;
+    color: var(--text-muted-light, #A7B3D2);
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+/* 滚动条样式 */
+.chain-sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chain-sidebar-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chain-sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(66, 102, 172, 0.5);
+    border-radius: 3px;
+}
+
+.chain-sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(66, 102, 172, 0.7);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .chain-sidebar {
+        width: 95%;
+        right: -95%;
+    }
+    
+    .chain-sidebar-header {
+        padding: 16px 20px;
+    }
+    
+    .chain-sidebar-title {
+        font-size: 20px;
+    }
+    
+    .enterprise-list-container {
+        padding: 16px 20px;
+    }
+    
+    .enterprise-table th,
+    .enterprise-table td {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+}
+
+/* 产业链节点点击效果 */
+.node-level-2:hover,
+.node-level-3:hover,
+.node-level-4:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(66, 102, 172, 0.3);
+} 

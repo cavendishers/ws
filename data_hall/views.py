@@ -904,10 +904,12 @@ def build_node_tree(node, all_nodes):
     # 找出当前节点的所有子节点
     children = [n for n in all_nodes if n.parent_id == node.id]
     
-    # 构建当前节点的数据结构
+    # 构建当前节点的数据结构，包含数据库ID
     node_data = {
         "NodeName": node.name,
         "NodeLevel": int(node.level) if node.level.isdigit() else 1,  # 确保NodeLevel是整数
+        "NodeId": node.id,  # 添加数据库中的链点ID
+        "NodeCode": node.code,  # 添加链点代码
         "Children": []
     }
     

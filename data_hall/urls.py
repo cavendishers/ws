@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import api_views
 
 app_name = 'data_hall'
 
@@ -27,4 +28,9 @@ urlpatterns = [
     path('api/ai/chat', views.ai_chat, name='ai_chat'),
     path('api/top-companies/', views.get_top_companies, name='top_companies'),
     path('api/yearly-stats/', views.get_yearly_stats, name='yearly_stats'),
+    
+    # 新增API路由
+    path('api/chain-points/', api_views.ChainPointListAPIView.as_view(), name='chain_point_list'),
+    path('api/chain-point/<int:chain_point_id>/enterprises/', api_views.ChainPointEnterpriseListAPIView.as_view(), name='chain_point_enterprises'),
+    path('api/chain-point/<int:chain_point_id>/', api_views.ChainPointDetailAPIView.as_view(), name='chain_point_detail'),
 ] 

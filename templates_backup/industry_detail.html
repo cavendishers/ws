@@ -1,0 +1,85 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}{{ industry_name }}产业链图谱 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="{% static 'data_hall/css/industry_chain.css' %}">
+<link rel="stylesheet" href="{% static 'data_hall/css/chain-sidebar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-4">
+    <!-- 产业链图谱 -->
+    <section class="section-card" id="industry-chain-section">
+        <h2 class="section-title">
+            <i class="fas fa-project-diagram text-[var(--accent)]"></i>
+            <span>{{ industry_name }}产业链图谱</span>
+        </h2>
+
+        <!-- 视图选项 -->
+        <div class="chart-view-options">
+            <button class="view-option active">框架图</button>
+            <button class="view-option">树状图</button>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="graph-main-content-wrapper mt-4">
+            <div id="chart-zoom-pan-container">
+                <div id="industry-chain-container" style="visibility: hidden;">
+                    <!-- 图谱内容由JS动态生成 -->
+                </div>
+            </div> 
+
+            <aside class="graph-sidebar-actions">
+                <div class="graph-sidebar-icon-group">
+                    <div class="graph-sidebar-item" title="指示器">
+                        <svg class="gauge-svg-placeholder" viewBox="0 0 50 50" width="22" height="22" style="fill:currentColor">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="4"/>
+                            <path d="M25 5 A20 20 0 0 1 43.3 16.7" fill="none" stroke="currentColor" stroke-width="4"/>
+                            <circle cx="25" cy="25" r="3" fill="currentColor"/>
+                            <line x1="25" y1="25" x2="43" y2="17" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>指示器</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="刷新">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>刷新</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="全屏">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        <span>全屏</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="去水印">
+                        <i class="fas fa-tint-slash"></i>
+                        <span>去水印</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="下载">
+                        <i class="fas fa-download"></i>
+                        <span>下载</span>
+                    </div>
+                    <div class="graph-sidebar-item" title="保存">
+                        <i class="fas fa-save"></i>
+                        <span>保存</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+    
+    <!-- 页脚信息 -->
+    <footer class="graph-footer">
+        以上数据基于公开信息分析挖掘的成果，仅供参考，不构成任何明示或暗示的观点或保证。
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 从后端获取产业链数据，传递给外部JS文件
+const graphData = JSON.parse('{{ chain_data|escapejs }}');
+</script>
+<script src="{% static 'data_hall/js/industry_detail.js' %}"></script>
+<script src="{% static 'data_hall/js/chain-sidebar.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}产业链 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'data_hall/css/industry.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- 标题介绍 -->
+<section class="container mx-auto px-6 mb-12">
+  <h1 class="text-3xl font-bold mb-4 gradient-text">产业链总览</h1>
+  <p class="text-gray-300 max-w-3xl">
+    覆盖新一代信息技术、半导体、人工智能、5G、以及新能源等多个领域，通过产业链分析帮助您快速了解各细分领域的发展动态与企业分布。
+  </p>
+</section>
+
+<!-- 产业链网格布局 -->
+<section class="container mx-auto px-6" style="min-height: 30rem;">
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for industry in industries %}
+    <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" 
+         style="background-image: url('{% static "data_hall/img/"|add:industry.name|add:".jpg" %}');background-size: cover;" 
+         data-industry="{{ industry.name }}">
+      <h3 class="text-lg font-bold mb-2 text-white">{{ industry.name }}</h3>
+      <p class="text-sm text-gray-300">企业数：{{ industry.company_count }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- 模态框 -->
+<div id="industryModal" class="modal">
+  <div class="modal-content">
+    <div class="flex justify-between items-center mb-4">
+      <h2 id="modalTitle" class="text-2xl font-bold text-white"></h2>
+      <span class="close">&times;</span>
+    </div>
+    <div id="modalContent" class="mt-4">
+      <div class="h-[500px] bg-[#0A1A3A] rounded-lg flex items-center justify-center">
+        <img id="industryChainImage" src="" alt="产业链图谱" class="max-w-full max-h-full object-contain" />
+      </div>
+      <div class="mt-6 text-gray-300">
+        <h3 class="text-xl font-semibold mb-2">产业概况</h3>
+        <p id="industryDescription" class="mb-4">加载中...</p>
+        
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div class="bg-[#1A2B5E] p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">核心企业</h4>
+            <ul id="coreEnterprises" class="list-disc pl-4">
+              <li>加载中...</li>
+            </ul>
+          </div>
+          <div class="bg-[#1A2B5E] p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">发展趋势</h4>
+            <p id="industryTrend">加载中...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/industry.js' %}"></script>
+{% endblock %} 

@@ -16,8 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('data_hall.urls')),
+    # 添加favicon.ico路由
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
 ]
+
+# 在开发环境中提供静态文件
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # 如果没有设置STATIC_ROOT，使用应用的静态文件目录
+    from django.contrib.staticfiles import finders
+    urlpatterns += static('/static/', document_root='data_hall/static')

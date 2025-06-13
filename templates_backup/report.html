@@ -1,0 +1,100 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}产业报告 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<!-- 头部Hero区 -->
+<section class="min-h-[60vh] flex items-center pb-10" style="margin-top: -2rem;">
+  <div class="container mx-auto px-6">
+    <!-- 文案部分 -->
+    <div class="max-w-3xl">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">
+        前瞻产业链招商专项参考报告
+      </h1>
+      <p class="text-gray-200 text-lg mb-6">
+        聚焦产业链精确招商，开启地方新势，资本布局<br />
+        政府、园区产业链招商必备利器
+      </p>
+      <p class="text-sm text-gray-300">
+        全方位覆盖产业发展动态，不同产业规模深度研究，助力前瞻性决策
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 三个类别 + 下拉选择 -->
+<section class="pb-16">
+  <div class="container mx-auto px-6">
+    <div class="bg-[#132144] p-8 rounded-xl glow-effect">
+      <h2 class="text-xl font-bold mb-6">
+        快速选择所需报告类别
+      </h2>
+      <!-- 三个类别：行业深度研究、区域产业洞察、招商名单推荐 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-100">
+        <!-- 行业深度研究 -->
+        <div>
+          <label class="block text-sm mb-2 font-medium text-[var(--secondary)]">行业深度研究</label>
+          <select class="w-full bg-[#1A2B5E] px-4 py-3 rounded-md focus:ring-2 focus:ring-[var(--accent)]">
+            <option value="">请选择行业</option>
+            <option value="AI">人工智能</option>
+            <option value="semi">半导体</option>
+            <option value="newEnergy">新能源</option>
+            <option value="bioTech">生物医药</option>
+            <!-- 更多行业可自行添加 -->
+          </select>
+        </div>
+
+        <!-- 区域产业洞察 -->
+        <div>
+          <label class="block text-sm mb-2 font-medium text-[var(--secondary)]">区域产业洞察</label>
+          <select class="w-full bg-[#1A2B5E] px-4 py-3 rounded-md focus:ring-2 focus:ring-[var(--accent)]">
+            <option value="">请选择区域</option>
+            <option value="east">华东</option>
+            <option value="north">华北</option>
+            <option value="south">华南</option>
+            <option value="west">西部</option>
+            <!-- 也可进一步细化到省/市 -->
+          </select>
+        </div>
+
+        <!-- 招商名单推荐 -->
+        <div>
+          <label class="block text-sm mb-2 font-medium text-[var(--secondary)]">招商名单推荐</label>
+          <select class="w-full bg-[#1A2B5E] px-4 py-3 rounded-md focus:ring-2 focus:ring-[var(--accent)]">
+            <option value="">请选择类型</option>
+            <option value="public">上市企业</option>
+            <option value="unicorn">独角兽</option>
+            <option value="littleGiant">专精特新/小巨人</option>
+            <option value="seed">初创创新企业</option>
+            <!-- 更多类型可自行添加 -->
+          </select>
+        </div>
+      </div>
+      <!-- 其他交互元素：如按钮 -->
+      <div class="mt-8">
+        <button class="bg-[var(--accent)] text-[var(--primary)] px-6 py-3 rounded-md font-medium hover:bg-opacity-90 transition-colors">
+          生成定制报告
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 报告内容区（可自行扩展） -->
+<section class="pb-16">
+  <div class="container mx-auto px-6">
+    <div class="bg-[#132144] p-8 rounded-xl glow-effect">
+      <h2 class="text-xl font-bold mb-4">报告简介</h2>
+      <p class="text-gray-300 leading-relaxed">
+        这里可以放置"报告内容概述"或"研究框架介绍"等详细说明，帮助用户了解报告所涵盖的行业、区域和企业信息，以及如何帮助政府、园区进行精准招商决策。也可提供示例分析、图表预览或下载链接等。
+      </p>
+      <!-- 可在此加入更多模块、图文介绍、下载按钮等 -->
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'data_hall/css/report.css' %}">
+{% endblock %} 

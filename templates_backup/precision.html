@@ -1,0 +1,45 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}精准招商 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+  <!-- 主体内容 -->
+  <main class="pt-20 pb-16">
+    <section class="container mx-auto px-6 mb-8">
+      <h1 class="text-3xl font-bold mb-4">精准招商</h1>
+      <p class="text-gray-300 max-w-3xl">
+        从注册年份、融资轮次等多维度评估企业发展潜力、扩张速度、创新能力、资本关注、区域匹配度，助力精准招商决策。
+      </p>
+    </section>
+
+    <!-- 表格容器 -->
+    <section class="container mx-auto px-6">
+      <div class="bg-[#132144] p-4 rounded-xl glow-effect overflow-auto">
+        <table class="w-full table-auto min-w-[1100px] text-sm leading-tight" id="precisionTable">
+          <thead class="bg-[#1A2B5E]">
+            <tr>
+              <th class="px-4 py-3 whitespace-nowrap">企业名称</th>
+              <th class="px-4 py-3 whitespace-nowrap">产业领域</th>
+              <th class="px-4 py-3 whitespace-nowrap">细分赛道</th>
+              <th class="px-4 py-3 whitespace-nowrap">注册年份</th>
+              <th class="px-4 py-3 whitespace-nowrap">融资轮次</th>
+              <th class="px-4 py-3 whitespace-nowrap">市场匹配度</th>
+              <th class="px-4 py-3 whitespace-nowrap">供应链匹配度</th>
+              <th class="px-4 py-3 whitespace-nowrap">人脉匹配度</th>
+              <th class="px-4 py-3 whitespace-nowrap">资源匹配度</th>
+              <th class="px-4 py-3 whitespace-nowrap">综合得分</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#1A2B5E]" id="precisionTbody">
+            <!-- 动态渲染数据 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/precision.js' %}"></script>
+{% endblock %} 

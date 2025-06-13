@@ -5,12 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}中国新势力企业态势感知系统{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{% static 'data_hall/js/vendor/tailwindcss.js' %}"></script>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}" />
     <!-- ECharts -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="{% static 'data_hall/js/vendor/echarts.min.js' %}"></script>
     <!-- 自定义样式 -->
     <link rel="stylesheet" href="{% static 'data_hall/css/style.css' %}" />
     {% block extra_css %}{% endblock %}

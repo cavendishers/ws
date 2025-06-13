@@ -1,0 +1,129 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}产业地图 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'data_hall/css/map.css' %}">
+<style>
+    :root {
+        --primary: #0A1A3A;
+        --secondary: #FFD700;
+        --accent: #00C1D4;
+    }
+    .glow-effect {
+        box-shadow: 0 0 20px rgba(0,193,212,0.2);
+    }
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- 筛选区 -->
+<section class="container mx-auto px-6 mb-8">
+    <div class="bg-[#132144] p-4 rounded-xl glow-effect mb-4 text-sm">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-gray-300 mb-1">产业</label>
+                <select id="industryFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
+                    <option value="">全部产业</option>
+                    {% for industry in industries %}
+                    <option value="{{ industry.id }}">{{ industry.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-300 mb-1">城市</label>
+                <select id="cityFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
+                    <option value="">全部城市</option>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-300 mb-1">地区</label>
+                <select id="countyFilter" class="w-full bg-[#0A1A3A] text-gray-300 rounded-lg p-2 border border-gray-700 focus:ring-2 focus:ring-[var(--accent)]">
+                    <option value="">全部地区</option>
+                    {% for county in counties %}
+                    <option value="{{ county.id }}">{{ county.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 上部：地图和右侧两个柱状图 -->
+<section class="container mx-auto px-6 mb-8">
+    <div class="grid gap-6 xl:grid-cols-2">
+        <!-- 左侧：地图区域 -->
+        <div class="bg-[#132144] p-6 rounded-xl glow-effect">
+            <h2 class="text-lg font-bold mb-4">杭州市地图</h2>
+            <div id="map-container" style="width: 100%; height: 600px;">
+                <canvas id="map"></canvas>
+            </div>
+        </div>
+
+        <!-- 右侧：垂直排列2个柱状图 -->
+        <div class="grid gap-6">
+            <!-- 近十年企业数量趋势图 -->
+            <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+                <h3 class="text-lg font-bold mb-2">近十年企业数量趋势</h3>
+                <div class="relative">
+                    <div id="distributionChart" style="width: 100%; height: 250px;"></div>
+                </div>
+            </div>
+            <!-- 产业链分布情况图 -->
+            <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+                <h3 class="text-lg font-bold mb-2">产业链分布情况</h3>
+                <div id="enterpriseTypeChart" style="width: 100%; height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 下部：新势力企业名单和各区县企业数量对比 -->
+<section class="container mx-auto px-6">
+    <div class="grid gap-6 xl:grid-cols-2">
+        <!-- 新势力企业名单表格 -->
+        <div class="bg-[#132144] p-4 rounded-xl glow-effect overflow-auto">
+            <h2 class="text-xl font-bold mb-4">新势力企业名单</h2>
+            <table class="w-full table-auto min-w-[600px] text-sm leading-tight">
+                <thead class="bg-[#1A2B5E]">
+                    <tr>
+                        <th class="px-4 py-3">序号</th>
+                        <th class="px-4 py-3">企业名称</th>
+                        <th class="px-4 py-3">城市</th>
+                        <th class="px-4 py-3">区县</th>
+                        <th class="px-4 py-3">新势力分</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1A2B5E]" id="enterpriseListTbody">
+                    <!-- 数据由后端或示例数据渲染 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 各区县企业数量对比柱状图 -->
+        <div class="bg-[#132144] p-4 rounded-xl glow-effect">
+            <h2 class="text-xl font-bold mb-4">各区县企业数量对比</h2>
+            <div id="regionChart" style="width: 100%; height: 300px;"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- 添加ECharts库引用 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="{% static 'data_hall/js/company_markers.js' %}"></script>
+<script src="{% static 'data_hall/js/map.js' %}"></script>
+{% endblock %} 

@@ -6,12 +6,22 @@ class ChainSidebar {
         this.sidebar = null;
         this.overlay = null;
         this.currentChainPointId = null;
+        this.currentChainPointName = null; // 缓存当前链点名称
         this.currentPage = 1;
         this.pageSize = 15;
         this.isOpen = false;
         this.isLoading = false;
         this.isInitialized = false;
         this.chainPointMap = new Map(); // 存储链点ID与节点数据的映射
+        
+        // 性能优化相关
+        this.debounceTimer = null; // 防抖定时器
+        this.filterDebounceTimer = null; // 筛选防抖定时器
+        this.lastRenderTime = 0; // 上次渲染时间戳
+        
+        // DOM优化相关
+        this.tableContainer = null; // 缓存表格容器引用
+        this.isVirtualScrollEnabled = false; // 虚拟滚动开关（实验性功能）
         
         // 筛选相关属性
         this.filters = {
@@ -42,8 +52,7 @@ class ChainSidebar {
             establishmentYears: new Set(['1年以内', '1-3年', '3-5年', '5-10年', '10-20年', '20年以上']),
             registrationStatus: new Set(['存续', '在业', '迁入', '迁出', '吊销', '注销', '停业', '清算'])
         };
-        this.allEnterprises = []; // 存储所有企业数据用于筛选
-        this.filteredEnterprises = []; // 存储筛选后的企业数据
+        // 注意：现在筛选由后端处理，不再需要在前端存储大量数据
         
         this.init();
     }
@@ -331,8 +340,12 @@ class ChainSidebar {
         this.overlay.classList.add('active');
         this.sidebar.classList.add('active');
         
-        // 显示Coming Soon内容
-        this.showComingSoonContent(nodeName);
+        // 延迟显示Coming Soon内容，避免与动画冲突
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.showComingSoonContent(nodeName);
+            });
+        });
     }
     
     /**
@@ -368,13 +381,12 @@ class ChainSidebar {
         }
         
         this.currentChainPointId = chainPointId;
+        this.currentChainPointName = chainPointName; // 缓存链点名称
         this.currentPage = 1;
         this.isOpen = true;
         
         // 重置筛选条件
         this.clearAllFiltersWithoutRerender();
-        this.allEnterprises = [];
-        this.filteredEnterprises = [];
         
         // 更新标题
         this.updateHeader(chainPointName, '正在加载企业数据...');
@@ -383,8 +395,13 @@ class ChainSidebar {
         this.overlay.classList.add('active');
         this.sidebar.classList.add('active');
         
-        // 加载企业数据
-        await this.loadEnterpriseData();
+        // 延迟加载企业数据，避免与动画同时进行
+        requestAnimationFrame(() => {
+            // 再次使用requestAnimationFrame确保动画已开始
+            requestAnimationFrame(async () => {
+                await this.loadEnterpriseData();
+            });
+        });
     }
     
     /**
@@ -435,10 +452,17 @@ class ChainSidebar {
         this.showLoading();
         
         try {
-            // 如果是第一页，获取所有数据用于筛选
-            const pageSize = this.currentPage === 1 ? 1000 : this.pageSize;
+            // 构建查询参数
+            const params = new URLSearchParams({
+                page: this.currentPage,
+                page_size: this.pageSize
+            });
+            
+            // 添加筛选条件到查询参数
+            this.addFiltersToParams(params);
+            
             const response = await fetch(
-                `/api/chain-point/${this.currentChainPointId}/enterprises/?page=1&page_size=${pageSize}`
+                `/api/chain-point/${this.currentChainPointId}/enterprises/?${params.toString()}`
             );
             console.log(response)
             
@@ -449,11 +473,9 @@ class ChainSidebar {
             const data = await response.json();
             console.log('获取到企业数据:', data);
             
-            // 如果是第一次加载，存储所有数据并构建筛选选项
+            // 如果是第一次加载，构建可用的筛选选项
             if (this.currentPage === 1) {
-                this.allEnterprises = data.enterprises || [];
-                this.buildAvailableFilters();
-                this.applyFilters();
+                this.buildAvailableFiltersFromAPI(data);
             }
             
             this.renderEnterpriseList(data);
@@ -471,10 +493,42 @@ class ChainSidebar {
      */
     showLoading() {
         const content = this.sidebar.querySelector('.chain-sidebar-content');
+        
+        // 生成骨架屏HTML
+        const skeletonRows = Array.from({ length: 8 }, (_, index) => `
+            <tr class="skeleton-row" style="animation-delay: ${index * 0.1}s">
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 30px;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 80%;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 60%;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 40%;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 70%;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 50%;"></div></td>
+                <td><div style="height: 16px; background: rgba(66, 102, 172, 0.1); border-radius: 4px; width: 35px;"></div></td>
+            </tr>
+        `).join('');
+        
         content.innerHTML = `
             <div class="chain-sidebar-loading">
                 <div class="loading-spinner"></div>
                 <p>正在加载企业数据...</p>
+            </div>
+            <div class="enterprise-list-container">
+                <table class="enterprise-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>企业名称</th>
+                            <th>链点名称</th>
+                            <th>链点层级</th>
+                            <th>主要行业</th>
+                            <th>细分领域</th>
+                            <th>关联性</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${skeletonRows}
+                    </tbody>
+                </table>
             </div>
         `;
     }
@@ -499,6 +553,9 @@ class ChainSidebar {
      * 渲染企业列表
      */
     renderEnterpriseList(data) {
+        // 性能监控开始
+        const startTime = performance.now();
+        
         const content = this.sidebar.querySelector('.chain-sidebar-content');
         
         // 检查API返回的coming_soon状态
@@ -517,80 +574,267 @@ class ChainSidebar {
             `共 ${data.total_count} 家企业，当前第 ${data.pagination.current_page} 页`
         );
         
-        // 渲染筛选框（只要有原始数据就显示筛选框）
-        const filtersHTML = this.allEnterprises.length > 0 ? this.generateFiltersHTML() : '';
-        
-        // 检查是否有企业数据
-        if (!data.enterprises || data.enterprises.length === 0) {
-            // 显示空状态，但保留筛选框
-            content.innerHTML = `
-                ${filtersHTML}
-                <div class="enterprise-list-container">
-                    ${this.generateEmptyStateHTML()}
-                </div>
-            `;
-            return;
+        // 使用防抖机制避免频繁渲染
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
         }
         
-        // 渲染企业表格
-        const tableHTML = this.generateTableHTML(data.enterprises);
-        const paginationHTML = this.generatePaginationHTML(data.pagination);
-        
-        content.innerHTML = `
-            ${filtersHTML}
-            <div class="enterprise-list-container">
-                ${tableHTML}
-            </div>
-            ${paginationHTML}
-        `;
-        
-        // 绑定分页事件
-        this.bindPaginationEvents(data.pagination);
+        this.debounceTimer = setTimeout(() => {
+            this.performRender(data, content, startTime);
+        }, 16); // 约1帧的时间，确保流畅度
     }
     
     /**
-     * 生成表格HTML
+     * 执行实际的渲染操作 (智能更新版本)
+     */
+    performRender(data, content, startTime) {
+        // 检查是否可以进行增量更新
+        const canIncrementalUpdate = this.canUseIncrementalUpdate(data);
+        
+        if (canIncrementalUpdate) {
+            this.performIncrementalUpdate(data, content, startTime);
+        } else {
+            this.performFullRender(data, content, startTime);
+        }
+    }
+    
+    /**
+     * 检查是否可以使用增量更新
+     */
+    canUseIncrementalUpdate(data) {
+        // 只有在表格已存在且数据结构相同时才使用增量更新
+        const existingTable = this.sidebar.querySelector('.enterprise-table');
+        return existingTable && 
+               data.enterprises && 
+               data.enterprises.length > 0 && 
+               !this.hasFilterChanged();
+    }
+    
+    /**
+     * 检查筛选条件是否发生变化
+     */
+    hasFilterChanged() {
+        // 简单的变化检测：如果上次渲染时间距现在很近，可能是筛选变化
+        return Date.now() - this.lastRenderTime < 1000;
+    }
+    
+    /**
+     * 增量更新（仅更新表格内容）
+     */
+    performIncrementalUpdate(data, content, startTime) {
+        requestAnimationFrame(() => {
+            const tbody = this.sidebar.querySelector('.enterprise-table tbody');
+            const pagination = this.sidebar.querySelector('.sidebar-pagination');
+            
+            if (tbody && pagination) {
+                // 只更新表格内容和分页
+                const newRows = this.generateTableRows(data.enterprises);
+                const newPaginationHTML = this.generatePaginationHTML(data.pagination);
+                
+                tbody.innerHTML = newRows;
+                pagination.outerHTML = newPaginationHTML;
+                
+                // 重新绑定分页事件
+                this.bindPaginationEvents(data.pagination);
+                
+                // 性能监控
+                const endTime = performance.now();
+                const renderTime = endTime - startTime;
+                console.log(`链点 ${this.currentChainPointName} 增量更新完成，耗时: ${renderTime.toFixed(2)}ms`);
+                this.lastRenderTime = renderTime;
+                
+                // 执行淡入动画
+                this.fadeInTableContent();
+            } else {
+                // 降级到完整渲染
+                this.performFullRender(data, content, startTime);
+            }
+        });
+    }
+    
+    /**
+     * 完整渲染
+     */
+    performFullRender(data, content, startTime) {
+        // 使用文档片段减少DOM操作
+        const fragment = document.createDocumentFragment();
+        const container = document.createElement('div');
+        
+        // 分阶段渲染，避免长时间阻塞
+        requestAnimationFrame(() => {
+            // 第一阶段：生成筛选框HTML
+            const filtersHTML = this.generateFiltersHTML();
+            
+            requestAnimationFrame(() => {
+                // 第二阶段：检查是否有企业数据并生成内容
+                if (!data.enterprises || data.enterprises.length === 0) {
+                    // 显示空状态，但保留筛选框
+                    container.innerHTML = `
+                        ${filtersHTML}
+                        <div class="enterprise-list-container">
+                            ${this.generateEmptyStateHTML()}
+                        </div>
+                    `;
+                } else {
+                    // 渲染企业表格
+                    const tableHTML = this.generateTableHTML(data.enterprises);
+                    const paginationHTML = this.generatePaginationHTML(data.pagination);
+                    
+                    container.innerHTML = `
+                        ${filtersHTML}
+                        <div class="enterprise-list-container">
+                            ${tableHTML}
+                        </div>
+                        ${paginationHTML}
+                    `;
+                }
+                
+                fragment.appendChild(container);
+                
+                requestAnimationFrame(() => {
+                    // 第三阶段：更新DOM
+                    content.innerHTML = '';
+                    content.appendChild(fragment);
+                    
+                    // 缓存表格容器引用
+                    this.tableContainer = content.querySelector('.enterprise-list-container');
+                    
+                    // 绑定分页事件
+                    if (data.enterprises && data.enterprises.length > 0) {
+                        this.bindPaginationEvents(data.pagination);
+                    }
+                    
+                    // 性能监控结束
+                    const endTime = performance.now();
+                    const renderTime = endTime - startTime;
+                    console.log(`链点 ${this.currentChainPointName} 完整渲染完成，耗时: ${renderTime.toFixed(2)}ms`);
+                    
+                    // 记录渲染时间，用于性能分析
+                    this.lastRenderTime = renderTime;
+                    
+                    // 动态调整性能策略
+                    this.adjustPerformanceStrategy(renderTime);
+                    
+                    // 执行淡入动画
+                    this.fadeInTableContent();
+                });
+            });
+        });
+    }
+    
+    /**
+     * 仅生成表格行内容
+     */
+    generateTableRows(enterprises) {
+        // 提前计算基础值
+        const baseSerialNumber = (this.currentPage - 1) * this.pageSize;
+        const rows = [];
+        
+        // 使用for循环而不是map，性能更好
+        for (let i = 0; i < enterprises.length; i++) {
+            const enterprise = enterprises[i];
+            const serialNumber = baseSerialNumber + i + 1;
+            
+            // 内联relevanceClass计算
+            let relevanceClass;
+            switch (enterprise.industry_relevance) {
+                case '高': relevanceClass = 'relevance-high'; break;
+                case '中': relevanceClass = 'relevance-medium'; break;
+                case '低': relevanceClass = 'relevance-low'; break;
+                default: relevanceClass = 'relevance-low';
+            }
+            
+            rows.push(
+                '<tr>',
+                '<td>', serialNumber, '</td>',
+                '<td class="enterprise-name">', enterprise.company_name || '', '</td>',
+                '<td>', enterprise.chain_point_name || '', '</td>',
+                '<td>', enterprise.chain_point_level || '', '</td>',
+                '<td>', enterprise.industry || '-', '</td>',
+                '<td>', enterprise.industry_sub || '-', '</td>',
+                '<td><span class="relevance-tag ', relevanceClass, '">',
+                enterprise.industry_relevance || '', '</span></td>',
+                '</tr>'
+            );
+        }
+        
+        return rows.join('');
+    }
+    
+    /**
+     * 动态调整性能策略
+     */
+    adjustPerformanceStrategy(renderTime) {
+        if (renderTime > 80) {
+            // 渲染时间过长，启用更激进的优化
+            console.warn(`渲染时间 ${renderTime.toFixed(2)}ms 过长，启用性能优化模式`);
+            this.isVirtualScrollEnabled = true;
+            this.pageSize = Math.min(this.pageSize, 10); // 减少每页显示数量
+        } else if (renderTime < 30) {
+            // 渲染性能很好，可以适当增加每页数量
+            this.isVirtualScrollEnabled = false;
+            this.pageSize = Math.min(this.pageSize + 5, 20); // 适当增加每页显示数量
+        }
+    }
+    
+    /**
+     * 生成表格HTML (优化版本)
      */
     generateTableHTML(enterprises) {
-        const rows = enterprises.map((enterprise, index) => {
-            const serialNumber = ((this.currentPage - 1) * this.pageSize) + index + 1;
-            const relevanceClass = this.getRelevanceClass(enterprise.industry_relevance);
-            
-            return `
-                <tr>
-                    <td>${serialNumber}</td>
-                    <td class="enterprise-name">${enterprise.company_name}</td>
-                    <td>${enterprise.chain_point_name}</td>
-                    <td>${enterprise.chain_point_level}</td>
-                    <td>${enterprise.industry || '-'}</td>
-                    <td>${enterprise.industry_sub || '-'}</td>
-                    <td>
-                        <span class="relevance-tag ${relevanceClass}">
-                            ${enterprise.industry_relevance}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        // 提前计算基础值，避免在循环中重复计算
+        const baseSerialNumber = (this.currentPage - 1) * this.pageSize;
         
-        return `
-            <table class="enterprise-table">
-                <thead>
-                    <tr>
-                        <th>序号</th>
-                        <th>企业名称</th>
-                        <th>产业链节点</th>
-                        <th>产业链环节</th>
-                        <th>主要行业</th>
-                        <th>细分领域</th>
-                        <th>产业关联性</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rows}
-                </tbody>
-            </table>
-        `;
+        // 使用数组而不是字符串拼接，性能更好
+        const rows = [];
+        
+        // 批量处理企业数据，减少函数调用开销
+        for (let i = 0; i < enterprises.length; i++) {
+            const enterprise = enterprises[i];
+            const serialNumber = baseSerialNumber + i + 1;
+            
+            // 内联relevanceClass计算，避免额外函数调用
+            let relevanceClass;
+            switch (enterprise.industry_relevance) {
+                case '高': relevanceClass = 'relevance-high'; break;
+                case '中': relevanceClass = 'relevance-medium'; break;
+                case '低': relevanceClass = 'relevance-low'; break;
+                default: relevanceClass = 'relevance-low';
+            }
+            
+            // 直接使用数组push，避免字符串拼接
+            rows.push(
+                '<tr>',
+                '<td>', serialNumber, '</td>',
+                '<td class="enterprise-name">', enterprise.company_name || '', '</td>',
+                '<td>', enterprise.chain_point_name || '', '</td>',
+                '<td>', enterprise.chain_point_level || '', '</td>',
+                '<td>', enterprise.industry || '-', '</td>',
+                '<td>', enterprise.industry_sub || '-', '</td>',
+                '<td><span class="relevance-tag ', relevanceClass, '">',
+                enterprise.industry_relevance || '', '</span></td>',
+                '</tr>'
+            );
+        }
+        
+        // 一次性拼接，减少内存分配
+        return [
+            '<table class="enterprise-table">',
+            '<thead>',
+            '<tr>',
+            '<th>序号</th>',
+            '<th>企业名称</th>',
+            '<th>产业链节点</th>',
+            '<th>产业链环节</th>',
+            '<th>主要行业</th>',
+            '<th>细分领域</th>',
+            '<th>产业关联性</th>',
+            '</tr>',
+            '</thead>',
+            '<tbody>',
+            ...rows,
+            '</tbody>',
+            '</table>'
+        ].join('');
     }
     
     /**
@@ -628,38 +872,16 @@ class ChainSidebar {
         if (prevBtn && !prevBtn.classList.contains('disabled')) {
             prevBtn.addEventListener('click', () => {
                 this.currentPage = pagination.current_page - 1;
-                // 如果有筛选条件，使用筛选后的数据分页
-                if (this.hasActiveFilters()) {
-                    this.renderFilteredEnterpriseList();
-                } else {
-                    this.loadEnterpriseData();
-                }
+                this.loadEnterpriseData();
             });
         }
         
         if (nextBtn && !nextBtn.classList.contains('disabled')) {
             nextBtn.addEventListener('click', () => {
                 this.currentPage = pagination.current_page + 1;
-                // 如果有筛选条件，使用筛选后的数据分页
-                if (this.hasActiveFilters()) {
-                    this.renderFilteredEnterpriseList();
-                } else {
-                    this.loadEnterpriseData();
-                }
+                this.loadEnterpriseData();
             });
         }
-    }
-    
-    /**
-     * 获取关联性样式类
-     */
-    getRelevanceClass(relevance) {
-        const classMap = {
-            '高': 'relevance-high',
-            '中': 'relevance-medium',
-            '低': 'relevance-low'
-        };
-        return classMap[relevance] || 'relevance-low';
     }
     
     /**
@@ -682,7 +904,6 @@ class ChainSidebar {
      */
     generateEmptyStateHTML() {
         const hasFilters = this.hasActiveFilters();
-        const totalEnterprises = this.allEnterprises.length;
         
         return `
             <div class="chain-sidebar-empty">
@@ -694,7 +915,7 @@ class ChainSidebar {
                 </h3>
                 <p style="font-size: 14px; color: #A7B3D2; margin-bottom: 16px;">
                     ${hasFilters 
-                        ? `当前筛选条件下没有匹配的企业，共有 ${totalEnterprises} 家企业可供筛选` 
+                        ? `当前筛选条件下没有匹配的企业` 
                         : '该链点暂时没有关联的企业数据'
                     }
                 </p>
@@ -711,366 +932,356 @@ class ChainSidebar {
     }
     
     /**
-     * 构建可用的筛选选项
+     * 添加筛选条件到查询参数
      */
-    buildAvailableFilters() {
+    addFiltersToParams(params) {
+        // 行业筛选
+        if (this.filters.industries.size > 0) {
+            params.append('industries', Array.from(this.filters.industries).join(','));
+        }
+        
+        // 细分领域筛选
+        if (this.filters.industrySubCategories.size > 0) {
+            params.append('industry_sub_categories', Array.from(this.filters.industrySubCategories).join(','));
+        }
+        
+        // 关联性筛选
+        if (this.filters.relevanceLevels.size > 0) {
+            params.append('relevance_levels', Array.from(this.filters.relevanceLevels).join(','));
+        }
+        
+        // 地区筛选
+        if (this.filters.regions.size > 0) {
+            params.append('regions', Array.from(this.filters.regions).join(','));
+        }
+        
+        // 联系方式筛选
+        if (this.filters.contactTypes.size > 0) {
+            params.append('contact_types', Array.from(this.filters.contactTypes).join(','));
+        }
+        
+        // 科技荣誉筛选
+        if (this.filters.techHonors.size > 0) {
+            params.append('tech_honors', Array.from(this.filters.techHonors).join(','));
+        }
+        
+        // 融资轮次筛选
+        if (this.filters.fundingRounds.size > 0) {
+            params.append('funding_rounds', Array.from(this.filters.fundingRounds).join(','));
+        }
+        
+        // 上市状态筛选
+        if (this.filters.listingStatus.size > 0) {
+            params.append('listing_status', Array.from(this.filters.listingStatus).join(','));
+        }
+        
+        // 企业规模筛选
+        if (this.filters.companyScale.size > 0) {
+            params.append('company_scale', Array.from(this.filters.companyScale).join(','));
+        }
+        
+        // 员工人数筛选
+        if (this.filters.employeeCount.size > 0) {
+            params.append('employee_count', Array.from(this.filters.employeeCount).join(','));
+        }
+        
+        // 成立年限筛选
+        if (this.filters.establishmentYears.size > 0) {
+            params.append('establishment_years', Array.from(this.filters.establishmentYears).join(','));
+        }
+        
+        // 登记状态筛选
+        if (this.filters.registrationStatus.size > 0) {
+            params.append('registration_status', Array.from(this.filters.registrationStatus).join(','));
+        }
+    }
+    
+    /**
+     * 从API响应构建可用的筛选选项
+     */
+    buildAvailableFiltersFromAPI(data) {
+        // 清空现有选项
         this.availableFilters.industries.clear();
         this.availableFilters.industrySubCategories.clear();
         
-        this.allEnterprises.forEach(enterprise => {
-            if (enterprise.industry && enterprise.industry !== '-') {
-                this.availableFilters.industries.add(enterprise.industry);
+        // 从API响应中获取可用的筛选选项
+        if (data.available_filters) {
+            // 如果后端返回了可用的筛选选项
+            if (data.available_filters.industries) {
+                data.available_filters.industries.forEach(industry => {
+                    this.availableFilters.industries.add(industry);
+                });
             }
-            if (enterprise.industry_sub && enterprise.industry_sub !== '-') {
-                this.availableFilters.industrySubCategories.add(enterprise.industry_sub);
+            
+            if (data.available_filters.industry_sub_categories) {
+                data.available_filters.industry_sub_categories.forEach(sub => {
+                    this.availableFilters.industrySubCategories.add(sub);
+                });
             }
-        });
+        } else {
+            // 降级方案：从当前页面的企业数据中提取
+            if (data.enterprises) {
+                data.enterprises.forEach(enterprise => {
+                    if (enterprise.industry && enterprise.industry !== '-') {
+                        this.availableFilters.industries.add(enterprise.industry);
+                    }
+                    if (enterprise.industry_sub && enterprise.industry_sub !== '-') {
+                        this.availableFilters.industrySubCategories.add(enterprise.industry_sub);
+                    }
+                });
+            }
+        }
     }
     
     /**
      * 应用筛选条件
      */
-    applyFilters() {
-        this.filteredEnterprises = this.allEnterprises.filter(enterprise => {
-            // 行业筛选
-            if (this.filters.industries.size > 0) {
-                if (!this.filters.industries.has(enterprise.industry)) {
-                    return false;
-                }
-            }
-            
-            // 细分领域筛选
-            if (this.filters.industrySubCategories.size > 0) {
-                if (!this.filters.industrySubCategories.has(enterprise.industry_sub)) {
-                    return false;
-                }
-            }
-            
-            // 关联性筛选
-            if (this.filters.relevanceLevels.size > 0) {
-                if (!this.filters.relevanceLevels.has(enterprise.industry_relevance)) {
-                    return false;
-                }
-            }
-            
-            // 地区筛选
-            if (this.filters.regions.size > 0) {
-                if (!this.filters.regions.has(enterprise.region)) {
-                    return false;
-                }
-            }
-            
-            // 联系方式筛选
-            if (this.filters.contactTypes.size > 0) {
-                let hasContactType = false;
-                for (let contactType of this.filters.contactTypes) {
-                    if (contactType === '有固定电话' && enterprise.has_landline) {
-                        hasContactType = true;
-                        break;
-                    }
-                    if (contactType === '有有效电话' && enterprise.has_valid_phone) {
-                        hasContactType = true;
-                        break;
-                    }
-                    if (contactType === '有官方网站' && enterprise.has_website) {
-                        hasContactType = true;
-                        break;
-                    }
-                    if (contactType === '有邮箱地址' && enterprise.has_email) {
-                        hasContactType = true;
-                        break;
-                    }
-                }
-                if (!hasContactType) {
-                    return false;
-                }
-            }
-            
-            // 科技荣誉筛选
-            if (this.filters.techHonors.size > 0) {
-                if (!enterprise.tech_honors || !this.filters.techHonors.has(enterprise.tech_honors)) {
-                    return false;
-                }
-            }
-            
-            // 融资轮次筛选
-            if (this.filters.fundingRounds.size > 0) {
-                if (!enterprise.funding_round || !this.filters.fundingRounds.has(enterprise.funding_round)) {
-                    return false;
-                }
-            }
-            
-            // 上市状态筛选
-            if (this.filters.listingStatus.size > 0) {
-                if (!enterprise.listing_status || !this.filters.listingStatus.has(enterprise.listing_status)) {
-                    return false;
-                }
-            }
-            
-            // 企业规模筛选
-            if (this.filters.companyScale.size > 0) {
-                if (!enterprise.company_scale || !this.filters.companyScale.has(enterprise.company_scale)) {
-                    return false;
-                }
-            }
-            
-            // 员工人数筛选
-            if (this.filters.employeeCount.size > 0) {
-                if (!enterprise.employee_count || !this.filters.employeeCount.has(enterprise.employee_count)) {
-                    return false;
-                }
-            }
-            
-            // 成立年限筛选
-            if (this.filters.establishmentYears.size > 0) {
-                if (!enterprise.establishment_years || !this.filters.establishmentYears.has(enterprise.establishment_years)) {
-                    return false;
-                }
-            }
-            
-            // 登记状态筛选
-            if (this.filters.registrationStatus.size > 0) {
-                if (!enterprise.registration_status || !this.filters.registrationStatus.has(enterprise.registration_status)) {
-                    return false;
-                }
-            }
-            
-            return true;
-        });
+    async applyFilters() {
+        // 清除之前的防抖定时器
+        if (this.filterDebounceTimer) {
+            clearTimeout(this.filterDebounceTimer);
+        }
         
-        // 重置到第一页
-        this.currentPage = 1;
-        
-        // 重新渲染列表
-        this.renderFilteredEnterpriseList();
-    }
-    
-    /**
-     * 渲染筛选后的企业列表
-     */
-    renderFilteredEnterpriseList() {
-        const totalCount = this.filteredEnterprises.length;
-        const totalPages = Math.ceil(totalCount / this.pageSize);
-        const startIndex = (this.currentPage - 1) * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
-        const currentPageEnterprises = this.filteredEnterprises.slice(startIndex, endIndex);
-        
-        // 构造与API返回格式相同的数据结构
-        const mockData = {
-            enterprises: currentPageEnterprises,
-            total_count: totalCount,
-            pagination: {
-                current_page: this.currentPage,
-                total_pages: totalPages,
-                total_count: totalCount
-            },
-            chain_point: {
-                name: this.sidebar.querySelector('.chain-sidebar-title').textContent.replace(' - 关联企业', '').replace(' - 敬请期待', '')
-            }
-        };
-        
-        this.renderEnterpriseList(mockData);
+        // 使用防抖机制，避免频繁的API请求
+        this.filterDebounceTimer = setTimeout(async () => {
+            // 重置到第一页
+            this.currentPage = 1;
+            
+            // 重新从后端加载数据
+            await this.loadEnterpriseData();
+        }, 300); // 300ms防抖延迟
     }
     
     /**
      * 生成筛选框HTML
      */
     generateFiltersHTML() {
-        const industriesArray = Array.from(this.availableFilters.industries).sort();
-        const subCategoriesArray = Array.from(this.availableFilters.industrySubCategories).sort();
-        const relevanceLevelsArray = Array.from(this.availableFilters.relevanceLevels);
-        const chainPointName = this.sidebar.querySelector('.chain-sidebar-title').textContent.replace(' - 关联企业', '').replace(' - 敬请期待', '');
+        // 缓存链点名称，避免重复DOM查询
+        const chainPointName = this.currentChainPointName || 
+            this.sidebar.querySelector('.chain-sidebar-title')?.textContent
+                .replace(' - 关联企业', '')
+                .replace(' - 敬请期待', '') || '';
+        
+        // 缓存数组，避免重复Array.from操作
+        const cachedArrays = {
+            industries: Array.from(this.availableFilters.industries).sort(),
+            subCategories: Array.from(this.availableFilters.industrySubCategories).sort(),
+            relevanceLevels: Array.from(this.availableFilters.relevanceLevels),
+            regions: Array.from(this.availableFilters.regions),
+            contactTypes: Array.from(this.availableFilters.contactTypes),
+            techHonors: Array.from(this.availableFilters.techHonors),
+            fundingRounds: Array.from(this.availableFilters.fundingRounds),
+            listingStatus: Array.from(this.availableFilters.listingStatus),
+            companyScale: Array.from(this.availableFilters.companyScale),
+            employeeCount: Array.from(this.availableFilters.employeeCount),
+            establishmentYears: Array.from(this.availableFilters.establishmentYears),
+            registrationStatus: Array.from(this.availableFilters.registrationStatus)
+        };
+        
+        // 优化已选条件的生成
+        const activeFiltersHTML = this.generateActiveFiltersHTML(chainPointName);
+        
+        // 生成筛选选项HTML
+        const filterOptionsHTML = this.generateFilterOptionsHTML(cachedArrays);
         
         return `
             <div class="chain-sidebar-filters">
-                <div class="filter-section">
-                    <label class="filter-label">已选条件</label>
-                    <div class="filter-row">
-                        <span class="filter-tag active">
-                            节点：${chainPointName}
-                        </span>
-                        ${Array.from(this.filters.relevanceLevels).map(level => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('relevanceLevels', '${level}')">
-                                产业关联性：${level}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('relevanceLevels', '${level}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.industries).map(industry => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('industries', '${industry}')">
-                                行业：${industry}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('industries', '${industry}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.industrySubCategories).map(sub => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('industrySubCategories', '${sub}')">
-                                细分领域：${sub}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('industrySubCategories', '${sub}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.regions).map(region => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('regions', '${region}')">
-                                地区：${region}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('regions', '${region}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.contactTypes).map(type => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('contactTypes', '${type}')">
-                                联系方式：${type}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('contactTypes', '${type}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.techHonors).map(honor => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('techHonors', '${honor}')">
-                                科技荣誉：${honor}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('techHonors', '${honor}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.fundingRounds).map(round => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('fundingRounds', '${round}')">
-                                融资轮次：${round}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('fundingRounds', '${round}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.listingStatus).map(status => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('listingStatus', '${status}')">
-                                上市状态：${status}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('listingStatus', '${status}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.companyScale).map(scale => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('companyScale', '${scale}')">
-                                企业规模：${scale}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('companyScale', '${scale}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.employeeCount).map(count => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('employeeCount', '${count}')">
-                                员工人数：${count}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('employeeCount', '${count}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.establishmentYears).map(years => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('establishmentYears', '${years}')">
-                                成立年限：${years}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('establishmentYears', '${years}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${Array.from(this.filters.registrationStatus).map(status => `
-                            <span class="filter-tag active" onclick="chainSidebar.toggleFilter('registrationStatus', '${status}')">
-                                登记状态：${status}
-                                <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('registrationStatus', '${status}')">×</span>
-                            </span>
-                        `).join('')}
-                        ${this.hasActiveFilters() ? `
-                        <button class="clear-filters-btn" onclick="chainSidebar.clearAllFilters()">
-                            <i class="fas fa-trash"></i> 清除
-                        </button>
-                        ` : ''}
-                    </div>
-                </div>
-                
-                ${industriesArray.length > 0 ? `
-                <div class="filter-section">
-                    <label class="filter-label">产业关联性</label>
-                    <div class="filter-row">
-                        ${relevanceLevelsArray.map(level => `
-                            <span class="filter-tag ${this.filters.relevanceLevels.has(level) ? 'active' : ''}" 
-                                  onclick="chainSidebar.toggleFilter('relevanceLevels', '${level}')">
-                                ${level}
-                            </span>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-                
-                <div class="filter-section">
-                    <label class="filter-label">更多筛选</label>
-                    <div class="filter-row">
-                        <select onchange="chainSidebar.addFilter('regions', this.value); this.value='';" class="filter-select">
-                            <option value="">所属地区</option>
-                            ${Array.from(this.availableFilters.regions).map(region => `<option value="${region}">${region}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('contactTypes', this.value); this.value='';" class="filter-select">
-                            <option value="">联系方式</option>
-                            ${Array.from(this.availableFilters.contactTypes).map(type => `<option value="${type}">${type}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('techHonors', this.value); this.value='';" class="filter-select">
-                            <option value="">科技荣誉</option>
-                            ${Array.from(this.availableFilters.techHonors).map(honor => `<option value="${honor}">${honor}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('fundingRounds', this.value); this.value='';" class="filter-select">
-                            <option value="">融资轮次</option>
-                            ${Array.from(this.availableFilters.fundingRounds).map(round => `<option value="${round}">${round}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('listingStatus', this.value); this.value='';" class="filter-select">
-                            <option value="">上市/发债</option>
-                            ${Array.from(this.availableFilters.listingStatus).map(status => `<option value="${status}">${status}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('companyScale', this.value); this.value='';" class="filter-select">
-                            <option value="">企业规模</option>
-                            ${Array.from(this.availableFilters.companyScale).map(scale => `<option value="${scale}">${scale}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('employeeCount', this.value); this.value='';" class="filter-select">
-                            <option value="">员工人数</option>
-                            ${Array.from(this.availableFilters.employeeCount).map(count => `<option value="${count}">${count}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('establishmentYears', this.value); this.value='';" class="filter-select">
-                            <option value="">成立年限</option>
-                            ${Array.from(this.availableFilters.establishmentYears).map(years => `<option value="${years}">${years}</option>`).join('')}
-                        </select>
-                        <select onchange="chainSidebar.addFilter('registrationStatus', this.value); this.value='';" class="filter-select">
-                            <option value="">登记状态</option>
-                            ${Array.from(this.availableFilters.registrationStatus).map(status => `<option value="${status}">${status}</option>`).join('')}
-                        </select>
-                        ${industriesArray.length > 0 ? `
-                        <select onchange="chainSidebar.addFilter('industries', this.value); this.value='';" class="filter-select">
-                            <option value="">主要行业</option>
-                            ${industriesArray.map(industry => `<option value="${industry}">${industry}</option>`).join('')}
-                        </select>
-                        ` : ''}
-                        ${subCategoriesArray.length > 0 ? `
-                        <select onchange="chainSidebar.addFilter('industrySubCategories', this.value); this.value='';" class="filter-select">
-                            <option value="">细分领域</option>
-                            ${subCategoriesArray.map(sub => `<option value="${sub}">${sub}</option>`).join('')}
-                        </select>
-                        ` : ''}
-                    </div>
-                </div>
+                ${activeFiltersHTML}
+                ${cachedArrays.industries.length > 0 ? this.generateRelevanceFilterHTML(cachedArrays.relevanceLevels) : ''}
+                ${filterOptionsHTML}
             </div>
             
             <div class="filter-stats">
-                已筛选出 <span class="highlight">${this.filteredEnterprises.length}</span> 家企业
-                ${this.hasActiveFilters() ? `，共 ${this.getActiveFiltersCount()} 个筛选条件` : ''}
+                ${this.hasActiveFilters() ? `已应用 ${this.getActiveFiltersCount()} 个筛选条件` : '可以使用下方筛选条件进行精确查找'}
             </div>
         `;
     }
     
     /**
-     * 切换筛选条件
+     * 生成已选条件HTML
      */
-    toggleFilter(filterType, value) {
+    generateActiveFiltersHTML(chainPointName) {
+        const filterConfig = [
+            { key: 'relevanceLevels', prefix: '产业关联性' },
+            { key: 'industries', prefix: '行业' },
+            { key: 'industrySubCategories', prefix: '细分领域' },
+            { key: 'regions', prefix: '地区' },
+            { key: 'contactTypes', prefix: '联系方式' },
+            { key: 'techHonors', prefix: '科技荣誉' },
+            { key: 'fundingRounds', prefix: '融资轮次' },
+            { key: 'listingStatus', prefix: '上市状态' },
+            { key: 'companyScale', prefix: '企业规模' },
+            { key: 'employeeCount', prefix: '员工人数' },
+            { key: 'establishmentYears', prefix: '成立年限' },
+            { key: 'registrationStatus', prefix: '登记状态' }
+        ];
+        
+        const activeFilterTags = [];
+        
+        // 添加节点标签
+        activeFilterTags.push(`<span class="filter-tag active">节点：${chainPointName}</span>`);
+        
+        // 批量生成已选筛选条件
+        filterConfig.forEach(config => {
+            if (this.filters[config.key].size > 0) {
+                this.filters[config.key].forEach(value => {
+                    activeFilterTags.push(
+                        `<span class="filter-tag active" onclick="chainSidebar.toggleFilter('${config.key}', '${value}', this)">
+                            ${config.prefix}：${value}
+                            <span class="close-btn" onclick="event.stopPropagation(); chainSidebar.toggleFilter('${config.key}', '${value}', this.parentElement)">×</span>
+                        </span>`
+                    );
+                });
+            }
+        });
+        
+        // 添加清除按钮
+        if (this.hasActiveFilters()) {
+            activeFilterTags.push(
+                `<button class="clear-filters-btn" onclick="chainSidebar.clearAllFilters()">
+                    <i class="fas fa-trash"></i> 清除
+                </button>`
+            );
+        }
+        
+        return `
+            <div class="filter-section">
+                <label class="filter-label">已选条件</label>
+                <div class="filter-row">
+                    ${activeFilterTags.join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    /**
+     * 生成关联性筛选HTML
+     */
+    generateRelevanceFilterHTML(relevanceLevelsArray) {
+        const relevanceTags = relevanceLevelsArray.map(level => 
+            `<span class="filter-tag ${this.filters.relevanceLevels.has(level) ? 'active' : ''}" 
+                  onclick="chainSidebar.toggleFilter('relevanceLevels', '${level}', this)">
+                ${level}
+            </span>`
+        );
+        
+        return `
+            <div class="filter-section">
+                <label class="filter-label">产业关联性</label>
+                <div class="filter-row">
+                    ${relevanceTags.join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    /**
+     * 生成筛选选项HTML
+     */
+    generateFilterOptionsHTML(cachedArrays) {
+        const selectOptions = [
+            { key: 'regions', label: '所属地区', array: cachedArrays.regions },
+            { key: 'contactTypes', label: '联系方式', array: cachedArrays.contactTypes },
+            { key: 'techHonors', label: '科技荣誉', array: cachedArrays.techHonors },
+            { key: 'fundingRounds', label: '融资轮次', array: cachedArrays.fundingRounds },
+            { key: 'listingStatus', label: '上市/发债', array: cachedArrays.listingStatus },
+            { key: 'companyScale', label: '企业规模', array: cachedArrays.companyScale },
+            { key: 'employeeCount', label: '员工人数', array: cachedArrays.employeeCount },
+            { key: 'establishmentYears', label: '成立年限', array: cachedArrays.establishmentYears },
+            { key: 'registrationStatus', label: '登记状态', array: cachedArrays.registrationStatus }
+        ];
+        
+        // 条件添加行业和细分领域选项
+        if (cachedArrays.industries.length > 0) {
+            selectOptions.push({ key: 'industries', label: '主要行业', array: cachedArrays.industries });
+        }
+        if (cachedArrays.subCategories.length > 0) {
+            selectOptions.push({ key: 'industrySubCategories', label: '细分领域', array: cachedArrays.subCategories });
+        }
+        
+        const selectHTML = selectOptions.map(option => 
+            this.generateSelectHTML(option.key, option.label, option.array)
+        ).join('');
+        
+        return `
+            <div class="filter-section">
+                <label class="filter-label">更多筛选</label>
+                <div class="filter-row">
+                    ${selectHTML}
+                </div>
+            </div>
+        `;
+    }
+    
+    /**
+     * 生成单个select HTML
+     */
+    generateSelectHTML(key, label, optionsArray) {
+        if (optionsArray.length === 0) return '';
+        
+        const options = optionsArray.map(value => 
+            `<option value="${value}">${value}</option>`
+        ).join('');
+        
+        return `
+            <select onchange="chainSidebar.addFilter('${key}', this.value, this); this.value='';" class="filter-select">
+                <option value="">${label}</option>
+                ${options}
+            </select>
+        `;
+    }
+    
+    /**
+     * 切换筛选条件（带动画反馈）
+     */
+    toggleFilter(filterType, value, element = null) {
+        // 添加点击反馈动画
+        if (element) {
+            this.addClickFeedback(element);
+        } else {
+            // 如果没有传入元素，尝试找到对应的元素
+            const filterElement = this.findFilterElement(filterType, value);
+            if (filterElement) {
+                this.addClickFeedback(filterElement);
+            }
+        }
+        
+        // 即时视觉反馈 - 更新筛选统计
+        this.showFilteringFeedback();
+        
         if (this.filters[filterType].has(value)) {
             this.filters[filterType].delete(value);
         } else {
             this.filters[filterType].add(value);
         }
-        this.applyFilters();
+        this.applyFiltersWithAnimation();
     }
     
     /**
-     * 添加筛选条件
+     * 添加筛选条件（带动画反馈）
      */
-    addFilter(filterType, value) {
+    addFilter(filterType, value, element = null) {
         if (value && !this.filters[filterType].has(value)) {
+            // 添加选择反馈动画
+            if (element) {
+                this.addSelectFeedback(element);
+            }
+            
+            // 即时视觉反馈
+            this.showFilteringFeedback();
+            
             this.filters[filterType].add(value);
-            this.applyFilters();
+            this.applyFiltersWithAnimation();
         }
     }
     
     /**
-     * 清除所有筛选条件
+     * 清除所有筛选条件（带动画反馈）
      */
     clearAllFilters() {
+        // 即时视觉反馈
+        this.showFilteringFeedback();
+        
         this.filters.industries.clear();
         this.filters.industrySubCategories.clear();
         this.filters.relevanceLevels.clear();
@@ -1083,7 +1294,7 @@ class ChainSidebar {
         this.filters.employeeCount.clear();
         this.filters.establishmentYears.clear();
         this.filters.registrationStatus.clear();
-        this.applyFilters();
+        this.applyFiltersWithAnimation();
     }
     
     /**
@@ -1138,6 +1349,190 @@ class ChainSidebar {
                this.filters.employeeCount.size +
                this.filters.establishmentYears.size +
                this.filters.registrationStatus.size;
+    }
+    
+    /**
+     * 带动画的筛选应用方法
+     */
+    async applyFiltersWithAnimation() {
+        // 添加数据刷新指示器
+        this.showDataRefreshing();
+        
+        // 淡出当前表格内容
+        this.fadeOutTableContent();
+        
+        // 清除之前的防抖定时器
+        if (this.filterDebounceTimer) {
+            clearTimeout(this.filterDebounceTimer);
+        }
+        
+        // 使用防抖机制，避免频繁的API请求
+        this.filterDebounceTimer = setTimeout(async () => {
+            // 重置到第一页
+            this.currentPage = 1;
+            
+            // 重新从后端加载数据
+            await this.loadEnterpriseData();
+            
+            // 移除数据刷新指示器
+            this.hideDataRefreshing();
+        }, 300); // 300ms防抖延迟
+    }
+    
+    /**
+     * 添加点击反馈动画
+     */
+    addClickFeedback(element) {
+        // 移除之前的动画类
+        element.classList.remove('clicked');
+        
+        // 触发重排，确保类被移除
+        element.offsetHeight;
+        
+        // 添加动画类
+        element.classList.add('clicked');
+        
+        // 动画完成后移除类
+        setTimeout(() => {
+            element.classList.remove('clicked');
+        }, 400);
+    }
+    
+    /**
+     * 添加选择反馈动画
+     */
+    addSelectFeedback(element) {
+        element.classList.remove('selecting');
+        element.offsetHeight;
+        element.classList.add('selecting');
+        
+        setTimeout(() => {
+            element.classList.remove('selecting');
+        }, 300);
+    }
+    
+    /**
+     * 显示筛选反馈
+     */
+    showFilteringFeedback() {
+        const filterStats = this.sidebar.querySelector('.filter-stats');
+        const highlight = this.sidebar.querySelector('.filter-stats .highlight');
+        
+        if (filterStats) {
+            filterStats.classList.add('updating');
+            setTimeout(() => {
+                filterStats.classList.remove('updating');
+            }, 500);
+        }
+        
+        if (highlight) {
+            highlight.classList.add('updating');
+            setTimeout(() => {
+                highlight.classList.remove('updating');
+            }, 500);
+        }
+    }
+    
+    /**
+     * 显示数据刷新状态
+     */
+    showDataRefreshing() {
+        const content = this.sidebar.querySelector('.chain-sidebar-content');
+        if (content) {
+            content.classList.add('data-refreshing');
+        }
+    }
+    
+    /**
+     * 隐藏数据刷新状态
+     */
+    hideDataRefreshing() {
+        const content = this.sidebar.querySelector('.chain-sidebar-content');
+        if (content) {
+            content.classList.remove('data-refreshing');
+        }
+    }
+    
+    /**
+     * 淡出表格内容
+     */
+    fadeOutTableContent() {
+        const container = this.sidebar.querySelector('.enterprise-list-container');
+        const table = this.sidebar.querySelector('.enterprise-table');
+        
+        if (container) {
+            container.classList.add('fade-out');
+        }
+        
+        if (table) {
+            table.classList.add('loading');
+        }
+    }
+    
+    /**
+     * 淡入表格内容
+     */
+    fadeInTableContent() {
+        const container = this.sidebar.querySelector('.enterprise-list-container');
+        const table = this.sidebar.querySelector('.enterprise-table');
+        
+        if (container) {
+            container.classList.remove('fade-out');
+            container.classList.add('fade-in');
+            
+            // 动画完成后移除类
+            setTimeout(() => {
+                container.classList.remove('fade-in');
+            }, 400);
+        }
+        
+        if (table) {
+            table.classList.remove('loading');
+        }
+        
+        // 添加表格行的进入动画
+        this.animateTableRows();
+    }
+    
+    /**
+     * 表格行动画
+     */
+    animateTableRows() {
+        const rows = this.sidebar.querySelectorAll('.enterprise-table tbody tr');
+        
+        rows.forEach((row, index) => {
+            // 重置动画状态
+            row.classList.remove('entered');
+            row.classList.add('entering');
+            
+            // 延迟添加进入动画，创建波浪效果
+            setTimeout(() => {
+                row.classList.remove('entering');
+                row.classList.add('entered');
+                
+                // 清理动画类
+                setTimeout(() => {
+                    row.classList.remove('entered');
+                }, 300);
+            }, index * 30); // 每行延迟30ms
+        });
+    }
+    
+    /**
+     * 查找筛选元素
+     */
+    findFilterElement(filterType, value) {
+        // 尝试找到对应的筛选标签元素
+        const filterTags = this.sidebar.querySelectorAll('.filter-tag');
+        
+        for (const tag of filterTags) {
+            const tagText = tag.textContent.trim();
+            if (tagText.includes(value)) {
+                return tag;
+            }
+        }
+        
+        return null;
     }
 }
 

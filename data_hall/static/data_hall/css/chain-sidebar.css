@@ -131,6 +131,8 @@
 /* 企业列表容器 */
 .enterprise-list-container {
     padding: 24px 32px;
+    /* 添加过渡效果 */
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 /* 筛选框样式 */
@@ -182,6 +184,8 @@
     position: relative;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(4px);
+    /* 添加点击反馈动画 */
+    transform: scale(1);
 }
 
 .filter-tag:hover {
@@ -197,6 +201,17 @@
     color: #FFFFFF;
     font-weight: 600;
     box-shadow: 0 3px 6px rgba(66, 102, 172, 0.3);
+    /* 添加脉冲效果 */
+    animation: activeFilterPulse 2s ease-in-out infinite;
+}
+
+@keyframes activeFilterPulse {
+    0%, 100% {
+        box-shadow: 0 3px 6px rgba(66, 102, 172, 0.3);
+    }
+    50% {
+        box-shadow: 0 3px 12px rgba(66, 102, 172, 0.5);
+    }
 }
 
 .filter-tag.active:hover {
@@ -220,6 +235,31 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
+.filter-tag:active {
+    transform: scale(0.95);
+}
+
+.filter-tag.clicked {
+    animation: filterClickFeedback 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 筛选条件点击反馈动画 */
+@keyframes filterClickFeedback {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(66, 102, 172, 0.4);
+        background: rgba(66, 102, 172, 0.6);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
+
 /* 筛选下拉框样式 */
 .filter-select {
     background: rgba(66, 102, 172, 0.25);
@@ -235,6 +275,8 @@
     min-width: 110px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(4px);
+    /* 添加选择状态反馈 */
+    transform: scale(1);
 }
 
 .filter-select:hover {
@@ -254,6 +296,29 @@
     background: #1D2942;
     color: #DCE2F0;
     padding: 8px 12px;
+}
+
+.filter-select:active {
+    transform: scale(0.98);
+}
+
+.filter-select.selecting {
+    animation: selectingFeedback 0.3s ease;
+}
+
+@keyframes selectingFeedback {
+    0% {
+        transform: scale(1);
+        background: rgba(66, 102, 172, 0.25);
+    }
+    50% {
+        transform: scale(1.02);
+        background: rgba(66, 102, 172, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        background: rgba(66, 102, 172, 0.25);
+    }
 }
 
 .clear-filters-btn {
@@ -293,6 +358,13 @@
     color: #DCE2F0;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 添加过渡动画 */
+    transition: all 0.3s ease;
+}
+
+.filter-stats.updating {
+    background: linear-gradient(135deg, rgba(66, 102, 172, 0.3) 0%, rgba(66, 102, 172, 0.4) 100%);
+    transform: scale(1.02);
 }
 
 .filter-stats .highlight {
@@ -300,6 +372,13 @@
     font-weight: 700;
     font-size: 15px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /* 添加数字变化动画 */
+    transition: all 0.3s ease;
+}
+
+.filter-stats .highlight.updating {
+    color: #81C784;
+    text-shadow: 0 0 8px rgba(129, 199, 132, 0.5);
 }
 
 /* 加载状态 */
@@ -310,6 +389,8 @@
     justify-content: center;
     padding: 60px 32px;
     color: var(--text-secondary-light, #DCE2F0);
+    min-height: 200px;
+    position: relative;
 }
 
 .loading-spinner {
@@ -335,6 +416,10 @@
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 24px;
+    /* 添加过渡动画 */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .enterprise-table thead {
@@ -359,7 +444,9 @@
 }
 
 .enterprise-table tbody tr {
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .enterprise-table tbody tr:hover {
@@ -368,6 +455,24 @@
 
 .enterprise-table tbody tr:nth-child(even) {
     background: rgba(0, 0, 0, 0.1);
+}
+
+/* 表格加载状态 */
+.enterprise-table.loading {
+    opacity: 0.6;
+    transform: translateY(10px);
+    pointer-events: none;
+}
+
+/* 表格行动画 */
+.enterprise-table tbody tr.entering {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.enterprise-table tbody tr.entered {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 /* 企业名称样式 */
@@ -575,4 +680,59 @@
     cursor: pointer;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(66, 102, 172, 0.3);
+}
+
+/* 数据刷新状态 */
+.data-refreshing {
+    position: relative;
+    overflow: hidden;
+}
+
+.data-refreshing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4266AC, transparent);
+    animation: dataRefreshProgress 1.5s ease-in-out infinite;
+    z-index: 10;
+}
+
+@keyframes dataRefreshProgress {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* 表格淡入淡出效果 */
+.enterprise-list-container.fade-out {
+    opacity: 0.3;
+    transform: translateY(10px);
+}
+
+.enterprise-list-container.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 骨架屏加载效果 */
+.skeleton-row {
+    animation: skeletonLoading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonLoading {
+    0% {
+        background-color: rgba(66, 102, 172, 0.1);
+    }
+    50% {
+        background-color: rgba(66, 102, 172, 0.3);
+    }
+    100% {
+        background-color: rgba(66, 102, 172, 0.1);
+    }
 } 

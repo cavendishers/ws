@@ -349,11 +349,21 @@ body, button, input, select, textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    color: #7889B5;
+    font-size: 40px;
+    color: var(--accent);
     align-self: flex-start;
-    padding-top: 180px;
+    padding-top: 0px;
     min-width: 40px;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(66, 102, 172, 0.2);
+    opacity: 0.85;
+}
+
+.arrow:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    color: var(--text-primary-light);
+    text-shadow: 0 2px 8px rgba(66, 102, 172, 0.4);
 }
 
 /* 侧边栏操作 */

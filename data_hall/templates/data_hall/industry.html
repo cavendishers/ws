@@ -12,7 +12,7 @@
 <section class="container mx-auto px-6 mb-12">
   <h1 class="text-3xl font-bold mb-4 gradient-text">产业链总览</h1>
   <p class="text-gray-300 max-w-3xl">
-    覆盖新一代信息技术、半导体、人工智能、5G、以及新能源等多个领域，通过产业链分析帮助您快速了解各细分领域的发展动态与企业分布。
+    覆盖新一代信息技术、半导体、人工智能、5G、以及新能源等多个领域, 通过产业链分析帮助您快速了解各细分领域的发展动态与企业分布。
   </p>
 </section>
 
@@ -21,7 +21,7 @@
   <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
     {% for industry in industries %}
     <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" 
-         style="background-image: url('{% static "data_hall/img/"|add:industry.name|add:".jpg" %}');background-size: cover;" 
+         data-bg-image="{% static 'data_hall/img/' %}{{ industry.name }}.jpg"
          data-industry="{{ industry.name }}">
       <h3 class="text-lg font-bold mb-2 text-white">{{ industry.name }}</h3>
       <p class="text-sm text-gray-300">企业数：{{ industry.company_count }}</p>
@@ -65,4 +65,4 @@
 
 {% block extra_js %}
 <script src="{% static 'data_hall/js/industry.js' %}"></script>
-{% endblock %} 
+{% endblock %}

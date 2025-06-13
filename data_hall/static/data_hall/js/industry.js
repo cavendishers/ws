@@ -63,6 +63,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // 为每个卡片添加点击事件
   const industryCards = document.querySelectorAll('.industry-card');
   industryCards.forEach(card => {
+    // 设置背景图片
+    const bgImage = card.getAttribute('data-bg-image');
+    if (bgImage) {
+      card.style.backgroundImage = `url("${bgImage}")`;
+      card.style.backgroundSize = 'cover';
+      card.style.backgroundPosition = 'center';
+    }
+    
     card.addEventListener('click', function(event) {
       // 防止事件冒泡和默认行为
       event.preventDefault();

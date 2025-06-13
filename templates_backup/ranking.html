@@ -1,0 +1,64 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}新势力榜单 - 中国新势力企业态势感知系统{% endblock %}
+
+{% block content %}
+<!-- 主体内容 -->
+
+  <section class="container mx-auto px-6 mb-12">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold mb-4">新势力企业榜单</h2>
+      <p class="text-gray-300">
+        基于
+        <span class="text-[var(--accent)]">发展潜力</span>、
+        <span class="text-[var(--accent)]">扩张速度</span>、
+        <span class="text-[var(--accent)]">创新能力</span>、
+        <span class="text-[var(--accent)]">资本关注</span>、
+        <span class="text-[var(--accent)]">团队背景</span>五大维度综合评估，
+        分值均为 0-100，分值越高代表该维度表现越突出
+      </p>
+    </div>
+  </section>
+
+  <!-- 表格容器 -->
+  <section class="container mx-auto px-6">
+    <div class="bg-[#132144] p-6 rounded-xl glow-effect" style="margin-bottom: 1.5rem;">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold">实时企业排行榜</h3>
+        <button id="exportDataBtn" class="px-4 py-2 bg-[var(--primary)] rounded hover:bg-[#1A2B5E]">
+          导出数据
+        </button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-[#1A2B5E]">
+            <tr>
+              <th class="px-4 py-3">排名</th>
+              <th class="px-4 py-3">企业名称</th>
+              <th class="px-4 py-3">发展潜力</th>
+              <th class="px-4 py-3">扩张速度</th>
+              <th class="px-4 py-3">创新能力</th>
+              <th class="px-4 py-3">资本关注</th>
+              <th class="px-4 py-3">团队背景</th>
+              <th class="px-4 py-3 text-yellow-400">综合得分</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#1A2B5E]" id="rankingTbody">
+            <!-- 动态渲染数据 -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- 分页控件容器 -->
+      <div id="paginationContainer" class="mt-6">
+        <!-- 分页控件将通过JavaScript动态添加 -->
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/ranking.js' %}"></script>
+{% endblock %} 

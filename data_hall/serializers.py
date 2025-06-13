@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CompanyInfo, ChainPoint, ChainPointCompany
+from .models import CompanyInfo, ChainPoint, ChainPointCompany, Province, City, District
 
 class ChainPointSerializer(serializers.ModelSerializer):
     """产业链节点序列化器"""
@@ -45,4 +45,57 @@ class EnterpriseListByChainPointSerializer(serializers.Serializer):
     """链点企业列表序列化器"""
     chain_point = ChainPointSerializer()
     enterprises = CompanyChainSerializer(many=True)
-    total_count = serializers.IntegerField() 
+    total_count = serializers.IntegerField()
+
+# 省市区序列化器
+class DistrictSerializer(serializers.ModelSerializer):
+    """区县序列化器"""
+    class Meta:
+        model = District
+        fields = ['code', 'name']
+
+class CitySerializer(serializers.ModelSerializer):
+    """城市序列化器"""
+    districts = DistrictSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = City
+        fields = ['code', 'name', 'districts']
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    """省份序列化器"""
+    cities = CitySerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Province
+        fields = ['code', 'name', 'cities']
+
+class RegionTreeSerializer(serializers.Serializer):
+    """地区树形结构序列化器"""
+    provinces = ProvinceSerializer(many=True)
+
+class RegionSimpleSerializer(serializers.ModelSerializer):
+    """简单地区序列化器（不包含子级）"""
+    class Meta:
+        model = Province
+        fields = ['code', 'name']
+
+class CitySimpleSerializer(serializers.ModelSerializer):
+    """简单城市序列化器（不包含区县）"""
+    province_code = serializers.CharField(source='province.code', read_only=True)
+    province_name = serializers.CharField(source='province.name', read_only=True)
+    
+    class Meta:
+        model = City
+        fields = ['code', 'name', 'province_code', 'province_name']
+
+class DistrictSimpleSerializer(serializers.ModelSerializer):
+    """简单区县序列化器"""
+    city_code = serializers.CharField(source='city.code', read_only=True)
+    city_name = serializers.CharField(source='city.name', read_only=True)
+    province_code = serializers.CharField(source='city.province.code', read_only=True)
+    province_name = serializers.CharField(source='city.province.name', read_only=True)
+    
+    class Meta:
+        model = District
+        fields = ['code', 'name', 'city_code', 'city_name', 'province_code', 'province_name'] 

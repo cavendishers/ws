@@ -2,8 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import ChainPoint, ChainPointCompany
-from .serializers import ChainPointSerializer, CompanyChainSerializer, EnterpriseListByChainPointSerializer
+from .models import ChainPoint, ChainPointCompany, Province, City, District
+from .serializers import (ChainPointSerializer, CompanyChainSerializer, EnterpriseListByChainPointSerializer,
+                         ProvinceSerializer, CitySerializer, DistrictSerializer, RegionTreeSerializer,
+                         RegionSimpleSerializer, CitySimpleSerializer, DistrictSimpleSerializer)
 from django.core.paginator import Paginator
 import random
 
@@ -238,4 +240,179 @@ class ChainPointDetailAPIView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
                 
-            return Response(mock_chain_points[chain_point_id]) 
+            return Response(mock_chain_points[chain_point_id])
+
+# 省市区相关 API 视图
+class RegionTreeAPIView(APIView):
+    """获取完整的省市区树形结构"""
+    
+    def get(self, request):
+        """
+        获取完整的省市区三级联动数据
+        返回格式: {provinces: [{code, name, cities: [{code, name, districts: [...]}]}]}
+        """
+        provinces = Province.objects.prefetch_related('cities__districts').all()
+        serializer = ProvinceSerializer(provinces, many=True)
+        return Response({
+            'provinces': serializer.data
+        })
+
+class ProvinceListAPIView(APIView):
+    """获取省份列表"""
+    
+    def get(self, request):
+        """获取所有省份列表（不包含子级数据）"""
+        provinces = Province.objects.all()
+        serializer = RegionSimpleSerializer(provinces, many=True)
+        return Response({
+            'provinces': serializer.data
+        })
+
+class CityListAPIView(APIView):
+    """获取城市列表"""
+    
+    def get(self, request):
+        """
+        获取城市列表
+        支持根据省份代码筛选: ?province_code=110000
+        """
+        province_code = request.query_params.get('province_code')
+        
+        if province_code:
+            cities = City.objects.filter(province__code=province_code).select_related('province')
+        else:
+            cities = City.objects.select_related('province')
+            
+        serializer = CitySimpleSerializer(cities, many=True)
+        return Response({
+            'cities': serializer.data
+        })
+
+class DistrictListAPIView(APIView):
+    """获取区县列表"""
+    
+    def get(self, request):
+        """
+        获取区县列表
+        支持根据城市代码筛选: ?city_code=110100
+        支持根据省份代码筛选: ?province_code=110000
+        """
+        city_code = request.query_params.get('city_code')
+        province_code = request.query_params.get('province_code')
+        
+        districts = District.objects.select_related('city__province')
+        
+        if city_code:
+            districts = districts.filter(city__code=city_code)
+        elif province_code:
+            districts = districts.filter(city__province__code=province_code)
+            
+        serializer = DistrictSimpleSerializer(districts, many=True)
+        return Response({
+            'districts': serializer.data
+        })
+
+class RegionDetailAPIView(APIView):
+    """获取地区详情"""
+    
+    def get(self, request, region_type, region_code):
+        """
+        获取地区详情
+        region_type: province/city/district
+        region_code: 地区代码
+        """
+        try:
+            if region_type == 'province':
+                region = Province.objects.prefetch_related('cities__districts').get(code=region_code)
+                serializer = ProvinceSerializer(region)
+            elif region_type == 'city':
+                region = City.objects.prefetch_related('districts').select_related('province').get(code=region_code)
+                serializer = CitySerializer(region)
+            elif region_type == 'district':
+                region = District.objects.select_related('city__province').get(code=region_code)
+                serializer = DistrictSerializer(region)
+            else:
+                return Response(
+                    {"detail": "无效的地区类型，支持: province/city/district"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            return Response(serializer.data)
+            
+        except (Province.DoesNotExist, City.DoesNotExist, District.DoesNotExist):
+            return Response(
+                {"detail": f"{region_type} 代码 {region_code} 不存在"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+class RegionSearchAPIView(APIView):
+    """地区搜索接口"""
+    
+    def get(self, request):
+        """
+        根据关键词搜索地区
+        支持参数:
+        - keyword: 搜索关键词（必需）
+        - type: 搜索类型 province/city/district/all（默认 all）
+        - limit: 返回数量限制（默认 20）
+        """
+        keyword = request.query_params.get('keyword', '').strip()
+        search_type = request.query_params.get('type', 'all')
+        limit = int(request.query_params.get('limit', 20))
+        
+        if not keyword:
+            return Response(
+                {"detail": "请提供搜索关键词"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        results = []
+        
+        # 搜索省份
+        if search_type in ['province', 'all']:
+            provinces = Province.objects.filter(name__icontains=keyword)[:limit]
+            for province in provinces:
+                results.append({
+                    'type': 'province',
+                    'code': province.code,
+                    'name': province.name,
+                    'full_name': province.name
+                })
+        
+        # 搜索城市
+        if search_type in ['city', 'all']:
+            cities = City.objects.filter(name__icontains=keyword).select_related('province')[:limit]
+            for city in cities:
+                results.append({
+                    'type': 'city',
+                    'code': city.code,
+                    'name': city.name,
+                    'full_name': f"{city.province.name} {city.name}",
+                    'province_code': city.province.code,
+                    'province_name': city.province.name
+                })
+        
+        # 搜索区县
+        if search_type in ['district', 'all']:
+            districts = District.objects.filter(name__icontains=keyword).select_related('city__province')[:limit]
+            for district in districts:
+                results.append({
+                    'type': 'district',
+                    'code': district.code,
+                    'name': district.name,
+                    'full_name': f"{district.city.province.name} {district.city.name} {district.name}",
+                    'city_code': district.city.code,
+                    'city_name': district.city.name,
+                    'province_code': district.city.province.code,
+                    'province_name': district.city.province.name
+                })
+        
+        # 限制结果数量
+        results = results[:limit]
+        
+        return Response({
+            'keyword': keyword,
+            'type': search_type,
+            'count': len(results),
+            'results': results
+        }) 

@@ -29,8 +29,16 @@ urlpatterns = [
     path('api/top-companies/', views.get_top_companies, name='top_companies'),
     path('api/yearly-stats/', views.get_yearly_stats, name='yearly_stats'),
     
-    # 新增API路由
+    # 产业链 API 路由
     path('api/chain-points/', api_views.ChainPointListAPIView.as_view(), name='chain_point_list'),
     path('api/chain-point/<int:chain_point_id>/enterprises/', api_views.ChainPointEnterpriseListAPIView.as_view(), name='chain_point_enterprises'),
     path('api/chain-point/<int:chain_point_id>/', api_views.ChainPointDetailAPIView.as_view(), name='chain_point_detail'),
+    
+    # 省市区 API 路由
+    path('api/regions/tree/', api_views.RegionTreeAPIView.as_view(), name='region_tree'),
+    path('api/regions/provinces/', api_views.ProvinceListAPIView.as_view(), name='province_list'),
+    path('api/regions/cities/', api_views.CityListAPIView.as_view(), name='city_list'),
+    path('api/regions/districts/', api_views.DistrictListAPIView.as_view(), name='district_list'),
+    path('api/regions/<str:region_type>/<str:region_code>/', api_views.RegionDetailAPIView.as_view(), name='region_detail'),
+    path('api/regions/search/', api_views.RegionSearchAPIView.as_view(), name='region_search'),
 ] 

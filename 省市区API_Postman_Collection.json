@@ -1,0 +1,405 @@
+{
+  "info": {
+    "name": "省市区 API 测试",
+    "description": "中国省市区三级联动 API 接口测试集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. 获取省市区树形结构",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/tree/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "tree",
+            ""
+          ]
+        },
+        "description": "获取完整的省市区三级联动数据"
+      },
+      "response": []
+    },
+    {
+      "name": "2. 获取省份列表",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/provinces/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "provinces",
+            ""
+          ]
+        },
+        "description": "获取所有省份列表（不包含子级数据）"
+      },
+      "response": []
+    },
+    {
+      "name": "3. 获取城市列表（所有）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/cities/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "cities",
+            ""
+          ]
+        },
+        "description": "获取所有城市列表"
+      },
+      "response": []
+    },
+    {
+      "name": "4. 按省份获取城市（北京市）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/cities/?province_code=110000",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "cities",
+            ""
+          ],
+          "query": [
+            {
+              "key": "province_code",
+              "value": "110000",
+              "description": "北京市代码"
+            }
+          ]
+        },
+        "description": "获取北京市下的城市"
+      },
+      "response": []
+    },
+    {
+      "name": "5. 按省份获取城市（广东省）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/cities/?province_code=440000",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "cities",
+            ""
+          ],
+          "query": [
+            {
+              "key": "province_code",
+              "value": "440000",
+              "description": "广东省代码"
+            }
+          ]
+        },
+        "description": "获取广东省下的城市"
+      },
+      "response": []
+    },
+    {
+      "name": "6. 获取区县列表（所有）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/districts/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "districts",
+            ""
+          ]
+        },
+        "description": "获取所有区县列表"
+      },
+      "response": []
+    },
+    {
+      "name": "7. 按城市获取区县（北京市辖区）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/districts/?city_code=110100",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "districts",
+            ""
+          ],
+          "query": [
+            {
+              "key": "city_code",
+              "value": "110100",
+              "description": "北京市辖区代码"
+            }
+          ]
+        },
+        "description": "获取北京市辖区下的区县"
+      },
+      "response": []
+    },
+    {
+      "name": "8. 按省份获取区县（北京市）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/districts/?province_code=110000",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "districts",
+            ""
+          ],
+          "query": [
+            {
+              "key": "province_code",
+              "value": "110000",
+              "description": "北京市代码"
+            }
+          ]
+        },
+        "description": "获取北京市下的所有区县"
+      },
+      "response": []
+    },
+    {
+      "name": "9. 获取省份详情（北京市）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/province/110000/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "province",
+            "110000",
+            ""
+          ]
+        },
+        "description": "获取北京市详细信息"
+      },
+      "response": []
+    },
+    {
+      "name": "10. 获取城市详情（北京市辖区）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/city/110100/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "city",
+            "110100",
+            ""
+          ]
+        },
+        "description": "获取北京市辖区详细信息"
+      },
+      "response": []
+    },
+    {
+      "name": "11. 获取区县详情（东城区）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/district/110101/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "district",
+            "110101",
+            ""
+          ]
+        },
+        "description": "获取东城区详细信息"
+      },
+      "response": []
+    },
+    {
+      "name": "12. 搜索地区（关键词：海）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/search/?keyword=海",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "search",
+            ""
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "海",
+              "description": "搜索关键词"
+            }
+          ]
+        },
+        "description": "搜索包含'海'的所有地区"
+      },
+      "response": []
+    },
+    {
+      "name": "13. 搜索城市（关键词：上海）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/search/?keyword=上海&type=city",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "search",
+            ""
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "上海",
+              "description": "搜索关键词"
+            },
+            {
+              "key": "type",
+              "value": "city",
+              "description": "只搜索城市"
+            }
+          ]
+        },
+        "description": "只搜索包含'上海'的城市"
+      },
+      "response": []
+    },
+    {
+      "name": "14. 搜索区县（关键词：海淀）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/search/?keyword=海淀&type=district",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "search",
+            ""
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "海淀",
+              "description": "搜索关键词"
+            },
+            {
+              "key": "type",
+              "value": "district",
+              "description": "只搜索区县"
+            }
+          ]
+        },
+        "description": "只搜索包含'海淀'的区县"
+      },
+      "response": []
+    },
+    {
+      "name": "15. 限制搜索结果数量",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/regions/search/?keyword=北&limit=5",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "regions",
+            "search",
+            ""
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "北",
+              "description": "搜索关键词"
+            },
+            {
+              "key": "limit",
+              "value": "5",
+              "description": "限制返回5条结果"
+            }
+          ]
+        },
+        "description": "搜索包含'北'的地区，限制返回5条结果"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+} 

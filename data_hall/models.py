@@ -207,3 +207,67 @@ class ChainPointCompany(models.Model):
 
     def __str__(self):
         return f"{self.chain_point} ← {self.company}"
+
+# 中国省市区三级联动模型
+class Province(models.Model):
+    """省份模型"""
+    code = models.CharField("省份代码", max_length=10, unique=True, primary_key=True)
+    name = models.CharField("省份名称", max_length=100)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "省份"
+        verbose_name_plural = "省份"
+        db_table = "province"
+        ordering = ['code']
+    
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    """城市模型"""
+    code = models.CharField("城市代码", max_length=10, unique=True, primary_key=True)
+    name = models.CharField("城市名称", max_length=100)
+    province = models.ForeignKey(
+        Province, 
+        on_delete=models.CASCADE, 
+        related_name='cities',
+        verbose_name="所属省份"
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "城市"
+        verbose_name_plural = "城市"
+        db_table = "city"
+        ordering = ['code']
+        indexes = [
+            models.Index(fields=['province']),
+        ]
+    
+    def __str__(self):
+        return f"{self.province.name}-{self.name}"
+
+class District(models.Model):
+    """区县模型"""
+    code = models.CharField("区县代码", max_length=10, unique=True, primary_key=True)
+    name = models.CharField("区县名称", max_length=100)
+    city = models.ForeignKey(
+        City, 
+        on_delete=models.CASCADE, 
+        related_name='districts',
+        verbose_name="所属城市"
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "区县"
+        verbose_name_plural = "区县"
+        db_table = "district"
+        ordering = ['code']
+        indexes = [
+            models.Index(fields=['city']),
+        ]
+    
+    def __str__(self):
+        return f"{self.city.province.name}-{self.city.name}-{self.name}"

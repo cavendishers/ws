@@ -947,7 +947,7 @@ class ChainSidebar {
         
         // 关联性筛选
         if (this.filters.relevanceLevels.size > 0) {
-            params.append('relevance_levels', Array.from(this.filters.relevanceLevels).join(','));
+            params.append('industry_relevance', Array.from(this.filters.relevanceLevels).join(','));
         }
         
         // 地区筛选
@@ -1219,6 +1219,22 @@ class ChainSidebar {
     generateSelectHTML(key, label, optionsArray) {
         if (optionsArray.length === 0) return '';
         
+        // 特殊处理地区选择器
+        if (key === 'regions') {
+            const selectedCount = this.filters.regions.size;
+            const buttonText = selectedCount > 0 ? 
+                `${label} (${selectedCount})` : label;
+            const buttonClass = selectedCount > 0 ? 
+                'filter-select region-selector-btn region-selector-btn-selected' : 
+                'filter-select region-selector-btn';
+            
+            return `
+                <button onclick="chainSidebar.openRegionSelector()" class="${buttonClass}">
+                    <i class="fas fa-map-marker-alt"></i> ${buttonText}
+                </button>
+            `;
+        }
+        
         const options = optionsArray.map(value => 
             `<option value="${value}">${value}</option>`
         ).join('');
@@ -1250,11 +1266,47 @@ class ChainSidebar {
         this.showFilteringFeedback();
         
         if (this.filters[filterType].has(value)) {
-            this.filters[filterType].delete(value);
+            // 移除筛选条件
+            if (filterType === 'regions') {
+                // 地区筛选需要处理层级关系
+                this.removeRegionAndChildren(value);
+                // 同步清除地区选择器的内部状态
+                this.syncRegionSelectorState();
+            } else {
+                this.filters[filterType].delete(value);
+            }
         } else {
             this.filters[filterType].add(value);
         }
+        
+        // 如果是地区筛选，需要更新按钮状态
+        if (filterType === 'regions') {
+            this.updateFiltersDisplay();
+        }
+        
         this.applyFiltersWithAnimation();
+    }
+    
+    /**
+     * 移除地区及其下级地区（侧边栏版本）
+     */
+    removeRegionAndChildren(regionName) {
+        // 移除自身
+        this.filters.regions.delete(regionName);
+        
+        // 如果有地区选择器实例，获取该地区的代码并移除其下级地区
+        if (window.regionSelector) {
+            const regionCode = window.regionSelector.findRegionCode(regionName);
+            if (regionCode) {
+                const childCodes = window.regionSelector.getAllChildCodes(regionCode);
+                childCodes.forEach(childCode => {
+                    const childName = window.regionSelector.findRegionName(childCode);
+                    if (childName && !this.isIgnoredRegionName(childName)) {
+                        this.filters.regions.delete(childName);
+                    }
+                });
+            }
+        }
     }
     
     /**
@@ -1294,6 +1346,13 @@ class ChainSidebar {
         this.filters.employeeCount.clear();
         this.filters.establishmentYears.clear();
         this.filters.registrationStatus.clear();
+        
+        // 同步清除地区选择器的内部状态
+        this.syncRegionSelectorState();
+        
+        // 更新筛选界面显示
+        this.updateFiltersDisplay();
+        
         this.applyFiltersWithAnimation();
     }
     
@@ -1533,6 +1592,98 @@ class ChainSidebar {
         }
         
         return null;
+    }
+    
+    /**
+     * 打开地区选择器
+     */
+    openRegionSelector() {
+        if (!window.regionSelector) {
+            console.error('地区选择器未初始化');
+            return;
+        }
+        
+        // 先同步状态，确保地区选择器的内部状态与侧边栏一致
+        this.syncRegionSelectorState();
+        
+        // 将当前已选择的地区名称转换为代码
+        const currentSelectedRegionCodes = [];
+        for (const regionName of this.filters.regions) {
+            const code = window.regionSelector.findRegionCode(regionName);
+            if (code) {
+                currentSelectedRegionCodes.push(code);
+            }
+        }
+        
+        // 显示地区选择器
+        window.regionSelector.show(currentSelectedRegionCodes, (selectedCodes, selectedNames) => {
+            // 清空当前地区筛选
+            this.filters.regions.clear();
+            
+            // 添加新选择的地区（过滤掉无意义的地区名称）
+            selectedNames.forEach(name => {
+                if (name && !this.isIgnoredRegionName(name)) {
+                    this.filters.regions.add(name);
+                }
+            });
+            
+            // 立即更新筛选界面以反映按钮状态变化
+            this.updateFiltersDisplay();
+            
+            // 应用筛选
+            this.applyFiltersWithAnimation();
+        });
+    }
+    
+    /**
+     * 判断是否为需要忽略的地区名称
+     */
+    isIgnoredRegionName(name) {
+        const ignoredNames = ['市辖区', '县', '自治区直辖县级行政区划'];
+        return ignoredNames.includes(name);
+    }
+    
+    /**
+     * 更新筛选界面显示
+     */
+    updateFiltersDisplay() {
+        // 重新生成筛选框HTML以更新按钮状态
+        const filtersContainer = this.sidebar.querySelector('.chain-sidebar-filters');
+        if (filtersContainer) {
+            const filtersHTML = this.generateFiltersHTML();
+            filtersContainer.outerHTML = filtersHTML;
+        }
+    }
+    
+    /**
+     * 同步地区选择器状态
+     */
+    syncRegionSelectorState() {
+        if (window.regionSelector) {
+            // 将当前侧边栏的地区筛选状态同步到地区选择器
+            const currentSelectedRegionCodes = [];
+            
+            // 将地区名称转换为代码
+            for (const regionName of this.filters.regions) {
+                const code = window.regionSelector.findRegionCode(regionName);
+                if (code) {
+                    currentSelectedRegionCodes.push(code);
+                }
+            }
+            
+            // 更新地区选择器的内部状态
+            window.regionSelector.selectedRegions = new Set(currentSelectedRegionCodes);
+            
+            // 如果没有选中的地区，重置地区选择器的导航状态
+            if (currentSelectedRegionCodes.length === 0) {
+                window.regionSelector.currentProvince = null;
+                window.regionSelector.currentCity = null;
+                window.regionSelector.searchKeyword = '';
+                if (window.regionSelector.searchInput) {
+                    window.regionSelector.searchInput.value = '';
+                }
+            }
+        }
     }
 }
 

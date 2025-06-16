@@ -321,6 +321,47 @@
     }
 }
 
+/* 地区选择器按钮样式 */
+.region-selector-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(66, 102, 172, 0.3) 0%, rgba(66, 102, 172, 0.4) 100%) !important;
+    border: 1px solid rgba(66, 102, 172, 0.6) !important;
+    color: #DCE2F0 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.region-selector-btn:hover {
+    background: linear-gradient(135deg, rgba(66, 102, 172, 0.5) 0%, rgba(66, 102, 172, 0.6) 100%) !important;
+    border-color: rgba(66, 102, 172, 0.8) !important;
+    color: #F2F5FC !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 102, 172, 0.3);
+}
+
+.region-selector-btn i {
+    font-size: 14px;
+    color: #4266AC;
+}
+
+.region-selector-btn-selected {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.4) 0%, rgba(76, 175, 80, 0.5) 100%) !important;
+    border-color: rgba(76, 175, 80, 0.7) !important;
+    color: #E8F5E8 !important;
+}
+
+.region-selector-btn-selected:hover {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.6) 0%, rgba(76, 175, 80, 0.7) 100%) !important;
+    border-color: rgba(76, 175, 80, 0.9) !important;
+    color: #F1F8E9 !important;
+}
+
+.region-selector-btn-selected i {
+    color: #4CAF50 !important;
+}
+
 .clear-filters-btn {
     padding: 7px 14px;
     background: rgba(244, 67, 54, 0.1);

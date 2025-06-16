@@ -12,6 +12,15 @@
     border-left: 1px solid rgba(0, 191, 255, 0.2);
 }
 
+/* 全屏模式下的样式调整 */
+:fullscreen .chain-sidebar,
+:-webkit-full-screen .chain-sidebar,
+:-moz-full-screen .chain-sidebar,
+:-ms-fullscreen .chain-sidebar {
+    height: 100vh;
+    z-index: 2000;
+}
+
 .chain-sidebar.active {
     right: 0;
     animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
@@ -58,6 +67,15 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+}
+
+/* 全屏模式下的遮罩层样式调整 */
+:fullscreen .chain-sidebar-overlay,
+:-webkit-full-screen .chain-sidebar-overlay,
+:-moz-full-screen .chain-sidebar-overlay,
+:-ms-fullscreen .chain-sidebar-overlay {
+    height: 100vh;
+    z-index: 1999;
 }
 
 .chain-sidebar-overlay.active {

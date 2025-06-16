@@ -73,7 +73,7 @@ class ChainSidebar {
         // 创建遮罩层
         this.overlay = document.createElement('div');
         this.overlay.className = 'chain-sidebar-overlay';
-        document.body.appendChild(this.overlay);
+        this.getAppendContainer().appendChild(this.overlay);
         
         // 创建侧边栏
         this.sidebar = document.createElement('div');
@@ -93,7 +93,35 @@ class ChainSidebar {
                 </div>
             </div>
         `;
-        document.body.appendChild(this.sidebar);
+        this.getAppendContainer().appendChild(this.sidebar);
+    }
+    
+    /**
+     * 获取侧边栏应该添加到的容器
+     * 在全屏模式下添加到全屏元素，否则添加到body
+     */
+    getAppendContainer() {
+        // 检查是否在全屏模式
+        if (document.fullscreenElement) {
+            return document.fullscreenElement;
+        }
+        return document.body;
+    }
+    
+    /**
+     * 确保侧边栏在正确的容器中
+     */
+    ensureCorrectContainer() {
+        if (!this.sidebar || !this.overlay) return;
+        
+        const targetContainer = this.getAppendContainer();
+        
+        // 如果侧边栏不在正确的容器中，重新附加
+        if (this.sidebar.parentElement !== targetContainer) {
+            console.log('重新附加侧边栏到正确容器:', targetContainer === document.body ? 'body' : 'fullscreen element');
+            targetContainer.appendChild(this.overlay);
+            targetContainer.appendChild(this.sidebar);
+        }
     }
     
     /**
@@ -113,6 +141,67 @@ class ChainSidebar {
                 this.closeSidebar();
             }
         });
+        
+        // 监听全屏状态变化
+        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('msfullscreenchange', () => this.handleFullscreenChange());
+        
+        // 事件委托处理侧边栏内的按钮点击
+        this.sidebar.addEventListener('click', (e) => {
+            if (e.target.classList.contains('clear-all-filters-btn') || 
+                e.target.closest('.clear-all-filters-btn')) {
+                e.preventDefault();
+                this.clearAllFilters();
+            }
+            
+            // 处理地区选择器按钮
+            const button = e.target.closest('[data-action="openRegionSelector"]');
+            if (button) {
+                e.preventDefault();
+                this.openRegionSelector();
+            }
+        });
+        
+        // 事件委托处理select变化
+        this.sidebar.addEventListener('change', (e) => {
+            if (e.target.classList.contains('filter-select') && e.target.dataset.filterType) {
+                const filterType = e.target.dataset.filterType;
+                const value = e.target.value;
+                if (value) {
+                    this.addFilter(filterType, value, e.target);
+                    e.target.value = ''; // 重置select
+                }
+            }
+        });
+    }
+    
+    /**
+     * 处理全屏状态变化
+     */
+    handleFullscreenChange() {
+        // 如果侧边栏已打开，需要重新附加到正确的容器
+        if (this.isOpen && this.sidebar && this.overlay) {
+            const newContainer = this.getAppendContainer();
+            
+            // 如果当前容器不是目标容器，则重新附加
+            if (this.sidebar.parentElement !== newContainer) {
+                console.log('全屏状态变化，重新附加侧边栏到正确容器');
+                
+                // 保存当前状态
+                const sidebarClasses = this.sidebar.className;
+                const overlayClasses = this.overlay.className;
+                
+                // 重新附加到正确的容器
+                newContainer.appendChild(this.overlay);
+                newContainer.appendChild(this.sidebar);
+                
+                // 恢复状态
+                this.sidebar.className = sidebarClasses;
+                this.overlay.className = overlayClasses;
+            }
+        }
     }
     
     /**
@@ -333,6 +422,9 @@ class ChainSidebar {
     showComingSoon(nodeName) {
         this.isOpen = true;
         
+        // 确保侧边栏在正确的容器中
+        this.ensureCorrectContainer();
+        
         // 更新标题
         this.updateHeader(`${nodeName} - 敬请期待`, '该链点的企业数据正在整理中...');
         
@@ -384,6 +476,9 @@ class ChainSidebar {
         this.currentChainPointName = chainPointName; // 缓存链点名称
         this.currentPage = 1;
         this.isOpen = true;
+        
+        // 确保侧边栏在正确的容器中
+        this.ensureCorrectContainer();
         
         // 重置筛选条件
         this.clearAllFiltersWithoutRerender();
@@ -921,7 +1016,7 @@ class ChainSidebar {
                 </p>
                 ${hasFilters ? `
                 <div style="display: flex; gap: 12px; justify-content: center;">
-                    <button onclick="chainSidebar.clearAllFilters()" 
+                    <button class="clear-all-filters-btn" 
                             style="background: #4266AC; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
                         <i class="fas fa-refresh"></i> 清除筛选条件
                     </button>
@@ -1229,7 +1324,7 @@ class ChainSidebar {
                 'filter-select region-selector-btn';
             
             return `
-                <button onclick="chainSidebar.openRegionSelector()" class="${buttonClass}">
+                <button class="${buttonClass}" data-action="openRegionSelector">
                     <i class="fas fa-map-marker-alt"></i> ${buttonText}
                 </button>
             `;
@@ -1240,7 +1335,7 @@ class ChainSidebar {
         ).join('');
         
         return `
-            <select onchange="chainSidebar.addFilter('${key}', this.value, this); this.value='';" class="filter-select">
+            <select class="filter-select" data-filter-type="${key}">
                 <option value="">${label}</option>
                 ${options}
             </select>

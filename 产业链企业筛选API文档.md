@@ -3,6 +3,16 @@
 ## 文档概述
 
 本文档详细说明了产业链企业筛选功能的API实现要求，包括所有筛选条件的字段定义、查询参数格式、响应结构等。该API用于支持前端的多维度企业筛选功能。
+行业相关: industries, industry_sub_categories, industry_relevance
+地理位置: regions (支持34个省市自治区)
+联系方式: contact_types (4种联系方式类型)
+科技荣誉: tech_honors (5种荣誉类型)
+融资情况: funding_rounds (12种融资轮次)
+上市状态: listing_status (9种上市状态)
+企业规模: company_scale (4种规模类型)
+员工人数: employee_count (6个人数区间)
+成立年限: establishment_years (6个年限区间)
+登记状态: registration_status (8种登记状态)
 
 ---
 

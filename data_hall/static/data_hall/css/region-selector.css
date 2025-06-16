@@ -16,6 +16,14 @@
     transition: all 0.3s ease;
 }
 
+/* 全屏模式下的样式调整 */
+:fullscreen .region-selector-modal,
+:-webkit-full-screen .region-selector-modal,
+:-moz-full-screen .region-selector-modal,
+:-ms-fullscreen .region-selector-modal {
+    z-index: 3000;
+}
+
 .region-selector-modal.active {
     opacity: 1;
     visibility: visible;

@@ -1,0 +1,1464 @@
+{% load static %}
+
+<!-- AI聊天小部件CSS -->
+<link rel="stylesheet" href="{% static 'data_hall/css/ai_chat_widget.css' %}" />
+
+<!-- AI聊天小部件 -->
+<div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50">
+    <!-- 最小化触发按钮 -->
+    <div id="minimized-trigger" class="hidden group relative">
+        <!-- 主按钮 -->
+        <div class="w-16 h-16 bg-[var(--primary)]/95 rounded-full shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300">
+            <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-8 h-8 opacity-90 drop-shadow-lg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 2px rgba(255,255,255,0.3));">
+        </div>
+        
+        <!-- 提示标签 -->
+        <div class="absolute right-full top-1/2 transform -translate-y-1/2 mr-3 bg-[var(--primary)]/95 text-white px-3 py-1.5 rounded-lg shadow-lg border border-[rgba(0,191,255,0.15)] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+            <span class="text-sm">🤖 AI智能助手</span>
+            <div class="text-xs opacity-80 mt-0.5">点击开始聊天</div>
+            <!-- 箭头 -->
+            <div class="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-[var(--primary)]"></div>
+        </div>
+        
+        <!-- 脉冲提示环 -->
+        <div class="absolute inset-0 w-16 h-16 rounded-full border-2 border-[var(--button-highlight)] opacity-0 animate-ping"></div>
+    </div>
+
+    <!-- 聊天窗口 -->
+    <div id="chat-window" class="w-[500px] h-[400px] bg-[var(--primary)]/95 rounded-xl shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md flex flex-col">
+        <!-- 可拖拽的标题栏 -->
+        <div id="drag-handle" class="w-full h-3 cursor-move flex items-center justify-center group rounded-t-xl overflow-hidden relative">
+            <!-- 渐变背景，与窗口融为一体 -->
+            <div class="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.08)] to-transparent"></div>
+            <!-- 拖拽指示条 -->
+            <div class="relative w-8 h-0.5 bg-[rgba(255,255,255,0.3)] rounded-full group-hover:bg-[rgba(255,255,255,0.5)] group-hover:w-10 transition-all duration-200"></div>
+        </div>
+        
+        <!-- 头部 -->
+        <div id="chat-header" class="flex items-center justify-between p-3 border-b border-[rgba(0,191,255,0.1)] flex-shrink-0 cursor-pointer relative" title="双击进入全屏" style="background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);">
+            <!-- 头部背景增强层 -->
+            <div class="absolute inset-0 bg-gradient-to-br from-[rgba(0,191,255,0.02)] to-transparent pointer-events-none"></div>
+            <div class="relative z-10 flex items-center justify-between w-full">
+            <div class="flex items-center space-x-3">
+                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-8 h-8 chat-header-logo opacity-90" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div>
+                    <h3 class="text-white font-medium text-sm">AI智能助手</h3>
+                    <p class="text-[var(--text-secondary)] text-xs online-indicator opacity-80">在线</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <!-- 清除聊天按钮 -->
+                <button id="clear-chat-btn" class="text-[var(--text-secondary)] hover:text-white p-1 rounded-md hover:bg-[rgba(255,255,255,0.1)] transition-colors" title="清除聊天记录">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+                <!-- 最小化按钮 -->
+                <button id="minimize-btn" class="text-[var(--text-secondary)] hover:text-white p-1 rounded-md hover:bg-[rgba(255,255,255,0.1)] transition-colors" title="最小化">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </button>
+                <!-- 全屏按钮 -->
+                <button id="fullscreen-btn" class="text-[var(--text-secondary)] hover:text-white p-1 rounded-md hover:bg-[rgba(255,255,255,0.1)] transition-colors" title="全屏聊天">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                    </svg>
+                </button>
+            </div>
+            </div>
+        </div>
+
+        <!-- 聊天内容区域 -->
+        <div class="flex-1 overflow-y-auto p-3 space-y-3" id="chat-messages">
+            <!-- 欢迎消息 -->
+            <div class="flex items-start space-x-2">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
+                    <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="px-4 py-3 border-t border-[rgba(0,191,255,0.1)] flex-shrink-0">
+            <!-- 功能按钮行 -->
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-1">
+                    <!-- 附件按钮 -->
+                    <button class="chat-function-btn text-[var(--text-secondary)] hover:text-white p-1 rounded hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                        </svg>
+                    </button>
+                    <!-- DeepSearch下拉菜单 -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-1 text-[var(--text-secondary)] hover:text-white px-1.5 py-1 rounded hover:bg-[rgba(255,255,255,0.1)] transition-colors text-xs">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span class="text-xs">搜索</span>
+                        </button>
+                        <div class="absolute hidden group-hover:block left-0 bottom-full mb-1 chat-dropdown bg-[var(--primary)]/95 rounded-md shadow-xl border border-[rgba(0,191,255,0.1)] w-24 z-10">
+                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-t">网络搜索</a>
+                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]">学术搜索</a>
+                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-b">知识库</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Think按钮 -->
+                <button id="think-btn" class="flex items-center space-x-1 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] text-[var(--text-secondary)] hover:text-white px-2 py-1 rounded transition-colors text-xs">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span class="text-xs">Think</span>
+                </button>
+            </div>
+
+            <!-- 输入框和发送按钮 -->
+            <div class="flex items-start space-x-2">
+                <div class="flex-1">
+                    <textarea 
+                        id="chat-input" 
+                        placeholder="输入您的问题..." 
+                        class="w-full bg-[var(--bg-secondary)]/60 text-[var(--text-primary)] placeholder-[var(--text-secondary)]/70 border border-[rgba(0,191,255,0.15)] rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-[var(--button-highlight)] focus:bg-[var(--bg-secondary)]/80 focus:shadow-md transition-all duration-300 min-h-[36px] max-h-20 text-sm leading-5"
+                        rows="1"
+                    ></textarea>
+                </div>
+                <!-- 发送按钮 -->
+                <button id="send-btn" class="bg-[var(--button-highlight)]/90 hover:bg-[var(--button-highlight)] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 h-[36px] w-[36px] flex items-center justify-center mt-0">
+                    <svg class="w-4 h-4 send-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    <svg class="w-4 h-4 stop-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h12v12H6z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全屏聊天界面 -->
+<div id="fullscreen-chat" class="hidden">
+    <!-- 全屏头部 -->
+    <div id="fullscreen-header" class="flex items-center justify-between p-4 border-b border-[rgba(0,191,255,0.15)] flex-shrink-0 cursor-pointer" title="双击退出全屏">
+        <div class="flex items-center space-x-4">
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI Assistant" class="w-10 h-10 chat-header-logo opacity-90" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+            <div>
+                <h2 class="text-white font-semibold text-xl">AI智能助手</h2>
+                <p class="text-[var(--text-secondary)] text-base online-indicator opacity-80">全屏聊天模式</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- 清除聊天按钮 -->
+            <button id="fullscreen-clear-btn" class="text-[var(--text-secondary)] hover:text-white p-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors" title="清除聊天记录">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+            </button>
+            <!-- 退出全屏按钮 -->
+            <button id="exit-fullscreen-btn" class="text-[var(--text-secondary)] hover:text-white p-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors" title="退出全屏">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.5 3.5M15 9v4.5M15 9h4.5M15 9l5.5-5.5M9 15v4.5M9 15H4.5M9 15l-5.5 5.5M15 15v4.5m0-4.5h4.5m-4.5 0l5.5 5.5"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 全屏聊天内容区域 -->
+    <div class="flex-1 overflow-y-auto px-8 py-6 space-y-5" id="fullscreen-messages">
+        <!-- 欢迎消息 -->
+        <div class="flex items-start space-x-4 max-w-4xl mx-auto">
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+            <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)]">
+                <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全屏输入区域 -->
+    <div class="px-8 py-5 border-t border-[rgba(0,191,255,0.15)] flex-shrink-0">
+        <div class="max-w-4xl mx-auto">
+            <!-- 功能按钮行 -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <!-- 附件按钮 -->
+                    <button class="chat-function-btn text-[var(--text-secondary)] hover:text-white p-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                        </svg>
+                    </button>
+                    <!-- DeepSearch下拉菜单 -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-white px-3 py-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span>搜索</span>
+                        </button>
+                        <div class="absolute hidden group-hover:block left-0 bottom-full mb-2 chat-dropdown bg-[var(--primary)]/95 rounded-lg shadow-xl border border-[rgba(0,191,255,0.1)] w-32 z-10">
+                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-t-lg">网络搜索</a>
+                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]">学术搜索</a>
+                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-b-lg">知识库</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Think按钮 -->
+                <button id="fullscreen-think-btn" class="flex items-center space-x-2 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span>Think</span>
+                </button>
+            </div>
+
+            <!-- 全屏输入框和发送按钮 -->
+            <div class="flex items-start space-x-3">
+                <div class="flex-1">
+                    <textarea 
+                        id="fullscreen-input" 
+                        placeholder="在全屏模式下输入您的问题..." 
+                        class="w-full border border-[rgba(0,191,255,0.15)] rounded-lg px-4 py-3 resize-none focus:outline-none transition-all duration-300 min-h-[44px] max-h-32 text-base leading-6"
+                        rows="1"
+                    ></textarea>
+                </div>
+                <!-- 全屏发送按钮 -->
+                <button id="fullscreen-send-btn" class="bg-[var(--button-highlight)]/90 hover:bg-[var(--button-highlight)] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 h-[44px] w-[44px] flex items-center justify-center mt-0">
+                    <svg class="w-5 h-5 send-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    <svg class="w-5 h-5 stop-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h12v12H6z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- 聊天小部件JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatWidget = document.getElementById('ai-chat-widget');
+    const chatWindow = document.getElementById('chat-window');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatMessages = document.getElementById('chat-messages');
+    const thinkBtn = document.getElementById('think-btn');
+    const clearChatBtn = document.getElementById('clear-chat-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const minimizeBtn = document.getElementById('minimize-btn');
+    const minimizedTrigger = document.getElementById('minimized-trigger');
+    const dragHandle = document.getElementById('drag-handle');
+    const chatHeader = document.getElementById('chat-header');
+    
+    // 全屏相关元素
+    const fullscreenChat = document.getElementById('fullscreen-chat');
+    const fullscreenInput = document.getElementById('fullscreen-input');
+    const fullscreenSendBtn = document.getElementById('fullscreen-send-btn');
+    const fullscreenMessages = document.getElementById('fullscreen-messages');
+    const fullscreenThinkBtn = document.getElementById('fullscreen-think-btn');
+    const fullscreenClearBtn = document.getElementById('fullscreen-clear-btn');
+    const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+    const fullscreenHeader = document.getElementById('fullscreen-header');
+
+    // 初始化元素状态 - 确保全屏界面完全隐藏
+    if (fullscreenChat) {
+        fullscreenChat.style.display = 'none';
+        fullscreenChat.style.visibility = 'hidden';
+        fullscreenChat.style.position = 'fixed';
+        fullscreenChat.style.top = '0';
+        fullscreenChat.style.left = '0';
+        fullscreenChat.style.width = '100vw';
+        fullscreenChat.style.height = '100vh';
+        fullscreenChat.style.zIndex = '2147483647';
+        fullscreenChat.classList.add('hidden');
+        fullscreenChat.classList.remove('flex');
+    }
+
+    // 设置默认为最小化状态
+    chatWindow.style.display = 'none';
+    minimizedTrigger.classList.remove('hidden');
+    minimizedTrigger.style.display = 'block';
+    
+    // 启动欢迎脉冲动画
+    const pulseRing = minimizedTrigger.querySelector('.animate-ping');
+    if (pulseRing) {
+        setTimeout(() => {
+            pulseRing.style.opacity = '0.6';
+            // 10秒后停止脉冲动画，给新用户足够的发现时间
+            setTimeout(() => {
+                pulseRing.style.opacity = '0';
+            }, 10000);
+        }, 1000);
+    }
+    
+    // 确保页面滚动正常
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+
+    console.log('AI聊天组件初始化完成');
+
+    // 拖拽功能变量
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    // 拖拽功能实现（鼠标）- 支持拖拽手柄
+    dragHandle.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        const rect = chatWidget.getBoundingClientRect();
+        dragOffset.x = e.clientX - rect.left;
+        dragOffset.y = e.clientY - rect.top;
+        
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', handleDragEnd);
+        
+        // 防止选中文本
+        e.preventDefault();
+    });
+
+    // 拖拽功能实现（触摸）- 支持拖拽手柄
+    dragHandle.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        const rect = chatWidget.getBoundingClientRect();
+        const touch = e.touches[0];
+        dragOffset.x = touch.clientX - rect.left;
+        dragOffset.y = touch.clientY - rect.top;
+        
+        document.addEventListener('touchmove', handleTouchDrag);
+        document.addEventListener('touchend', handleDragEnd);
+        
+        e.preventDefault();
+    });
+
+    // 最小化状态下的拖拽功能（鼠标）
+    minimizedTrigger.addEventListener('mousedown', function(e) {
+        let dragStarted = false;
+        let clickHandled = false;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startTime = Date.now();
+        
+        const checkDrag = (moveE) => {
+            const distance = Math.sqrt(Math.pow(moveE.clientX - startX, 2) + Math.pow(moveE.clientY - startY, 2));
+            if (distance > 8 && !dragStarted && Date.now() - startTime > 100) {
+                dragStarted = true;
+                clickHandled = true;
+                isDragging = true;
+                const rect = chatWidget.getBoundingClientRect();
+                dragOffset.x = startX - rect.left;
+                dragOffset.y = startY - rect.top;
+                
+                document.addEventListener('mousemove', handleDrag);
+                document.addEventListener('mouseup', handleMinimizedDragEnd);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
+        
+        const handleMinimizedDragEnd = (endE) => {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mousemove', checkDrag);
+            document.removeEventListener('mouseup', handleMinimizedDragEnd);
+            
+            // 如果没有拖拽，且鼠标还在元素内，则触发点击恢复
+            if (!dragStarted && !clickHandled) {
+                const rect = minimizedTrigger.getBoundingClientRect();
+                if (endE.clientX >= rect.left && endE.clientX <= rect.right && 
+                    endE.clientY >= rect.top && endE.clientY <= rect.bottom) {
+                    restoreChat();
+                }
+            }
+        };
+        
+        document.addEventListener('mousemove', checkDrag);
+        document.addEventListener('mouseup', handleMinimizedDragEnd);
+        
+        e.preventDefault();
+    });
+
+    // 最小化状态下的拖拽功能（触摸）
+    minimizedTrigger.addEventListener('touchstart', function(e) {
+        let dragStarted = false;
+        let touchHandled = false;
+        const startTouch = e.touches[0];
+        const startX = startTouch.clientX;
+        const startY = startTouch.clientY;
+        const startTime = Date.now();
+        
+        const checkTouchDrag = (moveE) => {
+            const touch = moveE.touches[0];
+            const distance = Math.sqrt(Math.pow(touch.clientX - startX, 2) + Math.pow(touch.clientY - startY, 2));
+            if (distance > 10 && !dragStarted && Date.now() - startTime > 150) {
+                dragStarted = true;
+                touchHandled = true;
+                isDragging = true;
+                const rect = chatWidget.getBoundingClientRect();
+                dragOffset.x = startX - rect.left;
+                dragOffset.y = startY - rect.top;
+                
+                document.addEventListener('touchmove', handleTouchDrag);
+                document.addEventListener('touchend', handleMinimizedTouchEnd);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
+        
+        const handleMinimizedTouchEnd = (endE) => {
+            isDragging = false;
+            document.removeEventListener('touchmove', handleTouchDrag);
+            document.removeEventListener('touchmove', checkTouchDrag);
+            document.removeEventListener('touchend', handleMinimizedTouchEnd);
+            
+            // 如果没有拖拽，触发点击恢复
+            if (!dragStarted && !touchHandled) {
+                restoreChat();
+            }
+        };
+        
+        document.addEventListener('touchmove', checkTouchDrag, { passive: false });
+        document.addEventListener('touchend', handleMinimizedTouchEnd);
+        
+        e.preventDefault();
+    });
+
+    function handleDrag(e) {
+        if (!isDragging) return;
+        
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+        
+        updatePosition(newX, newY);
+    }
+
+    function handleTouchDrag(e) {
+        if (!isDragging) return;
+        
+        const touch = e.touches[0];
+        const newX = touch.clientX - dragOffset.x;
+        const newY = touch.clientY - dragOffset.y;
+        
+        updatePosition(newX, newY);
+        e.preventDefault();
+    }
+
+    function updatePosition(newX, newY) {
+        // 限制拖拽范围在视窗内
+        const maxX = window.innerWidth - chatWidget.offsetWidth;
+        const maxY = window.innerHeight - chatWidget.offsetHeight;
+        
+        const constrainedX = Math.max(0, Math.min(newX, maxX));
+        const constrainedY = Math.max(0, Math.min(newY, maxY));
+        
+        chatWidget.style.left = constrainedX + 'px';
+        chatWidget.style.top = constrainedY + 'px';
+        chatWidget.style.right = 'auto';
+        chatWidget.style.bottom = 'auto';
+    }
+
+    function handleDragEnd() {
+        isDragging = false;
+        document.removeEventListener('mousemove', handleDrag);
+        document.removeEventListener('mouseup', handleDragEnd);
+        document.removeEventListener('touchmove', handleTouchDrag);
+        document.removeEventListener('touchend', handleDragEnd);
+    }
+
+    // 最小化功能
+    function minimizeChat() {
+        // 添加退出动画
+        chatWindow.classList.add('window-exit');
+        
+        setTimeout(() => {
+            chatWindow.style.display = 'none';
+            chatWindow.classList.remove('window-exit');
+            
+            minimizedTrigger.classList.remove('hidden');
+            minimizedTrigger.style.display = 'block';
+            minimizedTrigger.classList.add('minimized-enter');
+            
+            // 重置到初始位置
+            chatWidget.style.left = '';
+            chatWidget.style.top = '';
+            chatWidget.style.right = '1.5rem';
+            chatWidget.style.bottom = '1.5rem';
+            
+            // 清理动画类
+            setTimeout(() => {
+                minimizedTrigger.classList.remove('minimized-enter');
+            }, 500);
+            
+            // 启动脉冲动画提示用户
+            const pulseRing = minimizedTrigger.querySelector('.animate-ping');
+            if (pulseRing) {
+                setTimeout(() => {
+                    pulseRing.style.opacity = '0.6';
+                    // 5秒后停止脉冲动画
+                    setTimeout(() => {
+                        pulseRing.style.opacity = '0';
+                    }, 5000);
+                }, 500);
+            }
+        }, 300);
+    }
+
+    function restoreChat() {
+        // 添加退出动画给最小化按钮
+        minimizedTrigger.classList.add('minimized-exit');
+        
+        setTimeout(() => {
+            minimizedTrigger.classList.add('hidden');
+            minimizedTrigger.style.display = 'none';
+            minimizedTrigger.classList.remove('minimized-exit');
+            
+            chatWindow.style.display = 'flex';
+            chatWindow.classList.add('window-enter');
+            
+            // 检查并调整窗口位置，确保完全可见
+            adjustWindowPosition();
+            
+            // 停止脉冲动画
+            const pulseRing = minimizedTrigger.querySelector('.animate-ping');
+            if (pulseRing) {
+                pulseRing.style.opacity = '0';
+            }
+            
+            // 清理动画类
+            setTimeout(() => {
+                chatWindow.classList.remove('window-enter');
+            }, 400);
+            
+            chatInput.focus();
+        }, 300);
+    }
+
+    // 调整窗口位置确保完全可见
+    function adjustWindowPosition() {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const chatWindowWidth = 500; // 聊天窗口宽度
+        const chatWindowHeight = 400; // 聊天窗口基础高度
+        
+        // 获取当前位置
+        const currentLeft = parseInt(chatWidget.style.left) || 0;
+        const currentTop = parseInt(chatWidget.style.top) || 0;
+        
+        // 如果设置了left/top，说明被拖拽过，需要检查边界
+        if (chatWidget.style.left !== '' || chatWidget.style.top !== '') {
+            let newLeft = currentLeft;
+            let newTop = currentTop;
+            
+            // 检查右边界
+            if (currentLeft + chatWindowWidth > windowWidth) {
+                newLeft = windowWidth - chatWindowWidth - 20; // 留20px边距
+            }
+            
+            // 检查左边界
+            if (currentLeft < 20) {
+                newLeft = 20;
+            }
+            
+            // 检查下边界
+            if (currentTop + chatWindowHeight > windowHeight) {
+                newTop = windowHeight - chatWindowHeight - 20;
+            }
+            
+            // 检查上边界
+            if (currentTop < 20) {
+                newTop = 20;
+            }
+            
+            // 应用调整后的位置
+            if (newLeft !== currentLeft || newTop !== currentTop) {
+                chatWidget.style.left = newLeft + 'px';
+                chatWidget.style.top = newTop + 'px';
+                chatWidget.style.right = 'auto';
+                chatWidget.style.bottom = 'auto';
+            }
+        }
+    }
+
+    // 最小化按钮事件
+    minimizeBtn.addEventListener('click', minimizeChat);
+    
+    // 双击头部进入全屏
+    chatHeader.addEventListener('dblclick', function(e) {
+        // 避免在拖拽过程中触发双击
+        if (!isDragging) {
+            enterFullscreen();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    // 双击全屏头部退出全屏
+    fullscreenHeader.addEventListener('dblclick', function(e) {
+        exitFullscreen();
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    // 聊天窗口始终显示，焦点在输入框
+    chatInput.focus();
+
+    // 输入框自适应高度
+    chatInput.addEventListener('input', function() {
+        // 重置高度并移除滚动条
+        this.style.height = 'auto';
+        this.style.overflowY = 'hidden';
+        
+        // 计算新高度，最小36px，最大80px（约2.5行文本）
+        const newHeight = Math.min(Math.max(this.scrollHeight, 36), 80);
+        this.style.height = newHeight + 'px';
+        
+        // 如果内容超过最大高度，才显示滚动条
+        if (this.scrollHeight > 80) {
+            this.style.overflowY = 'auto';
+        } else {
+            this.style.overflowY = 'hidden';
+        }
+        
+        // 动态调整聊天框高度和位置
+        adjustChatWindowHeight(newHeight);
+        
+        // 更新发送按钮状态
+        if (!isAIResponding) {
+            sendBtn.disabled = this.value.trim() === '';
+        }
+    });
+
+    // 动态调整聊天窗口高度和位置
+    function adjustChatWindowHeight(inputHeight) {
+        const baseHeight = 400; // 基础高度
+        const baseInputHeight = 36; // 基础输入框高度
+        const extraHeight = Math.max(0, inputHeight - baseInputHeight);
+        const newWindowHeight = baseHeight + extraHeight;
+        
+        // 调整聊天窗口总高度
+        chatWindow.style.height = newWindowHeight + 'px';
+        
+        // 只有在窗口还在初始位置时才调整bottom位置
+        if (chatWidget.style.left === '' && chatWidget.style.top === '') {
+            const baseBottom = 24; // 1.5rem = 24px
+            const newBottom = baseBottom + extraHeight;
+            chatWidget.style.bottom = newBottom + 'px';
+        } else {
+            // 如果窗口已被拖拽，向上扩展
+            const currentTop = parseInt(chatWidget.style.top) || 0;
+            const newTop = Math.max(0, currentTop - extraHeight);
+            chatWidget.style.top = newTop + 'px';
+        }
+    }
+
+    // 重置聊天窗口到初始状态
+    function resetChatWindowHeight() {
+        chatWindow.style.height = '400px';
+        // 只有在初始位置时才重置bottom
+        if (chatWidget.style.left === '' && chatWidget.style.top === '') {
+            chatWidget.style.bottom = '24px';
+        }
+        
+        // 确保输入框滚动条状态正确
+        chatInput.style.overflowY = 'hidden';
+        fullscreenInput.style.overflowY = 'hidden';
+    }
+
+    // 全局状态管理
+    let isAIResponding = false;
+    let currentResponseAbortController = null;
+
+    // 发送消息
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message === '') return;
+
+        // 如果AI正在响应，则停止当前响应
+        if (isAIResponding) {
+            stopAIResponse();
+            return;
+        }
+
+        // 添加用户消息
+        addMessage(message, 'user');
+        
+        // 清空输入框并重置状态
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        chatInput.style.height = '36px';
+        chatInput.style.overflowY = 'hidden';
+        chatInput.scrollTop = 0;
+        sendBtn.disabled = true;
+        
+        // 重置聊天窗口到初始状态
+        resetChatWindowHeight();
+
+        // 设置发送状态
+        setAIResponseState(true);
+
+        // 显示打字指示器
+        const typingIndicator = showTypingIndicator();
+        
+        // 创建AbortController用于取消请求
+        currentResponseAbortController = new AbortController();
+        
+        // 模拟AI回复（这里只是UI演示）
+        setTimeout(() => {
+            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
+                // 移除打字指示器
+                if (typingIndicator.parentNode) {
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+                addMessage('这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。', 'ai');
+                setAIResponseState(false);
+            }
+        }, 2000);
+    }
+
+    // 设置AI响应状态
+    function setAIResponseState(responding) {
+        isAIResponding = responding;
+        
+        // 更新发送按钮状态
+        const sendIcon = sendBtn.querySelector('.send-icon');
+        const stopIcon = sendBtn.querySelector('.stop-icon');
+        
+        if (responding) {
+            sendBtn.classList.add('send-btn-sending');
+            sendIcon.classList.add('hidden');
+            stopIcon.classList.remove('hidden');
+            sendBtn.disabled = false;
+            sendBtn.title = '停止生成';
+        } else {
+            sendBtn.classList.remove('send-btn-sending');
+            sendIcon.classList.remove('hidden');
+            stopIcon.classList.add('hidden');
+            sendBtn.disabled = chatInput.value.trim() === '';
+            sendBtn.title = '发送消息';
+            currentResponseAbortController = null;
+        }
+        
+        // 同步全屏按钮状态
+        const fullscreenSendIcon = fullscreenSendBtn.querySelector('.send-icon');
+        const fullscreenStopIcon = fullscreenSendBtn.querySelector('.stop-icon');
+        
+        if (responding) {
+            fullscreenSendBtn.classList.add('send-btn-sending');
+            fullscreenSendIcon.classList.add('hidden');
+            fullscreenStopIcon.classList.remove('hidden');
+            fullscreenSendBtn.disabled = false;
+            fullscreenSendBtn.title = '停止生成';
+        } else {
+            fullscreenSendBtn.classList.remove('send-btn-sending');
+            fullscreenSendIcon.classList.remove('hidden');
+            fullscreenStopIcon.classList.add('hidden');
+            fullscreenSendBtn.disabled = fullscreenInput.value.trim() === '';
+            fullscreenSendBtn.title = '发送消息';
+        }
+    }
+
+    // 停止AI响应
+    function stopAIResponse() {
+        if (currentResponseAbortController) {
+            currentResponseAbortController.abort();
+        }
+        
+        // 移除打字指示器
+        const typingIndicators = document.querySelectorAll('.typing-indicator-container');
+        typingIndicators.forEach(indicator => {
+            if (indicator.parentNode) {
+                indicator.parentNode.removeChild(indicator);
+            }
+        });
+        
+        setAIResponseState(false);
+    }
+
+    // 显示打字指示器
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'flex items-start space-x-2 typing-indicator-container';
+        typingDiv.innerHTML = `
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="chat-message-ai px-3 py-2 rounded-lg rounded-tl-sm">
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return typingDiv;
+    }
+
+    // 添加消息到聊天区域
+    function addMessage(content, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start space-x-2 chat-message-enter';
+
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="flex justify-end w-full">
+                    <div class="chat-message-user px-3 py-2 rounded-lg rounded-tr-sm interactive-scale">
+                        <p class="text-xs">${content}</p>
+                        <div class="message-hover-actions">
+                            <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </button>
+                            <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-3 py-2 rounded-lg rounded-tl-sm interactive-scale">
+                    <p class="text-xs">${content}</p>
+                    <div class="message-hover-actions">
+                        <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                        <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // 发送按钮点击事件
+    sendBtn.addEventListener('click', sendMessage);
+
+    // 回车发送消息
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Think按钮点击事件
+    thinkBtn.addEventListener('click', function() {
+        // 添加思考模式的视觉反馈
+        this.classList.add('animate-pulse');
+        setTimeout(() => {
+            this.classList.remove('animate-pulse');
+        }, 2000);
+    });
+
+    // 清除聊天记录功能
+    function clearChatMessages(isFullscreen = false) {
+        const messagesContainer = isFullscreen ? fullscreenMessages : chatMessages;
+        const welcomeMessage = isFullscreen ? 
+            `<div class="flex items-start space-x-4 max-w-4xl mx-auto">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0">
+                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)]">
+                    <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
+                </div>
+            </div>` :
+            `<div class="flex items-start space-x-2">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80">
+                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
+                    <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+                </div>
+            </div>`;
+        
+        messagesContainer.innerHTML = welcomeMessage;
+    }
+
+    // 全屏模式切换
+    function enterFullscreen() {
+        console.log('进入全屏模式...');
+        
+        // 完全重置全屏元素状态
+        fullscreenChat.style.display = 'flex';
+        fullscreenChat.style.flexDirection = 'column';
+        fullscreenChat.style.position = 'fixed';
+        fullscreenChat.style.top = '0';
+        fullscreenChat.style.left = '0';
+        fullscreenChat.style.width = '100vw';
+        fullscreenChat.style.height = '100vh';
+        fullscreenChat.style.zIndex = '2147483647';
+        fullscreenChat.style.visibility = 'visible';
+        
+        fullscreenChat.classList.remove('hidden');
+        fullscreenChat.classList.add('flex', 'fullscreen-enter');
+        
+        // 禁用页面滚动
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        
+        // 同步聊天记录
+        syncMessagesToFullscreen();
+        
+        // 清理动画类
+        setTimeout(() => {
+            fullscreenChat.classList.remove('fullscreen-enter');
+        }, 250);
+        
+        // 延迟聚焦以确保元素已渲染
+        setTimeout(() => {
+            if (fullscreenInput) {
+                fullscreenInput.focus();
+            }
+            console.log('全屏模式已激活');
+        }, 100);
+    }
+
+    function exitFullscreen() {
+        console.log('退出全屏模式...');
+        
+        // 添加退出动画
+        fullscreenChat.classList.add('fullscreen-exit');
+        
+        setTimeout(() => {
+            // 完全隐藏全屏元素
+            fullscreenChat.style.display = 'none';
+            fullscreenChat.style.visibility = 'hidden';
+            fullscreenChat.classList.add('hidden');
+            fullscreenChat.classList.remove('flex', 'fullscreen-exit');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            
+            // 同步聊天记录回小窗口
+            syncMessagesFromFullscreen();
+            
+            // 延迟聚焦以确保转换完成
+            setTimeout(() => {
+                if (chatInput) {
+                    chatInput.focus();
+                }
+                console.log('已退出全屏模式');
+            }, 100);
+        }, 200);
+    }
+
+    // 同步消息到全屏
+    function syncMessagesToFullscreen() {
+        const messages = chatMessages.children;
+        // 保留全屏的欢迎消息，先获取它
+        const fullscreenWelcome = fullscreenMessages.querySelector('.flex.items-start.space-x-4.max-w-4xl.mx-auto');
+        fullscreenMessages.innerHTML = '';
+        
+        // 重新添加全屏欢迎消息
+        if (fullscreenWelcome) {
+            fullscreenMessages.appendChild(fullscreenWelcome);
+        } else {
+            // 如果没有找到，创建一个新的全屏欢迎消息
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'flex items-start space-x-4 max-w-4xl mx-auto';
+            welcomeDiv.innerHTML = `
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0">
+                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)]">
+                    <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
+                </div>
+            `;
+            fullscreenMessages.appendChild(welcomeDiv);
+        }
+        
+        // 同步其他消息（跳过第一个欢迎消息）
+        Array.from(messages).slice(1).forEach(messageEl => {
+            const clonedMessage = messageEl.cloneNode(true);
+            // 调整全屏模式下的样式
+            clonedMessage.classList.add('max-w-4xl', 'mx-auto');
+            
+            if (clonedMessage.querySelector('.chat-message-ai')) {
+                const aiMessage = clonedMessage.querySelector('.chat-message-ai');
+                aiMessage.classList.add('border', 'border-[rgba(0,191,255,0.08)]');
+                aiMessage.classList.remove('max-w-[75%]');
+                aiMessage.classList.add('max-w-[70%]');
+                const textEl = aiMessage.querySelector('p');
+                if (textEl) {
+                    textEl.classList.remove('text-xs');
+                    textEl.classList.add('text-sm', 'leading-6');
+                }
+            }
+            if (clonedMessage.querySelector('.chat-message-user')) {
+                const userMessage = clonedMessage.querySelector('.chat-message-user');
+                userMessage.classList.remove('max-w-[75%]');
+                userMessage.classList.add('max-w-[70%]');
+                const textEl = userMessage.querySelector('p');
+                if (textEl) {
+                    textEl.classList.remove('text-xs');
+                    textEl.classList.add('text-sm', 'leading-6');
+                }
+            }
+            if (clonedMessage.querySelector('img')) {
+                const img = clonedMessage.querySelector('img');
+                img.classList.remove('w-6', 'h-6');
+                img.classList.add('w-10', 'h-10', 'flex-shrink-0');
+            }
+            // 调整间距
+            clonedMessage.classList.remove('space-x-2');
+            clonedMessage.classList.add('space-x-4');
+            
+            fullscreenMessages.appendChild(clonedMessage);
+        });
+        
+        fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
+    }
+
+    // 同步消息从全屏回来
+    function syncMessagesFromFullscreen() {
+        const messages = fullscreenMessages.children;
+        chatMessages.innerHTML = '';
+        
+        // 重新添加小窗口的欢迎消息
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'flex items-start space-x-2';
+        welcomeDiv.innerHTML = `
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
+                <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+            </div>
+        `;
+        chatMessages.appendChild(welcomeDiv);
+        
+        // 同步其他消息（跳过第一个欢迎消息）
+        Array.from(messages).slice(1).forEach(messageEl => {
+            const clonedMessage = messageEl.cloneNode(true);
+            // 调整小窗口模式下的样式
+            clonedMessage.classList.remove('max-w-4xl', 'mx-auto');
+            
+            if (clonedMessage.querySelector('.chat-message-ai')) {
+                const aiMessage = clonedMessage.querySelector('.chat-message-ai');
+                aiMessage.classList.remove('border', 'border-[rgba(0,191,255,0.08)]');
+                aiMessage.classList.remove('max-w-[70%]');
+                aiMessage.classList.add('max-w-[75%]');
+                const textEl = aiMessage.querySelector('p');
+                if (textEl) {
+                    textEl.classList.remove('text-sm', 'leading-6');
+                    textEl.classList.add('text-xs');
+                }
+            }
+            if (clonedMessage.querySelector('.chat-message-user')) {
+                const userMessage = clonedMessage.querySelector('.chat-message-user');
+                userMessage.classList.remove('max-w-[70%]');
+                userMessage.classList.add('max-w-[75%]');
+                const textEl = userMessage.querySelector('p');
+                if (textEl) {
+                    textEl.classList.remove('text-sm', 'leading-6');
+                    textEl.classList.add('text-xs');
+                }
+            }
+            if (clonedMessage.querySelector('img')) {
+                const img = clonedMessage.querySelector('img');
+                img.classList.remove('w-10', 'h-10', 'flex-shrink-0');
+                img.classList.add('w-6', 'h-6');
+            }
+            // 调整间距
+            clonedMessage.classList.remove('space-x-4');
+            clonedMessage.classList.add('space-x-2');
+            
+            chatMessages.appendChild(clonedMessage);
+        });
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // 全屏输入框自适应高度
+    fullscreenInput.addEventListener('input', function() {
+        // 重置高度并移除滚动条
+        this.style.height = 'auto';
+        this.style.overflowY = 'hidden';
+        
+        // 计算新高度，最小44px，最大128px（约3行文本）
+        const newHeight = Math.min(Math.max(this.scrollHeight, 44), 128);
+        this.style.height = newHeight + 'px';
+        
+        // 如果内容超过最大高度，才显示滚动条
+        if (this.scrollHeight > 128) {
+            this.style.overflowY = 'auto';
+        } else {
+            this.style.overflowY = 'hidden';
+        }
+        
+        if (!isAIResponding) {
+            fullscreenSendBtn.disabled = this.value.trim() === '';
+        }
+    });
+
+    // 全屏发送消息
+    function sendFullscreenMessage() {
+        const message = fullscreenInput.value.trim();
+        if (message === '') return;
+
+        // 如果AI正在响应，则停止当前响应
+        if (isAIResponding) {
+            stopAIResponse();
+            return;
+        }
+
+        addFullscreenMessage(message, 'user');
+        
+        // 重置输入框状态，清除滚动条
+        fullscreenInput.value = '';
+        fullscreenInput.style.height = 'auto';
+        fullscreenInput.style.height = '44px';
+        fullscreenInput.style.overflowY = 'hidden';
+        fullscreenInput.scrollTop = 0;
+        fullscreenSendBtn.disabled = true;
+
+        // 设置发送状态
+        setAIResponseState(true);
+
+        const typingIndicator = showFullscreenTypingIndicator();
+        
+        // 创建AbortController用于取消请求
+        currentResponseAbortController = new AbortController();
+        
+        setTimeout(() => {
+            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
+                if (typingIndicator.parentNode) {
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+                addFullscreenMessage('这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。', 'ai');
+                setAIResponseState(false);
+            }
+        }, 2000);
+    }
+
+    // 添加全屏消息
+    function addFullscreenMessage(content, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start space-x-4 chat-message-enter max-w-4xl mx-auto';
+
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="flex justify-end w-full">
+                    <div class="chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]">
+                        <p class="text-sm leading-6">${content}</p>
+                        <div class="message-hover-actions">
+                            <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </button>
+                            <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%] border border-[rgba(0,191,255,0.08)]">
+                    <p class="text-sm leading-6">${content}</p>
+                    <div class="message-hover-actions">
+                        <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                        <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        fullscreenMessages.appendChild(messageDiv);
+        fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
+    }
+
+    // 全屏打字指示器
+    function showFullscreenTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'flex items-start space-x-4 typing-indicator-container max-w-4xl mx-auto';
+        typingDiv.innerHTML = `
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+            <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm border border-[rgba(0,191,255,0.08)]">
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        fullscreenMessages.appendChild(typingDiv);
+        fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
+        return typingDiv;
+    }
+
+    // 事件监听器
+    clearChatBtn.addEventListener('click', () => clearChatMessages(false));
+    fullscreenClearBtn.addEventListener('click', () => clearChatMessages(true));
+    fullscreenBtn.addEventListener('click', enterFullscreen);
+    exitFullscreenBtn.addEventListener('click', exitFullscreen);
+    
+    fullscreenSendBtn.addEventListener('click', sendFullscreenMessage);
+    fullscreenInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendFullscreenMessage();
+        }
+    });
+
+    fullscreenThinkBtn.addEventListener('click', function() {
+        this.classList.add('animate-pulse');
+        setTimeout(() => {
+            this.classList.remove('animate-pulse');
+        }, 2000);
+    });
+
+    // ESC键退出全屏
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !fullscreenChat.classList.contains('hidden')) {
+            exitFullscreen();
+        }
+    });
+
+    // 悬停按钮功能函数 - 处理AI回复的重新生成
+    window.regenerateResponse = function(button) {
+        // 查找AI消息气泡，支持从用户消息或AI消息触发
+        let messageBubble = button.closest('.chat-message-ai');
+        let isFromUserMessage = false;
+        
+        // 如果没找到AI气泡，说明是从用户消息触发的
+        if (!messageBubble) {
+            const userMessageContainer = button.closest('.flex.items-start.space-x-2, .flex.items-start.space-x-4');
+            if (userMessageContainer) {
+                // 找到下一个AI回复
+                let nextElement = userMessageContainer.nextElementSibling;
+                while (nextElement) {
+                    const aiMessage = nextElement.querySelector('.chat-message-ai');
+                    if (aiMessage) {
+                        messageBubble = aiMessage;
+                        isFromUserMessage = true;
+                        break;
+                    }
+                    nextElement = nextElement.nextElementSibling;
+                }
+            }
+        }
+        
+        // 如果还是没找到AI消息，直接返回
+        if (!messageBubble) {
+            console.warn('未找到对应的AI回复消息');
+            return;
+        }
+        
+        const messageP = messageBubble.querySelector('p');
+        if (!messageP) {
+            console.warn('未找到消息文本元素');
+            return;
+        }
+        
+        const originalText = messageP.textContent;
+        
+        // 重新生成响应
+        if (!isAIResponding) {
+            setAIResponseState(true);
+            
+            // 在当前气泡中显示打字指示器
+            messageBubble.classList.add('message-regenerating');
+            
+            // 隐藏原文本，显示打字指示器
+            messageP.style.display = 'none';
+            
+            // 创建打字指示器元素
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            
+            // 插入到消息气泡中
+            messageBubble.insertBefore(typingDiv, messageP);
+            
+            // 创建AbortController用于取消请求
+            currentResponseAbortController = new AbortController();
+            
+            setTimeout(() => {
+                if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
+                    // 移除打字指示器
+                    if (typingDiv.parentNode) {
+                        typingDiv.parentNode.removeChild(typingDiv);
+                    }
+                    
+                    // 替换当前消息内容
+                    const newContent = isFromUserMessage ? 
+                        '这是基于您重新提问而生成的新回复内容。AI会根据您的问题提供不同角度的回答。' :
+                        '这是重新生成的AI回复内容，通常会有所不同。在实际应用中，这里会连接到真正的AI服务获取新的回复。';
+                    messageP.textContent = newContent;
+                    messageP.style.display = '';
+                    
+                    // 移除重新生成状态
+                    messageBubble.classList.remove('message-regenerating');
+                    
+                    setAIResponseState(false);
+                }
+            }, 2000);
+        }
+    };
+
+    window.copyMessage = function(button) {
+        const messageText = button.closest('.chat-message-ai').querySelector('p').textContent;
+        
+        // 复制到剪贴板
+        navigator.clipboard.writeText(messageText).then(() => {
+            // 显示复制成功提示
+            const originalTitle = button.title;
+            button.title = '已复制！';
+            button.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            
+            setTimeout(() => {
+                button.title = originalTitle;
+                button.style.borderColor = '';
+            }, 1500);
+        }).catch(() => {
+            // 降级方案 - 选择文本
+            const range = document.createRange();
+            const selection = window.getSelection();
+            const messageP = button.closest('.chat-message-ai').querySelector('p');
+            
+            range.selectNodeContents(messageP);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            // 显示提示
+            const originalTitle = button.title;
+            button.title = '已选择文本';
+            setTimeout(() => {
+                button.title = originalTitle;
+                selection.removeAllRanges();
+            }, 1500);
+        });
+    };
+
+    window.editMessage = function(button) {
+        const messageP = button.closest('.chat-message-user').querySelector('p');
+        const originalText = messageP.textContent;
+        const isFullscreen = button.closest('#fullscreen-chat') !== null;
+        const messageBubble = button.closest('.chat-message-user');
+        
+        // 创建编辑输入框
+        const editInput = document.createElement('textarea');
+        editInput.value = originalText;
+        editInput.className = 'message-edit-input';
+        
+        // 设置基础样式
+        const basePadding = isFullscreen ? 16 : 12;
+        const baseMinHeight = isFullscreen ? 48 : 36;
+        const maxHeight = isFullscreen ? 200 : 120;
+        
+        // 计算内容适配高度
+        const lineHeight = isFullscreen ? 21 : 15; // 1.5 * 14px or 1.25 * 12px
+        const lines = originalText.split('\n').length;
+        const textLines = Math.max(lines, Math.ceil(originalText.length / (isFullscreen ? 50 : 35)));
+        const contentHeight = Math.max(textLines * lineHeight + basePadding * 2, baseMinHeight);
+        const initialHeight = Math.min(contentHeight, maxHeight);
+        
+        editInput.style.height = initialHeight + 'px';
+        editInput.style.minHeight = baseMinHeight + 'px';
+        editInput.style.maxHeight = maxHeight + 'px';
+        
+        // 获取原始气泡的宽度，确保编辑框不会更窄
+        const bubbleWidth = messageBubble.getBoundingClientRect().width;
+        editInput.style.minWidth = (bubbleWidth - 32) + 'px'; // 减去边距
+        
+        // 临时隐藏原文本（保持布局）
+        messageP.style.opacity = '0';
+        messageP.style.pointerEvents = 'none';
+        
+        // 在气泡内插入编辑框
+        messageBubble.appendChild(editInput);
+        
+        // 自动调整高度
+        const adjustHeight = () => {
+            editInput.style.height = 'auto';
+            editInput.style.overflowY = 'hidden';
+            
+            const newHeight = Math.max(editInput.scrollHeight, baseMinHeight);
+            const finalHeight = Math.min(newHeight, maxHeight);
+            
+            editInput.style.height = finalHeight + 'px';
+            
+            // 如果内容超过最大高度，显示滚动条
+            if (editInput.scrollHeight > maxHeight) {
+                editInput.style.overflowY = 'auto';
+            } else {
+                editInput.style.overflowY = 'hidden';
+            }
+        };
+        
+        // 聚焦并选择文本
+        editInput.focus();
+        editInput.select();
+        
+        // 监听输入调整高度
+        editInput.addEventListener('input', adjustHeight);
+        
+        // 保存函数
+        const saveEdit = () => {
+            const newText = editInput.value.trim();
+            if (newText && newText !== originalText) {
+                messageP.textContent = newText;
+            }
+            editInput.remove();
+            messageP.style.opacity = '';
+            messageP.style.pointerEvents = '';
+        };
+        
+        // 取消函数
+        const cancelEdit = () => {
+            editInput.remove();
+            messageP.style.opacity = '';
+            messageP.style.pointerEvents = '';
+        };
+        
+        // 事件监听
+        editInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveEdit();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                cancelEdit();
+            }
+        });
+        
+        editInput.addEventListener('blur', saveEdit);
+        
+        // 初始调整高度
+        setTimeout(adjustHeight, 0);
+    };
+
+
+
+    // 初始化发送按钮状态
+    sendBtn.disabled = true;
+    fullscreenSendBtn.disabled = true;
+});
+</script> 

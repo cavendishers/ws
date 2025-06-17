@@ -440,9 +440,6 @@ button, .chat-function-btn {
   transition: none;
 }
 
-.chat-header-logo:hover {
-  /* 移除缩放效果，保持简洁 */
-}
 
 /* 头部双击全屏提示 */
 #chat-header {
@@ -639,14 +636,6 @@ button, .chat-function-btn {
 /* 移除过度的缩放动画，保持简洁体验 */
 .interactive-scale {
   transition: none;
-}
-
-.interactive-scale:hover {
-  /* 移除悬停缩放效果 */
-}
-
-.interactive-scale:active {
-  /* 移除点击缩放效果 */
 }
 
 /* 悬停按钮容器 */

@@ -29,21 +29,21 @@
                 <span class="text-xl font-bold text-[var(--text-primary)]">新势力感知系统</span>
             </div>
             <div class="hidden xl:flex space-x-8 text-[var(--text-secondary)] items-center">
-                <a href="{% url 'data_hall:index' %}" class="{% if request.resolver_match.url_name == 'index' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="{% if request.resolver_match.url_name == 'ranking' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
+                <a href="#" data-url="{% url 'data_hall:index_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'index_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
+                <a href="#" data-url="{% url 'data_hall:ranking_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'ranking_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
                 <div class="relative group" id="industry-dropdown-container">
                     <button id="industry-dropdown-btn" class="{% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center px-4 py-2 -mx-4 -my-2">
                         产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
                     </button>
                     <div id="industry-dropdown" class="absolute hidden group-hover:block bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
-                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
-                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
+                        <a href="#" data-url="{% url 'data_hall:industry_iframe' %}" class="nav-link block hover:text-blue-400 text-sm py-2">产业链图谱</a>
+                        <a href="#" data-url="{% url 'data_hall:enterprise_iframe' %}" class="nav-link block hover:text-blue-400 text-sm py-2">企业库</a>
                     </div>
                 </div>
-                <a href="{% url 'data_hall:map' %}" class="{% if request.resolver_match.url_name == 'map' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="{% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
-                <a href="{% url 'data_hall:precision' %}" class="{% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
-                <a href="{% url 'data_hall:news' %}" class="{% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
+                <a href="#" data-url="{% url 'data_hall:map_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'map_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
+                <a href="#" data-url="{% url 'data_hall:report_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'report_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
+                <a href="#" data-url="{% url 'data_hall:precision_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'precision_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
+                <a href="#" data-url="{% url 'data_hall:news_iframe' %}" class="nav-link {% if request.resolver_match.url_name == 'news_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
             </div>
             <div class="flex items-center space-x-4">
                 {% if request.session.user_id %}
@@ -55,11 +55,11 @@
                     <div class="absolute hidden group-hover:block right-0 bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
-                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                        <a href="#" data-url="{% url 'data_hall:logout' %}" class="nav-link block hover:text-blue-400 text-sm py-2">退出登录</a>
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
+                <a href="#" data-url="{% url 'data_hall:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
                 {% endif %}
                 <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-bars"></i>
@@ -83,33 +83,33 @@
                 </button>
             </div>
             <div class="flex flex-col space-y-6">
-                <a href="{% url 'data_hall:index' %}" class="text-lg {% if request.resolver_match.url_name == 'index' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
-                <a href="{% url 'data_hall:ranking' %}" class="text-lg {% if request.resolver_match.url_name == 'ranking' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
+                <a href="#" data-url="{% url 'data_hall:index_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'index_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
+                <a href="#" data-url="{% url 'data_hall:ranking_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'ranking_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
                 <div class="relative">
                     <button id="mobile-industry-btn" class="text-lg {% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center justify-between w-full">
                         <span>产业链</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div id="mobile-industry-dropdown" class="pl-4 space-y-3 mt-2 hidden">
-                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
-                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
+                        <a href="#" data-url="{% url 'data_hall:industry_iframe' %}" class="nav-link block hover:text-blue-400 text-sm py-2">产业链图谱</a>
+                        <a href="#" data-url="{% url 'data_hall:enterprise_iframe' %}" class="nav-link block hover:text-blue-400 text-sm py-2">企业库</a>
                     </div>
                 </div>
-                <a href="{% url 'data_hall:map' %}" class="text-lg {% if request.resolver_match.url_name == 'map' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
-                <a href="{% url 'data_hall:report' %}" class="text-lg {% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
-                <a href="{% url 'data_hall:precision' %}" class="text-lg {% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
-                <a href="{% url 'data_hall:news' %}" class="text-lg {% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
+                <a href="#" data-url="{% url 'data_hall:map_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'map_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
+                <a href="#" data-url="{% url 'data_hall:report_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'report_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
+                <a href="#" data-url="{% url 'data_hall:precision_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'precision_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
+                <a href="#" data-url="{% url 'data_hall:news_iframe' %}" class="nav-link text-lg {% if request.resolver_match.url_name == 'news_iframe' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
                 {% if request.session.user_id %}
                 <div class="border-t border-[rgba(255,255,255,0.1)] pt-4 mt-4">
                     <p class="text-lg text-[var(--button-highlight)]">{{ request.session.username }}</p>
                     <div class="pl-4 space-y-3 mt-2">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
-                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                        <a href="#" data-url="{% url 'data_hall:logout' %}" class="nav-link block hover:text-blue-400 text-sm py-2">退出登录</a>
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
+                <a href="#" data-url="{% url 'data_hall:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
                 {% endif %}
             </div>
         </div>
@@ -119,9 +119,6 @@
     <main class="pt-20">
         {% block content %}{% endblock %}
     </main>
-
-    <!-- AI聊天小部件 -->
-    {% include 'data_hall/components/ai_chat_widget.html' %}
 
     <!-- 页脚 -->
     <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)]" style="margin-top: 2rem;">
@@ -146,6 +143,47 @@
     <script src="{% static 'data_hall/js/main.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 导航拦截功能
+            function interceptNavigation() {
+                // 拦截所有导航链接
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const url = this.getAttribute('data-url');
+                        if (url && window.parent && window.parent !== window) {
+                            // 通知父窗口进行导航
+                            window.parent.postMessage({
+                                type: 'navigate',
+                                url: url
+                            }, '*');
+                        }
+                    });
+                });
+
+                // 拦截页面内的所有链接
+                const allLinks = document.querySelectorAll('a[href]');
+                allLinks.forEach(link => {
+                    if (!link.classList.contains('nav-link') && !link.hasAttribute('data-url')) {
+                        const href = link.getAttribute('href');
+                        if (href && href.startsWith('/') && !href.startsWith('//')) {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                if (window.parent && window.parent !== window) {
+                                    window.parent.postMessage({
+                                        type: 'navigate',
+                                        url: href
+                                    }, '*');
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            // 初始化导航拦截
+            interceptNavigation();
+
             // 导航栏下拉菜单
             const industryContainer = document.getElementById('industry-dropdown-container');
             const industryBtn = document.getElementById('industry-dropdown-btn');
@@ -154,23 +192,28 @@
             const mobileIndustryDropdown = document.getElementById('mobile-industry-dropdown');
 
             // 桌面端下拉菜单
-            industryBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                industryDropdown.classList.toggle('hidden');
-            });
+            if (industryBtn) {
+                industryBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    industryDropdown.classList.toggle('hidden');
+                });
+            }
 
             // 移动端下拉菜单
-            mobileIndustryBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                mobileIndustryDropdown.classList.toggle('hidden');
-            });
+            if (mobileIndustryBtn) {
+                mobileIndustryBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileIndustryDropdown.classList.toggle('hidden');
+                });
+            }
 
             // 点击外部关闭下拉菜单
             document.addEventListener('click', (e) => {
-                if (!industryContainer.contains(e.target)) {
+                if (industryContainer && !industryContainer.contains(e.target)) {
                     industryDropdown.classList.add('hidden');
                 }
-                if (!mobileIndustryBtn.contains(e.target) && !mobileIndustryDropdown.contains(e.target)) {
+                if (mobileIndustryBtn && mobileIndustryDropdown && 
+                    !mobileIndustryBtn.contains(e.target) && !mobileIndustryDropdown.contains(e.target)) {
                     mobileIndustryDropdown.classList.add('hidden');
                 }
             });
@@ -180,20 +223,34 @@
             const mobileMenuClose = document.querySelector('.mobile-menu-close');
             const mobileMenu = document.querySelector('.mobile-menu');
 
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.remove('hidden');
-            });
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.remove('hidden');
+                });
+            }
 
-            mobileMenuClose.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            }
 
             // 点击外部关闭移动端菜单
             document.addEventListener('click', (e) => {
-                if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                if (mobileMenu && mobileMenuButton && 
+                    !mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
                     mobileMenu.classList.add('hidden');
                 }
             });
+
+            // 通知父窗口iframe已加载
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'content-ready'
+                }, '*');
+            }
+
+            console.log('Iframe导航已初始化');
         });
     </script>
     {% block extra_js %}{% endblock %}

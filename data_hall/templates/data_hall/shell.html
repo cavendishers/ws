@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国新势力企业态势感知系统</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <!-- Tailwind CSS -->
+    <script src="{% static 'data_hall/js/vendor/tailwindcss.js' %}"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}" />
+    <style>
+        /* Shell页面样式 */
+        :root {
+            --primary: #1E3A8A;
+            --bg-secondary: rgba(30, 58, 138, 0.8);
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --button-highlight: #0EA5E9;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            overflow: hidden;
+        }
+        
+        .shell-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        .main-content-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        
+        .chat-assistant-frame {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* 确保聊天助手iframe内的内容可以接收事件 */
+        .chat-assistant-frame.active {
+            pointer-events: all;
+        }
+        
+        /* 加载提示 */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: var(--text-primary);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(14, 165, 233, 0.3);
+            border-top: 3px solid var(--button-highlight);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 确保iframe完全透明，不阻挡聊天助手 */
+        .transparent-frame {
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell-container">
+        <!-- 加载提示 -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3>正在加载中国新势力企业态势感知系统...</h3>
+                <p class="text-sm opacity-75 mt-2">请稍候</p>
+            </div>
+        </div>
+        
+        <!-- 主内容iframe -->
+        <iframe 
+            id="content" 
+            class="main-content-frame transparent-frame" 
+            src="{% url 'data_hall:index_iframe' %}"
+            frameborder="0"
+            allow="fullscreen"
+            onload="handleContentLoad()">
+        </iframe>
+        
+        <!-- 聊天助手iframe -->
+        <iframe 
+            id="chat-assistant" 
+            class="chat-assistant-frame active" 
+            src="{% url 'data_hall:chat_widget' %}"
+            frameborder="0"
+            allow="fullscreen"
+            onload="handleChatLoad()">
+        </iframe>
+    </div>
+
+    <script>
+        // 页面加载状态管理
+        let contentLoaded = false;
+        let chatLoaded = false;
+        let loadingHidden = false;
+        
+        function handleContentLoad() {
+            contentLoaded = true;
+            checkAllLoaded();
+        }
+        
+        function handleChatLoad() {
+            chatLoaded = true;
+            
+            // 聊天助手加载完成后立即显示，不等待主内容
+            if (!loadingHidden) {
+                setTimeout(() => {
+                    hideLoadingOverlay();
+                }, 100); // 很短的延迟，确保聊天助手完全渲染
+            }
+            
+            checkAllLoaded();
+        }
+        
+        function hideLoadingOverlay() {
+            if (loadingHidden) return;
+            loadingHidden = true;
+            
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        function checkAllLoaded() {
+            // 如果聊天助手已加载但还没隐藏加载提示，就隐藏它
+            if (chatLoaded && !loadingHidden) {
+                hideLoadingOverlay();
+            }
+            
+            // 如果都加载完成了，确保加载提示已隐藏
+            if (contentLoaded && chatLoaded && !loadingHidden) {
+                hideLoadingOverlay();
+            }
+        }
+        
+        // 监听来自主内容iframe的导航消息
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'navigate') {
+                const contentFrame = document.getElementById('content');
+                if (contentFrame && event.data.url) {
+                    contentFrame.src = event.data.url;
+                }
+            }
+        });
+        
+        // 页面导航函数，供外部调用
+        window.navigateTo = function(url) {
+            const contentFrame = document.getElementById('content');
+            if (contentFrame) {
+                contentFrame.src = url;
+            }
+        };
+        
+        // 错误处理
+        window.addEventListener('error', function(e) {
+            console.error('Shell页面错误:', e);
+        });
+        
+        // 防止页面跳转
+        window.addEventListener('beforeunload', function(e) {
+            // 可以在这里添加确认对话框
+            // e.preventDefault();
+            // e.returnValue = '';
+        });
+        
+        // 调试信息
+        console.log('Shell页面已初始化');
+        console.log('主内容iframe目标:', document.getElementById('content').src);
+        console.log('聊天助手iframe目标:', document.getElementById('chat-assistant').src);
+    </script>
+</body>
+</html> 

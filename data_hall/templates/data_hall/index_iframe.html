@@ -1,0 +1,240 @@
+{% extends 'data_hall/base_iframe.html' %}
+{% load static %}
+
+{% block title %}中国新势力企业态势感知系统 - 首页{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'data_hall/css/vendor/noto-sans-sc.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'data_hall/css/chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="home" class="min-h-screen flex items-center pb-16  md:pb-24">
+    <div class="container mx-auto px-6 h-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
+            <!-- Left Column -->
+            <div class="flex flex-col justify-center h-full text-center md:text-left py-8 z-10">
+                <!-- AI Search Trigger -->
+                <div id="ai-search-trigger" class="relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm cursor-pointer hover:border-[var(--button-highlight)] transition-all duration-300 group p-1 max-w-xl mx-auto md:mx-0 mb-12">
+                    <span class="text-gray-500 text-base flex-grow text-left px-4 py-2">试着问我一些问题吧...</span>
+                    <button class="bg-[var(--button-highlight)] text-white px-5 h-10 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-2">
+                        <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                    </button>
+                </div>
+                <!-- Product Buttons -->
+                <div id="product-buttons" class="max-w-xl mx-auto md:mx-0">
+                    <h3 class="text-lg font-semibold text-[var(--text-secondary)] mb-4">系统功能</h3>
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                        <a href="#" data-url="{% url 'data_hall:index_iframe' %}" class="nav-link prod-btn bg-[var(--button-highlight)] text-white px-4 py-2 rounded-full text-sm transition-colors">首页</a>
+                        <a href="#" data-url="{% url 'data_hall:ranking_iframe' %}" class="nav-link prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">新势力榜单</a>
+                        <a href="#" data-url="{% url 'data_hall:industry_iframe' %}" class="nav-link prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业链</a>
+                        <a href="#" data-url="{% url 'data_hall:map_iframe' %}" class="nav-link prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业地图</a>
+                        <a href="#" data-url="{% url 'data_hall:report_iframe' %}" class="nav-link prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">产业报告</a>
+                        <a href="#" data-url="{% url 'data_hall:news_iframe' %}" class="nav-link prod-btn bg-[var(--button-inactive)] hover:bg-opacity-80 text-[var(--text-secondary)] hover:text-white px-4 py-2 rounded-full text-sm transition-colors">商业快讯</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="flex items-center justify-center h-full p-8 md:p-12 content-column-right">
+                <div class="content-layer text-center md:text-left max-w-xl">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-normal tracking-tight">
+                        <span class="block text-white">
+                            中国新势力企业
+                        </span>
+                        <span class="block bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent mt-1 sm:mt-2">
+                            态势感知系统
+                        </span>
+                    </h1>
+                    <p class="text-lg text-white leading-relaxed">
+                        基于AI深度分析引擎与产业研究算法，精准识别潜力企业，为产业研究与投资决策提供智能支持。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 新势力企业名单模块 -->
+<section class="container mx-auto px-6 py-12">
+    <div class="bg-[#132144] p-6 rounded-xl glow-effect">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold">新势力企业名单</h3>
+            <a href="#" data-url="{% url 'data_hall:ranking_iframe' %}" class="nav-link px-4 py-2 bg-[var(--primary)] rounded hover:bg-[#1A2B5E] transition-colors text-sm">
+                查看更多 <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        
+        <!-- 表格内容 -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-[#1A2B5E]">
+                    <tr>
+                        <th class="px-4 py-3">排名</th>
+                        <th class="px-4 py-3">企业名称</th>
+                        <th class="px-4 py-3">城市</th>
+                        <th class="px-4 py-3">区县</th>
+                        <th class="px-4 py-3 text-yellow-400">综合得分</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1A2B5E]" id="topCompanyTbody">
+                    <!-- 动态渲染数据 -->
+                    <tr>
+                        <td colspan="5" class="px-4 py-3 text-center">加载中...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- AI Search Overlay -->
+<div id="ai-search-overlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300 ease-in-out">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col relative transform transition-all duration-300 ease-in-out scale-95 opacity-0" id="ai-overlay-content">
+        <button id="ai-search-close" class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 text-2xl z-10"><i class="fas fa-times"></i></button>
+        <!-- Content Area with Scrolling -->
+        <div id="overlay-scroll-container" class="p-6 md:p-8 flex-grow overflow-y-auto overlay-content-scroll">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">AI 智能体</h2>
+            <p class="text-sm text-gray-500 mb-6">我可以帮助您快速解答产业、企业相关问题，试试下面的问题吧：</p>
+
+            <!-- Recommendation Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <!-- 查趋势 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查趋势</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">近几年新势力企业呈现怎么样的变化趋势？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">哪些行业的新势力企业增长最快？</button>
+                </div>
+                <!-- 查产业 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查产业</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">合成生物哪些细分赛道的新势力企业最多？代表企业是哪些？</button>
+                </div>
+                <!-- 查市场动态 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查市场动态</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">最近一年获得B轮以上融资的新势力企业有哪些？</button>
+                </div>
+                <!-- 查技术能力 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查技术能力</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">新势力企业中有哪些企业是专精特新企业？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">有哪些解决国外卡脖子技术的产品？</button>
+                </div>
+                <!-- 查未来趋势 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查未来趋势</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</button>
+                </div>
+                <!-- 查应用场景 -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-base">查应用场景</h3>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">低空经济企业有哪些应用场景？</button>
+                    <button class="recommendation-btn block w-full text-left text-gray-500 hover:text-blue-600 text-sm py-1">政府扶持可以哪几方面展开？</button>
+                </div>
+            </div>
+
+            <!-- Chat History Area -->
+            <div id="ai-response-area" class="mt-4 space-y-4">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+        </div>
+        <!-- Input Area -->
+        <div class="p-4 md:p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            <div class="relative flex items-center">
+                <input type="text" id="ai-search-input-overlay" placeholder="输入您的问题，按 Enter 或点击发送" class="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 pr-24"/>
+                <button id="ai-search-submit-overlay" class="absolute right-2 bg-blue-500 text-white px-4 py-1 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-1.5">
+                    <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2 text-center">AI生成内容仅供参考，请结合实际情况判断。</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/ai-chat.js' %}"></script>
+<script>
+    // 加载新势力企业名单数据
+    function loadTopCompanies() {
+        const tbody = document.getElementById('topCompanyTbody');
+        if (!tbody) {
+            console.error('找不到表格主体元素 #topCompanyTbody');
+            return;
+        }
+        
+        console.log('=============================================');
+        console.log('开始获取新势力企业名单数据...');
+        
+        // 显示加载状态
+        tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center">加载中...</td></tr>';
+        
+        // 调用API获取数据
+        const apiUrl = '/api/top-companies/?limit=10';
+        console.log('请求URL:', apiUrl);
+        
+        fetch(apiUrl)
+            .then(response => {
+                console.log('API响应状态码:', response.status);
+                console.log('API响应状态文本:', response.statusText);
+                if (!response.ok) {
+                    throw new Error(`网络错误，状态码: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('获取到的完整数据:', JSON.stringify(data));
+                if (data && data.companies && Array.isArray(data.companies) && data.companies.length > 0) {
+                    console.log(`成功获取到 ${data.companies.length} 条企业数据`);
+                    
+                    // 渲染表格
+                    renderTopCompaniesTable(data.companies);
+                } else {
+                    console.warn('API返回无效数据格式或空数据:', data);
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center">暂无数据</td></tr>';
+                }
+                console.log('=============================================');
+            })
+            .catch(error => {
+                console.error('获取企业数据失败:', error);
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center text-red-400">数据加载失败</td></tr>';
+                console.log('=============================================');
+            });
+    }
+
+    // 渲染企业表格
+    function renderTopCompaniesTable(companies) {
+        const tbody = document.getElementById('topCompanyTbody');
+        if (!tbody) return;
+
+        tbody.innerHTML = companies.map((company, index) => `
+            <tr class="hover:bg-[#1A2B5E] transition-colors">
+                <td class="px-4 py-3">
+                    <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[var(--button-highlight)] rounded-full">
+                        ${index + 1}
+                    </span>
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex flex-col">
+                        <span class="font-medium text-white">${company.name || '未知企业'}</span>
+                        <span class="text-xs text-gray-400">${company.industry || '未知行业'}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-gray-300">${company.city || '未知'}</td>
+                <td class="px-4 py-3 text-gray-300">${company.district || '未知'}</td>
+                <td class="px-4 py-3">
+                    <span class="text-yellow-400 font-semibold">${(company.score || 0).toFixed(1)}</span>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // 页面加载时获取数据
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTopCompanies();
+        console.log('Iframe首页已加载');
+    });
+</script>
+{% endblock %} 

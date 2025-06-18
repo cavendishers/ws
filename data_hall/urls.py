@@ -6,6 +6,10 @@ app_name = 'data_hall'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('shell/', views.shell, name='shell'),
+    path('chat-widget/', views.chat_widget, name='chat_widget'),
+    
+    # 原有页面路由
     path('ranking/', views.ranking, name='ranking'),
     path('industry/', views.industry, name='industry'),
     path('industry/detail/', views.industry_detail, name='industry_detail'),
@@ -17,6 +21,17 @@ urlpatterns = [
     path('news/', views.news, name='news'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    
+    # iframe版本页面路由
+    path('iframe/', views.index_iframe, name='index_iframe'),
+    path('iframe/ranking/', views.ranking_iframe, name='ranking_iframe'),
+    path('iframe/industry/', views.industry_iframe, name='industry_iframe'),
+    path('iframe/enterprise/', views.enterprise_iframe, name='enterprise_iframe'),
+    path('iframe/precision/', views.precision_iframe, name='precision_iframe'),
+    path('iframe/map/', views.map_iframe, name='map_iframe'),
+    path('iframe/report/', views.report_iframe, name='report_iframe'),
+    path('iframe/news/', views.news_iframe, name='news_iframe'),
+    path('iframe/login/', views.login_iframe, name='login_iframe'),
     path('api/filter-data/', views.get_filter_data, name='filter-data'),
     path('api/company-stats/', views.get_company_stats, name='company-stats'),
     path('api/company-locations/', views.get_company_locations, name='company-locations'),

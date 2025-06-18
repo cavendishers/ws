@@ -6,7 +6,7 @@
 <!-- AI聊天小部件 -->
 <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50">
     <!-- 最小化触发按钮 -->
-    <div id="minimized-trigger" class="hidden group relative">
+    <div id="minimized-trigger" class="group relative">
         <!-- 主按钮 -->
         <div class="w-16 h-16 bg-[var(--primary)]/95 rounded-full shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300">
             <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-8 h-8 opacity-90 drop-shadow-lg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 2px rgba(255,255,255,0.3));">
@@ -25,7 +25,7 @@
     </div>
 
     <!-- 聊天窗口 -->
-    <div id="chat-window" class="w-[500px] h-[400px] bg-[var(--primary)]/95 rounded-xl shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md flex flex-col">
+    <div id="chat-window" class="hidden w-[560px] h-[450px] bg-[var(--primary)]/95 rounded-xl shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md flex-col">
         <!-- 可拖拽的标题栏 -->
         <div id="drag-handle" class="w-full h-3 cursor-move flex items-center justify-center group rounded-t-xl overflow-hidden relative">
             <!-- 渐变背景，与窗口融为一体 -->
@@ -35,15 +35,18 @@
         </div>
         
         <!-- 头部 -->
-        <div id="chat-header" class="flex items-center justify-between p-3 border-b border-[rgba(0,191,255,0.1)] flex-shrink-0 cursor-pointer relative" title="双击进入全屏" style="background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);">
+        <div id="chat-header" class="flex items-center justify-between px-4 py-3.5 border-b border-[rgba(0,191,255,0.1)] flex-shrink-0 cursor-pointer relative" title="双击进入全屏" style="background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);">
             <!-- 头部背景增强层 -->
             <div class="absolute inset-0 bg-gradient-to-br from-[rgba(0,191,255,0.02)] to-transparent pointer-events-none"></div>
             <div class="relative z-10 flex items-center justify-between w-full">
-            <div class="flex items-center space-x-3">
-                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-8 h-8 chat-header-logo opacity-90" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-                <div>
-                    <h3 class="text-white font-medium text-sm">AI智能助手</h3>
-                    <p class="text-[var(--text-secondary)] text-xs online-indicator opacity-80">在线</p>
+            <div class="flex items-center space-x-4">
+                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-10 h-10 chat-header-logo opacity-90 flex-shrink-0" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="flex flex-col justify-center min-h-[40px]">
+                    <h3 class="text-white font-medium text-base leading-tight mb-1">AI智能助手</h3>
+                    <div class="flex items-center space-x-1.5">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse opacity-90 shadow-sm"></div>
+                        <p class="text-[var(--text-secondary)] text-sm leading-tight">在线</p>
+                    </div>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
@@ -70,67 +73,70 @@
         </div>
 
         <!-- 聊天内容区域 -->
-        <div class="flex-1 overflow-y-auto p-3 space-y-3" id="chat-messages">
+        <div class="flex-1 overflow-y-auto px-4 py-4 space-y-5" id="chat-messages">
             <!-- 欢迎消息 -->
-            <div class="flex items-start space-x-2">
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
-                    <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+            <div class="flex items-start space-x-3">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%]">
+                    <p class="text-sm leading-relaxed">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
                 </div>
             </div>
         </div>
 
         <!-- 输入区域 -->
-        <div class="px-4 py-3 border-t border-[rgba(0,191,255,0.1)] flex-shrink-0">
+        <div class="px-5 py-4 border-t border-[rgba(0,191,255,0.1)] flex-shrink-0">
             <!-- 功能按钮行 -->
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-1">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-2">
                     <!-- 附件按钮 -->
-                    <button class="chat-function-btn text-[var(--text-secondary)] hover:text-white p-1 rounded hover:bg-[rgba(255,255,255,0.1)] transition-colors">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="chat-function-btn text-[var(--text-secondary)] hover:text-white p-2 rounded-md hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                         </svg>
                     </button>
                     <!-- DeepSearch下拉菜单 -->
-                    <div class="relative group">
-                        <button class="flex items-center space-x-1 text-[var(--text-secondary)] hover:text-white px-1.5 py-1 rounded hover:bg-[rgba(255,255,255,0.1)] transition-colors text-xs">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="relative">
+                        <button id="search-dropdown-btn" class="flex items-center space-x-1.5 text-[var(--text-secondary)] hover:text-white px-2.5 py-2 rounded-md hover:bg-[rgba(255,255,255,0.1)] transition-colors text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                            <span class="text-xs">搜索</span>
+                            <span class="text-sm">搜索</span>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
                         </button>
-                        <div class="absolute hidden group-hover:block left-0 bottom-full mb-1 chat-dropdown bg-[var(--primary)]/95 rounded-md shadow-xl border border-[rgba(0,191,255,0.1)] w-24 z-10">
-                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-t">网络搜索</a>
-                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]">学术搜索</a>
-                            <a href="#" class="block px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-b">知识库</a>
+                        <div id="search-dropdown-menu" class="absolute hidden left-0 bottom-full mb-2 bg-[var(--primary)]/98 rounded-lg shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md w-36 z-20 py-1" style="display: none;">
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors rounded-t-lg border-b border-[rgba(0,191,255,0.08)]">🌐 网络搜索</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors border-b border-[rgba(0,191,255,0.08)]">📚 学术搜索</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors rounded-b-lg">💾 知识库</a>
                         </div>
                     </div>
                 </div>
                 <!-- Think按钮 -->
-                <button id="think-btn" class="flex items-center space-x-1 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] text-[var(--text-secondary)] hover:text-white px-2 py-1 rounded transition-colors text-xs">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="think-btn" class="flex items-center space-x-1.5 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] text-[var(--text-secondary)] hover:text-white px-3 py-2 rounded-md transition-colors text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
-                    <span class="text-xs">Think</span>
+                    <span class="text-sm">Think</span>
                 </button>
             </div>
 
             <!-- 输入框和发送按钮 -->
-            <div class="flex items-start space-x-2">
+            <div class="flex items-start space-x-3">
                 <div class="flex-1">
                     <textarea 
                         id="chat-input" 
                         placeholder="输入您的问题..." 
-                        class="w-full bg-[var(--bg-secondary)]/60 text-[var(--text-primary)] placeholder-[var(--text-secondary)]/70 border border-[rgba(0,191,255,0.15)] rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-[var(--button-highlight)] focus:bg-[var(--bg-secondary)]/80 focus:shadow-md transition-all duration-300 min-h-[36px] max-h-20 text-sm leading-5"
+                        class="w-full bg-[var(--bg-secondary)]/60 text-[var(--text-primary)] placeholder-[var(--text-secondary)]/70 border border-[rgba(0,191,255,0.15)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[var(--button-highlight)] focus:bg-[var(--bg-secondary)]/80 focus:shadow-md transition-all duration-300 min-h-[42px] max-h-24 text-base leading-6"
                         rows="1"
                     ></textarea>
                 </div>
                 <!-- 发送按钮 -->
-                <button id="send-btn" class="bg-[var(--button-highlight)]/90 hover:bg-[var(--button-highlight)] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 h-[36px] w-[36px] flex items-center justify-center mt-0">
-                    <svg class="w-4 h-4 send-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="send-btn" class="bg-[var(--button-highlight)]/90 hover:bg-[var(--button-highlight)] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 h-[42px] w-[42px] flex items-center justify-center mt-0">
+                    <svg class="w-5 h-5 send-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    <svg class="w-4 h-4 stop-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 stop-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h12v12H6z"></path>
                     </svg>
                 </button>
@@ -147,7 +153,10 @@
             <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI Assistant" class="w-10 h-10 chat-header-logo opacity-90" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
             <div>
                 <h2 class="text-white font-semibold text-xl">AI智能助手</h2>
-                <p class="text-[var(--text-secondary)] text-base online-indicator opacity-80">全屏聊天模式</p>
+                <div class="flex items-center space-x-1.5">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse opacity-90 shadow-sm"></div>
+                    <p class="text-[var(--text-secondary)] text-base leading-tight">全屏模式</p>
+                </div>
             </div>
         </div>
         <div class="flex items-center space-x-3">
@@ -190,17 +199,20 @@
                         </svg>
                     </button>
                     <!-- DeepSearch下拉菜单 -->
-                    <div class="relative group">
-                        <button class="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-white px-3 py-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors text-sm">
+                    <div class="relative">
+                        <button id="fullscreen-search-dropdown-btn" class="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-white px-3 py-2 rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                             <span>搜索</span>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
                         </button>
-                        <div class="absolute hidden group-hover:block left-0 bottom-full mb-2 chat-dropdown bg-[var(--primary)]/95 rounded-lg shadow-xl border border-[rgba(0,191,255,0.1)] w-32 z-10">
-                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-t-lg">网络搜索</a>
-                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]">学术搜索</a>
-                            <a href="#" class="block px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] rounded-b-lg">知识库</a>
+                        <div id="fullscreen-search-dropdown-menu" class="absolute hidden left-0 bottom-full mb-3 bg-[var(--primary)]/98 rounded-lg shadow-xl border border-[rgba(0,191,255,0.15)] backdrop-blur-md w-36 z-20 py-1" style="display: none;">
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors rounded-t-lg border-b border-[rgba(0,191,255,0.08)]">🌐 网络搜索</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors border-b border-[rgba(0,191,255,0.08)]">📚 学术搜索</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors rounded-b-lg">💾 知识库</a>
                         </div>
                     </div>
                 </div>
@@ -279,22 +291,12 @@ document.addEventListener('DOMContentLoaded', function() {
         fullscreenChat.classList.remove('flex');
     }
 
-    // 设置默认为最小化状态
-    chatWindow.style.display = 'none';
-    minimizedTrigger.classList.remove('hidden');
-    minimizedTrigger.style.display = 'block';
-    
-    // 启动欢迎脉冲动画
-    const pulseRing = minimizedTrigger.querySelector('.animate-ping');
-    if (pulseRing) {
-        setTimeout(() => {
-            pulseRing.style.opacity = '0.6';
-            // 10秒后停止脉冲动画，给新用户足够的发现时间
-            setTimeout(() => {
-                pulseRing.style.opacity = '0';
-            }, 10000);
-        }, 1000);
-    }
+    // HTML已设置正确初始状态（脉冲圆环可见，聊天窗口隐藏），这里只需确保位置
+    // 确保位置在右下角
+    chatWidget.style.left = '';
+    chatWidget.style.top = '';
+    chatWidget.style.right = '1.5rem';
+    chatWidget.style.bottom = '1.5rem';
     
     // 确保页面滚动正常
     document.body.style.overflow = '';
@@ -474,14 +476,13 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.classList.add('window-exit');
         
         setTimeout(() => {
-            chatWindow.style.display = 'none';
-            chatWindow.classList.remove('window-exit');
+            chatWindow.classList.add('hidden');
+            chatWindow.classList.remove('flex', 'flex-col', 'window-exit');
             
             minimizedTrigger.classList.remove('hidden');
-            minimizedTrigger.style.display = 'block';
             minimizedTrigger.classList.add('minimized-enter');
             
-            // 重置到初始位置
+            // 总是回到右下角的默认位置
             chatWidget.style.left = '';
             chatWidget.style.top = '';
             chatWidget.style.right = '1.5rem';
@@ -512,11 +513,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setTimeout(() => {
             minimizedTrigger.classList.add('hidden');
-            minimizedTrigger.style.display = 'none';
             minimizedTrigger.classList.remove('minimized-exit');
             
-            chatWindow.style.display = 'flex';
-            chatWindow.classList.add('window-enter');
+            chatWindow.classList.remove('hidden');
+            chatWindow.classList.add('flex', 'flex-col', 'window-enter');
             
             // 检查并调整窗口位置，确保完全可见
             adjustWindowPosition();
@@ -540,8 +540,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function adjustWindowPosition() {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
-        const chatWindowWidth = 500; // 聊天窗口宽度
-        const chatWindowHeight = 400; // 聊天窗口基础高度
+        const chatWindowWidth = 560; // 聊天窗口宽度
+        const chatWindowHeight = 450; // 聊天窗口基础高度
         
         // 获取当前位置
         const currentLeft = parseInt(chatWidget.style.left) || 0;
@@ -606,24 +606,29 @@ document.addEventListener('DOMContentLoaded', function() {
     chatInput.focus();
 
     // 输入框自适应高度
+    let lastInputHeight = 42; // 记录上次的输入框高度
+    
     chatInput.addEventListener('input', function() {
         // 重置高度并移除滚动条
         this.style.height = 'auto';
         this.style.overflowY = 'hidden';
         
-        // 计算新高度，最小36px，最大80px（约2.5行文本）
-        const newHeight = Math.min(Math.max(this.scrollHeight, 36), 80);
+        // 计算新高度，最小42px，最大96px（约3行文本）
+        const newHeight = Math.min(Math.max(this.scrollHeight, 42), 96);
         this.style.height = newHeight + 'px';
         
         // 如果内容超过最大高度，才显示滚动条
-        if (this.scrollHeight > 80) {
+        if (this.scrollHeight > 96) {
             this.style.overflowY = 'auto';
         } else {
             this.style.overflowY = 'hidden';
         }
         
-        // 动态调整聊天框高度和位置
-        adjustChatWindowHeight(newHeight);
+        // 只有当高度发生变化时才调整聊天框
+        if (newHeight !== lastInputHeight) {
+            adjustChatWindowHeight(newHeight);
+            lastInputHeight = newHeight;
+        }
         
         // 更新发送按钮状态
         if (!isAIResponding) {
@@ -633,8 +638,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 动态调整聊天窗口高度和位置
     function adjustChatWindowHeight(inputHeight) {
-        const baseHeight = 400; // 基础高度
-        const baseInputHeight = 36; // 基础输入框高度
+        const baseHeight = 450; // 基础高度
+        const baseInputHeight = 42; // 基础输入框高度
         const extraHeight = Math.max(0, inputHeight - baseInputHeight);
         const newWindowHeight = baseHeight + extraHeight;
         
@@ -643,23 +648,37 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 只有在窗口还在初始位置时才调整bottom位置
         if (chatWidget.style.left === '' && chatWidget.style.top === '') {
-            const baseBottom = 24; // 1.5rem = 24px
-            const newBottom = baseBottom + extraHeight;
-            chatWidget.style.bottom = newBottom + 'px';
+            // 窗口在右下角初始位置，向上扩展但保持bottom固定
+            chatWidget.style.bottom = '1.5rem'; // 保持固定的bottom位置
         } else {
-            // 如果窗口已被拖拽，向上扩展
-            const currentTop = parseInt(chatWidget.style.top) || 0;
-            const newTop = Math.max(0, currentTop - extraHeight);
-            chatWidget.style.top = newTop + 'px';
+            // 如果窗口已被拖拽，需要保持窗口底部位置不变，向上扩展
+            const currentRect = chatWidget.getBoundingClientRect();
+            const currentBottom = window.innerHeight - currentRect.bottom;
+            
+            // 计算新的top位置，确保bottom位置不变
+            const newTop = window.innerHeight - currentBottom - newWindowHeight;
+            
+            // 确保窗口不会超出屏幕顶部
+            const finalTop = Math.max(10, newTop);
+            chatWidget.style.top = finalTop + 'px';
         }
     }
 
     // 重置聊天窗口到初始状态
     function resetChatWindowHeight() {
-        chatWindow.style.height = '400px';
-        // 只有在初始位置时才重置bottom
+        chatWindow.style.height = '450px';
+        
+        // 重置窗口位置
         if (chatWidget.style.left === '' && chatWidget.style.top === '') {
-            chatWidget.style.bottom = '24px';
+            // 窗口在初始位置，重置bottom
+            chatWidget.style.bottom = '1.5rem';
+        } else {
+            // 窗口已被拖拽，保持其位置但确保高度正确
+            const currentRect = chatWidget.getBoundingClientRect();
+            const currentBottom = window.innerHeight - currentRect.bottom;
+            const newTop = window.innerHeight - currentBottom - 450; // 基础高度
+            const finalTop = Math.max(10, newTop);
+            chatWidget.style.top = finalTop + 'px';
         }
         
         // 确保输入框滚动条状态正确
@@ -688,10 +707,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // 清空输入框并重置状态
         chatInput.value = '';
         chatInput.style.height = 'auto';
-        chatInput.style.height = '36px';
+        chatInput.style.height = '42px';
         chatInput.style.overflowY = 'hidden';
         chatInput.scrollTop = 0;
         sendBtn.disabled = true;
+        
+        // 重置输入框高度记录
+        lastInputHeight = 42;
         
         // 重置聊天窗口到初始状态
         resetChatWindowHeight();
@@ -780,10 +802,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 显示打字指示器
     function showTypingIndicator() {
         const typingDiv = document.createElement('div');
-        typingDiv.className = 'flex items-start space-x-2 typing-indicator-container';
+        typingDiv.className = 'flex items-start space-x-3 typing-indicator-container';
         typingDiv.innerHTML = `
-            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-            <div class="chat-message-ai px-3 py-2 rounded-lg rounded-tl-sm">
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm">
                 <div class="typing-indicator">
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
@@ -799,13 +821,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加消息到聊天区域
     function addMessage(content, sender) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'flex items-start space-x-2 chat-message-enter';
+        messageDiv.className = 'flex items-start space-x-3 chat-message-enter';
 
         if (sender === 'user') {
             messageDiv.innerHTML = `
                 <div class="flex justify-end w-full">
-                    <div class="chat-message-user px-3 py-2 rounded-lg rounded-tr-sm interactive-scale">
-                        <p class="text-xs">${content}</p>
+                    <div class="chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]">
+                        <p class="text-sm leading-relaxed">${content}</p>
                         <div class="message-hover-actions">
                             <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -823,9 +845,9 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         } else {
             messageDiv.innerHTML = `
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-                <div class="chat-message-ai px-3 py-2 rounded-lg rounded-tl-sm interactive-scale">
-                    <p class="text-xs">${content}</p>
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%]">
+                    <p class="text-sm leading-relaxed">${content}</p>
                     <div class="message-hover-actions">
                         <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -834,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </button>
                         <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                             </svg>
                         </button>
                     </div>
@@ -876,10 +898,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
                 </div>
             </div>` :
-            `<div class="flex items-start space-x-2">
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80">
-                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
-                    <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+            `<div class="flex items-start space-x-3">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%]">
+                    <p class="text-sm leading-relaxed">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
                 </div>
             </div>`;
         
@@ -945,6 +967,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // 同步聊天记录回小窗口
             syncMessagesFromFullscreen();
             
+            // 恢复到小窗口展开状态
+            minimizedTrigger.classList.add('hidden');
+            chatWindow.classList.remove('hidden');
+            chatWindow.classList.add('flex', 'flex-col');
+            
+            // 停止脉冲动画
+            const pulseRing = minimizedTrigger.querySelector('.animate-ping');
+            if (pulseRing) {
+                pulseRing.style.opacity = '0';
+            }
+            
             // 延迟聚焦以确保转换完成
             setTimeout(() => {
                 if (chatInput) {
@@ -987,31 +1020,29 @@ document.addEventListener('DOMContentLoaded', function() {
             if (clonedMessage.querySelector('.chat-message-ai')) {
                 const aiMessage = clonedMessage.querySelector('.chat-message-ai');
                 aiMessage.classList.add('border', 'border-[rgba(0,191,255,0.08)]');
-                aiMessage.classList.remove('max-w-[75%]');
-                aiMessage.classList.add('max-w-[70%]');
+                // max-w-[70%] 保持不变
                 const textEl = aiMessage.querySelector('p');
                 if (textEl) {
-                    textEl.classList.remove('text-xs');
+                    textEl.classList.remove('text-sm', 'leading-relaxed');
                     textEl.classList.add('text-sm', 'leading-6');
                 }
             }
             if (clonedMessage.querySelector('.chat-message-user')) {
                 const userMessage = clonedMessage.querySelector('.chat-message-user');
-                userMessage.classList.remove('max-w-[75%]');
-                userMessage.classList.add('max-w-[70%]');
+                // max-w-[70%] 保持不变
                 const textEl = userMessage.querySelector('p');
                 if (textEl) {
-                    textEl.classList.remove('text-xs');
+                    textEl.classList.remove('text-sm', 'leading-relaxed');
                     textEl.classList.add('text-sm', 'leading-6');
                 }
             }
             if (clonedMessage.querySelector('img')) {
                 const img = clonedMessage.querySelector('img');
-                img.classList.remove('w-6', 'h-6');
+                img.classList.remove('w-8', 'h-8');
                 img.classList.add('w-10', 'h-10', 'flex-shrink-0');
             }
             // 调整间距
-            clonedMessage.classList.remove('space-x-2');
+            clonedMessage.classList.remove('space-x-3');
             clonedMessage.classList.add('space-x-4');
             
             fullscreenMessages.appendChild(clonedMessage);
@@ -1027,11 +1058,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 重新添加小窗口的欢迎消息
         const welcomeDiv = document.createElement('div');
-        welcomeDiv.className = 'flex items-start space-x-2';
+        welcomeDiv.className = 'flex items-start space-x-3';
         welcomeDiv.innerHTML = `
-            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-6 h-6 mt-1 opacity-80" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-            <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-3 py-2 rounded-lg rounded-tl-sm max-w-[75%]">
-                <p class="text-xs">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%]">
+                <p class="text-sm leading-relaxed">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
             </div>
         `;
         chatMessages.appendChild(welcomeDiv);
@@ -1045,32 +1076,31 @@ document.addEventListener('DOMContentLoaded', function() {
             if (clonedMessage.querySelector('.chat-message-ai')) {
                 const aiMessage = clonedMessage.querySelector('.chat-message-ai');
                 aiMessage.classList.remove('border', 'border-[rgba(0,191,255,0.08)]');
-                aiMessage.classList.remove('max-w-[70%]');
-                aiMessage.classList.add('max-w-[75%]');
+                // max-w-[70%] 保持不变，因为小窗口也使用这个宽度
                 const textEl = aiMessage.querySelector('p');
                 if (textEl) {
                     textEl.classList.remove('text-sm', 'leading-6');
-                    textEl.classList.add('text-xs');
+                    textEl.classList.add('text-sm', 'leading-relaxed');
                 }
             }
             if (clonedMessage.querySelector('.chat-message-user')) {
                 const userMessage = clonedMessage.querySelector('.chat-message-user');
-                userMessage.classList.remove('max-w-[70%]');
-                userMessage.classList.add('max-w-[75%]');
+                // max-w-[70%] 保持不变，因为小窗口也使用这个宽度
                 const textEl = userMessage.querySelector('p');
                 if (textEl) {
                     textEl.classList.remove('text-sm', 'leading-6');
-                    textEl.classList.add('text-xs');
+                    textEl.classList.add('text-sm', 'leading-relaxed');
                 }
             }
             if (clonedMessage.querySelector('img')) {
                 const img = clonedMessage.querySelector('img');
-                img.classList.remove('w-10', 'h-10', 'flex-shrink-0');
-                img.classList.add('w-6', 'h-6');
+                img.classList.remove('w-10', 'h-10');
+                img.classList.add('w-8', 'h-8');
+                // 保留 flex-shrink-0
             }
             // 调整间距
             clonedMessage.classList.remove('space-x-4');
-            clonedMessage.classList.add('space-x-2');
+            clonedMessage.classList.add('space-x-3');
             
             chatMessages.appendChild(clonedMessage);
         });
@@ -1208,6 +1238,115 @@ document.addEventListener('DOMContentLoaded', function() {
         fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
         return typingDiv;
     }
+
+    // 搜索下拉菜单交互功能
+    const searchDropdownBtn = document.getElementById('search-dropdown-btn');
+    const searchDropdownMenu = document.getElementById('search-dropdown-menu');
+    const fullscreenSearchDropdownBtn = document.getElementById('fullscreen-search-dropdown-btn');
+    const fullscreenSearchDropdownMenu = document.getElementById('fullscreen-search-dropdown-menu');
+
+    // 小窗口搜索下拉菜单
+    if (searchDropdownBtn && searchDropdownMenu) {
+        searchDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isHidden = searchDropdownMenu.style.display === 'none' || searchDropdownMenu.classList.contains('hidden');
+            
+            // 关闭所有其他下拉菜单
+            document.querySelectorAll('[id*="dropdown-menu"]').forEach(menu => {
+                if (menu !== searchDropdownMenu) {
+                    menu.classList.add('hidden');
+                    menu.style.display = 'none';
+                }
+            });
+            
+            if (isHidden) {
+                searchDropdownMenu.classList.remove('hidden');
+                searchDropdownMenu.style.display = 'block';
+                // 旋转箭头
+                const arrow = searchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                searchDropdownMenu.classList.add('hidden');
+                searchDropdownMenu.style.display = 'none';
+                // 重置箭头
+                const arrow = searchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        // 点击菜单项后关闭菜单
+        searchDropdownMenu.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                searchDropdownMenu.classList.add('hidden');
+                searchDropdownMenu.style.display = 'none';
+                const arrow = searchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+                
+                // 处理搜索选项点击
+                const searchType = e.target.textContent.trim();
+                console.log('选择搜索类型:', searchType);
+                // 这里可以添加实际的搜索逻辑
+            }
+        });
+    }
+
+    // 全屏搜索下拉菜单
+    if (fullscreenSearchDropdownBtn && fullscreenSearchDropdownMenu) {
+        fullscreenSearchDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isHidden = fullscreenSearchDropdownMenu.style.display === 'none' || fullscreenSearchDropdownMenu.classList.contains('hidden');
+            
+            // 关闭所有其他下拉菜单
+            document.querySelectorAll('[id*="dropdown-menu"]').forEach(menu => {
+                if (menu !== fullscreenSearchDropdownMenu) {
+                    menu.classList.add('hidden');
+                    menu.style.display = 'none';
+                }
+            });
+            
+            if (isHidden) {
+                fullscreenSearchDropdownMenu.classList.remove('hidden');
+                fullscreenSearchDropdownMenu.style.display = 'block';
+                const arrow = fullscreenSearchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                fullscreenSearchDropdownMenu.classList.add('hidden');
+                fullscreenSearchDropdownMenu.style.display = 'none';
+                const arrow = fullscreenSearchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        fullscreenSearchDropdownMenu.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                fullscreenSearchDropdownMenu.classList.add('hidden');
+                fullscreenSearchDropdownMenu.style.display = 'none';
+                const arrow = fullscreenSearchDropdownBtn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+                
+                const searchType = e.target.textContent.trim();
+                console.log('选择搜索类型:', searchType);
+            }
+        });
+    }
+
+    // 点击其他地方关闭所有下拉菜单
+    document.addEventListener('click', function() {
+        document.querySelectorAll('[id*="dropdown-menu"]').forEach(menu => {
+            menu.classList.add('hidden');
+            menu.style.display = 'none';
+        });
+        
+        // 重置所有箭头
+        [searchDropdownBtn, fullscreenSearchDropdownBtn].forEach(btn => {
+            if (btn) {
+                const arrow = btn.querySelector('svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        });
+    });
 
     // 事件监听器
     clearChatBtn.addEventListener('click', () => clearChatMessages(false));
@@ -1460,5 +1599,175 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化发送按钮状态
     sendBtn.disabled = true;
     fullscreenSendBtn.disabled = true;
+
+    // ====== 聊天记录持久化功能 ======
+    
+    // 等待存储管理器初始化完成后恢复聊天记录
+    async function initializeChatWithStorage() {
+        try {
+            // 确保存储管理器已初始化
+            if (window.chatStorage) {
+                await window.chatStorage.initDB();
+                
+                // 恢复聊天记录
+                await restoreChatMessages();
+                
+                console.log('聊天记录持久化功能已启用');
+            } else {
+                console.log('存储管理器未加载，跳过持久化功能');
+            }
+            
+            // 无论是否有存储功能，都保持脉冲圆环状态（已在初始化时设置）
+            console.log('聊天助手保持脉冲圆环状态');
+        } catch (error) {
+            console.error('初始化聊天存储失败:', error);
+        }
+    }
+
+    // 恢复聊天记录
+    async function restoreChatMessages() {
+        try {
+            const messages = await window.chatStorage.getMessages();
+            
+            if (messages.length > 0) {
+                // 恢复历史消息
+                messages.forEach(message => {
+                    if (message.sender === 'user' || message.sender === 'ai') {
+                        // 使用原始的addMessage函数，但不保存到存储
+                        originalAddMessage(message.content, message.sender);
+                    }
+                });
+                
+                console.log(`恢复了 ${messages.length} 条历史消息`);
+            }
+        } catch (error) {
+            console.error('恢复聊天记录失败:', error);
+        }
+    }
+
+
+
+    // 设置默认聊天状态（每次页面跳转都设置为脉冲圆环状态）
+    async function setDefaultChatState() {
+        // 由于初始化时已经设置为脉冲圆环状态，并且脉冲动画已经启动
+        // 这里不需要做任何额外操作，状态已经正确
+        console.log('聊天助手已设置为默认脉冲圆环状态');
+    }
+
+
+
+
+
+    
+    // 重写原有的addMessage函数，添加存储功能
+    const originalAddMessage = addMessage;
+    addMessage = function(content, sender, shouldSave = true) {
+        // 调用原始的addMessage函数
+        originalAddMessage(content, sender);
+        
+        // 保存到存储（如果需要）
+        if (shouldSave && window.chatStorage) {
+            window.chatStorage.saveMessage(content, sender).catch(error => {
+                console.error('保存消息失败:', error);
+            });
+        }
+    };
+
+    // 兼容addMessageToUI函数名（用于恢复消息时调用）
+    function addMessageToUI(content, sender, shouldSave = true) {
+        return addMessage(content, sender, shouldSave);
+    }
+
+    // 保存原有的消息发送逻辑
+    const originalSendMessage = function() {
+        const message = chatInput.value.trim();
+        if (message === '') return;
+
+        // 如果AI正在响应，则停止当前响应
+        if (isAIResponding) {
+            stopAIResponse();
+            return;
+        }
+
+        // 添加用户消息到UI并保存
+        addMessageToUI(message, 'user', true);
+        
+        // 清空输入框并重置状态
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        chatInput.style.height = '36px';
+        chatInput.style.overflowY = 'hidden';
+        chatInput.scrollTop = 0;
+        sendBtn.disabled = true;
+        
+        // 重置聊天窗口到初始状态
+        resetChatWindowHeight();
+
+        // 设置发送状态
+        setAIResponseState(true);
+
+        const typingIndicator = showTypingIndicator();
+        
+        // 创建AbortController用于取消请求
+        currentResponseAbortController = new AbortController();
+        
+        setTimeout(() => {
+            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
+                if (typingIndicator.parentNode) {
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+                const aiResponse = '这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。';
+                addMessageToUI(aiResponse, 'ai', true);
+                setAIResponseState(false);
+            }
+        }, 2000);
+    };
+
+    // 重写sendMessage函数添加存储功能
+    sendMessage = originalSendMessage;
+
+    // 重写清除聊天函数，添加存储清除逻辑
+    const originalClearChatMessages = clearChatMessages;
+    clearChatMessages = async function(isFullscreen) {
+        try {
+            // 清除存储中的消息
+            if (window.chatStorage) {
+                await window.chatStorage.clearSession();
+                console.log('聊天记录已从存储中清除');
+            }
+            
+            // 调用原始清除函数
+            originalClearChatMessages(isFullscreen);
+        } catch (error) {
+            console.error('清除聊天记录失败:', error);
+            // 即使存储清除失败，也执行UI清除
+            originalClearChatMessages(isFullscreen);
+        }
+    };
+
+
+    // 启动脉冲动画（页面加载时立即可见，无需等待）
+    const pulseRing = minimizedTrigger.querySelector('.animate-ping');
+    if (pulseRing) {
+        setTimeout(() => {
+            pulseRing.style.opacity = '0.6';
+            // 10秒后停止脉冲动画，给用户足够的发现时间
+            setTimeout(() => {
+                pulseRing.style.opacity = '0';
+            }, 10000);
+        }, 100); // 极短延迟，确保立即可见
+    }
+
+    // 初始化持久化功能（延迟执行，确保DOM完全加载）
+    setTimeout(() => {
+        if (window.chatStorage) {
+            initializeChatWithStorage().catch(error => {
+                console.error('持久化功能初始化失败:', error);
+            });
+        } else {
+            console.log('聊天存储脚本未加载，跳过持久化功能');
+            // 脉冲圆环状态已在初始化时设置，无需额外操作
+        }
+    }, 1000);
 });
 </script> 

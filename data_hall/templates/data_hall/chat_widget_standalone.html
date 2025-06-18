@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天助手</title>
+    <!-- Tailwind CSS -->
+    <script src="{% static 'data_hall/js/vendor/tailwindcss.js' %}"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}" />
+    <!-- AI聊天小部件CSS -->
+    <link rel="stylesheet" href="{% static 'data_hall/css/ai_chat_widget.css' %}" />
+    <!-- 聊天持久化存储 -->
+    <script src="{% static 'data_hall/js/chat-storage.js' %}"></script>
+    <style>
+        /* 确保页面透明，不阻挡底层内容 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent !important;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        /* 只有聊天组件相关的元素才接收事件 */
+        #ai-chat-widget, 
+        #ai-chat-widget *, 
+        #fullscreen-chat, 
+        #fullscreen-chat * {
+            pointer-events: auto;
+        }
+        
+        /* 确保全屏聊天时覆盖整个视口 */
+        #fullscreen-chat {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 直接包含AI聊天小部件的完整内容 -->
+    {% include 'data_hall/components/ai_chat_widget.html' %}
+    
+    <script>
+        // 确保聊天助手在iframe中正常工作
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('聊天助手iframe已加载');
+            
+            // 通知父窗口聊天助手已加载
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'chat-widget-ready'
+                }, '*');
+            }
+        });
+        
+        // 处理全屏模式的特殊情况
+        function handleFullscreenMode() {
+            const fullscreenChat = document.getElementById('fullscreen-chat');
+            if (fullscreenChat) {
+                // 确保全屏模式时覆盖整个父窗口
+                fullscreenChat.style.position = 'fixed';
+                fullscreenChat.style.top = '0';
+                fullscreenChat.style.left = '0';
+                fullscreenChat.style.width = '100vw';
+                fullscreenChat.style.height = '100vh';
+                fullscreenChat.style.zIndex = '9999';
+            }
+        }
+        
+        // 监听全屏状态变化
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const fullscreenChat = document.getElementById('fullscreen-chat');
+                    if (fullscreenChat && !fullscreenChat.classList.contains('hidden')) {
+                        handleFullscreenMode();
+                    }
+                }
+            });
+        });
+        
+        // 开始观察全屏聊天元素
+        const fullscreenChat = document.getElementById('fullscreen-chat');
+        if (fullscreenChat) {
+            observer.observe(fullscreenChat, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+    </script>
+</body>
+</html> 

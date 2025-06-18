@@ -17,6 +17,100 @@ def index(request):
     """首页视图"""
     return render(request, 'data_hall/index.html')
 
+def shell(request):
+    """Shell容器页面视图"""
+    return render(request, 'data_hall/shell.html')
+
+def chat_widget(request):
+    """独立的聊天助手页面视图"""
+    return render(request, 'data_hall/chat_widget_standalone.html')
+
+def index_iframe(request):
+    """首页iframe版本视图"""
+    return render(request, 'data_hall/index_iframe.html')
+
+def ranking_iframe(request):
+    """新势力榜单iframe版本视图"""
+    return render(request, 'data_hall/ranking.html')  # 需要后续创建iframe版本
+
+def industry_iframe(request):
+    """产业链iframe版本视图"""
+    # 从数据库获取所有产业链
+    industries = IndustryChain.objects.all()
+    
+    context = {
+        'industries': industries,
+    }
+    return render(request, 'data_hall/industry.html', context)  # 需要后续创建iframe版本
+
+def enterprise_iframe(request):
+    """企业库iframe版本视图"""
+    return render(request, 'data_hall/enterprise.html')  # 需要后续创建iframe版本
+
+def map_iframe(request):
+    """产业地图iframe版本视图"""
+    # 从数据库中获取筛选选项数据
+    industries = CompanyInfo.objects.values_list('industry', flat=True).distinct().exclude(industry__isnull=True).exclude(industry='')
+    cities = CompanyInfo.objects.values_list('city', flat=True).distinct().exclude(city__isnull=True).exclude(city='')
+    counties = CompanyInfo.objects.values_list('county', flat=True).distinct().exclude(county__isnull=True).exclude(county='')
+    
+    context = {
+        'industries': [{'id': industry, 'name': industry} for industry in industries],
+        'cities': [{'id': city, 'name': city} for city in cities],
+        'counties': [{'id': county, 'name': county} for county in counties],
+    }
+    
+    return render(request, 'data_hall/map.html', context)  # 需要后续创建iframe版本
+
+def report_iframe(request):
+    """产业报告iframe版本视图"""
+    return render(request, 'data_hall/report.html')  # 需要后续创建iframe版本
+
+def news_iframe(request):
+    """商业快讯iframe版本视图"""
+    return render(request, 'data_hall/news.html')  # 需要后续创建iframe版本
+
+def precision_iframe(request):
+    """精准招商iframe版本视图"""
+    return render(request, 'data_hall/precision.html')  # 需要后续创建iframe版本
+
+def login_iframe(request):
+    """登录iframe版本视图"""
+    # 如果用户已经登录，直接跳转到首页
+    if request.session.get('user_id'):
+        return redirect('data_hall:index_iframe')
+    
+    # 处理POST请求（用户登录表单提交）
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remember = request.POST.get('remember-me') == 'on'
+        
+        try:
+            user = User.objects.get(username=username)
+            if user.password == password:  # 实际项目中应该使用加密密码
+                # 登录成功，将用户信息存入会话
+                request.session['user_id'] = user.id
+                request.session['username'] = user.username
+                
+                # 如果选择"记住我"，设置会话过期时间为2周
+                if remember:
+                    request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
+                else:
+                    request.session.set_expiry(0)  # 浏览器关闭即失效
+                
+                # 重定向到首页
+                return redirect('data_hall:index_iframe')
+            else:
+                # 密码错误
+                return render(request, 'data_hall/login.html', {'error': '密码错误'})
+        except User.DoesNotExist:
+            # 用户不存在
+            return render(request, 'data_hall/login.html', {'error': '用户不存在'})
+    
+    # GET请求，展示登录页面
+    return render(request, 'data_hall/login.html')
+
 def ranking(request):
     """新势力榜单页面"""
     return render(request, 'data_hall/ranking.html')

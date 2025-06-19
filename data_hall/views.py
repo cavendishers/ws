@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.messages import success, error, info
 from django.http import JsonResponse
 from django.db.models import Count
 from .models import CompanyInfo, CompanyRanking, CompanyFinancing, User, IndustryChain
@@ -10,6 +12,9 @@ from django.views.decorators.http import require_POST
 from openai import OpenAI
 from django.views.decorators.http import require_http_methods
 from .models import IndustryChain, ChainPoint
+from .forms import LoginForm, RegistrationForm, PasswordResetRequestForm
+from django.contrib import messages
+from django.core.cache import cache
 
 
 
@@ -75,41 +80,33 @@ def precision_iframe(request):
     return render(request, 'data_hall/precision.html')  # 需要后续创建iframe版本
 
 def login_iframe(request):
-    """登录iframe版本视图"""
+    """登录iframe版本视图（安全版）"""
     # 如果用户已经登录，直接跳转到首页
-    if request.session.get('user_id'):
+    if request.user.is_authenticated:
         return redirect('data_hall:index_iframe')
     
-    # 处理POST请求（用户登录表单提交）
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        remember = request.POST.get('remember-me') == 'on'
-        
-        try:
-            user = User.objects.get(username=username)
-            if user.password == password:  # 实际项目中应该使用加密密码
-                # 登录成功，将用户信息存入会话
-                request.session['user_id'] = user.id
-                request.session['username'] = user.username
-                
-                # 如果选择"记住我"，设置会话过期时间为2周
-                if remember:
-                    request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
-                else:
-                    request.session.set_expiry(0)  # 浏览器关闭即失效
-                
-                # 重定向到首页
-                return redirect('data_hall:index_iframe')
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            
+            # 清除登录失败计数
+            ip_address = form.get_client_ip(request)
+            cache_key = f'login_attempts_{ip_address}'
+            cache.delete(cache_key)
+            
+            # 处理"记住我"功能
+            if form.cleaned_data.get('remember_me'):
+                request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
             else:
-                # 密码错误
-                return render(request, 'data_hall/login.html', {'error': '密码错误'})
-        except User.DoesNotExist:
-            # 用户不存在
-            return render(request, 'data_hall/login.html', {'error': '用户不存在'})
+                request.session.set_expiry(0)  # 浏览器关闭即失效
+            
+            return redirect('data_hall:index_iframe')
+    else:
+        form = LoginForm()
     
-    # GET请求，展示登录页面
-    return render(request, 'data_hall/login.html')
+    return render(request, 'data_hall/login.html', {'form': form})
 
 def ranking(request):
     """新势力榜单页面"""
@@ -157,41 +154,40 @@ def news(request):
     return render(request, 'data_hall/news.html')
 
 def login(request):
-    """登录页面"""
+    """安全登录页面"""
     # 如果用户已经登录，直接跳转到首页
-    if request.session.get('user_id'):
+    if request.user.is_authenticated:
         return redirect('data_hall:index')
     
-    # 处理POST请求（用户登录表单提交）
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        remember = request.POST.get('remember-me') == 'on'
-        
-        try:
-            user = User.objects.get(username=username)
-            if user.password == password:  # 实际项目中应该使用加密密码
-                # 登录成功，将用户信息存入会话
-                request.session['user_id'] = user.id
-                request.session['username'] = user.username
-                
-                # 如果选择"记住我"，设置会话过期时间为2周
-                if remember:
-                    request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
-                else:
-                    request.session.set_expiry(0)  # 浏览器关闭即失效
-                
-                # 重定向到首页
-                return redirect('data_hall:index')
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            
+            # 清除登录失败计数
+            ip_address = form.get_client_ip(request)
+            cache_key = f'login_attempts_{ip_address}'
+            cache.delete(cache_key)
+            
+            # 处理"记住我"功能
+            if form.cleaned_data.get('remember_me'):
+                request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
             else:
-                # 密码错误
-                return render(request, 'data_hall/login.html', {'error': '密码错误'})
-        except User.DoesNotExist:
-            # 用户不存在
-            return render(request, 'data_hall/login.html', {'error': '用户不存在'})
+                request.session.set_expiry(0)  # 浏览器关闭即失效
+            
+            messages.success(request, f'欢迎回来，{user.username}！')
+            
+            # 重定向到下一页或首页
+            next_url = request.GET.get('next') or 'data_hall:index'
+            return redirect(next_url)
+        else:
+            # 表单验证失败，错误信息已包含在form.errors中
+            pass
+    else:
+        form = LoginForm()
     
-    # GET请求，展示登录页面
-    return render(request, 'data_hall/login.html')
+    return render(request, 'data_hall/login.html', {'form': form})
 
 def get_filter_data(request):
     """获取筛选选项数据"""
@@ -880,37 +876,74 @@ def get_yearly_stats(request):
     })
 
 def logout(request):
-    """用户退出登录"""
-    # 清除会话
-    if 'user_id' in request.session:
-        del request.session['user_id']
-    if 'username' in request.session:
-        del request.session['username']
+    """用户安全退出登录"""
+    if request.user.is_authenticated:
+        username = request.user.username
+        auth_logout(request)
+        messages.info(request, f'您已安全退出，再见 {username}！')
     
-    # 重定向到首页
     return redirect('data_hall:index')
+
+
+def register(request):
+    """用户注册页面"""
+    # 如果用户已经登录，直接跳转到首页
+    if request.user.is_authenticated:
+        return redirect('data_hall:index')
     
-def industry_detail(request, industry_name=None):
+    if request.method == 'POST':
+        form = RegistrationForm(data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            messages.success(request, f'注册成功！欢迎加入，{user.username}！')
+            return redirect('data_hall:index')
+    else:
+        form = RegistrationForm()
+    
+    return render(request, 'data_hall/register.html', {'form': form})
+
+
+def password_reset_request(request):
+    """密码重置请求页面"""
+    if request.user.is_authenticated:
+        return redirect('data_hall:index')
+    
+    if request.method == 'POST':
+        form = PasswordResetRequestForm(data=request.POST)
+        if form.is_valid():
+            # TODO: 实现邮件发送功能
+            messages.info(request, '密码重置邮件已发送到您的邮箱，请查收。')
+            return redirect('data_hall:login')
+    else:
+        form = PasswordResetRequestForm()
+    
+    return render(request, 'data_hall/password_reset.html', {'form': form})
+    
+def industry_detail(request, industry_code=None):
     """产业链详情页面"""
     import json
     
-    # 如果没有指定产业名称，则默认为'新能源汽车'
-    if not industry_name:
-        industry_name = request.GET.get('industry', '新能源汽车')
+    # 如果没有指定产业代码，则默认为'IC0001'（新能源汽车）
+    if not industry_code:
+        industry_code = request.GET.get('industry_code', 'IC0001')
     
-    # 从数据库中获取所有产业链名称
-    available_industries = list(IndustryChain.objects.values_list('name', flat=True))
+    # 从数据库中获取所有产业链信息
+    available_industries = list(IndustryChain.objects.values('name', 'code'))
     
     # 如果数据库中没有数据，使用默认值
     if not available_industries:
-        available_industries = ['新能源汽车']
+        available_industries = [{'name': '新能源汽车', 'code': 'IC0001'}]
     
-    # 如果指定的产业链名称不在数据库中，使用第一个可用的产业链
-    if industry_name not in available_industries:
-        industry_name = available_industries[0]
-        
-    # 获取产业链ID
-    industry_chain = IndustryChain.objects.filter(name=industry_name).first()
+    # 获取产业链对象
+    industry_chain = IndustryChain.objects.filter(code=industry_code).first()
+    
+    # 如果找不到指定的产业链代码，使用第一个可用的产业链
+    if not industry_chain and available_industries:
+        industry_chain = IndustryChain.objects.filter(code=available_industries[0]['code']).first()
+    
+    # 获取产业名称
+    industry_name = industry_chain.name if industry_chain else '新能源汽车'
     
     # 如果找不到对应的产业链，返回空数据
     chain_data = {"Children": []}

@@ -1,96 +1,149 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // 获取模态框元素
-  const modal = document.getElementById('industryModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const industryChainImage = document.getElementById('industryChainImage');
-  const industryDescription = document.getElementById('industryDescription');
-  const coreEnterprises = document.getElementById('coreEnterprises');
-  const industryTrend = document.getElementById('industryTrend');
-  const closeBtn = document.querySelector('.close');
+  // 设置全局标记，防止其他代码干扰
+  window.INDUSTRY_PAGE_INITIALIZED = true;
   
-  // 产业数据（模拟数据）
-  const industryData = {
-    '人工智能': {
-      image: '/static/data_hall/img/产业链/人工智能产业链.jpg',
-      description: '人工智能产业链涵盖基础层、技术层和应用层三大部分。基础层包括算力基础设施和数据资源，技术层包括机器学习、深度学习、自然语言处理等核心技术，应用层则遍布金融、医疗、制造、交通等多个领域。',
-      coreEnterprises: ['百度', '科大讯飞', '商汤科技', '旷视科技', '云从科技'],
-      trend: '随着大模型技术的突破，AI产业正迎来新一轮爆发式增长，预计未来五年内，新一代人工智能将在各行各业实现深度融合发展。'
-    },
-    '未来医疗': {
-      image: '/static/data_hall/img/产业链/未来医疗.jpg',
-      description: '未来医疗产业链整合了传统医疗与新兴科技，包括医疗器械、生物制药、数字医疗和精准医疗四大板块，重点发展基因测序、AI辅助诊断、远程医疗等创新领域。',
-      coreEnterprises: ['华大基因', '迈瑞医疗', '微医集团', '丁香园', '翰森制药'],
-      trend: '随着人口老龄化加剧和健康需求提升，智慧医疗将成为产业发展重点，基因治疗和细胞治疗等前沿技术将加速商业化。'
-    },
-    '物联网': {
-      image: '/static/data_hall/img/产业链/物联网.jpg',
-      description: '物联网产业链由感知层、网络层和应用层构成。感知层包括各类传感器和RFID设备，网络层负责数据传输，应用层则实现智能家居、工业互联网、智慧城市等多种场景应用。',
-      coreEnterprises: ['海尔', '美的', '小米', '华为', '海康威视'],
-      trend: '随着5G网络的普及和边缘计算技术的成熟，物联网将迎来更大规模的应用爆发，特别是在智能制造和智慧城市领域。'
-    },
-    '数字经济': {
-      image: '/static/data_hall/img/产业链/数字经济.jpg',
-      description: '数字经济产业链涵盖数字产业化和产业数字化两大方向，包括电子信息制造、软件服务、平台经济和数字贸易四大关键环节，是推动经济高质量发展的新引擎。',
-      coreEnterprises: ['阿里巴巴', '腾讯', '京东', '字节跳动', '美团'],
-      trend: '数字经济正加速与实体经济深度融合，产业互联网将成为数字经济发展的下一个重点，数据要素市场化配置机制将逐步完善。'
-    },
-    '机器人': {
-      image: '/static/data_hall/img/产业链/机器人.jpg',
-      description: '机器人产业链包括核心零部件（伺服电机、减速器、控制器）、本体制造和系统集成三大环节，覆盖工业机器人、服务机器人和特种机器人三大类别。',
-      coreEnterprises: ['埃斯顿', '新松机器人', '大疆创新', '优必选', '柯马'],
-      trend: '协作机器人和服务机器人将成为产业发展新方向，人工智能技术的融入将显著提升机器人的柔性化、智能化水平，应用场景将持续拓展。'
-    },
-    '大数据': {
-      image: '/static/data_hall/img/产业链/大数据.jpg',
-      description: '大数据产业链包括数据采集、数据存储、数据处理、数据分析和数据应用五大环节，形成了从基础设施到行业应用的完整生态体系。',
-      coreEnterprises: ['阿里云', '腾讯云', '华为云', '星环科技', '达观数据'],
-      trend: '随着数据治理体系的完善和数据要素市场的建立，大数据产业将迎来更加规范化的发展，同时数据安全与隐私保护将成为产业发展的关键议题。'
-    },
-    '云计算': {
-      image: '/static/data_hall/img/产业链/云计算.jpg',
-      description: '云计算产业链由基础设施层（IaaS）、平台服务层（PaaS）和软件服务层（SaaS）构成，围绕IDC、服务器、网络设备、云服务平台和云应用五大环节形成完整体系。',
-      coreEnterprises: ['阿里云', '腾讯云', '华为云', '百度智能云', 'AWS'],
-      trend: '混合云和多云战略将成为企业IT转型的主流选择，边缘计算与云计算的融合将加速，云原生技术将推动应用架构创新。'
-    },
-    '半导体': {
-      image: '/static/data_hall/img/产业链/半导体.jpg',
-      description: '半导体产业链包括上游设计、中游制造和下游封测三大环节，是信息技术产业的基础，涉及EDA工具、晶圆制造、封装测试等多个专业领域。',
-      coreEnterprises: ['中芯国际', '华虹半导体', '长电科技', '紫光展锐', '寒武纪'],
-      trend: '在国产替代和技术升级双重驱动下，中国半导体产业将加速发展，特别是在特色工艺、封装测试和设计环节有望取得突破。'
-    }
+  // 添加调试信息
+  console.log('🚀 industry.js 已加载并开始执行');
+  
+  // 中英文映射表
+  const industryImageMap = {
+    '人工智能': 'artificial_intelligence.jpg',
+    '新能源汽车': 'new_energy_vehicles.jpg',
+    '医药生物': 'biopharmaceutical.jpg',
+    '数字经济': 'digital_economy.jpg',
+    '机器人': 'robotics.jpg',
+    '物联网': 'iot.jpg',
+    '低空经济': 'low_altitude_economy.jpg',
+    '半导体': 'semiconductor.jpg',
+    '大数据': 'big_data.jpg',
+    '云计算': 'cloud_computing.jpg'
   };
+  
+  // 中文名称到英文代码的映射表 - 作为备用方案
+  const industryCodeMap = {
+    '人工智能': 'AI',
+    '新能源汽车': 'NEV', 
+    '医药生物': 'BIOTECH',
+    '数字经济': 'DIGITAL',
+    '机器人': 'ROBOTICS',
+    '物联网': 'IOT',
+    '低空经济': 'LAE',
+    '半导体': 'SEMICONDUCTOR',
+    '大数据': 'BIGDATA',
+    '云计算': 'CLOUD'
+  };
+  
+  // 获取模态框元素（保留以备将来可能需要的模态框功能）
+  const modal = document.getElementById('industryModal');
+  const closeBtn = document.querySelector('.close');
   
   // 为每个卡片添加点击事件
   const industryCards = document.querySelectorAll('.industry-card');
-  industryCards.forEach(card => {
-    // 设置背景图片
-    const bgImage = card.getAttribute('data-bg-image');
-    if (bgImage) {
-      card.style.backgroundImage = `url("${bgImage}")`;
-      card.style.backgroundSize = 'cover';
-      card.style.backgroundPosition = 'center';
-    }
+  console.log(`📊 找到 ${industryCards.length} 个产业卡片`);
+  
+  industryCards.forEach((card, index) => {
     
-    card.addEventListener('click', function(event) {
+    // 添加事件监听器前的调试信息
+    const industryCode = card.getAttribute('data-industry-code');
+    const industryName = card.getAttribute('data-industry');
+    console.log(`📋 卡片 ${index + 1}: ${industryName} (${industryCode})`);
+    
+    // 设置背景图片（从模板内联代码移过来）
+    let imageName = industryImageMap[industryName] || 'artificial_intelligence.jpg';
+    let imagePath = `/static/data_hall/img/${imageName}`;
+    card.style.backgroundImage = `url(${imagePath})`;
+    
+    // 定义事件处理函数
+    function handleCardClick(event) {
       // 防止事件冒泡和默认行为
       event.preventDefault();
       event.stopPropagation();
       
-      const industry = this.getAttribute('data-industry');
-      console.log('点击了产业卡片:', industry);
+      console.log('🎯 点击事件触发!');
+      console.log('点击了产业卡片:', industryName, '代码:', industryCode);
       
-      if (industry) {
-        // 确保industry不为空
-        // 直接跳转到industry_detail页面
-        const detailUrl = `/industry/detail/${encodeURIComponent(industry)}/`;
-        console.log('准备跳转到:', detailUrl);
-        
-        // 直接执行跳转，不使用模态框
-        window.location.href = detailUrl;
-      } else {
-        console.error('产业名称为空或未定义');
+      // 构建URL的逻辑 - 优先使用 industryCode，如果没有则使用映射表
+      let urlCode = industryCode;
+      
+      // 如果没有 industryCode 或者 industryCode 是空的，使用备用映射
+      if (!urlCode || urlCode.trim() === '') {
+        urlCode = industryCodeMap[industryName];
+        console.log('⚠️ 未找到 industryCode，使用备用映射:', urlCode);
       }
-    });
+      
+      // 如果仍然没有找到合适的代码，使用默认值
+      if (!urlCode || urlCode.trim() === '') {
+        urlCode = 'DEFAULT';
+        console.error('❌ 无法确定产业代码，使用默认值');
+      }
+      
+      // 确保 urlCode 不包含中文字符
+      if (/[\u4e00-\u9fff]/.test(urlCode)) {
+        console.error('❌ 检测到中文字符在URL代码中，这是不应该发生的！');
+        // 如果检测到中文，尝试使用英文映射
+        urlCode = industryCodeMap[urlCode] || 'DEFAULT';
+      }
+      
+      const detailUrl = `/industry/detail/${urlCode}/`;
+      console.log('✅ 准备跳转到:', detailUrl);
+      
+      // 直接执行跳转，不使用模态框
+      window.location.href = detailUrl;
+    }
+    
+    // 强制移除任何可能存在的旧事件处理器
+    card.onclick = null;
+    
+    // 移除所有可能的旧事件监听器
+    const newCard = card.cloneNode(true);
+    card.parentNode.replaceChild(newCard, card);
+    
+    // 在新的元素上添加事件监听器
+    newCard.addEventListener('click', function(event) {
+      // 重新获取属性，因为是新克隆的元素
+      const industryCode = newCard.getAttribute('data-industry-code');
+      const industryName = newCard.getAttribute('data-industry');
+      
+      // 防止事件冒泡和默认行为
+      event.preventDefault();
+      event.stopPropagation();
+      
+      console.log('🎯 点击事件触发!');
+      console.log('点击了产业卡片:', industryName, '代码:', industryCode);
+      
+      // 构建URL的逻辑 - 优先使用 industryCode，如果没有则使用映射表
+      let urlCode = industryCode;
+      
+      // 如果没有 industryCode 或者 industryCode 是空的，使用备用映射
+      if (!urlCode || urlCode.trim() === '') {
+        urlCode = industryCodeMap[industryName];
+        console.log('⚠️ 未找到 industryCode，使用备用映射:', urlCode);
+      }
+      
+      // 如果仍然没有找到合适的代码，使用默认值
+      if (!urlCode || urlCode.trim() === '') {
+        urlCode = 'DEFAULT';
+        console.error('❌ 无法确定产业代码，使用默认值');
+      }
+      
+      // 确保 urlCode 不包含中文字符
+      if (/[\u4e00-\u9fff]/.test(urlCode)) {
+        console.error('❌ 检测到中文字符在URL代码中，这是不应该发生的！');
+        // 如果检测到中文，尝试使用英文映射
+        urlCode = industryCodeMap[urlCode] || 'DEFAULT';
+      }
+      
+      const detailUrl = `/industry/detail/${urlCode}/`;
+      console.log('✅ 准备跳转到:', detailUrl);
+      
+      // 直接执行跳转，不使用模态框
+      window.location.href = detailUrl;
+    }, true); // 使用捕获阶段
+    
+         // 重新设置背景图片，因为是新克隆的元素
+     imageName = industryImageMap[industryName] || 'artificial_intelligence.jpg';
+     imagePath = `/static/data_hall/img/${imageName}`;
+     newCard.style.backgroundImage = `url(${imagePath})`;
   });
   
   // 移除模态框相关代码，因为我们直接跳转而不显示模态框

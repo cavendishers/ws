@@ -16,6 +16,127 @@
     <script src="{% static 'data_hall/js/vendor/echarts.min.js' %}"></script>
     <!-- 自定义样式 -->
     <link rel="stylesheet" href="{% static 'data_hall/css/style.css' %}" />
+    <style>
+        /* Simple dropdown animations */
+        #user-dropdown, #industry-dropdown {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        #user-dropdown:not(.hidden), #industry-dropdown:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transition: all 0.3s ease;
+        }
+
+        /* 统一错误提示系统样式 - 温和设计 */
+        .unified-error-container {
+            position: relative;
+            min-height: 0;
+            margin-top: 8px;
+        }
+
+        .unified-error-message {
+            display: inline;
+            color: #DC6B6B;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.4;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.25s ease;
+            margin-right: 12px;
+            padding-left: 2px;
+        }
+
+        .unified-error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .unified-error-message:last-child {
+            margin-right: 0;
+        }
+
+        /* 输入框错误状态样式 - 更温和 */
+        .form-input.field-error {
+            border-color: #E6A3A3 !important;
+            box-shadow: 0 0 0 2px rgba(230, 163, 163, 0.06) !important;
+        }
+
+        .form-input.field-error:focus {
+            border-color: #E6A3A3 !important;
+            box-shadow: 0 0 0 3px rgba(230, 163, 163, 0.08) !important;
+        }
+
+        /* 表单全局错误提示区域 */
+        .form-global-errors {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 12px 20px;
+            z-index: 999;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            border-top: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .form-global-errors.show {
+            transform: translateY(0);
+        }
+
+        .form-global-errors .error-list {
+            max-width: 600px;
+            margin: 0 auto;
+            color: #DC6B6B;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .form-global-errors .error-item {
+            margin-bottom: 4px;
+        }
+
+        .form-global-errors .error-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 深色主题适配 */
+        .bg-\[var\(--primary\)\] .unified-error-message {
+            color: #F87171;
+        }
+
+        .bg-\[var\(--primary\)\] .form-global-errors {
+            background: rgba(127, 29, 29, 0.05);
+            border-top-color: rgba(248, 113, 113, 0.2);
+        }
+
+        .bg-\[var\(--primary\)\] .form-global-errors .error-list {
+            color: #F87171;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .unified-error-message {
+                font-size: 0.7rem;
+            }
+            
+            .form-global-errors {
+                padding: 10px 16px;
+            }
+            
+            .form-global-errors .error-list {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-[var(--primary)] text-gray-100 font-sans">
@@ -32,12 +153,20 @@
                 <a href="{% url 'data_hall:index' %}" class="{% if request.resolver_match.url_name == 'index' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">首页</a>
                 <a href="{% url 'data_hall:ranking' %}" class="{% if request.resolver_match.url_name == 'ranking' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">新势力榜单</a>
                 <div class="relative group" id="industry-dropdown-container">
-                    <button id="industry-dropdown-btn" class="{% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center px-4 py-2 -mx-4 -my-2">
-                        产业链 <i class="ml-1 fas fa-chevron-down text-xs"></i>
+                    <button id="industry-dropdown-btn" class="{% if request.resolver_match.url_name in 'industry,enterprise,precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %} flex items-center px-4 py-2 -mx-4 -my-2 rounded-lg transition-all duration-200 hover:bg-[rgba(0,191,255,0.08)]">
+                        产业链 <i class="ml-1 fas fa-chevron-down text-xs transition-transform duration-200" id="industry-dropdown-icon"></i>
                     </button>
-                    <div id="industry-dropdown" class="absolute hidden group-hover:block bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
-                        <a href="{% url 'data_hall:industry' %}" class="block hover:text-blue-400 text-sm py-2">产业链图谱</a>
-                        <a href="{% url 'data_hall:enterprise' %}" class="block hover:text-blue-400 text-sm py-2">企业库</a>
+                    <div id="industry-dropdown" class="absolute hidden bg-[var(--bg-secondary)] rounded-xl shadow-2xl w-52 mt-3 border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden backdrop-blur-md">
+                        <div class="py-2">
+                            <a href="{% url 'data_hall:industry' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
+                                <i class="fas fa-sitemap mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
+                                产业链图谱
+                            </a>
+                            <a href="{% url 'data_hall:enterprise' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
+                                <i class="fas fa-building mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
+                                企业库
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <a href="{% url 'data_hall:map' %}" class="{% if request.resolver_match.url_name == 'map' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业地图</a>
@@ -46,19 +175,46 @@
                 <a href="{% url 'data_hall:news' %}" class="{% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
             </div>
             <div class="flex items-center space-x-4">
-                {% if request.session.user_id %}
-                <div class="relative group">
-                    <button class="flex items-center space-x-1 bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">
-                        <span>{{ request.session.username }}</span>
-                        <i class="fas fa-chevron-down text-xs"></i>
+                {% if user.is_authenticated %}
+                <div class="relative" id="user-dropdown-container">
+                    <button id="user-dropdown-btn" class="flex items-center space-x-3 bg-gradient-to-r from-[var(--bg-secondary)] to-[var(--button-inactive)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[rgba(0,191,255,0.08)] hover:shadow-lg transition-all duration-300 focus:outline-none border border-[rgba(255,255,255,0.1)] backdrop-blur-sm">
+                        <div class="w-7 h-7 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <span class="font-medium">{{ user.username }}</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 ml-1" id="user-dropdown-icon"></i>
                     </button>
-                    <div class="absolute hidden group-hover:block right-0 bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
-                        <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
-                        <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
-                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                    <div id="user-dropdown" class="absolute hidden right-0 mt-3 w-64 bg-[var(--bg-secondary)] rounded-xl shadow-2xl border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden backdrop-blur-md">
+                        <div class="p-4 bg-gradient-to-r from-[rgba(2,4,10,0.7)] via-[rgba(30,41,59,0.8)] to-[rgba(2,4,10,0.7)] border-b border-[rgba(255,255,255,0.08)]">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
+                                    {{ user.username|first|upper }}
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white font-semibold text-sm">{{ user.username }}</p>
+                                    <p class="text-[var(--text-secondary)] text-xs truncate">{{ user.email|default:"用户" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-2">
+                            <a href="#" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
+                                <i class="fas fa-user-circle mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
+                                个人中心
+                            </a>
+                            <a href="#" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
+                                <i class="fas fa-cog mr-3 text-base w-5 group-hover:rotate-90 transition-transform"></i>
+                                设置
+                            </a>
+                            <div class="border-t border-[rgba(255,255,255,0.08)] my-2 mx-2"></div>
+                            <a href="{% url 'data_hall:logout' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(239,68,68,0.1)] hover:text-red-400 transition-all duration-200 group">
+                                <i class="fas fa-sign-out-alt mr-3 text-base w-5 group-hover:translate-x-1 transition-transform"></i>
+                                退出登录
+                            </a>
+                        </div>
                     </div>
                 </div>
                 {% else %}
+                <a href="{% url 'data_hall:register' %}" class="text-[var(--text-secondary)] hover:text-[var(--button-highlight)] px-3 py-2 text-sm font-medium transition-colors">注册</a>
                 <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
                 {% endif %}
                 <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
@@ -99,9 +255,9 @@
                 <a href="{% url 'data_hall:report' %}" class="text-lg {% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
                 <a href="{% url 'data_hall:precision' %}" class="text-lg {% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
                 <a href="{% url 'data_hall:news' %}" class="text-lg {% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
-                {% if request.session.user_id %}
+                {% if user.is_authenticated %}
                 <div class="border-t border-[rgba(255,255,255,0.1)] pt-4 mt-4">
-                    <p class="text-lg text-[var(--button-highlight)]">{{ request.session.username }}</p>
+                    <p class="text-lg text-[var(--button-highlight)]">{{ user.username }}</p>
                     <div class="pl-4 space-y-3 mt-2">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
@@ -109,22 +265,28 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
+                <div class="space-y-3">
+                    <a href="{% url 'data_hall:register' %}" class="block text-center bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 border border-[var(--button-highlight)]">注册</a>
+                    <a href="{% url 'data_hall:login' %}" class="block text-center bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90">登录</a>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
     <!-- 主体内容 -->
-    <main class="pt-20">
+    <main class="{% if request.resolver_match.url_name in 'login,register,password_reset' %}pt-0{% else %}pt-20{% endif %} min-h-[calc(100vh-200px)]">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- AI聊天小部件 -->
+    <!-- AI聊天小部件 - 只在用户登录状态下显示 -->
+    {% if user.is_authenticated and request.resolver_match.url_name not in 'login,register,password_reset' %}
     {% include 'data_hall/components/ai_chat_widget.html' %}
+    {% endif %}
 
-    <!-- 页脚 -->
-    <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)]" style="margin-top: 2rem;">
+    <!-- 页脚 - 在认证页面不显示 -->
+    {% if request.resolver_match.url_name not in 'login,register,password_reset' %}
+    <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)] mt-0">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
@@ -139,6 +301,7 @@
             </div>
         </div>
     </footer>
+    {% endif %}
 
     <!-- 聊天持久化存储 -->
     <script src="{% static 'data_hall/js/chat-storage.js' %}"></script>
@@ -150,27 +313,95 @@
             const industryContainer = document.getElementById('industry-dropdown-container');
             const industryBtn = document.getElementById('industry-dropdown-btn');
             const industryDropdown = document.getElementById('industry-dropdown');
+            const industryDropdownIcon = document.getElementById('industry-dropdown-icon');
             const mobileIndustryBtn = document.getElementById('mobile-industry-btn');
             const mobileIndustryDropdown = document.getElementById('mobile-industry-dropdown');
 
+            // 用户下拉菜单
+            const userContainer = document.getElementById('user-dropdown-container');
+            const userBtn = document.getElementById('user-dropdown-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            const userDropdownIcon = document.getElementById('user-dropdown-icon');
+
             // 桌面端下拉菜单
-            industryBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                industryDropdown.classList.toggle('hidden');
-            });
+            if (industryBtn) {
+                industryBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = industryDropdown.classList.contains('hidden');
+                    
+                    // 关闭其他下拉菜单
+                    if (userDropdown) {
+                        userDropdown.classList.add('hidden');
+                        if (userDropdownIcon) {
+                            userDropdownIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                    
+                    // 切换产业链下拉菜单
+                    industryDropdown.classList.toggle('hidden');
+                    
+                    // 旋转箭头图标
+                    if (industryDropdownIcon) {
+                        if (isHidden) {
+                            industryDropdownIcon.style.transform = 'rotate(180deg)';
+                        } else {
+                            industryDropdownIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+            }
+
+            // 用户下拉菜单点击处理
+            if (userBtn) {
+                userBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = userDropdown.classList.contains('hidden');
+                    
+                    // 关闭其他下拉菜单
+                    if (industryDropdown) {
+                        industryDropdown.classList.add('hidden');
+                        if (industryDropdownIcon) {
+                            industryDropdownIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                    
+                    // 切换用户下拉菜单
+                    userDropdown.classList.toggle('hidden');
+                    
+                    // 旋转箭头图标
+                    if (userDropdownIcon) {
+                        if (isHidden) {
+                            userDropdownIcon.style.transform = 'rotate(180deg)';
+                        } else {
+                            userDropdownIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+            }
 
             // 移动端下拉菜单
-            mobileIndustryBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                mobileIndustryDropdown.classList.toggle('hidden');
-            });
+            if (mobileIndustryBtn) {
+                mobileIndustryBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileIndustryDropdown.classList.toggle('hidden');
+                });
+            }
 
             // 点击外部关闭下拉菜单
             document.addEventListener('click', (e) => {
-                if (!industryContainer.contains(e.target)) {
+                if (industryContainer && !industryContainer.contains(e.target)) {
                     industryDropdown.classList.add('hidden');
+                    if (industryDropdownIcon) {
+                        industryDropdownIcon.style.transform = 'rotate(0deg)';
+                    }
                 }
-                if (!mobileIndustryBtn.contains(e.target) && !mobileIndustryDropdown.contains(e.target)) {
+                if (userContainer && !userContainer.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                    if (userDropdownIcon) {
+                        userDropdownIcon.style.transform = 'rotate(0deg)';
+                    }
+                }
+                if (mobileIndustryBtn && !mobileIndustryBtn.contains(e.target) && !mobileIndustryDropdown.contains(e.target)) {
                     mobileIndustryDropdown.classList.add('hidden');
                 }
             });

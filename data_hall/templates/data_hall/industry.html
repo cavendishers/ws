@@ -17,12 +17,11 @@
 </section>
 
 <!-- 产业链网格布局 -->
-<section class="container mx-auto px-6" style="min-height: 30rem;">
+<section class="container mx-auto px-6" style="min-height: 45rem;">
   <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
     {% for industry in industries %}
     <div class="industry-card bg-[#132144] p-6 rounded-lg glow-effect hover:bg-[#1B335A] transition-colors bg-cover bg-center" 
-         data-bg-image="{% static 'data_hall/img/' %}{{ industry.name }}.jpg"
-         data-industry="{{ industry.name }}">
+         data-industry="{{ industry.name }}" data-industry-code="{{ industry.code }}">
       <h3 class="text-lg font-bold mb-2 text-white">{{ industry.name }}</h3>
       <p class="text-sm text-gray-300">企业数：{{ industry.company_count }}</p>
     </div>

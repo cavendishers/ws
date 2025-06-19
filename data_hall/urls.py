@@ -13,7 +13,7 @@ urlpatterns = [
     path('ranking/', views.ranking, name='ranking'),
     path('industry/', views.industry, name='industry'),
     path('industry/detail/', views.industry_detail, name='industry_detail'),
-    path('industry/detail/<str:industry_name>/', views.industry_detail, name='industry_detail_with_name'),
+    path('industry/detail/<str:industry_code>/', views.industry_detail, name='industry_detail_with_code'),
     path('enterprise/', views.enterprise, name='enterprise'),
     path('precision/', views.precision, name='precision'),
     path('map/', views.map_view, name='map'),
@@ -21,6 +21,8 @@ urlpatterns = [
     path('news/', views.news, name='news'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    path('register/', views.register, name='register'),
+    path('password-reset/', views.password_reset_request, name='password_reset'),
     
     # iframe版本页面路由
     path('iframe/', views.index_iframe, name='index_iframe'),

@@ -103,7 +103,7 @@ body, button, input, select, textarea {
     background-color: #212D48;
     background-image: linear-gradient(to bottom, #23304D, #212D48);
     border-radius: 12px;
-    min-height: 600px;
+    min-height: 800px;
 }
 
 #industry-chain-container {
@@ -424,6 +424,10 @@ body, button, input, select, textarea {
     border-top: 1px solid #36435F;
     margin-top: 1.5rem;
     border-radius: 12px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .section-card {

@@ -1,0 +1,61 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Django Project Structure Guide
+
+This is a Django project focused on company data analysis, industrial chains, and regional information.
+
+## Project Structure
+
+- **[manage.py](mdc:manage.py)** - Django management script
+- **[mysite/](mdc:mysite)** - Main Django project directory containing settings and configuration
+  - **[mysite/settings.py](mdc:mysite/settings.py)** - Main Django settings file with database (MySQL), cache, authentication, and app configurations
+  - **[mysite/urls.py](mdc:mysite/urls.py)** - Root URL configuration
+  - **[mysite/wsgi.py](mdc:mysite/wsgi.py)** and **[mysite/asgi.py](mdc:mysite/asgi.py)** - WSGI/ASGI application entry points
+
+- **[data_hall/](mdc:data_hall)** - Main Django app containing all business logic
+  - **[data_hall/models.py](mdc:data_hall/models.py)** - Database models including CompanyInfo, IndustryChain, ChainPoint, regional data models
+  - **[data_hall/views.py](mdc:data_hall/views.py)** - Main view functions (over 1000 lines)
+  - **[data_hall/api_views.py](mdc:data_hall/api_views.py)** - REST API views using Django REST Framework
+  - **[data_hall/urls.py](mdc:data_hall/urls.py)** - URL routing for both web pages and API endpoints
+  - **[data_hall/forms.py](mdc:data_hall/forms.py)** - Django forms for user input handling
+  - **[data_hall/serializers.py](mdc:data_hall/serializers.py)** - DRF serializers for API responses
+  - **[data_hall/admin.py](mdc:data_hall/admin.py)** - Django admin configuration
+  - **[data_hall/templates/](mdc:data_hall/templates)** - HTML templates
+  - **[data_hall/static/](mdc:data_hall/static)** - Static files (CSS, JS, images)
+
+## Key Features
+
+- Company information management and ranking system
+- Industrial chain analysis with hierarchical data structure
+- Regional data (provinces, cities, districts) with tree-like relationships
+- REST API endpoints for data access
+- Authentication system with custom user management
+- AI chat integration
+- Interactive maps and data visualization
+- Both regular and iframe versions of pages
+
+## Database Models
+
+The project uses MySQL database with key models:
+- `CompanyInfo` - Core company data
+- `CompanyRanking` - Company scoring and ranking
+- `CompanyFinancing` - Financing information
+- `IndustryChain` - Industrial chain definitions
+- `ChainPoint` - Hierarchical chain points
+- `Province`, `City`, `District` - Regional hierarchy
+
+## API Structure
+
+RESTful APIs are organized in **[data_hall/api_views.py](mdc:data_hall/api_views.py)** with endpoints for:
+- Chain point management and enterprise filtering
+- Regional data tree structure
+- Company search and filtering
+
+## Language & Localization
+
+- Interface language: Chinese (zh-hans)
+- Documentation and comments are in Chinese
+- Database field names use English conventions with Chinese verbose names

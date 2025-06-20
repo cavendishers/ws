@@ -1,0 +1,88 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Deployment & Utilities
+
+## CDN Management Tools
+
+The project includes CDN localization tools for optimizing resource delivery:
+
+### CDN Download Script
+**[download_cdn_resources.py](mdc:download_cdn_resources.py)** - Downloads and localizes CDN resources
+- Automatically downloads external CDN files (CSS, JS, fonts)
+- Creates local copies in static directories
+- Updates HTML templates to reference local files
+- Supports multiple CDN providers (Bootstrap, jQuery, etc.)
+
+### CDN Verification Script  
+**[verify_cdn_resources.py](mdc:verify_cdn_resources.py)** - Verifies CDN resource integrity
+- Checks if CDN resources are accessible
+- Validates file integrity and sizes
+- Reports missing or corrupted files
+- Useful for deployment verification
+
+### CDN Documentation
+**[CDN本地化说明.md](mdc:CDN本地化说明.md)** - Comprehensive guide for CDN localization process
+- Step-by-step instructions for running CDN tools
+- Troubleshooting common issues
+- Best practices for managing static resources
+
+## Testing & Validation Tools
+
+### Regional API Testing
+**[test_regions_api.py](mdc:test_regions_api.py)** - Comprehensive API testing suite
+- Tests all regional data endpoints
+- Validates response formats and data structure
+- Includes error scenario testing
+- Can be used for deployment validation
+
+## Documentation Files
+
+### API Documentation
+**[API_Documentation.md](mdc:API_Documentation.md)** - Complete API reference
+- Endpoint specifications and examples
+- Authentication and authorization details
+- Error codes and troubleshooting
+
+### Product Documentation
+**[产业链企业筛选API文档.md](mdc:产业链企业筛选API文档.md)** - Industrial chain API documentation in Chinese
+**[地区选择器使用说明.md](mdc:地区选择器使用说明.md)** - Regional selector usage guide
+
+### Feature Documentation
+**[data_hall/AI聊天助手常驻功能使用说明.md](mdc:data_hall/AI聊天助手常驻功能使用说明.md)** - AI chat assistant feature guide
+**[data_hall/AI聊天组件使用说明.md](mdc:data_hall/AI聊天组件使用说明.md)** - AI chat component usage
+
+## Deployment Checklist
+
+### Pre-deployment Steps
+1. Run **[verify_cdn_resources.py](mdc:verify_cdn_resources.py)** to check resource availability
+2. Execute **[test_regions_api.py](mdc:test_regions_api.py)** to validate API functionality
+3. Review security settings in **[mysite/settings.py](mdc:mysite/settings.py)**
+
+### Production Configuration
+- Move database credentials to environment variables
+- Set `DEBUG = False`
+- Configure `ALLOWED_HOSTS` appropriately
+- Enable production security middleware
+- Set up proper static file serving
+
+### Post-deployment Validation
+- Verify all API endpoints return expected responses
+- Check static files load correctly
+- Test authentication and session management
+- Validate database connections and queries
+
+## Backup Locations
+
+### Templates Backup
+**[templates_backup/](mdc:templates_backup)** - Contains backup copies of templates
+- Use for rollback scenarios
+- Reference for template changes
+- Maintain version history
+
+### Pending Files
+**[Pending files/](mdc:Pending files)** - Staging area for work-in-progress features
+- Keep unfinished development work
+- Store experimental code and configurations

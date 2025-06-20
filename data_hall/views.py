@@ -4,7 +4,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.messages import success, error, info
 from django.http import JsonResponse
 from django.db.models import Count
-from .models import CompanyInfo, CompanyRanking, CompanyFinancing, User, IndustryChain
+from .models import CompanyInfo, CompanyRanking, CompanyFinancing, IndustryChain
 from django.db.models import Q
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -34,27 +34,31 @@ def index_iframe(request):
     """首页iframe版本视图"""
     return render(request, 'data_hall/index_iframe.html')
 
-def ranking_iframe(request):
-    """新势力榜单iframe版本视图"""
-    return render(request, 'data_hall/ranking.html')  # 需要后续创建iframe版本
+# 合并后的视图函数，支持iframe模式
+def ranking(request, iframe_mode=False):
+    """新势力榜单页面"""
+    template = 'data_hall/ranking.html'
+    return render(request, template)
 
-def industry_iframe(request):
-    """产业链iframe版本视图"""
-    # 从数据库获取所有产业链
+def industry(request, iframe_mode=False):
+    """产业链页面"""
     industries = IndustryChain.objects.all()
-    
-    context = {
-        'industries': industries,
-    }
-    return render(request, 'data_hall/industry.html', context)  # 需要后续创建iframe版本
+    context = {'industries': industries}
+    template = 'data_hall/industry.html'
+    return render(request, template, context)
 
-def enterprise_iframe(request):
-    """企业库iframe版本视图"""
-    return render(request, 'data_hall/enterprise.html')  # 需要后续创建iframe版本
+def enterprise(request, iframe_mode=False):
+    """企业库页面"""
+    template = 'data_hall/enterprise.html'
+    return render(request, template)
 
-def map_iframe(request):
-    """产业地图iframe版本视图"""
-    # 从数据库中获取筛选选项数据
+def precision(request, iframe_mode=False):
+    """精准招商页面"""
+    template = 'data_hall/precision.html'
+    return render(request, template)
+
+def map_view(request, iframe_mode=False):
+    """产业地图页面"""
     industries = CompanyInfo.objects.values_list('industry', flat=True).distinct().exclude(industry__isnull=True).exclude(industry='')
     cities = CompanyInfo.objects.values_list('city', flat=True).distinct().exclude(city__isnull=True).exclude(city='')
     counties = CompanyInfo.objects.values_list('county', flat=True).distinct().exclude(county__isnull=True).exclude(county='')
@@ -64,20 +68,44 @@ def map_iframe(request):
         'cities': [{'id': city, 'name': city} for city in cities],
         'counties': [{'id': county, 'name': county} for county in counties],
     }
-    
-    return render(request, 'data_hall/map.html', context)  # 需要后续创建iframe版本
+    template = 'data_hall/map.html'
+    return render(request, template, context)
+
+def report(request, iframe_mode=False):
+    """产业报告页面"""
+    template = 'data_hall/report.html'
+    return render(request, template)
+
+def news(request, iframe_mode=False):
+    """商业快讯页面"""
+    template = 'data_hall/news.html'
+    return render(request, template)
+
+# 删除重复的iframe版本视图函数
+# ranking_iframe, industry_iframe, enterprise_iframe, map_iframe, 
+# report_iframe, news_iframe, precision_iframe 等函数已合并
+
+# iframe版本视图的包装器
+def ranking_iframe(request):
+    return ranking(request, iframe_mode=True)
+
+def industry_iframe(request):
+    return industry(request, iframe_mode=True)
+
+def enterprise_iframe(request):
+    return enterprise(request, iframe_mode=True)
+
+def map_iframe(request):
+    return map_view(request, iframe_mode=True)
 
 def report_iframe(request):
-    """产业报告iframe版本视图"""
-    return render(request, 'data_hall/report.html')  # 需要后续创建iframe版本
+    return report(request, iframe_mode=True)
 
 def news_iframe(request):
-    """商业快讯iframe版本视图"""
-    return render(request, 'data_hall/news.html')  # 需要后续创建iframe版本
+    return news(request, iframe_mode=True)
 
 def precision_iframe(request):
-    """精准招商iframe版本视图"""
-    return render(request, 'data_hall/precision.html')  # 需要后续创建iframe版本
+    return precision(request, iframe_mode=True)
 
 def login_iframe(request):
     """登录iframe版本视图（安全版）"""
@@ -107,51 +135,6 @@ def login_iframe(request):
         form = LoginForm()
     
     return render(request, 'data_hall/login.html', {'form': form})
-
-def ranking(request):
-    """新势力榜单页面"""
-    return render(request, 'data_hall/ranking.html')
-
-def industry(request):
-    """产业链页面"""
-    # 从数据库获取所有产业链
-    industries = IndustryChain.objects.all()
-    
-    context = {
-        'industries': industries,
-    }
-    return render(request, 'data_hall/industry.html', context)
-
-def enterprise(request):
-    """企业库页面"""
-    return render(request, 'data_hall/enterprise.html')
-
-def precision(request):
-    """精准招商页面"""
-    return render(request, 'data_hall/precision.html')
-
-def map_view(request):
-    """产业地图页面"""
-    # 从数据库中获取筛选选项数据
-    industries = CompanyInfo.objects.values_list('industry', flat=True).distinct().exclude(industry__isnull=True).exclude(industry='')
-    cities = CompanyInfo.objects.values_list('city', flat=True).distinct().exclude(city__isnull=True).exclude(city='')
-    counties = CompanyInfo.objects.values_list('county', flat=True).distinct().exclude(county__isnull=True).exclude(county='')
-    
-    context = {
-        'industries': [{'id': industry, 'name': industry} for industry in industries],
-        'cities': [{'id': city, 'name': city} for city in cities],
-        'counties': [{'id': county, 'name': county} for county in counties],
-    }
-    
-    return render(request, 'data_hall/map.html', context)
-
-def report(request):
-    """产业报告页面"""
-    return render(request, 'data_hall/report.html')
-
-def news(request):
-    """商业快讯页面"""
-    return render(request, 'data_hall/news.html')
 
 def login(request):
     """安全登录页面"""

@@ -1,0 +1,80 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# API Development Patterns
+
+## API Architecture
+
+This project uses Django REST Framework with a clear separation between web views and API views:
+
+- **Web Views**: Located in **[data_hall/views.py](mdc:data_hall/views.py)** - handles HTML rendering and traditional Django views
+- **API Views**: Located in **[data_hall/api_views.py](mdc:data_hall/api_views.py)** - handles REST API endpoints
+- **Serializers**: Located in **[data_hall/serializers.py](mdc:data_hall/serializers.py)** - data serialization for API responses
+
+## URL Structure
+
+API endpoints follow RESTful conventions in **[data_hall/urls.py](mdc:data_hall/urls.py)**:
+
+```python
+# Industrial Chain APIs
+path('api/chain-points/', api_views.ChainPointListAPIView.as_view())
+path('api/chain-point/<int:chain_point_id>/enterprises/', api_views.ChainPointEnterpriseListAPIView.as_view())
+
+# Regional Data APIs  
+path('api/regions/tree/', api_views.RegionTreeAPIView.as_view())
+path('api/regions/provinces/', api_views.ProvinceListAPIView.as_view())
+path('api/regions/cities/', api_views.CityListAPIView.as_view())
+```
+
+## Data Models for APIs
+
+### Industrial Chain Structure
+- **IndustryChain** → **ChainPoint** → **ChainPointCompany** → **CompanyInfo**
+- Use the `company_count` property for aggregated data
+- Chain points support hierarchical parent-child relationships
+
+### Regional Data Structure  
+- **Province** → **City** → **District**
+- Primary keys use region codes (CharField)
+- Support tree-like data structures for nested queries
+
+### Company Information
+- **CompanyInfo** is the core model with business key `keyno`
+- Related models: **CompanyRanking**, **CompanyFinancing**
+- Geographic data stored as latitude/longitude strings
+
+## API Response Patterns
+
+### Consistent Error Handling
+- Use appropriate HTTP status codes
+- Return structured error messages in Chinese
+- Include field-specific validation errors where applicable
+
+### Data Filtering and Search
+- Support query parameters for filtering (region, industry, etc.)
+- Implement search functionality for company names
+- Use pagination for large datasets
+
+### Nested Data Structures
+- Return hierarchical data for regions (tree structure)
+- Include related data counts (e.g., company_count per chain point)
+- Use select_related/prefetch_related for efficient queries
+
+## Testing API Endpoints
+
+Reference **[test_regions_api.py](mdc:test_regions_api.py)** for testing patterns:
+- Test response status codes
+- Validate JSON response structure
+- Test query parameters and filtering
+- Test error scenarios and edge cases
+
+## Documentation Standards
+
+Keep **[API_Documentation.md](mdc:API_Documentation.md)** updated with:
+- Endpoint descriptions and parameters
+- Request/response examples
+- Authentication requirements
+- Rate limiting information
+- Chinese field descriptions and business logic

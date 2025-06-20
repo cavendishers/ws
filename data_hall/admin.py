@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import User, CompanyInfo, CompanyRanking, Province, City, District
+from .models import CompanyInfo, CompanyRanking, Province, City, District
 
 # Register your models here.
-admin.site.register(User)
+# admin.site.register(User)  # 删除废弃的自定义User模型注册
 admin.site.register(CompanyInfo)
 admin.site.register(CompanyRanking)
 

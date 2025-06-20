@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}"/>
 <link rel="stylesheet" href="{% static 'data_hall/css/industry_chain.css' %}">
 <link rel="stylesheet" href="{% static 'data_hall/css/chain-sidebar.css' %}">
-<link rel="stylesheet" href="{% static 'data_hall/css/region-selector.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'data_hall/css/region-selector.css' %}"> -->
 {% endblock %}
 
 {% block content %}
@@ -83,9 +83,9 @@
 {% block extra_js %}
 <script>
 // 从后端获取产业链数据，传递给外部JS文件
-const graphData = JSON.parse('{{ chain_data|escapejs }}');
+// const graphData = JSON.parse('{{ chain_data|escapejs }}');
 </script>
-<script src="{% static 'data_hall/js/region-selector.js' %}"></script>
+<!-- <script src="{% static 'data_hall/js/region-selector.js' %}"></script> -->
 <script src="{% static 'data_hall/js/industry_detail.js' %}"></script>
 <script src="{% static 'data_hall/js/chain-sidebar.js' %}"></script>
 {% endblock %}

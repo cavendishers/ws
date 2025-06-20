@@ -1,0 +1,271 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Development Patterns
+
+## Template Structure and Organization
+
+### Base Template System
+- **Main Layout**: [data_hall/templates/data_hall/base.html](mdc:data_hall/templates/data_hall/base.html) - 24KB master template
+- **Iframe Layout**: [data_hall/templates/data_hall/base_iframe.html](mdc:data_hall/templates/data_hall/base_iframe.html) - For embedded content
+- **Shell Template**: [data_hall/templates/data_hall/shell.html](mdc:data_hall/templates/data_hall/shell.html) - Minimal layout
+
+### Key Page Templates
+```html
+<!-- Main application pages -->
+index.html          <!-- Homepage dashboard (27KB, 540 lines) -->
+enterprise.html     <!-- Company detail page (16KB, 453 lines) -->
+map.html           <!-- Geographic visualization -->
+ranking.html       <!-- Company rankings display -->
+industry.html      <!-- Industry analysis -->
+news.html          <!-- News and updates -->
+```
+
+### Authentication Templates
+```html
+<!-- User management pages -->
+login.html         <!-- User login (11KB, 450 lines) -->
+register.html      <!-- User registration (13KB, 498 lines) -->
+password_reset.html <!-- Password recovery (11KB, 423 lines) -->
+```
+
+## Static File Organization
+
+### Directory Structure
+```
+data_hall/static/data_hall/
+├── css/           <!-- Stylesheets -->
+├── js/            <!-- JavaScript files -->
+├── img/           <!-- Images and icons -->
+├── fonts/         <!-- Custom fonts -->
+└── map/           <!-- Map-related assets -->
+```
+
+### Key Static Files
+- **Tailwind CSS**: [data_hall/static/data_hall/js/vendor/tailwindcss.js](mdc:data_hall/static/data_hall/js/vendor/tailwindcss.js) - CSS framework
+- **Logo**: [data_hall/static/ai_assistant_logo.jpg](mdc:data_hall/static/ai_assistant_logo.jpg) - Application branding
+- **Favicon**: [data_hall/static/favicon.ico](mdc:data_hall/static/favicon.ico) - Browser icon
+
+## Template Development Patterns
+
+### Template Inheritance
+```html
+<!-- Base template structure -->
+{% extends "data_hall/base.html" %}
+{% load static %}
+
+{% block title %}Page Title{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'data_hall/css/custom.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'data_hall/js/custom.js' %}"></script>
+{% endblock %}
+```
+
+### Component-Based Architecture
+```html
+<!-- Use template components for reusable elements -->
+{% include "data_hall/components/company_card.html" with company=company %}
+{% include "data_hall/components/ranking_chart.html" with rankings=rankings %}
+```
+
+### Data Visualization Patterns
+```html
+<!-- Chart.js integration -->
+<canvas id="rankingChart"></canvas>
+<script>
+const ctx = document.getElementById('rankingChart');
+const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ companies|safe }},
+        datasets: [{
+            data: {{ scores|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.2)'
+        }]
+    }
+});
+</script>
+```
+
+### Map Integration
+```html
+<!-- Geographic data visualization -->
+<div id="map-container" style="height: 600px;"></div>
+<script>
+// Initialize map with company locations
+const map = new Map({
+    center: [{{ default_lat }}, {{ default_lng }}],
+    zoom: 8
+});
+
+// Add company markers
+{% for company in companies %}
+    map.addMarker({
+        lat: {{ company.latitude }},
+        lng: {{ company.longitude }},
+        popup: "{{ company.company_name }}"
+    });
+{% endfor %}
+</script>
+```
+
+## CSS and Styling Guidelines
+
+### Tailwind CSS Usage
+```html
+<!-- Utility-first CSS classes -->
+<div class="bg-blue-500 text-white p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-bold mb-2">Company Info</h2>
+    <p class="text-sm opacity-75">{{ company.description }}</p>
+</div>
+```
+
+### Responsive Design
+```html
+<!-- Mobile-first responsive classes -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="bg-white p-6 rounded-lg shadow">
+        <!-- Card content -->
+    </div>
+</div>
+```
+
+### Custom CSS Organization
+```css
+/* Component-specific styles */
+.company-card {
+    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow;
+}
+
+.ranking-badge {
+    @apply inline-block px-2 py-1 text-xs font-semibold rounded;
+}
+
+.ranking-badge--high {
+    @apply bg-green-100 text-green-800;
+}
+```
+
+## JavaScript Development Patterns
+
+### AJAX Form Handling
+```javascript
+// Form submission with CSRF token
+function submitForm(formData) {
+    fetch('/api/companies/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification('Success', 'success');
+            refreshTable();
+        }
+    });
+}
+```
+
+### Data Table Integration
+```javascript
+// DataTables configuration for company listings
+$('#companyTable').DataTable({
+    ajax: '/api/companies/',
+    columns: [
+        { data: 'company_name', title: '公司名称' },
+        { data: 'industry', title: '行业' },
+        { data: 'city', title: '城市' },
+        { 
+            data: 'ranking.comprehensive_score', 
+            title: '综合得分',
+            render: function(data) {
+                return data ? data.toFixed(2) : 'N/A';
+            }
+        }
+    ],
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese.json'
+    }
+});
+```
+
+### Chart.js Integration
+```javascript
+// Multi-dimensional ranking visualization
+function createRankingChart(companyData) {
+    return new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['发展潜力', '扩张速度', '创新能力', '资本关注', '团队背景'],
+            datasets: [{
+                label: companyData.company_name,
+                data: [
+                    companyData.dev_potential,
+                    companyData.expansion_speed,
+                    companyData.innovation,
+                    companyData.capital_attention,
+                    companyData.team_background
+                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)'
+            }]
+        }
+    });
+}
+```
+
+## Performance Optimization
+
+### Static File Optimization
+```html
+<!-- Lazy loading for images -->
+<img src="{% static 'data_hall/img/placeholder.jpg' %}" 
+     data-src="{{ company.logo_url }}" 
+     class="lazy-load"
+     alt="{{ company.company_name }}">
+
+<!-- CSS/JS minification and compression -->
+{% if not debug %}
+    <link rel="stylesheet" href="{% static 'data_hall/css/app.min.css' %}">
+{% else %}
+    <link rel="stylesheet" href="{% static 'data_hall/css/app.css' %}">
+{% endif %}
+```
+
+### Caching Strategies
+```html
+<!-- Template fragment caching -->
+{% load cache %}
+{% cache 300 company_rankings company.keyno %}
+    {% include "data_hall/components/ranking_display.html" %}
+{% endcache %}
+```
+
+### Progressive Web App Features
+```html
+<!-- Service worker registration -->
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/data_hall/js/sw.js');
+}
+</script>
+
+<!-- Offline capability -->
+<div id="offline-indicator" class="hidden">
+    <p>您当前处于离线状态</p>
+</div>
+```

@@ -3,78 +3,121 @@ description:
 globs: 
 alwaysApply: false
 ---
-# API Development Patterns
+# API Patterns and Conventions
 
-## API Architecture
+## Django REST Framework Guidelines
 
-This project uses Django REST Framework with a clear separation between web views and API views:
+### API Structure
+- **Base API Views**: Located in [data_hall/api_views.py](mdc:data_hall/api_views.py)
+- **Serializers**: Defined in [data_hall/serializers.py](mdc:data_hall/serializers.py)
+- **URL Routing**: API endpoints configured in [data_hall/urls.py](mdc:data_hall/urls.py)
 
-- **Web Views**: Located in **[data_hall/views.py](mdc:data_hall/views.py)** - handles HTML rendering and traditional Django views
-- **API Views**: Located in **[data_hall/api_views.py](mdc:data_hall/api_views.py)** - handles REST API endpoints
-- **Serializers**: Located in **[data_hall/serializers.py](mdc:data_hall/serializers.py)** - data serialization for API responses
-
-## URL Structure
-
-API endpoints follow RESTful conventions in **[data_hall/urls.py](mdc:data_hall/urls.py)**:
-
+### Serializer Patterns
 ```python
-# Industrial Chain APIs
-path('api/chain-points/', api_views.ChainPointListAPIView.as_view())
-path('api/chain-point/<int:chain_point_id>/enterprises/', api_views.ChainPointEnterpriseListAPIView.as_view())
-
-# Regional Data APIs  
-path('api/regions/tree/', api_views.RegionTreeAPIView.as_view())
-path('api/regions/provinces/', api_views.ProvinceListAPIView.as_view())
-path('api/regions/cities/', api_views.CityListAPIView.as_view())
+# Follow patterns from serializers.py
+class CompanyInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyInfo
+        fields = '__all__'  # or specify explicit fields
 ```
 
-## Data Models for APIs
+### API Endpoint Conventions
+- **List/Create**: `GET/POST /api/companies/`
+- **Detail/Update/Delete**: `GET/PUT/PATCH/DELETE /api/companies/{id}/`
+- **Nested Resources**: `GET /api/companies/{id}/financings/`
+- **Custom Actions**: `POST /api/companies/{id}/calculate-ranking/`
 
-### Industrial Chain Structure
-- **IndustryChain** → **ChainPoint** → **ChainPointCompany** → **CompanyInfo**
-- Use the `company_count` property for aggregated data
-- Chain points support hierarchical parent-child relationships
+### Response Formats
+```json
+{
+    "status": "success|error",
+    "data": {...},
+    "message": "Optional message",
+    "pagination": {
+        "count": 100,
+        "next": "url",
+        "previous": "url"
+    }
+}
+```
 
-### Regional Data Structure  
-- **Province** → **City** → **District**
-- Primary keys use region codes (CharField)
-- Support tree-like data structures for nested queries
+### Error Handling
+```python
+from rest_framework.response import Response
+from rest_framework import status
 
-### Company Information
-- **CompanyInfo** is the core model with business key `keyno`
-- Related models: **CompanyRanking**, **CompanyFinancing**
-- Geographic data stored as latitude/longitude strings
+# Consistent error responses
+return Response({
+    'status': 'error',
+    'message': 'Error description',
+    'errors': {...}  # Field-specific errors
+}, status=status.HTTP_400_BAD_REQUEST)
+```
 
-## API Response Patterns
+### Authentication & Permissions
+- **Authentication**: Use Django's session authentication (configured)
+- **Permissions**: Apply appropriate DRF permission classes
+- **Rate Limiting**: Consider implementing for public APIs
 
-### Consistent Error Handling
-- Use appropriate HTTP status codes
-- Return structured error messages in Chinese
-- Include field-specific validation errors where applicable
+### Filtering & Search
+```python
+# Use django-filter for complex filtering
+from django_filters.rest_framework import DjangoFilterBackend
 
-### Data Filtering and Search
-- Support query parameters for filtering (region, industry, etc.)
-- Implement search functionality for company names
-- Use pagination for large datasets
+class CompanyViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['industry', 'city', 'company_scale']
+    search_fields = ['company_name', 'industry']
+```
 
-### Nested Data Structures
-- Return hierarchical data for regions (tree structure)
-- Include related data counts (e.g., company_count per chain point)
-- Use select_related/prefetch_related for efficient queries
+### Pagination
+```python
+# Configure in settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
+```
 
-## Testing API Endpoints
+### Specific API Endpoints (Based on Models)
 
-Reference **[test_regions_api.py](mdc:test_regions_api.py)** for testing patterns:
-- Test response status codes
-- Validate JSON response structure
-- Test query parameters and filtering
-- Test error scenarios and edge cases
+#### Company APIs
+- `GET/POST /api/companies/` - List/create companies
+- `GET/PUT/DELETE /api/companies/{keyno}/` - Company details
+- `GET /api/companies/{keyno}/rankings/` - Company ranking data
+- `GET /api/companies/{keyno}/financings/` - Financing history
 
-## Documentation Standards
+#### Industry Chain APIs  
+- `GET /api/industry-chains/` - List industry chains
+- `GET /api/industry-chains/{id}/chain-points/` - Chain points hierarchy
+- `GET /api/chain-points/{id}/companies/` - Companies in chain point
 
-Keep **[API_Documentation.md](mdc:API_Documentation.md)** updated with:
-- Endpoint descriptions and parameters
-- Request/response examples
-- Authentication requirements
-- Rate limiting information
-- Chinese field descriptions and business logic
+#### Geographic APIs
+- `GET /api/provinces/` - Province list
+- `GET /api/provinces/{code}/cities/` - Cities in province  
+- `GET /api/cities/{code}/districts/` - Districts in city
+
+### Data Validation
+```python
+# Custom validation in serializers
+def validate_insured_num(self, value):
+    if value and not value.isdigit():
+        raise serializers.ValidationError("Insured number must be numeric")
+    return value
+```
+
+### Performance Considerations
+- **Select Related**: Use `select_related()` for foreign keys
+- **Prefetch Related**: Use `prefetch_related()` for reverse foreign keys and many-to-many
+- **Serializer Optimization**: Only serialize required fields
+- **Caching**: Cache frequent API responses
+
+### Testing API Endpoints
+```python
+from rest_framework.test import APITestCase
+
+class CompanyAPITest(APITestCase):
+    def test_company_list(self):
+        response = self.client.get('/api/companies/')
+        self.assertEqual(response.status_code, 200)
+```

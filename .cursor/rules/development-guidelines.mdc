@@ -5,72 +5,59 @@ alwaysApply: false
 ---
 # Development Guidelines
 
-## Code Style & Conventions
+## Django Best Practices for This Project
 
-### Python/Django Code
-- Follow PEP 8 style guidelines
-- Use Chinese for verbose_name and help_text in models
-- Database table names use lowercase with underscores (e.g., `company_info`)
-- Model field names use lowercase with underscores
-- Use descriptive variable names in Chinese comments where appropriate
+### Model Development
+- **Use verbose_name**: All model fields should have Chinese verbose names for admin interface
+- **Database Comments**: Use `db_comment` parameter for field documentation
+- **Indexes**: Add appropriate indexes for frequently queried fields (see [models.py](mdc:data_hall/models.py))
+- **Meta Options**: Always include `verbose_name` and `verbose_name_plural` in Meta classes
+- **String Representation**: Implement meaningful `__str__` methods for all models
 
-### Database Design
-- Primary keys use CharField for business keys (e.g., `keyno` in CompanyInfo)
-- Foreign keys use descriptive names and set proper `related_name`
-- Add database indexes for frequently queried fields
-- Use `db_comment` for field documentation
+### View & API Development  
+- **Large View Files**: The main [views.py](mdc:data_hall/views.py) is 1000+ lines - consider splitting by functionality
+- **API Consistency**: Use DRF serializers in [serializers.py](mdc:data_hall/serializers.py) for API responses
+- **Error Handling**: Implement proper error handling and user feedback
+- **Authentication**: Use Django's built-in auth system (already configured)
 
-### API Development
-- Use Django REST Framework serializers in **[data_hall/serializers.py](mdc:data_hall/serializers.py)**
-- API views should inherit from appropriate DRF generic views
-- Implement proper error handling and status codes
-- Use consistent response format across all endpoints
+### Frontend Development
+- **Template Structure**: Use [base.html](mdc:data_hall/templates/data_hall/base.html) as the main layout template
+- **Static Files**: Organize CSS, JS, and images under [data_hall/static/data_hall/](mdc:data_hall/static/data_hall)
+- **Responsive Design**: Templates should be mobile-friendly using CSS frameworks
+- **JavaScript**: Use modern ES6+ syntax, organize by functionality
 
-## Security Considerations
+### Database Guidelines
+- **MySQL Configuration**: Database settings in [mysite/settings.py](mdc:mysite/settings.py)
+- **Migrations**: Always create and apply migrations for model changes
+- **Foreign Keys**: Use appropriate `on_delete` behavior (CASCADE, PROTECT, etc.)
+- **Naming Conventions**: Use snake_case for database fields, follow Django conventions
 
-- **NEVER commit sensitive data** like database passwords
-- Current settings in **[mysite/settings.py](mdc:mysite/settings.py)** contain hardcoded credentials - these should be moved to environment variables
-- Set `DEBUG = False` in production
-- Update `ALLOWED_HOSTS` for production deployment
-- Enable CSRF and session security settings for production
+### Security Considerations
+- **DEBUG Mode**: Set `DEBUG = False` in production
+- **Secret Key**: Move SECRET_KEY to environment variables in production
+- **ALLOWED_HOSTS**: Configure properly for deployment
+- **CSRF Protection**: Ensure CSRF middleware is enabled
+- **Session Security**: Review session cookie settings for production
 
-## File Organization
+### Code Organization
+- **App Structure**: Keep related functionality within the `data_hall` app
+- **URL Patterns**: Organize URLs logically in [data_hall/urls.py](mdc:data_hall/urls.py)
+- **Management Commands**: Use [data_hall/management/](mdc:data_hall/management) for custom commands
+- **Data Imports**: Place data files in [data_hall/data/](mdc:data_hall/data) directory
 
-### Templates
-- Store templates in **[data_hall/templates/data_hall/](mdc:data_hall/templates/data_hall)**
-- Use template inheritance for consistent layout
-- Separate iframe versions from regular templates
+### Testing
+- **Test Structure**: Tests should be in [tests/](mdc:tests) directory
+- **Model Testing**: Test model methods, validations, and relationships
+- **View Testing**: Test both regular views and API endpoints
+- **Coverage**: Aim for high test coverage, especially for business logic
 
-### Static Files
-- CSS, JS, and images go in **[data_hall/static/data_hall/](mdc:data_hall/static/data_hall)**
-- Use Django's static file handling in templates
-- Optimize images and use appropriate formats
+### Performance Optimization
+- **Database Queries**: Use `select_related()` and `prefetch_related()` for foreign key relationships
+- **Caching**: Leverage Django's caching framework (configured in settings)
+- **Static Files**: Use Django's static file handling for production
+- **Pagination**: Implement pagination for large datasets
 
-### URL Routing
-- Keep URL patterns organized in **[data_hall/urls.py](mdc:data_hall/urls.py)**
-- Use descriptive URL names for reverse lookups
-- Group related URLs together (e.g., API routes, iframe routes)
-
-## Database Operations
-
-### Migrations
-- Always create and run migrations after model changes
-- Review migration files before applying
-- Use descriptive migration names when creating custom migrations
-
-### Queries
-- Use select_related() and prefetch_related() for efficient queries
-- Leverage model properties like `company_count` in **[data_hall/models.py](mdc:data_hall/models.py)**
-- Use database indexes for performance optimization
-
-## Testing & Documentation
-
-### API Testing
-- Use **[test_regions_api.py](mdc:test_regions_api.py)** as reference for API testing patterns
-- Test both success and error scenarios
-- Validate response data structure and content
-
-### Documentation
-- Keep API documentation updated in **[API_Documentation.md](mdc:API_Documentation.md)**
-- Document Chinese-specific features and regional data handling
-- Include example requests and responses
+### Internationalization
+- **Language**: Default language is Chinese (zh-hans)
+- **Time Zone**: UTC configured, consider local timezone for user display
+- **Translations**: Use Django's i18n framework for multi-language support

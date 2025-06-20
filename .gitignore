@@ -82,3 +82,5 @@ jspm_packages/
 *.sql
 *.sqlite
 
+# Cursor
+.cursorrules

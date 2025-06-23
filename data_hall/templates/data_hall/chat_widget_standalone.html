@@ -9,6 +9,9 @@
     <script src="{% static 'data_hall/js/vendor/tailwindcss.js' %}"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}" />
+    <!-- Markdown解析器和XSS防护库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@5.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
     <!-- AI聊天小部件CSS -->
     <link rel="stylesheet" href="{% static 'data_hall/css/ai_chat_widget.css' %}" />
     <!-- 聊天持久化存储 -->
@@ -39,6 +42,15 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 9999 !important;
+        }
+        
+        /* 确保聊天消息文字颜色正确 */
+        .chat-message-ai .markdown-content {
+            color: var(--text-primary) !important;
+        }
+        
+        .chat-message-user .markdown-content {
+            color: white !important;
         }
     </style>
 </head>

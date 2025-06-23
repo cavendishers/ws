@@ -10,6 +10,8 @@ from django.conf import settings
 from openai import OpenAI
 import json
 
+from .emoji_utils import sanitize_for_db, prepare_for_display, decode_emojis
+
 logger = logging.getLogger('ai_chat')
 
 
@@ -211,7 +213,7 @@ class ChatMessageProcessor:
     @staticmethod
     def parse_user_input(request_data: Dict[str, Any]) -> str:
         """
-        解析用户输入，支持多种格式
+        解析用户输入，支持多种格式，并处理表情符号
         
         Args:
             request_data: 请求数据
@@ -235,12 +237,21 @@ class ChatMessageProcessor:
         else:
             message = request_data.get('message', '') or request_data.get('content', '')
         
-        return str(message).strip()
+        # 处理表情符号：如果消息包含HTML实体编码的表情符号，解码为原始表情符号
+        message_str = str(message).strip()
+        
+        # 检查是否是前端发送的编码表情符号
+        if request_data.get('encode_emojis') or request_data.get('X-Emoji-Encoding'):
+            logger.info("检测到前端发送的编码表情符号，进行解码处理")
+            message_str = decode_emojis(message_str)
+        
+        logger.debug(f"解析用户输入: 原始='{message}', 处理后='{message_str}'")
+        return message_str
     
     @staticmethod
     def extract_conversation_history(request_data: Dict[str, Any]) -> Optional[List[Dict]]:
         """
-        提取对话历史
+        提取对话历史，并处理其中的表情符号
         
         Args:
             request_data: 请求数据
@@ -255,13 +266,61 @@ class ChatMessageProcessor:
             history = []
             for msg in messages[:-1]:  # 排除最后一条消息
                 if msg.get('role') in ['user', 'assistant'] and msg.get('content'):
+                    content = msg['content']
+                    
+                    # 如果包含编码的表情符号，解码处理
+                    if request_data.get('encode_emojis') or request_data.get('X-Emoji-Encoding'):
+                        content = decode_emojis(content)
+                    
                     history.append({
                         'role': msg['role'],
-                        'content': msg['content']
+                        'content': content
                     })
+                    
+            logger.debug(f"提取对话历史: {len(history)} 条记录")
             return history if history else None
         
         return None
+    
+    @staticmethod
+    def prepare_message_for_storage(content: str) -> str:
+        """
+        为数据库存储准备消息内容
+        
+        Args:
+            content: 消息内容
+            
+        Returns:
+            处理后的消息内容
+        """
+        try:
+            # 使用emoji工具处理
+            processed_content = sanitize_for_db(content)
+            logger.debug(f"消息存储预处理: '{content}' -> '{processed_content}'")
+            return processed_content
+        except Exception as e:
+            logger.error(f"消息存储预处理失败: {str(e)}")
+            return content
+    
+    @staticmethod
+    def prepare_message_for_display(content: str) -> str:
+        """
+        为前端显示准备消息内容
+        
+        Args:
+            content: 数据库中的消息内容
+            
+        Returns:
+            处理后的消息内容
+        """
+        try:
+            # 使用emoji工具处理
+            processed_content = prepare_for_display(content)
+            logger.debug(f"消息显示预处理: '{content}' -> '{processed_content}'")
+            return processed_content
+        except Exception as e:
+            logger.error(f"消息显示预处理失败: {str(e)}")
+            return content
 
 
 # 全局服务实例

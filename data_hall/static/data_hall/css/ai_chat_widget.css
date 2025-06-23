@@ -251,6 +251,17 @@ button, .chat-function-btn {
   background: linear-gradient(to bottom, rgba(0, 191, 255, 0.7), rgba(0, 191, 255, 0.5));
 }
 
+/* 聊天消息容器布局优化 */
+#chat-messages {
+  /* 避免因为悬停按钮导致的横向滚动 */
+  overflow-x: visible;
+  overflow-y: auto;
+  /* 适度的左右内边距来容纳按钮 */
+  padding-left: 40px;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
 /* 输入框样式优化 */
 #chat-input {
   font-family: inherit;
@@ -373,6 +384,8 @@ button, .chat-function-btn {
   backdrop-filter: blur(4px);
   position: relative;
   transition: none;
+  /* 确保消息容器能处理按钮定位 */
+  overflow: visible;
 }
 
 .chat-message-ai {
@@ -389,6 +402,8 @@ button, .chat-function-btn {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   transition: none;
+  /* 确保消息容器能处理按钮定位 */
+  overflow: visible;
 }
 
 /* 全屏模式下的消息气泡增强对比度 */
@@ -499,7 +514,7 @@ button, .chat-function-btn {
   
   #chat-window {
     width: calc(100vw - 2rem);
-    height: 360px;
+    height: 400px;
   }
 
   .chat-message-user,
@@ -547,7 +562,7 @@ button, .chat-function-btn {
   
   #chat-window {
     width: calc(100vw - 1rem);
-    height: 340px;
+    height: 380px;
   }
 
   /* 小屏幕上最小化按钮更大 */
@@ -638,76 +653,359 @@ button, .chat-function-btn {
   transition: none;
 }
 
-/* 悬停按钮容器 */
+/* 悬停按钮容器 - 基于Vue样式改进，优化定位避免横向滚动 */
 .message-hover-actions {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
-  display: flex;
-  gap: 4px;
-  z-index: 10;
+  transition: opacity 0.15s ease-in, visibility 0.15s ease-in;
+  display: flex; /* 使用flex确保对齐 */
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: center; /* 水平居中对齐 */
+  list-style: none;
+  margin: 0;
+  padding: 6px; /* 适中的内边距 */
+  gap: 6px; /* 统一的间距 */
+  z-index: 15;
+  font-family: inherit;
+  /* 确保按钮容器不会超出视口 */
+  max-width: fit-content;
+  white-space: nowrap;
+  /* 创建无形的悬停桥梁 */
+  background: transparent;
+  /* 确保容器本身对齐 */
+  height: auto;
+  min-height: 40px; /* 最小高度确保一致性 */
 }
 
-/* AI消息的悬停按钮（左侧显示） */
-.chat-message-ai:hover .message-hover-actions {
+/* AI消息的悬停按钮（右侧显示，贴近气泡边缘） - 增加悬停容忍度 */
+.chat-message-ai:hover .message-hover-actions,
+.chat-message-ai .message-hover-actions:hover {
   opacity: 1;
   visibility: visible;
+  transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
 }
 
 .chat-message-ai .message-hover-actions {
-  right: -60px;
+  /* 精确的定位，确保对齐 */
+  left: calc(100% + 2px);
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  /* 默认状态延迟隐藏，给用户时间移动鼠标 */
+  transition: opacity 0.4s ease-in 0.3s, visibility 0.4s ease-in 0.3s;
 }
 
-/* 用户消息的悬停按钮（左侧显示） */
-.chat-message-user:hover .message-hover-actions {
+/* 用户消息的悬停按钮（左侧显示，贴近气泡边缘） - 增加悬停容忍度 */
+.chat-message-user:hover .message-hover-actions,
+.chat-message-user .message-hover-actions:hover {
   opacity: 1;
   visibility: visible;
+  transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
 }
 
 .chat-message-user .message-hover-actions {
-  left: -60px;
+  /* 精确的定位，确保对齐 */
+  right: calc(100% + 2px);
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  /* 默认状态延迟隐藏，给用户时间移动鼠标 */
+  transition: opacity 0.4s ease-in 0.3s, visibility 0.4s ease-in 0.3s;
 }
 
-/* 悬停按钮样式 - 简化动画 */
+/* 悬停按钮样式 - 适配深色主题的圆形图标风格 */
 .message-action-btn {
-  width: 24px;
-  height: 24px;
-  background: linear-gradient(135deg, 
-    rgba(0, 40, 80, 0.9) 0%, 
-    rgba(0, 32, 64, 0.95) 100%);
-  border: 1px solid rgba(0, 191, 255, 0.25);
-  border-radius: 6px;
+  position: relative;
+  background: linear-gradient(145deg, 
+    rgba(0, 40, 80, 0.95) 0%, 
+    rgba(0, 32, 64, 0.98) 100%);
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  border-radius: 50%;
+  margin: 0; /* 移除外边距，通过gap统一控制间距 */
+  width: 36px; /* 统一按钮大小 */
+  height: 36px;
+  font-size: 14px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  backdrop-filter: blur(8px);
+  align-items: center;
+  flex-direction: column;
+  flex-shrink: 0; /* 防止按钮压缩变形 */
   box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 191, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  outline: none;
+  backdrop-filter: blur(8px);
+  /* 增加点击区域的透明边框 */
+  box-sizing: border-box;
 }
 
-.message-action-btn:hover {
-  background: linear-gradient(135deg, 
-    rgba(0, 48, 96, 0.95) 0%, 
-    rgba(0, 64, 128, 0.9) 100%);
-  border-color: rgba(0, 191, 255, 0.4);
-  /* 移除缩放和复杂阴影效果 */
+/* 按钮工具提示 */
+.message-action-btn .btn-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px); /* 使用bottom定位确保一致性 */
+  left: 50%;
+  transform: translateX(-50%); /* 水平居中对齐 */
+  font-size: 12px;
+  background: #1f2937;
+  color: #ffffff;
+  padding: 6px 10px; /* 稍微增加内边距 */
+  border-radius: 6px; /* 圆角稍大一些 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+  z-index: 20;
+  /* 确保提示框不会超出视口 */
+  max-width: 120px;
+  text-align: center;
 }
 
+.message-action-btn .btn-tooltip::before {
+  position: absolute;
+  content: "";
+  height: 6px;
+  width: 6px;
+  background: #1f2937;
+  top: 100%; /* 箭头在提示框下方 */
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  transition: all 0.2s ease-in-out;
+}
+
+.message-action-btn:hover .btn-tooltip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(-2px); /* 悬停时轻微上移 */
+}
+
+.message-action-btn:hover span,
+.message-action-btn:hover .btn-tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* 重新生成按钮 - 蓝色主题 */
+.message-action-btn.regenerate-btn:hover,
+.message-action-btn.regenerate-btn:hover .btn-tooltip,
+.message-action-btn.regenerate-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #60a5fa;
+  color: #fff;
+}
+
+.message-action-btn.regenerate-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(59, 130, 246, 0.4),
+    0 0 0 1px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 复制按钮 - 绿色主题 */
+.message-action-btn.copy-btn:hover,
+.message-action-btn.copy-btn:hover .btn-tooltip,
+.message-action-btn.copy-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #10b981 0%, #059669 100%);
+  border-color: #34d399;
+  color: #fff;
+}
+
+.message-action-btn.copy-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(16, 185, 129, 0.4),
+    0 0 0 1px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 编辑按钮 - 橙色主题 */
+.message-action-btn.edit-btn:hover,
+.message-action-btn.edit-btn:hover .btn-tooltip,
+.message-action-btn.edit-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #f59e0b 0%, #d97706 100%);
+  border-color: #fbbf24;
+  color: #fff;
+}
+
+.message-action-btn.edit-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(245, 158, 11, 0.4),
+    0 0 0 1px rgba(245, 158, 11, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 删除按钮 - 红色主题 */
+.message-action-btn.delete-btn:hover,
+.message-action-btn.delete-btn:hover .btn-tooltip,
+.message-action-btn.delete-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
+  border-color: #f87171;
+  color: #fff;
+}
+
+.message-action-btn.delete-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(239, 68, 68, 0.4),
+    0 0 0 1px rgba(239, 68, 68, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 按钮图标样式 */
 .message-action-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   color: rgba(255, 255, 255, 0.8);
-  transition: color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .message-action-btn:hover svg {
-  color: rgba(255, 255, 255, 1);
+  color: #ffffff;
+}
+
+/* 按钮点击效果 */
+.message-action-btn:active {
+  transform: translateY(0) scale(0.95);
+  transition: all 0.1s ease;
+}
+
+/* 增强悬停体验 - 当鼠标在按钮上时立即显示，无延迟隐藏 */
+.message-action-btn:hover {
+  /* 按钮悬停时，强制显示整个按钮组 */
+  opacity: 1;
+}
+
+/* 为整个按钮组添加联合悬停检测 */
+.message-hover-actions:hover {
+  transition: none !important; /* 悬停时取消所有延迟 */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 增强的悬停连续性 - 确保从消息到按钮的平滑过渡 */
+.chat-message-ai:hover .message-hover-actions,
+.chat-message-user:hover .message-hover-actions {
+  /* 悬停时立即显示，无延迟 */
+  transition-delay: 0s;
+}
+
+/* 创建无缝悬停区域 - 扩展按钮容器的有效悬停范围 */
+.message-hover-actions::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -12px;
+  right: -12px;
+  background: transparent;
+  z-index: -1;
+  pointer-events: auto; /* 确保扩展区域可以接收鼠标事件 */
+}
+
+/* 增强用户和AI消息的悬停容忍度 */
+.chat-message-ai::after,
+.chat-message-user::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px; /* 扩展悬停检测区域 */
+  background: transparent;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.chat-message-ai::after {
+  right: -20px; /* AI消息右侧扩展 */
+}
+
+.chat-message-user::after {
+  left: -20px; /* 用户消息左侧扩展 */
+}
+
+/* 确保所有按钮图标完美居中 */
+.message-action-btn svg {
+  position: relative;
+  display: block;
+  margin: auto;
+}
+
+/* 当按钮接近容器边界时的特殊处理 */
+@media (max-width: 600px) {
+  .message-hover-actions {
+    /* 移动端统一间距 */
+    gap: 8px;
+    padding: 8px;
+    min-height: 44px; /* 移动端更大的最小高度 */
+  }
+  
+  .message-action-btn {
+    width: 40px; /* 移动端更大的按钮，方便触摸 */
+    height: 40px;
+    margin: 0; /* 移除外边距，使用gap控制 */
+  }
+  
+  .message-action-btn svg {
+    width: 16px; /* 移动端更大的图标 */
+    height: 16px;
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .message-hover-actions {
+    gap: 6px; /* 统一间距 */
+    padding: 6px;
+    min-height: 42px; /* 中等屏幕的最小高度 */
+  }
+  
+  .message-action-btn {
+    width: 38px; /* 中等屏幕的按钮大小 */
+    height: 38px;
+    margin: 0; /* 移除外边距，使用gap控制 */
+  }
+  
+  .message-action-btn svg {
+    width: 15px; /* 适中的图标大小 */
+    height: 15px;
+  }
+  
+  /* 移动端按钮定位优化 - 精确对齐 */
+  .chat-message-ai .message-hover-actions {
+    left: calc(100% + 2px); /* 保持与桌面端一致的定位 */
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    /* 移动端延迟隐藏时间稍短 */
+    transition: opacity 0.3s ease-in 0.2s, visibility 0.3s ease-in 0.2s;
+  }
+  
+  .chat-message-user .message-hover-actions {
+    right: calc(100% + 2px); /* 保持与桌面端一致的定位 */
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    /* 移动端延迟隐藏时间稍短 */
+    transition: opacity 0.3s ease-in 0.2s, visibility 0.3s ease-in 0.2s;
+  }
+  
+  /* 移动端聊天消息区域内边距调整 */
+  #chat-messages {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
 }
 
 /* 发送按钮状态切换 */
@@ -735,122 +1033,396 @@ button, .chat-function-btn {
 }
 
 /* 编辑输入框样式 */
+/* 🎨 消息编辑输入框 - 长文本友好设计 */
 .message-edit-input {
-  background: rgba(0, 191, 255, 0.02) !important;
-  color: inherit !important;
-  border: 1px solid rgba(0, 191, 255, 0.15) !important;
-  border-radius: 8px !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-  font-weight: inherit !important;
-  text-shadow: inherit !important;
-  -webkit-font-smoothing: antialiased !important;
+  /* 📐 长文本优化尺寸 */
+  width: 100% !important;
+  min-width: 320px !important; /* 增加最小宽度，确保长文本有足够空间 */
+  max-width: 100% !important;
+  min-height: 56px !important; /* 增加最小高度，提供更舒适的编辑空间 */
+  max-height: 320px !important; /* 大幅增加最大高度，支持更多行文本 */
+  padding: 16px 20px !important; /* 增加内边距，给文字更多呼吸空间 */
+  margin: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  
+  /* 🎨 外观样式 */
+  background: linear-gradient(135deg, 
+    rgba(248, 250, 252, 0.95) 0%, 
+    rgba(241, 245, 249, 0.98) 100%) !important;
+  border: 2px solid rgba(0, 191, 255, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 191, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px) saturate(110%) !important;
+  
+  /* 📝 文字样式 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: rgba(30, 41, 59, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+  
+  /* 🔧 功能特性 */
   resize: none !important;
   outline: none !important;
-  transition: all 0.2s ease !important;
-  backdrop-filter: blur(4px) !important;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-  margin: 0 !important;
-  width: 100% !important;
-  display: block !important;
-  padding: 8px 12px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important; /* 防止水平滚动条 */
   word-wrap: break-word !important;
   white-space: pre-wrap !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  
+  /* ✨ 过渡动画 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: scale(1) !important;
+  
+  /* 📏 智能宽度扩展 */
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.message-edit-input:hover {
+  border-color: rgba(0, 191, 255, 0.35) !important;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 191, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  transform: scale(1.01) translateY(-1px) !important;
 }
 
 .message-edit-input:focus {
-  border-color: rgba(0, 191, 255, 0.4) !important;
+  /* 🎯 聚焦状态 */
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 1) 100%) !important;
+  border-color: rgba(0, 191, 255, 0.6) !important;
   box-shadow: 
-    0 0 0 2px rgba(0, 191, 255, 0.1),
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  background: rgba(0, 191, 255, 0.05) !important;
-  transform: translateY(-1px) !important;
+    0 0 0 3px rgba(0, 191, 255, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 3px 8px rgba(0, 191, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  color: rgba(15, 23, 42, 1) !important;
+  transform: scale(1.02) translateY(-2px) !important;
 }
 
-/* 全屏模式下的编辑输入框 */
-#fullscreen-chat .message-edit-input {
-  font-size: 0.875rem !important;
-  line-height: 1.5 !important;
-  padding: 12px 16px !important;
-  min-height: 48px !important;
-  border-radius: 10px !important;
-  background: rgba(0, 32, 64, 0.85) !important;
-  border: 2px solid rgba(0, 191, 255, 0.25) !important;
-  color: rgba(248, 250, 252, 0.98) !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(8px) !important;
+/* 📱 文本选择样式 */
+.message-edit-input::selection {
+  background: rgba(0, 191, 255, 0.25) !important;
+  color: rgba(15, 23, 42, 1) !important;
+}
+
+.message-edit-input::-moz-selection {
+  background: rgba(0, 191, 255, 0.25) !important;
+  color: rgba(15, 23, 42, 1) !important;
+}
+
+/* 📏 滚动条美化 */
+.message-edit-input::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.message-edit-input::-webkit-scrollbar-track {
+  background: rgba(0, 191, 255, 0.05) !important;
+  border-radius: 6px !important;
+}
+
+.message-edit-input::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.3) 0%, 
+    rgba(0, 191, 255, 0.5) 100%) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.message-edit-input::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.5) 0%, 
+    rgba(0, 191, 255, 0.7) 100%) !important;
+}
+
+/* 💡 Placeholder样式 */
+.message-edit-input::placeholder {
+  color: rgba(100, 116, 139, 0.6) !important;
+  font-style: italic !important;
+  opacity: 1 !important;
+}
+
+/* 📝 长文本编辑模式 - 当内容超过阈值时应用 */
+.message-edit-input.long-text-mode {
+  /* 扩展尺寸以适应长文本 */
+  min-width: 400px !important;
+  max-width: min(90vw, 800px) !important; /* 响应式最大宽度 */
+  min-height: 80px !important;
+  max-height: 50vh !important; /* 使用视窗高度的50%作为最大高度 */
+  
+  /* 优化长文本阅读体验 */
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  padding: 20px 24px !important;
+  
+  /* 增强视觉效果 */
   box-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(0, 191, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  
+  /* 位置调整，确保不超出屏幕 */
+  transform: translateX(-10px) !important;
+}
+
+/* 🌟 全屏模式下的编辑输入框 - 深色主题优化 */
+#fullscreen-chat .message-edit-input {
+  /* 📐 全屏模式专用尺寸 - 长文本优化 */
+  min-width: 400px !important; /* 全屏模式下更大的最小宽度 */
+  min-height: 64px !important; /* 更高的最小高度 */
+  max-height: 400px !important; /* 显著增加最大高度 */
+  padding: 20px 24px !important; /* 更大的内边距 */
+  border-radius: 16px !important; /* 稍大的圆角匹配更大的尺寸 */
+  
+  /* 🎨 深色主题背景 */
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.92) 0%, 
+    rgba(0, 40, 80, 0.95) 100%) !important;
+  border: 2px solid rgba(0, 191, 255, 0.3) !important;
+  backdrop-filter: blur(12px) saturate(120%) brightness(0.9) !important;
+  
+  /* 📝 深色主题文字 */
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  color: rgba(248, 250, 252, 0.96) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  
+  /* 🌙 深色主题阴影 */
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 191, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+#fullscreen-chat .message-edit-input:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.95) 0%, 
+    rgba(0, 40, 80, 0.98) 100%) !important;
+  border-color: rgba(0, 191, 255, 0.45) !important;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 3px 10px rgba(0, 191, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+  transform: scale(1.01) translateY(-1px) !important;
 }
 
 #fullscreen-chat .message-edit-input:focus {
-  background: rgba(0, 32, 64, 0.95) !important;
-  border-color: rgba(0, 191, 255, 0.5) !important;
-  box-shadow: 
-    0 0 0 3px rgba(0, 191, 255, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.25),
-    inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+  /* 🎯 全屏聚焦状态 */
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.98) 0%, 
+    rgba(0, 45, 90, 1) 100%) !important;
+  border-color: rgba(0, 191, 255, 0.7) !important;
   color: rgba(255, 255, 255, 1) !important;
-  outline: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  
+  box-shadow: 
+    0 0 0 4px rgba(0, 191, 255, 0.2),
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 191, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4) !important;
+  transform: scale(1.02) translateY(-2px) !important;
 }
 
-/* 全屏模式下的文字选中样式 - 协调的蓝色主题 */
+/* 🌙 全屏模式文字选择样式 */
 #fullscreen-chat .message-edit-input::selection {
-  background: rgba(99, 179, 237, 0.65) !important;
+  background: rgba(0, 191, 255, 0.4) !important;
   color: rgba(255, 255, 255, 1) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
 }
 
 #fullscreen-chat .message-edit-input::-moz-selection {
-  background: rgba(99, 179, 237, 0.65) !important;
+  background: rgba(0, 191, 255, 0.4) !important;
   color: rgba(255, 255, 255, 1) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
 }
 
-/* 小窗口模式下的编辑输入框 */
-#chat-window .message-edit-input {
-  font-size: 0.75rem !important;
-  line-height: 1.25 !important;
-  padding: 8px 12px !important;
-  min-height: 36px !important;
+/* 🌙 全屏模式滚动条 */
+#fullscreen-chat .message-edit-input::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+#fullscreen-chat .message-edit-input::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2) !important;
   border-radius: 8px !important;
-  background: rgba(0, 32, 64, 0.8) !important;
-  border: 1.5px solid rgba(0, 191, 255, 0.2) !important;
-  color: rgba(248, 250, 252, 0.96) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(6px) !important;
+}
+
+#fullscreen-chat .message-edit-input::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.4) 0%, 
+    rgba(0, 191, 255, 0.6) 100%) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+#fullscreen-chat .message-edit-input::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.6) 0%, 
+    rgba(0, 191, 255, 0.8) 100%) !important;
+}
+
+/* 🌙 全屏模式 Placeholder */
+#fullscreen-chat .message-edit-input::placeholder {
+  color: rgba(148, 163, 184, 0.7) !important;
+  font-style: italic !important;
+}
+
+/* 🌟 全屏模式长文本编辑 */
+#fullscreen-chat .message-edit-input.long-text-mode {
+  min-width: 500px !important;
+  max-width: min(80vw, 1000px) !important; /* 全屏模式允许更大宽度 */
+  min-height: 100px !important;
+  max-height: 60vh !important; /* 全屏模式可使用更多垂直空间 */
+  
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+  padding: 24px 32px !important;
+  
+  /* 深色主题长文本增强阴影 */
   box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 6px 20px rgba(0, 191, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+  
+  transform: translateX(0) !important; /* 全屏模式无需偏移 */
+}
+
+/* 💻 小窗口模式下的编辑输入框 - 长文本适配版 */
+#chat-window .message-edit-input {
+  /* 📐 小窗口模式尺寸 - 长文本优化 */
+  min-width: 280px !important; /* 增加小窗口最小宽度 */
+  min-height: 48px !important; /* 增加最小高度 */
+  max-height: 240px !important; /* 增加最大高度，提供更多编辑空间 */
+  padding: 14px 18px !important; /* 增加内边距 */
+  border-radius: 12px !important; /* 稍大的圆角 */
+  
+  /* 🎨 小窗口深色主题 */
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.88) 0%, 
+    rgba(0, 40, 80, 0.92) 100%) !important;
+  border: 2px solid rgba(0, 191, 255, 0.25) !important;
+  backdrop-filter: blur(10px) saturate(115%) brightness(0.92) !important;
+  
+  /* 📝 小窗口文字 */
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  color: rgba(248, 250, 252, 0.94) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  
+  /* 🔸 小窗口阴影 */
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 1px 6px rgba(0, 191, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+#chat-window .message-edit-input:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.92) 0%, 
+    rgba(0, 40, 80, 0.96) 100%) !important;
+  border-color: rgba(0, 191, 255, 0.4) !important;
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 191, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.01) translateY(-1px) !important;
 }
 
 #chat-window .message-edit-input:focus {
-  background: rgba(0, 32, 64, 0.9) !important;
-  border-color: rgba(0, 191, 255, 0.4) !important;
-  box-shadow: 
-    0 0 0 2px rgba(0, 191, 255, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  /* 🎯 小窗口聚焦状态 */
+  background: linear-gradient(135deg, 
+    rgba(0, 32, 64, 0.95) 0%, 
+    rgba(0, 45, 90, 0.98) 100%) !important;
+  border-color: rgba(0, 191, 255, 0.6) !important;
   color: rgba(255, 255, 255, 1) !important;
-  outline: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  
+  box-shadow: 
+    0 0 0 3px rgba(0, 191, 255, 0.18),
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    0 3px 10px rgba(0, 191, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+  transform: scale(1.02) translateY(-1.5px) !important;
 }
 
-/* 小窗口模式下的文字选中样式 - 协调的蓝色主题 */
+/* 💻 小窗口模式文字选择样式 */
 #chat-window .message-edit-input::selection {
-  background: rgba(99, 179, 237, 0.6) !important;
+  background: rgba(0, 191, 255, 0.35) !important;
   color: rgba(255, 255, 255, 1) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
 }
 
 #chat-window .message-edit-input::-moz-selection {
-  background: rgba(99, 179, 237, 0.6) !important;
+  background: rgba(0, 191, 255, 0.35) !important;
   color: rgba(255, 255, 255, 1) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* 💻 小窗口模式滚动条 */
+#chat-window .message-edit-input::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+#chat-window .message-edit-input::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+}
+
+#chat-window .message-edit-input::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.35) 0%, 
+    rgba(0, 191, 255, 0.55) 100%) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+#chat-window .message-edit-input::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 191, 255, 0.55) 0%, 
+    rgba(0, 191, 255, 0.75) 100%) !important;
+}
+
+/* 💻 小窗口模式 Placeholder */
+#chat-window .message-edit-input::placeholder {
+  color: rgba(148, 163, 184, 0.6) !important;
+  font-style: italic !important;
+}
+
+/* 💻 小窗口模式长文本编辑 */
+#chat-window .message-edit-input.long-text-mode {
+  min-width: 350px !important;
+  max-width: min(85vw, 600px) !important; /* 小窗口模式限制最大宽度 */
+  min-height: 72px !important;
+  max-height: 40vh !important; /* 小窗口模式使用较少垂直空间 */
+  
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 18px 22px !important;
+  
+  /* 小窗口长文本阴影 */
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 3px 12px rgba(0, 191, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+  
+  transform: translateX(-5px) !important; /* 小窗口模式轻微偏移 */
 }
 
 /* 重新生成中的气泡内打字指示器 */
@@ -868,28 +1440,167 @@ button, .chat-function-btn {
   height: 3px;
 }
 
-/* 编辑状态下的消息气泡 */
+/* 🔧 编辑状态下的消息气泡 - 无缝融合设计 */
 .chat-message-user:has(.message-edit-input) {
   position: relative;
+  padding: 0 !important; /* 编辑时移除气泡内边距 */
+  background: transparent !important; /* 编辑时让编辑框背景显示 */
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
+.chat-message-user:has(.message-edit-input) .markdown-content,
 .chat-message-user:has(.message-edit-input) p {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
+  display: none !important; /* 完全隐藏原文本，避免布局冲突 */
 }
 
 .chat-message-user .message-edit-input {
   position: relative;
-  z-index: 2;
-  margin: -8px -12px; /* 抵消气泡的内边距 */
+  z-index: 10;
+  margin: 0 !important; /* 重置边距，让编辑框完全接管布局 */
+  border-radius: 12px !important; /* 保持与气泡一致的圆角 */
 }
 
-/* 全屏模式下的编辑框布局调整 */
+/* 🌟 全屏模式下的编辑框布局优化 */
+#fullscreen-chat .chat-message-user:has(.message-edit-input) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 #fullscreen-chat .chat-message-user .message-edit-input {
-  margin: -12px -16px; /* 抵消全屏模式下气泡的内边距 */
+  margin: 0 !important;
+  border-radius: 14px !important; /* 全屏模式更大圆角 */
+}
+
+/* 💻 小窗口模式下的编辑框布局优化 */
+#chat-window .chat-message-user:has(.message-edit-input) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#chat-window .chat-message-user .message-edit-input {
+  margin: 0 !important;
+  border-radius: 10px !important; /* 小窗口模式适中圆角 */
+}
+
+/* 🎯 编辑状态指示器 */
+.chat-message-user:has(.message-edit-input)::before {
+  content: "✏️ 编辑中...";
+  position: absolute;
+  top: -24px;
+  right: 0;
+  font-size: 11px;
+  color: rgba(0, 191, 255, 0.8);
+  background: rgba(0, 191, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  z-index: 5;
+  pointer-events: none;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeInEditIndicator 0.3s ease-out 0.1s forwards;
+}
+
+@keyframes fadeInEditIndicator {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 响应式编辑框适配 - 长文本优化版 */
+@media (max-width: 768px) {
+  .message-edit-input {
+    font-size: 16px !important; /* 防止移动端放大 */
+    min-height: 48px !important; /* 符合iOS触摸规范，增加高度 */
+    min-width: 280px !important; /* 移动端最小宽度 */
+    max-height: 280px !important; /* 移动端最大高度 */
+    padding: 14px 16px !important;
+  }
+  
+  .message-edit-input.long-text-mode {
+    min-width: 300px !important;
+    max-width: 95vw !important; /* 移动端几乎全宽 */
+    max-height: 45vh !important; /* 移动端垂直空间限制 */
+    font-size: 16px !important;
+    padding: 16px 18px !important;
+    transform: translateX(0) !important; /* 移动端无偏移 */
+  }
+  
+  #chat-window .message-edit-input {
+    font-size: 15px !important; /* 增大字体提升可读性 */
+    min-height: 46px !important;
+    min-width: 260px !important;
+    padding: 13px 15px !important;
+  }
+  
+  #chat-window .message-edit-input.long-text-mode {
+    min-width: 280px !important;
+    max-width: 92vw !important;
+    font-size: 15px !important;
+    padding: 15px 17px !important;
+  }
+  
+  .chat-message-user:has(.message-edit-input)::before {
+    font-size: 10px !important;
+    top: -20px !important;
+    padding: 1px 6px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-edit-input {
+    border-radius: 10px !important;
+    max-height: 200px !important; /* 小屏幕增加最大高度 */
+    min-width: 250px !important; /* 小屏幕最小宽度 */
+    font-size: 15px !important;
+  }
+  
+  .message-edit-input.long-text-mode {
+    min-width: 270px !important;
+    max-width: 98vw !important; /* 小屏幕几乎全宽 */
+    max-height: 40vh !important;
+    font-size: 15px !important;
+    padding: 14px 16px !important;
+  }
+  
+  #fullscreen-chat .message-edit-input {
+    border-radius: 12px !important;
+    max-height: 300px !important; /* 全屏模式增加高度 */
+    min-width: 280px !important;
+  }
+  
+  #fullscreen-chat .message-edit-input.long-text-mode {
+    min-width: 300px !important;
+    max-width: 95vw !important;
+    max-height: 50vh !important;
+    font-size: 16px !important;
+    padding: 18px 20px !important;
+  }
+  
+  #chat-window .message-edit-input {
+    border-radius: 10px !important;
+    max-height: 180px !important; /* 小窗口增加高度 */
+    min-width: 240px !important;
+  }
+  
+  #chat-window .message-edit-input.long-text-mode {
+    min-width: 260px !important;
+    max-width: 95vw !important;
+    max-height: 35vh !important;
+    font-size: 14px !important;
+    padding: 13px 15px !important;
+  }
 }
 
 /* 全屏聊天样式 - 优化丝滑动画 */
@@ -991,6 +1702,17 @@ button, .chat-function-btn {
 
 #fullscreen-messages::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, rgba(0, 191, 255, 0.7), rgba(0, 191, 255, 0.5));
+}
+
+/* 全屏模式聊天消息容器布局优化 */
+#fullscreen-messages {
+  /* 避免因为悬停按钮导致的横向滚动 */
+  overflow-x: visible;
+  overflow-y: auto;
+  /* 适度的左右内边距来容纳按钮 */
+  padding-left: 50px;
+  padding-right: 50px;
+  box-sizing: border-box;
 }
 
 /* 全屏输入框样式 */
@@ -1111,4 +1833,6 @@ button, .chat-function-btn {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-} 
+}
+
+ 

@@ -14,6 +14,7 @@ from rest_framework import generics
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import Http404
+from django.utils import timezone
 
 import json
 
@@ -28,6 +29,7 @@ from .ai_serializers import (
     ChatMessageCreateSerializer
 )
 from .models import ChatMessage
+from .emoji_utils import prepare_for_display, sanitize_for_db
 
 logger = logging.getLogger('ai_chat')
 
@@ -78,8 +80,15 @@ class ChatHistoryAPIView(APIView):
             # 序列化数据
             serializer = ChatMessageSerializer(paginated_queryset, many=True, context={'request': request})
             
+            # 处理返回数据中的表情符号，确保前端能正确显示
+            response_data = serializer.data
+            for message_data in response_data:
+                if 'content' in message_data:
+                    # 为前端显示准备消息内容（解码表情符号）
+                    message_data['content'] = ChatMessageProcessor.prepare_message_for_display(message_data['content'])
+            
             # 返回分页响应
-            return paginator.get_paginated_response(serializer.data)
+            return paginator.get_paginated_response(response_data)
             
         except Exception as e:
             logger.error(f"获取聊天历史时发生错误: {str(e)}", exc_info=True)
@@ -157,16 +166,45 @@ class SingleChatMessageAPIView(APIView):
             raise Http404("聊天记录不存在或无权访问")
     
     def delete(self, request, pk):
-        """删除单条聊天记录"""
+        """删除消息对（用户消息和对应的AI回复）"""
         try:
-            message = self.get_object(pk, request.user)
-            message.delete()
+            # 获取要删除的用户消息
+            user_message = self.get_object(pk, request.user)
             
-            logger.info(f"用户 {request.user.username} 删除了聊天记录 {pk}")
+            # 确保只能删除用户消息
+            if user_message.role != 'user':
+                return Response({
+                    'success': False,
+                    'error': '只能删除用户消息'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 查找紧随其后的AI回复（基于时间顺序和用户）
+            ai_response = ChatMessage.objects.filter(
+                user=request.user,
+                role='assistant',
+                created_at__gt=user_message.created_at
+            ).order_by('created_at').first()
+            
+            deleted_count = 1  # 至少删除用户消息
+            
+            # 删除用户消息
+            user_message.delete()
+            logger.info(f"用户 {request.user.username} 删除了用户消息 {pk}")
+            
+            # 如果找到对应的AI回复，也删除它
+            if ai_response:
+                # 验证这个AI回复确实是对该用户消息的回复
+                # 检查时间间隔是否合理（比如5分钟内）
+                time_diff = (ai_response.created_at - user_message.created_at).total_seconds()
+                if time_diff <= 300:  # 5分钟内的回复才认为是对应的
+                    ai_response.delete()
+                    deleted_count += 1
+                    logger.info(f"同时删除了对应的AI回复 {ai_response.id}")
             
             return Response({
                 'success': True,
-                'message': '聊天记录删除成功'
+                'message': f'成功删除消息对，共删除 {deleted_count} 条记录',
+                'deleted_count': deleted_count
             }, status=status.HTTP_200_OK)
             
         except Http404 as e:
@@ -176,10 +214,75 @@ class SingleChatMessageAPIView(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
             
         except Exception as e:
-            logger.error(f"删除单条聊天记录时发生错误: {str(e)}", exc_info=True)
+            logger.error(f"删除消息对时发生错误: {str(e)}", exc_info=True)
             return Response({
                 'success': False,
-                'error': '删除聊天记录失败',
+                'error': '删除消息对失败',
+                'error_detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def put(self, request, pk):
+        """更新单条聊天记录"""
+        try:
+            # 获取要更新的消息
+            message = self.get_object(pk, request.user)
+            
+            # 确保只能更新用户消息
+            if message.role != 'user':
+                return Response({
+                    'success': False,
+                    'error': '只能更新用户消息'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 获取新的消息内容
+            new_content = request.data.get('content', '').strip()
+            if not new_content:
+                return Response({
+                    'success': False,
+                    'error': '消息内容不能为空'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 为数据库存储准备消息内容（处理表情符号）
+            processed_content = ChatMessageProcessor.prepare_message_for_storage(new_content)
+            
+            # 更新消息内容
+            old_content = message.content
+            message.content = processed_content
+            
+            # 更新元数据，标记为已编辑
+            if not message.metadata:
+                message.metadata = {}
+            message.metadata.update({
+                'edited': True,
+                'edit_time': timezone.now().isoformat(),
+                'original_content': old_content if 'original_content' not in message.metadata else message.metadata.get('original_content'),
+                'edit_count': message.metadata.get('edit_count', 0) + 1
+            })
+            
+            message.save()
+            
+            logger.info(f"用户 {request.user.username} 更新了消息 {pk}: '{old_content[:50]}...' -> '{processed_content[:50]}...'")
+            
+            # 序列化返回更新后的消息
+            serializer = ChatMessageSerializer(message, context={'request': request})
+            
+            return Response({
+                'success': True,
+                'message': '消息更新成功',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+            
+        except Http404 as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_404_NOT_FOUND)
+            
+        except Exception as e:
+            logger.error(f"更新消息时发生错误: {str(e)}", exc_info=True)
+            return Response({
+                'success': False,
+                'error': '更新消息失败',
                 'error_detail': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -237,6 +340,55 @@ class AIChatAPIView(APIView):
                     'error_type': 'ValidationError'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
+            # 检查是否包含emoji编码标志
+            has_emoji_encoding = (
+                request.headers.get('X-Emoji-Encoding') == 'true' or 
+                request_data.get('encode_emojis') is True
+            )
+            
+            # 如果包含emoji编码标志，将其添加到request_data中供ChatMessageProcessor使用
+            if has_emoji_encoding:
+                request_data['X-Emoji-Encoding'] = True
+                logger.info("检测到emoji编码标志，将进行相应处理")
+            
+            # 检查是否是重新生成请求
+            is_regenerate = request_data.get('regenerate', False)
+            user_message_id = request_data.get('user_message_id')
+            
+            if is_regenerate and user_message_id:
+                logger.info(f"检测到重新生成请求，用户消息ID: {user_message_id}")
+                
+                # 先删除该用户消息对应的旧AI回复
+                if request.user.is_authenticated:
+                    try:
+                        # 查找用户消息
+                        user_msg = ChatMessage.objects.get(id=user_message_id, user=request.user, role='user')
+                        
+                        # 查找并删除对应的AI回复
+                        ai_replies = ChatMessage.objects.filter(
+                            user=request.user,
+                            role='assistant',
+                            created_at__gt=user_msg.created_at
+                        ).order_by('created_at')
+                        
+                        deleted_ai_count = 0
+                        for ai_reply in ai_replies:
+                            # 检查时间间隔，确保是对应的回复
+                            time_diff = (ai_reply.created_at - user_msg.created_at).total_seconds()
+                            if time_diff <= 300:  # 5分钟内的回复
+                                ai_reply.delete()
+                                deleted_ai_count += 1
+                                logger.info(f"删除旧AI回复: {ai_reply.id}")
+                                break  # 只删除第一个匹配的AI回复
+                        
+                        logger.info(f"重新生成前删除了 {deleted_ai_count} 条旧AI回复")
+                        
+                    except ChatMessage.DoesNotExist:
+                        logger.warning(f"未找到用户消息ID {user_message_id}，继续进行重新生成")
+                    except Exception as e:
+                        logger.error(f"删除旧AI回复失败: {str(e)}")
+                        # 即使删除失败也继续生成新回复
+            
             # 提取用户消息
             user_message = ChatMessageProcessor.parse_user_input(request_data)
             if not user_message:
@@ -249,19 +401,75 @@ class AIChatAPIView(APIView):
             
             logger.info(f"用户消息: {user_message[:100]}...")
             
-            # 保存用户消息到数据库（如果用户已登录）
+            # 保存用户消息到数据库（如果用户已登录且不是重新生成请求）
             user_message_record = None
-            if request.user.is_authenticated:
+            if request.user.is_authenticated and not is_regenerate:
                 try:
+                    # 为数据库存储准备用户消息（处理表情符号）
+                    user_message_for_db = ChatMessageProcessor.prepare_message_for_storage(user_message)
+                    
                     user_message_record = ChatMessage.objects.create(
                         user=request.user,
                         role='user',
-                        content=user_message,
-                        metadata={'request_ip': request.META.get('REMOTE_ADDR')}
+                        content=user_message_for_db,
+                        metadata={
+                            'request_ip': request.META.get('REMOTE_ADDR'),
+                            'original_emoji_encoding': request.headers.get('X-Emoji-Encoding', 'false'),
+                            'has_emojis': any(ord(c) > 127 for c in user_message)  # 简单检测非ASCII字符
+                        }
                     )
                     logger.info(f"用户消息已保存到数据库，ID: {user_message_record.id}")
                 except Exception as e:
                     logger.warning(f"保存用户消息到数据库失败: {str(e)}")
+            elif is_regenerate and user_message_id:
+                # 重新生成时，尝试获取现有的用户消息记录
+                try:
+                    user_message_record = ChatMessage.objects.get(id=user_message_id, user=request.user, role='user')
+                    
+                    # 检查前端传来的消息内容是否与数据库中的不同（可能已被编辑）
+                    stored_content = ChatMessageProcessor.prepare_message_for_display(user_message_record.content)
+                    if stored_content.strip() != user_message.strip():
+                        logger.info(f"检测到消息内容变化，更新数据库记录 {user_message_id}")
+                        
+                        # 更新数据库中的消息内容
+                        old_content = user_message_record.content
+                        user_message_record.content = ChatMessageProcessor.prepare_message_for_storage(user_message)
+                        
+                        # 更新元数据，标记为已编辑
+                        if not user_message_record.metadata:
+                            user_message_record.metadata = {}
+                        user_message_record.metadata.update({
+                            'edited': True,
+                            'edit_time': timezone.now().isoformat(),
+                            'original_content': old_content if 'original_content' not in user_message_record.metadata else user_message_record.metadata.get('original_content'),
+                            'edit_count': user_message_record.metadata.get('edit_count', 0) + 1,
+                            'edited_during_regenerate': True
+                        })
+                        
+                        user_message_record.save()
+                        logger.info(f"用户消息 {user_message_id} 内容已更新")
+                    
+                    logger.info(f"重新生成使用现有用户消息: {user_message_record.id}")
+                except ChatMessage.DoesNotExist:
+                    logger.warning(f"重新生成时未找到用户消息ID {user_message_id}")
+            elif is_regenerate and not user_message_id:
+                # 重新生成但没有用户消息ID，可能是编辑后的消息，创建新的用户消息记录
+                try:
+                    user_message_for_db = ChatMessageProcessor.prepare_message_for_storage(user_message)
+                    user_message_record = ChatMessage.objects.create(
+                        user=request.user,
+                        role='user',
+                        content=user_message_for_db,
+                        metadata={
+                            'request_ip': request.META.get('REMOTE_ADDR'),
+                            'original_emoji_encoding': request.headers.get('X-Emoji-Encoding', 'false'),
+                            'has_emojis': any(ord(c) > 127 for c in user_message),
+                            'is_regenerate_edit': True  # 标记为重新生成时的编辑消息
+                        }
+                    )
+                    logger.info(f"重新生成时创建新用户消息: {user_message_record.id}")
+                except Exception as e:
+                    logger.warning(f"重新生成时保存新用户消息失败: {str(e)}")
             
             # 提取对话历史
             conversation_history = ChatMessageProcessor.extract_conversation_history(request_data)
@@ -282,18 +490,29 @@ class AIChatAPIView(APIView):
             # 保存AI回复到数据库（如果用户已登录且AI响应成功）
             if request.user.is_authenticated and result.get('success') and result.get('response'):
                 try:
+                    # 为数据库存储准备AI回复（处理表情符号）
+                    ai_response_for_db = ChatMessageProcessor.prepare_message_for_storage(result['response'])
+                    
                     ai_response_record = ChatMessage.objects.create(
                         user=request.user,
                         role='assistant',
-                        content=result['response'],
+                        content=ai_response_for_db,
                         metadata={
                             'model': result.get('model', 'deepseek-chat'),
                             'usage': result.get('usage', {}),
                             'response_time': response_time,
-                            'request_ip': request.META.get('REMOTE_ADDR')
+                            'request_ip': request.META.get('REMOTE_ADDR'),
+                            'has_emojis': any(ord(c) > 127 for c in result['response'])  # 简单检测非ASCII字符
                         }
                     )
                     logger.info(f"AI回复已保存到数据库，ID: {ai_response_record.id}")
+                    
+                    # 将AI消息ID添加到响应中，供前端使用
+                    if 'metadata' not in result:
+                        result['metadata'] = {}
+                    result['metadata']['ai_message_id'] = ai_response_record.id
+                    result['metadata']['user_message_id'] = user_message_record.id if user_message_record else None
+                    
                 except Exception as e:
                     logger.warning(f"保存AI回复到数据库失败: {str(e)}")
             

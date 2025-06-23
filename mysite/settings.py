@@ -153,6 +153,11 @@ DATABASES = {
         'PASSWORD': '20000420',
         'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'; SET character_set_connection=utf8mb4; SET collation_connection=utf8mb4_unicode_ci;",
+        },
     }
 }
 

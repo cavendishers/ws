@@ -5,6 +5,7 @@ AI聊天API序列化器
 from rest_framework import serializers
 from typing import List, Dict, Any
 from .models import ChatMessage
+from .emoji_utils import prepare_for_display, sanitize_for_db
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -24,12 +25,27 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
     
+    def to_representation(self, instance):
+        """自定义序列化输出，确保表情符号正确显示"""
+        data = super().to_representation(instance)
+        
+        # 为前端显示准备消息内容（解码表情符号）
+        if 'content' in data and data['content']:
+            data['content'] = prepare_for_display(data['content'])
+        
+        return data
+    
     def create(self, validated_data):
-        """创建聊天消息时自动设置用户"""
+        """创建聊天消息时自动设置用户并处理表情符号"""
         # 从context中获取request，然后获取当前用户
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             validated_data['user'] = request.user
+        
+        # 为数据库存储准备消息内容（处理表情符号）
+        if 'content' in validated_data:
+            validated_data['content'] = sanitize_for_db(validated_data['content'])
+        
         return super().create(validated_data)
 
 
@@ -160,8 +176,13 @@ class ChatMessageCreateSerializer(serializers.ModelSerializer):
         fields = ['role', 'content', 'session_id', 'metadata']
         
     def create(self, validated_data):
-        """创建聊天消息时自动设置用户"""
+        """创建聊天消息时自动设置用户并处理表情符号"""
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             validated_data['user'] = request.user
+        
+        # 为数据库存储准备消息内容（处理表情符号）
+        if 'content' in validated_data:
+            validated_data['content'] = sanitize_for_db(validated_data['content'])
+        
         return super().create(validated_data) 

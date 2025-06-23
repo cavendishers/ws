@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import api_views
+from . import ai_views
 
 app_name = 'data_hall'
 
@@ -42,7 +43,12 @@ urlpatterns = [
     path('api/company-rankings/', views.get_company_rankings, name='company_rankings'),
     path('api/enterpriseList.json', views.get_enterprise_list, name='enterprise_list'),
     path('api/precisionList.json', views.get_precision_list, name='precision_list'),
-    path('api/ai/chat', views.ai_chat, name='ai_chat'),
+    # AI聊天API路由
+    path('api/ai/chat/', ai_views.AIChatAPIView.as_view(), name='ai_chat_api'),
+    path('api/ai/chat/config/', ai_views.AIChatConfigAPIView.as_view(), name='ai_chat_config'),
+    path('api/ai/health/', ai_views.ai_health_check, name='ai_health_check'),
+    path('api/ai/history/', ai_views.ChatHistoryAPIView.as_view(), name='ai_chat_history'),
+    path('api/ai/history/<int:pk>/', ai_views.SingleChatMessageAPIView.as_view(), name='ai_chat_message_detail'),
     path('api/top-companies/', views.get_top_companies, name='top_companies'),
     path('api/yearly-stats/', views.get_yearly_stats, name='yearly_stats'),
     

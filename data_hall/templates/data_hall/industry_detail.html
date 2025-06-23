@@ -83,7 +83,7 @@
 {% block extra_js %}
 <script>
 // 从后端获取产业链数据，传递给外部JS文件
-// const graphData = JSON.parse('{{ chain_data|escapejs }}');
+const graphData = JSON.parse('{{ chain_data|escapejs }}');
 </script>
 <!-- <script src="{% static 'data_hall/js/region-selector.js' %}"></script> -->
 <script src="{% static 'data_hall/js/industry_detail.js' %}"></script>

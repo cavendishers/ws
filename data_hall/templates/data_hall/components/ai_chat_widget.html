@@ -3,6 +3,9 @@
 <!-- AI聊天小部件CSS -->
 <link rel="stylesheet" href="{% static 'data_hall/css/ai_chat_widget.css' %}" />
 
+<!-- 确保CSRF token可用 -->
+<meta name="csrf-token" content="{{ csrf_token }}"">
+
 <!-- AI聊天小部件 -->
 <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50">
     <!-- 最小化触发按钮 -->
@@ -253,6 +256,32 @@
 
 <!-- 聊天小部件JavaScript -->
 <script>
+// 获取CSRF token的函数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function getCSRFToken() {
+    // 先尝试从meta标签获取
+    const metaToken = document.querySelector('meta[name="csrf-token"]');
+    if (metaToken) {
+        return metaToken.getAttribute('content');
+    }
+    // 再尝试从cookie获取
+    return getCookie('csrftoken');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const chatWidget = document.getElementById('ai-chat-widget');
     const chatWindow = document.getElementById('chat-window');
@@ -690,8 +719,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let isAIResponding = false;
     let currentResponseAbortController = null;
 
-    // 发送消息
-    function sendMessage() {
+    // 发送消息 - 使用AI聊天管理器
+    async function sendMessage() {
         const message = chatInput.value.trim();
         if (message === '') return;
 
@@ -701,9 +730,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // 添加用户消息
-        addMessage(message, 'user');
-        
         // 清空输入框并重置状态
         chatInput.value = '';
         chatInput.style.height = 'auto';
@@ -721,23 +747,51 @@ document.addEventListener('DOMContentLoaded', function() {
         // 设置发送状态
         setAIResponseState(true);
 
-        // 显示打字指示器
+        // 先添加用户消息到UI
+        addMessageToUI(message, 'user', false);
         const typingIndicator = showTypingIndicator();
         
-        // 创建AbortController用于取消请求
-        currentResponseAbortController = new AbortController();
-        
-        // 模拟AI回复（这里只是UI演示）
-        setTimeout(() => {
-            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
-                // 移除打字指示器
-                if (typingIndicator.parentNode) {
-                    typingIndicator.parentNode.removeChild(typingIndicator);
-                }
-                addMessage('这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。', 'ai');
-                setAIResponseState(false);
+        try {
+            // 等待并使用AI聊天管理器发送消息
+            console.log('通过AI聊天管理器发送消息:', message);
+            const aiChatManager = await waitForAIChatManager();
+            const aiResponse = await aiChatManager.sendMessage(message);
+            
+            // 移除打字指示器
+            if (typingIndicator.parentNode) {
+                typingIndicator.parentNode.removeChild(typingIndicator);
             }
-        }, 2000);
+            
+            // 添加AI回复到UI
+            if (aiResponse) {
+                addMessageToUI(aiResponse, 'ai', false);
+            }
+            
+            setAIResponseState(false);
+            
+        } catch (error) {
+            console.error('发送消息失败:', error);
+            
+            // 移除打字指示器
+            if (typingIndicator.parentNode) {
+                typingIndicator.parentNode.removeChild(typingIndicator);
+            }
+            
+            // 显示错误信息
+            let errorMessage = '抱歉，AI服务暂时不可用，请稍后重试。';
+            if (error.name === 'AbortError') {
+                errorMessage = '请求已取消。';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = '网络连接失败，请检查网络后重试。';
+            } else if (error.message.includes('消息内容不能为空')) {
+                errorMessage = '请输入有效的消息内容。';
+            } else if (error.message === 'AI聊天管理器加载超时') {
+                errorMessage = '聊天功能加载失败，请刷新页面重试。';
+            }
+            
+            showErrorMessage(errorMessage);
+            setAIResponseState(false);
+        }
     }
 
     // 设置AI响应状态
@@ -784,8 +838,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 停止AI响应
     function stopAIResponse() {
-        if (currentResponseAbortController) {
-            currentResponseAbortController.abort();
+        // 使用AI聊天管理器停止响应
+        if (window.aiChatManager && typeof window.aiChatManager.stopCurrentResponse === 'function') {
+            window.aiChatManager.stopCurrentResponse();
         }
         
         // 移除打字指示器
@@ -818,50 +873,76 @@ document.addEventListener('DOMContentLoaded', function() {
         return typingDiv;
     }
 
-    // 添加消息到聊天区域
+    // 添加消息到聊天区域 - 安全版本，防止XSS攻击
     function addMessage(content, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'flex items-start space-x-3 chat-message-enter';
 
         if (sender === 'user') {
-            messageDiv.innerHTML = `
-                <div class="flex justify-end w-full">
-                    <div class="chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]">
-                        <p class="text-sm leading-relaxed">${content}</p>
-                        <div class="message-hover-actions">
-                            <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                            </button>
-                            <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            // 创建用户消息结构，使用textContent安全设置内容
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.className = 'flex justify-end w-full';
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]';
+            
+            const messageP = document.createElement('p');
+            messageP.className = 'text-sm leading-relaxed';
+            messageP.textContent = content;  // 使用textContent防止XSS
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-hover-actions';
+            actionsDiv.innerHTML = `
+                <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
             `;
+            
+            messageContainer.appendChild(messageP);
+            messageContainer.appendChild(actionsDiv);
+            wrapperDiv.appendChild(messageContainer);
+            messageDiv.appendChild(wrapperDiv);
         } else {
-            messageDiv.innerHTML = `
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%]">
-                    <p class="text-sm leading-relaxed">${content}</p>
-                    <div class="message-hover-actions">
-                        <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                        </button>
-                        <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+            // 创建AI消息结构，使用textContent安全设置内容
+            const avatarImg = document.createElement('img');
+            avatarImg.src = "{% static 'ai_assistant_logo.JPG' %}";
+            avatarImg.alt = 'AI';
+            avatarImg.className = 'w-8 h-8 mt-1 opacity-80 flex-shrink-0';
+            avatarImg.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2))';
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%]';
+            
+            const messageP = document.createElement('p');
+            messageP.className = 'text-sm leading-relaxed';
+            messageP.textContent = content;  // 使用textContent防止XSS
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-hover-actions';
+            actionsDiv.innerHTML = `
+                <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </button>
             `;
+            
+            messageContainer.appendChild(messageP);
+            messageContainer.appendChild(actionsDiv);
+            messageDiv.appendChild(avatarImg);
+            messageDiv.appendChild(messageContainer);
         }
 
         chatMessages.appendChild(messageDiv);
@@ -889,23 +970,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 清除聊天记录功能
-    function clearChatMessages(isFullscreen = false) {
-        const messagesContainer = isFullscreen ? fullscreenMessages : chatMessages;
-        const welcomeMessage = isFullscreen ? 
-            `<div class="flex items-start space-x-4 max-w-4xl mx-auto">
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0">
-                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)]">
-                    <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
-                </div>
-            </div>` :
-            `<div class="flex items-start space-x-3">
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0">
-                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%]">
-                    <p class="text-sm leading-relaxed">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
-                </div>
-            </div>`;
-        
-        messagesContainer.innerHTML = welcomeMessage;
+    async function clearChatMessages(isFullscreen = false) {
+        try {
+            // 等待并调用AI聊天管理器清除后端数据
+            const aiChatManager = await waitForAIChatManager();
+            await aiChatManager.clearAllMessages();
+            console.log('后端聊天记录已清除');
+            
+            // 清除UI
+            clearChatUI();
+            
+        } catch (error) {
+            console.error('清除聊天记录失败:', error);
+            if (error.message === 'AI聊天管理器加载超时') {
+                showErrorMessage('聊天功能加载失败，请刷新页面重试');
+            } else {
+                showErrorMessage('清除聊天记录失败，请稍后重试');
+            }
+        }
     }
 
     // 全屏模式切换
@@ -1130,8 +1212,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 全屏发送消息
-    function sendFullscreenMessage() {
+    // 全屏发送消息 - 使用AI聊天管理器
+    async function sendFullscreenMessage() {
         const message = fullscreenInput.value.trim();
         if (message === '') return;
 
@@ -1141,8 +1223,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        addFullscreenMessage(message, 'user');
-        
         // 重置输入框状态，清除滚动条
         fullscreenInput.value = '';
         fullscreenInput.style.height = 'auto';
@@ -1154,66 +1234,134 @@ document.addEventListener('DOMContentLoaded', function() {
         // 设置发送状态
         setAIResponseState(true);
 
+        // 先添加用户消息到UI
+        addFullscreenMessage(message, 'user');
         const typingIndicator = showFullscreenTypingIndicator();
         
-        // 创建AbortController用于取消请求
-        currentResponseAbortController = new AbortController();
-        
-        setTimeout(() => {
-            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
-                if (typingIndicator.parentNode) {
-                    typingIndicator.parentNode.removeChild(typingIndicator);
-                }
-                addFullscreenMessage('这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。', 'ai');
-                setAIResponseState(false);
+        try {
+            // 等待并使用AI聊天管理器发送消息
+            console.log('全屏模式通过AI聊天管理器发送消息:', message);
+            const aiChatManager = await waitForAIChatManager();
+            const aiResponse = await aiChatManager.sendMessage(message);
+            
+            // 移除打字指示器
+            if (typingIndicator.parentNode) {
+                typingIndicator.parentNode.removeChild(typingIndicator);
             }
-        }, 2000);
+            
+            // 添加AI回复到UI
+            if (aiResponse) {
+                addFullscreenMessage(aiResponse, 'ai');
+            }
+            
+            setAIResponseState(false);
+            
+        } catch (error) {
+            console.error('全屏模式发送消息失败:', error);
+            
+            // 移除打字指示器
+            if (typingIndicator.parentNode) {
+                typingIndicator.parentNode.removeChild(typingIndicator);
+            }
+            
+            // 显示错误信息
+            let errorMessage = '抱歉，AI服务暂时不可用，请稍后重试。';
+            if (error.name === 'AbortError') {
+                errorMessage = '请求已取消。';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = '网络连接失败，请检查网络后重试。';
+            } else if (error.message.includes('消息内容不能为空')) {
+                errorMessage = '请输入有效的消息内容。';
+            } else if (error.message === 'AI聊天管理器加载超时') {
+                errorMessage = '聊天功能加载失败，请刷新页面重试。';
+            }
+            
+            // 在全屏模式显示错误
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'flex items-start space-x-4 chat-message-enter max-w-4xl mx-auto';
+            errorDiv.innerHTML = `
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)] border-l-4 border-l-red-400 bg-red-50">
+                    <p class="text-sm leading-6 text-red-700">${errorMessage}</p>
+                </div>
+            `;
+            fullscreenMessages.appendChild(errorDiv);
+            fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
+            
+            setAIResponseState(false);
+        }
     }
 
-    // 添加全屏消息
+    // 添加全屏消息 - 安全版本，防止XSS攻击
     function addFullscreenMessage(content, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'flex items-start space-x-4 chat-message-enter max-w-4xl mx-auto';
 
         if (sender === 'user') {
-            messageDiv.innerHTML = `
-                <div class="flex justify-end w-full">
-                    <div class="chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]">
-                        <p class="text-sm leading-6">${content}</p>
-                        <div class="message-hover-actions">
-                            <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                            </button>
-                            <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            // 创建用户消息结构，使用textContent安全设置内容
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.className = 'flex justify-end w-full';
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'chat-message-user px-4 py-3 rounded-lg rounded-tr-sm interactive-scale max-w-[70%]';
+            
+            const messageP = document.createElement('p');
+            messageP.className = 'text-sm leading-6';
+            messageP.textContent = content;  // 使用textContent防止XSS
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-hover-actions';
+            actionsDiv.innerHTML = `
+                <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button class="message-action-btn" title="编辑消息" onclick="editMessage(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
             `;
+            
+            messageContainer.appendChild(messageP);
+            messageContainer.appendChild(actionsDiv);
+            wrapperDiv.appendChild(messageContainer);
+            messageDiv.appendChild(wrapperDiv);
         } else {
-            messageDiv.innerHTML = `
-                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
-                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%] border border-[rgba(0,191,255,0.08)]">
-                    <p class="text-sm leading-6">${content}</p>
-                    <div class="message-hover-actions">
-                        <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                        </button>
-                        <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+            // 创建AI消息结构，使用textContent安全设置内容
+            const avatarImg = document.createElement('img');
+            avatarImg.src = "{% static 'ai_assistant_logo.JPG' %}";
+            avatarImg.alt = 'AI';
+            avatarImg.className = 'w-10 h-10 mt-1 opacity-80 flex-shrink-0';
+            avatarImg.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2))';
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm interactive-scale max-w-[70%] border border-[rgba(0,191,255,0.08)]';
+            
+            const messageP = document.createElement('p');
+            messageP.className = 'text-sm leading-6';
+            messageP.textContent = content;  // 使用textContent防止XSS
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-hover-actions';
+            actionsDiv.innerHTML = `
+                <button class="message-action-btn" title="重新生成回答" onclick="regenerateResponse(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button class="message-action-btn" title="复制内容" onclick="copyMessage(this)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </button>
             `;
+            
+            messageContainer.appendChild(messageP);
+            messageContainer.appendChild(actionsDiv);
+            messageDiv.appendChild(avatarImg);
+            messageDiv.appendChild(messageContainer);
         }
 
         fullscreenMessages.appendChild(messageDiv);
@@ -1439,7 +1587,49 @@ document.addEventListener('DOMContentLoaded', function() {
             // 创建AbortController用于取消请求
             currentResponseAbortController = new AbortController();
             
-            setTimeout(() => {
+            // 获取对应的用户消息内容
+            let userMessage = '请重新生成回答';
+            if (isFromUserMessage) {
+                // 从用户消息中获取内容
+                const userMessageContainer = button.closest('.flex.items-start');
+                const userMessageP = userMessageContainer.querySelector('.chat-message-user p');
+                if (userMessageP) {
+                    userMessage = userMessageP.textContent.trim();
+                }
+            } else {
+                // 从AI消息往上找对应的用户消息
+                const aiMessageContainer = button.closest('.flex.items-start');
+                let prevElement = aiMessageContainer.previousElementSibling;
+                while (prevElement) {
+                    const userMessageP = prevElement.querySelector('.chat-message-user p');
+                    if (userMessageP) {
+                        userMessage = userMessageP.textContent.trim();
+                        break;
+                    }
+                    prevElement = prevElement.previousElementSibling;
+                }
+            }
+            
+            // 调用真实API重新生成
+            fetch('/api/ai/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    messages: userMessage
+                }),
+                signal: currentResponseAbortController.signal
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API请求失败: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
                 if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
                     // 移除打字指示器
                     if (typingDiv.parentNode) {
@@ -1447,9 +1637,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // 替换当前消息内容
-                    const newContent = isFromUserMessage ? 
-                        '这是基于您重新提问而生成的新回复内容。AI会根据您的问题提供不同角度的回答。' :
-                        '这是重新生成的AI回复内容，通常会有所不同。在实际应用中，这里会连接到真正的AI服务获取新的回复。';
+                    const newContent = data.response || '重新生成失败，请稍后重试。';
                     messageP.textContent = newContent;
                     messageP.style.display = '';
                     
@@ -1457,8 +1645,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     messageBubble.classList.remove('message-regenerating');
                     
                     setAIResponseState(false);
+                    
+                    console.log('重新生成成功:', newContent.substring(0, 50) + '...');
                 }
-            }, 2000);
+            })
+            .catch(error => {
+                console.error('重新生成失败:', error);
+                
+                if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
+                    // 移除打字指示器
+                    if (typingDiv.parentNode) {
+                        typingDiv.parentNode.removeChild(typingDiv);
+                    }
+                    
+                    // 显示错误信息或恢复原文本
+                    if (error.name === 'AbortError') {
+                        messageP.textContent = originalText; // 恢复原文本
+                    } else {
+                        messageP.textContent = '重新生成失败，请检查网络连接后重试。';
+                    }
+                    messageP.style.display = '';
+                    
+                    // 移除重新生成状态
+                    messageBubble.classList.remove('message-regenerating');
+                    
+                    setAIResponseState(false);
+                }
+            });
         }
     };
 
@@ -1600,150 +1813,119 @@ document.addEventListener('DOMContentLoaded', function() {
     sendBtn.disabled = true;
     fullscreenSendBtn.disabled = true;
 
-    // ====== 聊天记录持久化功能 ======
+    // ====== 聊天记录后端同步功能 ======
     
-    // 等待存储管理器初始化完成后恢复聊天记录
-    async function initializeChatWithStorage() {
-        try {
-            // 确保存储管理器已初始化
-            if (window.chatStorage) {
-                await window.chatStorage.initDB();
+    // 等待AI聊天管理器加载完成
+    async function waitForAIChatManager(maxRetries = 25) {
+        let retries = 0;
+        return new Promise((resolve, reject) => {
+            const checkManager = () => {
+                console.log(`检查AI聊天管理器 - 尝试 ${retries + 1}/${maxRetries}`);
                 
-                // 恢复聊天记录
-                await restoreChatMessages();
-                
-                console.log('聊天记录持久化功能已启用');
-            } else {
-                console.log('存储管理器未加载，跳过持久化功能');
-            }
+                if (window.aiChatManager && typeof window.aiChatManager.initialize === 'function') {
+                    console.log('AI聊天管理器已就绪');
+                    resolve(window.aiChatManager);
+                } else if (retries >= maxRetries) {
+                    console.error('AI聊天管理器加载超时，最终状态:');
+                    console.error('- window.aiChatManager:', window.aiChatManager);
+                    console.error('- window.AIChatManager:', window.AIChatManager);
+                    console.error('- typeof aiChatManager.initialize:', typeof window.aiChatManager?.initialize);
+                    reject(new Error('AI聊天管理器加载超时'));
+                } else {
+                    retries++;
+                    setTimeout(checkManager, 200); // 每200ms检查一次
+                }
+            };
             
-            // 无论是否有存储功能，都保持脉冲圆环状态（已在初始化时设置）
-            console.log('聊天助手保持脉冲圆环状态');
-        } catch (error) {
-            console.error('初始化聊天存储失败:', error);
-        }
+            // 立即检查一次
+            checkManager();
+        });
     }
 
-    // 恢复聊天记录
-    async function restoreChatMessages() {
+    // 从后端加载聊天历史并渲染到UI
+    async function loadChatHistoryFromBackend() {
         try {
-            const messages = await window.chatStorage.getMessages();
+            console.log('开始从后端加载聊天历史...');
+            
+            // 等待AI聊天管理器加载完成
+            const aiChatManager = await waitForAIChatManager();
+            
+            // 使用AI聊天管理器加载历史记录
+            const messages = await aiChatManager.initialize();
             
             if (messages.length > 0) {
-                // 恢复历史消息
+                // 清除欢迎消息，重新渲染历史消息
+                clearChatUI();
+                
+                // 渲染加载的消息
                 messages.forEach(message => {
-                    if (message.sender === 'user' || message.sender === 'ai') {
-                        // 使用原始的addMessage函数，但不保存到存储
-                        originalAddMessage(message.content, message.sender);
+                    if (message.role === 'user' || message.role === 'assistant') {
+                        addMessageToUI(message.content, message.role === 'user' ? 'user' : 'ai', false);
                     }
                 });
                 
-                console.log(`恢复了 ${messages.length} 条历史消息`);
-            }
-        } catch (error) {
-            console.error('恢复聊天记录失败:', error);
-        }
-    }
-
-
-
-    // 设置默认聊天状态（每次页面跳转都设置为脉冲圆环状态）
-    async function setDefaultChatState() {
-        // 由于初始化时已经设置为脉冲圆环状态，并且脉冲动画已经启动
-        // 这里不需要做任何额外操作，状态已经正确
-        console.log('聊天助手已设置为默认脉冲圆环状态');
-    }
-
-
-
-
-
-    
-    // 重写原有的addMessage函数，添加存储功能
-    const originalAddMessage = addMessage;
-    addMessage = function(content, sender, shouldSave = true) {
-        // 调用原始的addMessage函数
-        originalAddMessage(content, sender);
-        
-        // 保存到存储（如果需要）
-        if (shouldSave && window.chatStorage) {
-            window.chatStorage.saveMessage(content, sender).catch(error => {
-                console.error('保存消息失败:', error);
-            });
-        }
-    };
-
-    // 兼容addMessageToUI函数名（用于恢复消息时调用）
-    function addMessageToUI(content, sender, shouldSave = true) {
-        return addMessage(content, sender, shouldSave);
-    }
-
-    // 保存原有的消息发送逻辑
-    const originalSendMessage = function() {
-        const message = chatInput.value.trim();
-        if (message === '') return;
-
-        // 如果AI正在响应，则停止当前响应
-        if (isAIResponding) {
-            stopAIResponse();
-            return;
-        }
-
-        // 添加用户消息到UI并保存
-        addMessageToUI(message, 'user', true);
-        
-        // 清空输入框并重置状态
-        chatInput.value = '';
-        chatInput.style.height = 'auto';
-        chatInput.style.height = '36px';
-        chatInput.style.overflowY = 'hidden';
-        chatInput.scrollTop = 0;
-        sendBtn.disabled = true;
-        
-        // 重置聊天窗口到初始状态
-        resetChatWindowHeight();
-
-        // 设置发送状态
-        setAIResponseState(true);
-
-        const typingIndicator = showTypingIndicator();
-        
-        // 创建AbortController用于取消请求
-        currentResponseAbortController = new AbortController();
-        
-        setTimeout(() => {
-            if (currentResponseAbortController && !currentResponseAbortController.signal.aborted) {
-                if (typingIndicator.parentNode) {
-                    typingIndicator.parentNode.removeChild(typingIndicator);
-                }
-                const aiResponse = '这是一个模拟的AI回复。在实际应用中，这里会连接到真正的AI服务。';
-                addMessageToUI(aiResponse, 'ai', true);
-                setAIResponseState(false);
-            }
-        }, 2000);
-    };
-
-    // 重写sendMessage函数添加存储功能
-    sendMessage = originalSendMessage;
-
-    // 重写清除聊天函数，添加存储清除逻辑
-    const originalClearChatMessages = clearChatMessages;
-    clearChatMessages = async function(isFullscreen) {
-        try {
-            // 清除存储中的消息
-            if (window.chatStorage) {
-                await window.chatStorage.clearSession();
-                console.log('聊天记录已从存储中清除');
+                console.log(`从后端加载了 ${messages.length} 条聊天记录`);
+            } else {
+                console.log('没有找到历史聊天记录');
             }
             
-            // 调用原始清除函数
-            originalClearChatMessages(isFullscreen);
         } catch (error) {
-            console.error('清除聊天记录失败:', error);
-            // 即使存储清除失败，也执行UI清除
-            originalClearChatMessages(isFullscreen);
+            console.error('从后端加载聊天历史失败:', error);
+            if (error.message === 'AI聊天管理器加载超时') {
+                showErrorMessage('聊天功能加载失败，请刷新页面重试');
+            } else {
+                showErrorMessage('加载聊天历史失败，请检查网络连接');
+            }
         }
-    };
+    }
+
+    // 清除聊天UI（保留欢迎消息）
+    function clearChatUI() {
+        // 重置小窗口聊天区域
+        chatMessages.innerHTML = `
+            <div class="flex items-start space-x-3">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%]">
+                    <p class="text-sm leading-relaxed">你好！我是AI智能助手，有什么可以帮助您的吗？</p>
+                </div>
+            </div>
+        `;
+        
+        // 重置全屏聊天区域
+        fullscreenMessages.innerHTML = `
+            <div class="flex items-start space-x-4 max-w-4xl mx-auto">
+                <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-10 h-10 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+                <div class="bg-[var(--bg-secondary)]/80 text-[var(--text-primary)] px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border border-[rgba(0,191,255,0.08)]">
+                    <p class="text-sm leading-6">你好！我是AI智能助手，现在在全屏模式下为您服务。有什么可以帮助您的吗？</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // 添加消息到UI（基础版本，不涉及存储）
+    function addMessageToUI(content, sender, shouldSync = true) {
+        return addMessage(content, sender);
+    }
+
+    // 显示错误消息
+    function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'flex items-start space-x-3 chat-message-enter';
+        errorDiv.innerHTML = `
+            <img src="{% static 'ai_assistant_logo.JPG' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="chat-message-ai px-4 py-3 rounded-lg rounded-tl-sm max-w-[70%] border-l-4 border-red-400 bg-red-50">
+                <p class="text-sm leading-relaxed text-red-700">${message}</p>
+            </div>
+        `;
+        chatMessages.appendChild(errorDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // 同步到全屏
+        const fullscreenErrorDiv = errorDiv.cloneNode(true);
+        fullscreenErrorDiv.className = 'flex items-start space-x-4 chat-message-enter max-w-4xl mx-auto';
+        fullscreenMessages.appendChild(fullscreenErrorDiv);
+        fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
+    }
 
 
     // 启动脉冲动画（页面加载时立即可见，无需等待）
@@ -1758,16 +1940,103 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100); // 极短延迟，确保立即可见
     }
 
-    // 初始化持久化功能（延迟执行，确保DOM完全加载）
-    setTimeout(() => {
-        if (window.chatStorage) {
-            initializeChatWithStorage().catch(error => {
-                console.error('持久化功能初始化失败:', error);
-            });
-        } else {
-            console.log('聊天存储脚本未加载，跳过持久化功能');
-            // 脉冲圆环状态已在初始化时设置，无需额外操作
+    // 添加滚动加载更多功能
+    function setupScrollLoadMore() {
+        let isLoadingMore = false;
+        let scrollThrottleTimer = null;
+        
+        const handleScrollLoadMore = async (messagesContainer) => {
+            // 节流处理
+            if (scrollThrottleTimer) return;
+            scrollThrottleTimer = setTimeout(() => {
+                scrollThrottleTimer = null;
+            }, 300);
+            
+            // 检查AI聊天管理器是否可用
+            if (isLoadingMore || !window.aiChatManager || 
+                typeof window.aiChatManager.needsLoadMore !== 'function' || 
+                !window.aiChatManager.needsLoadMore()) {
+                return;
+            }
+            
+            // 检查滚动位置（滚动到顶部时加载更多）
+            if (messagesContainer.scrollTop <= 100) {
+                isLoadingMore = true;
+                console.log('检测到滚动到顶部，加载更多历史消息...');
+                
+                try {
+                    const scrollHeight = messagesContainer.scrollHeight;
+                    await window.aiChatManager.loadChatHistory(false);
+                    
+                    // 重新渲染所有消息
+                    await renderAllMessages();
+                    
+                    // 保持滚动位置
+                    const newScrollHeight = messagesContainer.scrollHeight;
+                    messagesContainer.scrollTop = newScrollHeight - scrollHeight + 100;
+                    
+                    console.log('历史消息加载完成');
+                } catch (error) {
+                    console.error('加载更多历史消息失败:', error);
+                } finally {
+                    isLoadingMore = false;
+                }
+            }
+        };
+        
+        // 为两个聊天容器添加滚动监听
+        chatMessages.addEventListener('scroll', () => handleScrollLoadMore(chatMessages));
+        fullscreenMessages.addEventListener('scroll', () => handleScrollLoadMore(fullscreenMessages));
+    }
+
+    // 渲染所有消息到UI
+    async function renderAllMessages() {
+        if (!window.aiChatManager || typeof window.aiChatManager.getAllMessages !== 'function') {
+            console.warn('AI聊天管理器不可用，跳过消息渲染');
+            return;
         }
-    }, 1000);
+        
+        try {
+            const messages = window.aiChatManager.getAllMessages();
+            
+            // 清除当前消息（保留欢迎消息）
+            clearChatUI();
+            
+            // 渲染所有消息
+            messages.forEach(message => {
+                if (message.role === 'user' || message.role === 'assistant') {
+                    addMessageToUI(message.content, message.role === 'user' ? 'user' : 'ai', false);
+                }
+            });
+            
+            console.log(`已渲染 ${messages.length} 条消息到UI`);
+        } catch (error) {
+            console.error('渲染消息失败:', error);
+        }
+    }
+
+    // 初始化聊天功能（延迟执行，确保DOM和AI管理器完全加载）
+    setTimeout(async () => {
+        try {
+            console.log('开始初始化聊天功能...');
+            console.log('页面加载时的状态:');
+            console.log('- window.aiChatManager:', window.aiChatManager);
+            console.log('- window.AIChatManager:', window.AIChatManager);
+            
+            // 设置滚动加载功能（无需等待AI管理器）
+            setupScrollLoadMore();
+            
+            // 从后端加载聊天历史（内部会等待AI管理器）
+            await loadChatHistoryFromBackend();
+            
+            console.log('聊天功能初始化完成');
+        } catch (error) {
+            console.error('初始化聊天功能失败:', error);
+            // 如果初始化失败，显示提示信息
+            if (error.message.includes('AI聊天管理器')) {
+                showErrorMessage('聊天功能加载失败，请刷新页面重试');
+            }
+        }
+    }, 2000); // 延长等待时间，确保所有脚本完全加载
 });
 </script> 

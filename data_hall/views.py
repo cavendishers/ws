@@ -9,7 +9,7 @@ from django.db.models import Q
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from openai import OpenAI
+# OpenAI已迁移到ai_services.py模块
 from django.views.decorators.http import require_http_methods
 from .models import IndustryChain, ChainPoint
 from .forms import LoginForm, RegistrationForm, PasswordResetRequestForm
@@ -658,41 +658,8 @@ def get_precision_list(request):
     
     return JsonResponse(result, safe=False)
 
-@csrf_exempt
-@require_POST
-def ai_chat(request):
-    """处理AI聊天请求，使用openai库与AI API交互"""
-    try:
-        # 解析请求数据
-        data = json.loads(request.body)
-        messages = data.get('messages', '')
-
-        # 初始化OpenAI客户端
-        client = OpenAI(
-            base_url="https://ark.cn-beijing.volces.com/api/v3/bots",
-            api_key="e85ba65e-9b03-4e28-bd4a-08e6cc5fd74a"
-        )
-
-        completion = client.chat.completions.create(
-            model="bot-20250421104824-ttj7h",
-            messages=[{"role": "user", "content": messages}],
-        )
-
-        response_data = completion.choices[0].message.content
-        print(response_data)
-        return JsonResponse({"response": response_data}, safe=False)
-        
-    except json.JSONDecodeError as e:
-        return JsonResponse({
-            'error': True,
-            'message': f'JSON解析错误: {str(e)}'
-        }, status=400)
-        
-    except Exception as e:
-        return JsonResponse({
-            'error': True,
-            'message': f'API调用异常: {str(e)}'
-        }, status=500)
+# 旧的AI聊天函数已迁移到 ai_views.py
+# 现在使用新的基于DeepSeek的AI聊天系统
 
 def get_top_companies(request):
     """获取新势力企业名单 - 根据综合得分排序"""

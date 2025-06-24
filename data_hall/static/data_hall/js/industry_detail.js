@@ -31,8 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 自动适应视窗，展示全局视图
     function fitToViewport() {
-        // 临时重置变换，以获取未缩放时的真实尺寸
+        // 确保在测量前容器是可见的，但暂时移除变换
+        const currentTransform = container.style.transform;
+        container.style.visibility = 'visible';
         container.style.transform = 'translate(0px, 0px) scale(1)';
+        
+        // 强制重新计算布局
+        container.offsetHeight;
         
         // 获取容器原始尺寸
         const containerRect = container.getBoundingClientRect();
@@ -67,9 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // 应用变换
         setTransform();
-        
-        // 变换完成后显示图表
-        container.style.visibility = 'visible';
         
         console.log(`自动适应: 缩放比例=${scale.toFixed(2)}, 位置X=${translateX.toFixed(0)}px, Y=${translateY.toFixed(0)}px`);
         console.log(`容器尺寸: ${containerRect.width}x${containerRect.height}, 视口尺寸: ${zoomContainerRect.width}x${zoomContainerRect.height}`);
@@ -187,34 +189,7 @@ function renderGraph(nodes, parentElement) {
                 const nodeElement = createNodeElement(node);
                 columnDiv.appendChild(nodeElement);
                 
-                // 在节点添加到DOM后设置列宽
-                if (node.NodeLevel === 1) {
-                    const childCount = countAllDescendants(node);
-                    const MAX_NODES_PER_COLUMN = 20;
-                    const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
-                    
-                    // 根据屏幕宽度智能限制列数
-                    const screenWidth = window.innerWidth;
-                    let maxColumns = 4;
-                    if (screenWidth < 1200) {
-                        maxColumns = 2;
-                    } else if (screenWidth < 1600) {
-                        maxColumns = 3;
-                    }
-                    
-                    const actualColumns = Math.min(requiredColumns, maxColumns);
-                    
-                    // 现在节点已经添加到DOM，可以找到父元素
-                    if (actualColumns > 3) {
-                        columnDiv.classList.add('width-columns-4');
-                    } else if (actualColumns > 2) {
-                        columnDiv.classList.add('width-columns-3');
-                    } else if (actualColumns > 1) {
-                        columnDiv.classList.add('width-columns-2');
-                    }
-                    
-                    console.log(`屏幕宽度: ${screenWidth}px, 最大列数: ${maxColumns}, 实际列数: ${actualColumns}`);
-                }
+
             });
             parentElement.appendChild(columnDiv);
         }
@@ -264,8 +239,8 @@ function createNodeElement(nodeData) {
     }
 
     if (nodeData.Children && nodeData.Children.length > 0) {
-        // 对于第一级节点，需要特殊处理列布局
-        if (nodeData.NodeLevel === 1) {
+        // 对于第一级和第二级节点，使用多列布局
+        if (nodeData.NodeLevel === 1 || nodeData.NodeLevel === 2) {
             // 递归计算所有子孙节点的总数量
             const childCount = countAllDescendants(nodeData);
             
@@ -273,15 +248,26 @@ function createNodeElement(nodeData) {
             const MAX_NODES_PER_COLUMN = 20;
             const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
             
+            // 根据节点级别设置不同的最大列数
+            let maxColumns = nodeData.NodeLevel === 1 ? 4 : 3; // Level 1最多4列，Level 2最多3列
+            
+            // 根据屏幕宽度进一步限制列数
+            const screenWidth = window.innerWidth;
+            if (screenWidth < 1200) {
+                maxColumns = Math.min(maxColumns, 2);
+            } else if (screenWidth < 1600) {
+                maxColumns = Math.min(maxColumns, 3);
+            }
+            
+            const actualColumns = Math.min(requiredColumns, maxColumns);
+            
             // 创建多列容器（外层容器）
             const columnsContainer = document.createElement('div');
             columnsContainer.className = 'multi-columns-wrapper';
-            columnsContainer.style.display = 'flex';
-            columnsContainer.style.gap = '15px';
+            // 添加列数信息供CSS使用
+            columnsContainer.setAttribute('data-columns', actualColumns);
+            columnsContainer.classList.add(`columns-${actualColumns}`);
             nodeElement.appendChild(columnsContainer);
-            
-            // 限制最多4列
-            const actualColumns = Math.min(requiredColumns, 4);
             
             // 将子节点分组，每组不超过MAX_NODES_PER_COLUMN个节点
             const columns = [];
@@ -315,8 +301,6 @@ function createNodeElement(nodeData) {
                 if (columns[i].length > 0) {
                     const columnDiv = document.createElement('div');
                     columnDiv.className = `node-level-${nodeData.NodeLevel}-column column-${i+1}`;
-                    columnDiv.style.flexGrow = '1';
-                    columnDiv.style.width = `${100/actualColumns}%`;
                     
                     // 为该列的每个子节点创建元素
                     columns[i].forEach(childNode => {
@@ -329,9 +313,25 @@ function createNodeElement(nodeData) {
                 }
             }
             
+            // 为节点添加列数标识类，供CSS控制宽度
+            if (actualColumns > 1) {
+                nodeElement.classList.add(`has-${actualColumns}-columns`);
+                
+                // 如果是Level 2，还需要向上传播宽度需求
+                if (nodeData.NodeLevel === 2) {
+                    // 查找父级Level 1节点，标记其包含多列Level 2
+                    const parentLevel1 = nodeElement.closest('.node-level-1');
+                    if (parentLevel1) {
+                        parentLevel1.classList.add('contains-wide-level2');
+                    }
+                }
+            }
+            
+            console.log(`Level ${nodeData.NodeLevel} 节点 "${nodeData.NodeName}": 屏幕宽度=${screenWidth}px, 最大列数=${maxColumns}, 实际列数=${actualColumns}`);
+            
             return nodeElement;
         } else {
-            // 对于非第一级节点，使用原来的逻辑
+            // 对于三级及以下节点，使用原来的逻辑
             const childrenContainer = document.createElement('div');
             childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
             

@@ -112,11 +112,12 @@ body, button, input, select, textarea {
     gap: 2rem;
     min-width: fit-content;
     transform-origin: 0 0;
-    transition: transform 0.2s ease;
     position: relative;
     background-color: #212D48;
     background-image: linear-gradient(to bottom, #23304D, #212D48);
     width: max-content;
+    /* 确保布局稳定 */
+    box-sizing: border-box;
 }
 
 .industry-column {
@@ -160,61 +161,52 @@ body, button, input, select, textarea {
     background-color: var(--downstream-title-bg);
 }
 
-/* 增加不同列数的列宽度 - 响应式设计 */
-.industry-column.width-columns-2 {
-    min-width: 45rem;
-    max-width: 51.25rem;
-}
-
-.industry-column.width-columns-3 {
-    min-width: 67.5rem;
-    max-width: 73.75rem;
-}
-
-.industry-column.width-columns-4 {
-    min-width: 90rem;
-    max-width: 96.25rem;
-}
-
-/* 响应式宽度调整 */
-@media (max-width: 100rem) {
-    .industry-column.width-columns-3 {
-        min-width: 62.5rem;
-        max-width: 68.75rem;
-    }
-    
-    .industry-column.width-columns-4 {
-        min-width: 83.75rem;
-        max-width: 90rem;
-    }
-}
-
-@media (max-width: 87.5rem) {
-    .industry-column.width-columns-3 {
-        min-width: 52.5rem;
-        max-width: 58.75rem;
-    }
-    
-    .industry-column.width-columns-4 {
-        min-width: 70rem;
-        max-width: 76.25rem;
-    }
-}
-
+/* 响应式布局调整 - 小屏幕优化 */
 @media (max-width: 75rem) {
-    .industry-column.width-columns-2 {
-        min-width: 45rem;
-        max-width: 48.75rem;
+    /* 小屏幕下限制最大宽度，防止过宽 */
+    .industry-column:has(.has-2-columns),
+    .industry-column:has(.has-3-columns),
+    .industry-column:has(.has-4-columns) {
+        max-width: 50rem;
     }
     
-    .industry-column.width-columns-3 {
-        min-width: 45rem;
-        max-width: 51.25rem;
+    /* 小屏幕下减少最小列宽 */
+    .node-level-1-column,
+    .node-level-2-column {
+        min-width: 18rem;
     }
     
-    .industry-column.width-columns-4 {
-        min-width: 45rem;
-        max-width: 51.25rem;
+    /* 重新计算Level 1容器宽度 */
+    .node-level-1 .multi-columns-wrapper.columns-2 {
+        min-width: calc(2 * 18rem + 15px);
+    }
+    
+    .node-level-1 .multi-columns-wrapper.columns-3 {
+        min-width: calc(3 * 18rem + 30px);
+    }
+    
+    .node-level-1 .multi-columns-wrapper.columns-4 {
+        min-width: calc(4 * 18rem + 45px);
+    }
+    
+    /* 小屏幕下Level 2节点也相应减小 */
+    .node-level-2.has-2-columns {
+        width: 36rem;
+        min-width: 36rem;
+    }
+    
+    .node-level-2.has-3-columns {
+        width: 50rem;
+        min-width: 50rem;
+    }
+    
+    /* 小屏幕下Level 2多列容器调整 */
+    .node-level-2 .multi-columns-wrapper.columns-2 {
+        max-width: 34rem;
+    }
+    
+    .node-level-2 .multi-columns-wrapper.columns-3 {
+        max-width: 48rem;
     }
 }
 
@@ -301,7 +293,8 @@ body, button, input, select, textarea {
 .node-level-1-items-container,
 .node-level-2-items-container,
 .node-level-3-items-container,
-.node-level-4-items-container {
+.node-level-4-items-container,
+.node-level-5-items-container {
     background-color: rgba(45, 58, 92, 0.8);
     border: 0.0625rem solid rgba(95, 125, 190, 0.2);
     border-radius: 0.5rem;
@@ -312,43 +305,29 @@ body, button, input, select, textarea {
     gap: 0.625rem;
 }
 
-/* 多列布局样式 */
-.node-level-1-items-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(21.875rem, 1fr));
-    gap: 0.875rem;
-    box-sizing: border-box;
+/* 确保Node3的子节点有正确的间距 */
+.node-level-3-items-container > .node-level-4 {
+    margin-bottom: 0.625rem;
 }
 
-.multi-column-layout {
-    grid-template-columns: repeat(auto-fill, minmax(21.875rem, 1fr));
+.node-level-3-items-container > .node-level-4:last-child {
+    margin-bottom: 0;
 }
 
-.columns-2 {
-    grid-template-columns: repeat(2, 1fr);
+/* 确保Node4的子节点间距与Node3一致 */
+.node-level-4-items-container > .node-level-5 {
+    margin-bottom: 0.625rem;
 }
 
-.columns-3 {
-    grid-template-columns: repeat(3, 1fr);
+.node-level-4-items-container > .node-level-5:last-child {
+    margin-bottom: 0;
 }
 
-.columns-4 {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-.multi-column-layout > .node-level-2,
-.multi-column-layout > .node-level-3,
-.multi-column-layout > .node-level-4,
-.multi-column-layout > .node-level-5 {
-    min-width: 20.625rem;
-    max-width: 23.75rem;
-    max-height: fit-content;
-    box-sizing: border-box;
-}
+/* 多列布局样式 - 简化版本 */
 
 .node-level-3 {
     width: 100%;
-    min-width: 17.5rem;
+    min-width: 18rem;
     padding: 0.625rem 0.75rem;
     border-radius: 0.375rem;
     text-align: center;
@@ -405,20 +384,7 @@ body, button, input, select, textarea {
     box-shadow: 0 0.1875rem 0.5rem rgba(97, 131, 217, 0.2);
 }
 
-.horizontal-group-parent > .node-level-2-items-container,
-.horizontal-group-parent > .node-level-3-items-container,
-.horizontal-group-parent > .node-level-4-items-container {
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
 
-.horizontal-group-parent > .node-level-2-items-container > .node-level-3,
-.horizontal-group-parent > .node-level-3-items-container > .node-level-4,
-.horizontal-group-parent > .node-level-4-items-container > .node-level-5 {
-    flex-grow: 1;
-    min-width: 6.25rem;
-}
 
 .arrow {
     display: flex;
@@ -550,7 +516,6 @@ body, button, input, select, textarea {
 ::-webkit-scrollbar-thumb:hover {
     background: #5A82CC;
 }
-
 /* 节点标题优化 */
 .node-title {
     font-weight: 500;
@@ -558,16 +523,165 @@ body, button, input, select, textarea {
     letter-spacing: -0.005em;
 }
 
-/* 多列包装器样式 */
+/* 多列包装器样式 - 完全由CSS控制 */
 .multi-columns-wrapper {
     background-color: rgba(45, 58, 92, 0.8);
     border-radius: 0.5rem;
     padding: 0.9375rem;
     margin-top: 0.3125rem;
     box-shadow: 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.08);
-    overflow: hidden; /* 防止内容溢出 */
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    gap: 15px;
+}
+
+/* 列容器基础样式 - 使用 flex-shrink: 0 防止压缩 */
+.node-level-1-column,
+.node-level-2-column {
+    box-sizing: border-box;
+    flex-shrink: 0; /* 防止列被压缩 */
+    min-width: 22rem; /* 最小列宽 */
+}
+
+/* Level 2 节点宽度控制 - 基于子列数（这决定了列的实际宽度）*/
+.node-level-2.has-2-columns {
+    width: 42rem;
+    min-width: 42rem;
+}
+
+.node-level-2.has-3-columns {
+    width: 60rem;
+    min-width: 60rem;
+}
+
+/* Level 2 多列容器 - 受限于父容器宽度 */
+.node-level-2 .multi-columns-wrapper.columns-2 {
+    width: 100%;
+    max-width: 40rem; /* 小于父容器宽度以留出padding */
+}
+
+.node-level-2 .multi-columns-wrapper.columns-3 {
+    width: 100%;
+    max-width: 58rem; /* 小于父容器宽度以留出padding */
+}
+
+/* Level 2 列宽度控制 */
+.node-level-2 .multi-columns-wrapper.columns-2 > .node-level-2-column {
+    width: calc(50% - 7.5px);
+    flex-shrink: 1; /* 允许Level 2的列适度收缩 */
+    min-width: 18rem;
+}
+
+.node-level-2 .multi-columns-wrapper.columns-3 > .node-level-2-column {
+    width: calc(33.333% - 10px);
+    flex-shrink: 1;
+    min-width: 18rem;
+}
+
+/* Level 1 多列容器 - 根据内容动态调整宽度 */
+.node-level-1 .multi-columns-wrapper.columns-2 {
+    min-width: calc(2 * 22rem + 15px); /* 2列最小宽度 */
+}
+
+.node-level-1 .multi-columns-wrapper.columns-3 {
+    min-width: calc(3 * 22rem + 30px); /* 3列最小宽度 */
+}
+
+.node-level-1 .multi-columns-wrapper.columns-4 {
+    min-width: calc(4 * 22rem + 45px); /* 4列最小宽度 */
+}
+
+/* 当Level 1包含宽Level 2时，容器需要更宽 */
+.node-level-1.contains-wide-level2 .multi-columns-wrapper.columns-2 {
+    min-width: calc(2 * 42rem + 15px); /* 适应42rem宽的Level 2 */
+}
+
+.node-level-1.contains-wide-level2 .multi-columns-wrapper.columns-3 {
+    min-width: calc(3 * 42rem + 30px); /* 适应42rem宽的Level 2 */
+}
+
+.node-level-1.contains-wide-level2 .multi-columns-wrapper.columns-4 {
+    min-width: calc(4 * 42rem + 45px); /* 适应42rem宽的Level 2 */
+}
+
+/* 当包含60rem宽的Level 2时，需要更大空间 */
+.node-level-1:has(.node-level-2.has-3-columns) .multi-columns-wrapper.columns-2 {
+    min-width: calc(2 * 60rem + 15px);
+}
+
+.node-level-1:has(.node-level-2.has-3-columns) .multi-columns-wrapper.columns-3 {
+    min-width: calc(3 * 60rem + 30px);
+}
+
+.node-level-1:has(.node-level-2.has-3-columns) .multi-columns-wrapper.columns-4 {
+    min-width: calc(4 * 60rem + 45px);
+}
+
+/* Level 1 节点自身宽度 - 确保能容纳multi-columns-wrapper */
+.node-level-1.has-2-columns {
+    min-width: calc(2 * 22rem + 15px + 2rem); /* 额外padding */
+}
+
+.node-level-1.has-3-columns {
+    min-width: calc(3 * 22rem + 30px + 2rem);
+}
+
+.node-level-1.has-4-columns {
+    min-width: calc(4 * 22rem + 45px + 2rem);
+}
+
+.node-level-1.contains-wide-level2.has-2-columns {
+    min-width: calc(2 * 42rem + 15px + 2rem);
+}
+
+.node-level-1.contains-wide-level2.has-3-columns {
+    min-width: calc(3 * 42rem + 30px + 2rem);
+}
+
+.node-level-1.contains-wide-level2.has-4-columns {
+    min-width: calc(4 * 42rem + 45px + 2rem);
+}
+
+.node-level-1:has(.node-level-2.has-3-columns).has-2-columns {
+    min-width: calc(2 * 60rem + 15px + 2rem);
+}
+
+.node-level-1:has(.node-level-2.has-3-columns).has-3-columns {
+    min-width: calc(3 * 60rem + 30px + 2rem);
+}
+
+.node-level-1:has(.node-level-2.has-3-columns).has-4-columns {
+    min-width: calc(4 * 60rem + 45px + 2rem);
+}
+
+/* industry-column 整体宽度 - 确保能容纳Level 1 */
+.industry-column:has(.has-2-columns) {
+    min-width: calc(2 * 22rem + 15px + 4rem);
+}
+
+.industry-column:has(.has-3-columns) {
+    min-width: calc(3 * 22rem + 30px + 4rem);
+}
+
+.industry-column:has(.has-4-columns) {
+    min-width: calc(4 * 22rem + 45px + 4rem);
+}
+
+.industry-column:has(.contains-wide-level2.has-2-columns) {
+    min-width: calc(2 * 42rem + 15px + 4rem);
+}
+
+.industry-column:has(.contains-wide-level2.has-3-columns) {
+    min-width: calc(3 * 42rem + 30px + 4rem);
+}
+
+.industry-column:has(.contains-wide-level2.has-4-columns) {
+    min-width: calc(4 * 42rem + 45px + 4rem);
+}
+
+.industry-column:has(.node-level-2.has-3-columns) {
+    min-width: calc(3 * 60rem + 30px + 4rem);
 }
 
 /* 有子节点的节点样式 - 使用线框而非填充色 */

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "graph": {
         "treeGraph": {
@@ -3342,4 +3343,3350 @@
     },
     "vipInfo": null
   }
+=======
+{
+    "graph": {
+        "treeGraph": {
+      "NodeLevel": 0,
+      "NodeCode": "IC0007",
+      "NodeName": "集成电路",
+      "IndustryChainStype": 1,
+      "IndustryChainStypeDesc": "上中下游型",
+      "Children": [
+        {
+          "IndustryChainCode": "IC0007",
+          "IndustryChainName": "集成电路",
+          "NodeCode": "IC00070105",
+          "NodeName": "软件、材料、设备",
+          "NodeType": 1,
+          "NodeLevel": 1,
+          "NodeNum": 1,
+          "NodeImportant": 0,
+          "ProductCode": "",
+          "ProductName": "",
+          "ParentNodeCode": "",
+          "IndustryChainStype": 1,
+          "ProductDefine": null,
+          "CompanyCount": 23023,
+          "NodeNumDesc": "上游",
+          "Children": [
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007004",
+              "NodeName": "半导体材料",
+              "NodeType": 2,
+              "NodeLevel": 2,
+              "NodeNum": 1,
+              "NodeImportant": 3,
+              "ProductCode": "PRD0001423",
+              "ProductName": "半导体材料",
+              "ParentNodeCode": "IC00070105",
+              "IndustryChainStype": 1,
+              "ProductDefine": "半导体材料是一类具有电导率介于导体与绝缘体之间的材料，广泛应用于电子和光电子设备。它们的关键特性是其能带结构，允许通过掺杂来控制其导电性。常见的半导体材料包括硅、锗以及化合物半导体如硅 carbide（SiC）、gan（氮化镓）、gan（氮化镓）和iii-v族化合物等。这些材料在计算机芯片、太阳能电池、LED照明、通信设备和各种传感器等现代技术中发挥着核心作用，市场空间巨大且持续增长，是全球科技发展的重要基石。",
+              "CompanyCount": 10503,
+              "Children": [
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007024",
+                  "NodeName": "晶圆制造",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 1,
+                  "NodeImportant": 0,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007004",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 5157,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007028",
+                      "NodeName": "衬底材料",
+                      "NodeType": 1,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "",
+                      "ProductName": "",
+                      "ParentNodeCode": "IC0007024",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": null,
+                      "CompanyCount": 5017,
+                      "Children": [
+                        {
+                          "IndustryChainCode": "IC0007",
+                          "IndustryChainName": "集成电路",
+                          "NodeCode": "IC0007031",
+                          "NodeName": "半导体硅材料",
+                          "NodeType": 2,
+                          "NodeLevel": 5,
+                          "NodeNum": 1,
+                          "NodeImportant": 2,
+                          "ProductCode": "PRD0001558",
+                          "ProductName": "半导体硅材料",
+                          "ParentNodeCode": "IC0007028",
+                          "IndustryChainStype": 1,
+                          "ProductDefine": "半导体硅材料是电子工业中的核心材料，主要由高纯度的硅制成。它在电子器件如集成电路、太阳能电池、计算机芯片等中有广泛应用。这种材料的特殊性质使其能够有效地控制和传输电子，是现代信息技术和可再生能源技术的基础。全球半导体硅材料市场持续增长，随着5G、物联网和人工智能等新兴技术的发展，其市场需求和潜力巨大。",
+                          "CompanyCount": 4978,
+                          "Children": []
+                        },
+                        {
+                          "IndustryChainCode": "IC0007",
+                          "IndustryChainName": "集成电路",
+                          "NodeCode": "IC0007034",
+                          "NodeName": "碳化硅衬底",
+                          "NodeType": 2,
+                          "NodeLevel": 5,
+                          "NodeNum": 2,
+                          "NodeImportant": 5,
+                          "ProductCode": "PRD0025082",
+                          "ProductName": "碳化硅衬底",
+                          "ParentNodeCode": "IC0007028",
+                          "IndustryChainStype": 1,
+                          "ProductDefine": "碳化硅衬底是一种高性能的半导体材料，主要由硅和碳元素组成。它以其优异的热稳定性、高电荷迁移率和宽禁带宽度等特点，广泛应用于电力电子、射频电子以及光电子等领域。碳化硅衬底是制造高温、高压、高频和大功率电子器件的基础，对于提升设备效率、减小体积和重量具有重要意义。随着电动汽车、光伏能源和5G通信等行业的快速发展，碳化硅衬底的市场需求持续增长，市场空间巨大。",
+                          "CompanyCount": 51,
+                          "Children": []
+                        }
+                      ]
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007029",
+                      "NodeName": "半导体硅外延片",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0025013",
+                      "ProductName": "半导体硅外延片",
+                      "ParentNodeCode": "IC0007024",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "半导体硅外延片是半导体制造中的关键材料，它是通过在高纯度硅片表面生长一层单晶硅层而形成的。这种外延技术允许在硅片上创建具有理想晶体结构的薄层，用于制造高性能的集成电路，如微处理器和内存芯片。外延片的高质量和均匀性对于确保电子设备的性能和可靠性至关重要。其应用广泛，包括计算机、通信设备、光伏能源和各种电子器件。全球半导体市场的持续增长为半导体硅外延片提供了巨大的市场空间和发展潜力。",
+                      "CompanyCount": 34,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007030",
+                      "NodeName": "晶圆",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 2,
+                      "ProductCode": "PRD0109721",
+                      "ProductName": "晶圆",
+                      "ParentNodeCode": "IC0007024",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "晶圆是半导体制造中的基本材料，通常由高纯度硅制成。它是一种圆形薄片，是集成电路的载体。在晶圆上，通过光刻和蚀刻等复杂工艺，可以制作出微小的电子元件，如晶体管、电阻、电容等，进而形成各种芯片。这些芯片广泛应用于计算机、手机、医疗设备、汽车电子、物联网等多个领域。全球半导体市场的持续增长，为晶圆市场提供了广阔的发展空间，晶圆的生产技术和良率直接影响着半导体行业的效率和成本。",
+                      "CompanyCount": 173,
+                      "Children": []
+                    }
+                  ]
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007026",
+                  "NodeName": "芯片制造材料",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 2,
+                  "NodeImportant": 0,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007004",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 881,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007044",
+                      "NodeName": "溅射靶材",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0001889",
+                      "ProductName": "溅射靶材",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "溅射靶材是一种用于物理气相沉积（PVD）工艺的材料，主要应用于半导体、平板显示、光学镀膜和磁记录等领域。它是由高纯度金属或合金制成的靶状物体，通过高速粒子轰击（溅射）将靶材的材料沉积到基片上，形成各种功能薄膜。这些薄膜广泛应用于电子器件、显示屏、太阳能电池和硬盘等产品的制造，对于提升产品性能和可靠性具有关键作用。随着科技的发展，溅射靶材的市场需求持续增长，特别是在高科技产业中，其市场空间巨大且具有高技术门槛。",
+                      "CompanyCount": 359,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007011",
+                      "NodeName": "光刻掩膜版",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0025192",
+                      "ProductName": "光刻掩膜版",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "掩膜版，也称为光罩或光刻掩膜版，是微电子制造中的关键组件，用于在光刻过程中将精细的电路图案转移到半导体晶圆或平板显示基板上。它通常由基板、遮光层和保护膜组成，其中基板是成本的主要部分。掩膜版的精度和质量直接影响到下游产品的良品率，因此对电子制造至关重要。掩膜版的价值在于其作为连接设计和制造的桥梁，是芯片制造过程中不可或缺的一部分。随着半导体和显示技术的发展，对掩膜版的精度和质量要求也在不断提高，推动了相关技术的进步和创新。目前，全球掩膜版市场规模稳步增长，预计未来几年将继续保持这一趋势。",
+                      "CompanyCount": 60,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007046",
+                      "NodeName": "光刻胶",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0011775",
+                      "ProductName": "光刻胶",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "光刻胶是一种对光敏感的树脂材料，主要用于微电子制造，如半导体芯片的生产。它在曝光于特定波长的光后会发生化学变化，形成可溶或不可溶的图案，这一过程是半导体制造中的关键步骤——光刻工艺。光刻胶的性能直接影响到芯片的精度和良率，广泛应用于集成电路、液晶显示器、太阳能电池等领域，是现代电子信息技术产业的基础材料之一。随着科技的发展，对光刻胶的分辨率和选择比等性能要求越来越高，市场潜力巨大且竞争激烈。",
+                      "CompanyCount": 125,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007045",
+                      "NodeName": "CMP抛光材料",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 4,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0024675",
+                      "ProductName": "CMP抛光材料",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "CMP（Chemical Mechanical Polishing）抛光材料是半导体制造中的关键材料，主要用于晶圆表面的精密抛光。这些材料结合了化学腐蚀和机械研磨的原理，能够实现对硅片、化合物半导体、金属层等的平坦化处理。CMP抛光材料通常包括浆料（包含磨料和化学试剂）和抛光垫，能够高效、均匀地去除薄层，确保芯片制造的精度和良率。随着半导体技术的发展，CMP材料在存储器、逻辑芯片以及先进封装等领域具有广阔的应用空间，市场前景持续向好。",
+                      "CompanyCount": 83,
+                      "Children": [
+                        {
+                          "IndustryChainCode": "IC0007",
+                          "IndustryChainName": "集成电路",
+                          "NodeCode": "IC0007050",
+                          "NodeName": "抛光垫",
+                          "NodeType": 2,
+                          "NodeLevel": 5,
+                          "NodeNum": 1,
+                          "NodeImportant": 3,
+                          "ProductCode": "PRD0001048",
+                          "ProductName": "抛光垫",
+                          "ParentNodeCode": "IC0007045",
+                          "IndustryChainStype": 1,
+                          "ProductDefine": "抛光垫是一种用于表面抛光的工具，常见于汽车美容、石材护理、金属加工等领域。它通常由合成材料或天然材料如海绵、羊毛、聚氨酯等制成，有的还结合了微细磨料以提高抛光效果。抛光垫根据硬度和纹理的不同，适用于不同程度的研磨和抛光，可以帮助去除划痕、氧化层，提升物体表面的光泽度和光滑度。在汽车行业中，抛光垫与抛光机配合使用，可以有效修复车漆，达到理想的镜面效果。抛光垫市场随着汽车保有量的增长和对表面处理质量要求的提高，呈现出稳定的需求增长态势。",
+                          "CompanyCount": 52,
+                          "Children": []
+                        },
+                        {
+                          "IndustryChainCode": "IC0007",
+                          "IndustryChainName": "集成电路",
+                          "NodeCode": "IC0007051",
+                          "NodeName": "化学机械抛光液",
+                          "NodeType": 2,
+                          "NodeLevel": 5,
+                          "NodeNum": 2,
+                          "NodeImportant": 3,
+                          "ProductCode": "PRD0024681",
+                          "ProductName": "化学机械抛光液",
+                          "ParentNodeCode": "IC0007045",
+                          "IndustryChainStype": 1,
+                          "ProductDefine": "化学机械抛光液，简称CMP（Chemical Mechanical Polishing）液，是一种用于半导体制造过程中的关键材料。它结合了化学腐蚀和机械研磨的原理，主要用于平坦化硅片表面，去除多余的金属层或绝缘层，确保芯片制造的精度和表面光滑度。CMP液通常由磨料、酸、碱、缓冲剂等成分组成，能够有效控制抛光速率和选择性，减少对晶圆的损伤，对于提高集成电路的性能和可靠性至关重要。随着半导体技术的不断发展，CMP液的市场应用空间持续扩大，是现代半导体制造不可或缺的一部分。",
+                          "CompanyCount": 33,
+                          "Children": []
+                        }
+                      ]
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007047",
+                      "NodeName": "湿电子化学品",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 5,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0024530",
+                      "ProductName": "湿电子化学品",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "湿电子化学品，也称为超净高纯试剂，是指在电子工业中用于清洗、蚀刻、沉积等工艺的高纯度化学液体。这些化学品对纯度要求极高，通常需要达到ppb甚至ppt级别，以确保电子元器件的性能和稳定性。广泛应用在半导体、平板显示、太阳能电池等高科技领域，是电子制造过程中的关键材料。随着电子技术的不断发展，湿电子化学品的市场空间持续扩大，对研发更高级别纯度和特殊功能的产品需求也在增长。",
+                      "CompanyCount": 164,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007048",
+                      "NodeName": "电子特气",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 6,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0001090",
+                      "ProductName": "电子特气",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电子特气，全称为电子级特种气体，是指用于半导体、平板显示、太阳能电池等电子工业生产中的特殊气体。这些气体在纯度、杂质控制、稳定性等方面有极高的要求，是电子制造业中的关键原材料。电子特气广泛应用于刻蚀、沉积、掺杂等微电子工艺过程，对于提升芯片性能、提高生产效率和降低成本起着重要作用。随着半导体技术的不断发展，电子特气的市场空间持续扩大，是全球高科技产业中的重要组成部分。",
+                      "CompanyCount": 91,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007049",
+                      "NodeName": "其他芯片制造材料",
+                      "NodeType": 1,
+                      "NodeLevel": 4,
+                      "NodeNum": 7,
+                      "NodeImportant": 0,
+                      "ProductCode": "",
+                      "ProductName": "",
+                      "ParentNodeCode": "IC0007026",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": null,
+                      "CompanyCount": 58,
+                      "Children": [
+                        {
+                          "IndustryChainCode": "IC0007",
+                          "IndustryChainName": "集成电路",
+                          "NodeCode": "IC0007054",
+                          "NodeName": "光刻胶专用化学品",
+                          "NodeType": 2,
+                          "NodeLevel": 5,
+                          "NodeNum": 1,
+                          "NodeImportant": 4,
+                          "ProductCode": "PRD0024591",
+                          "ProductName": "光刻胶专用化学品",
+                          "ParentNodeCode": "IC0007049",
+                          "IndustryChainStype": 1,
+                          "ProductDefine": "光刻胶专用化学品是微电子制造领域中用于光刻工艺的关键材料，它们包括光引发剂、光致产酸剂、光刻胶树脂等，这些化学品在光刻过程中起到关键作用，通过光化学反应实现微细图形的转移。光刻胶专用化学品的价值在于它们直接影响到光刻胶的性能，如分辨率、对比度、抗蚀性等，从而决定了集成电路和显示产品的质量和性能。",
+                          "CompanyCount": 58,
+                          "Children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007027",
+                  "NodeName": "封装材料",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 3,
+                  "NodeImportant": 3,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007004",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 741,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007056",
+                      "NodeName": "引线框架",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0001402",
+                      "ProductName": "引线框架",
+                      "ParentNodeCode": "IC0007027",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "引线框架是半导体器件的重要组成部分，主要由金属材料制成，通常为铜或其合金。它起到支撑和连接半导体芯片与外部电路的作用。引线框架通过其独特的引线设计，提供电能传输和信号交换的路径。在封装过程中，芯片被安置在框架的特定区域，然后通过焊锡球或焊线与引线连接。引线框架的形状和设计可根据不同的半导体器件类型进行定制，广泛应用在微处理器、内存、传感器等各种电子元件的封装中，是电子行业不可或缺的基础组件。",
+                      "CompanyCount": 143,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007058",
+                      "NodeName": "键合丝",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0025311",
+                      "ProductName": "键合丝",
+                      "ParentNodeCode": "IC0007027",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "键合丝，也称为焊接丝或铝丝，主要用于半导体器件的封装过程中，作为导电和机械连接的媒介。它主要由铝或金等金属制成，有时会含有铜、银等合金元素，以优化其电气性能和机械强度。键合丝在微电子、集成电路、LED等领域广泛应用，通过超声波或热压等方式将丝材精确地键合在芯片和基板之间，实现内部电路的互连。其直径通常非常细，以满足微小间距的封装要求，对精度和纯度有严格的标准，以确保良好的导电性和可靠性。键合丝市场随着电子行业的发展，特别是半导体和微电子技术的进步，呈现出持续增长的态势。",
+                      "CompanyCount": 107,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007059",
+                      "NodeName": "封装基板",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0004087",
+                      "ProductName": "封装基板",
+                      "ParentNodeCode": "IC0007027",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "封装基板是半导体芯片封装的重要组成部分，它起到连接芯片与外部电路的桥梁作用。基板材料通常包括陶瓷、有机材料（如BT树脂）和金属，根据应用需求有不同的选择。封装基板能够提供芯片的物理支撑，同时实现电气互连，确保信号传输的高速、高效。其性能直接影响到半导体器件的散热、尺寸、可靠性和整体电路性能。随着半导体技术的发展，封装基板在高密度、小型化和高性能封装中扮演着关键角色，市场应用广泛，包括计算机、通信设备、消费电子和汽车电子等领域。",
+                      "CompanyCount": 423,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007055",
+                      "NodeName": "电子封装化学品",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 4,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0024738",
+                      "ProductName": "电子封装化学品",
+                      "ParentNodeCode": "IC0007027",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电子封装化学品是指用于电子元器件封装过程中的特殊化学材料，主要包括环氧树脂、硅胶、清洗剂、助焊剂、电镀液等。这些化学品在电子产品的制造中起到保护内部电路、提高散热性能、增强机械强度和电气绝缘性等关键作用。它们广泛应用于半导体、集成电路、PCB板以及各种电子设备的制造，是电子工业不可或缺的基础材料。随着电子技术的不断发展，电子封装化学品的市场潜力和需求持续增长，特别是在高端芯片和先进封装技术领域，其重要性日益凸显。",
+                      "CompanyCount": 65,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007057",
+                      "NodeName": "芯片粘结材料",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 5,
+                      "NodeImportant": 5,
+                      "ProductCode": "PRD0025276",
+                      "ProductName": "芯片粘结材料",
+                      "ParentNodeCode": "IC0007027",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "芯片粘结材料是一种用于在电子封装中固定和连接芯片与基板的特殊材料，它具有良好的导热性、电绝缘性和机械稳定性。这种材料通常以胶水的形式存在，例如环氧树脂、硅胶或银浆，能承受高温工艺并确保芯片在使用过程中保持稳固。芯片粘结材料在微电子、半导体、集成电路等领域广泛应用，对于提升设备的可靠性和性能起到关键作用，市场前景广阔，随着电子技术的发展，其需求持续增长。",
+                      "CompanyCount": 31,
+                      "Children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007005",
+              "NodeName": "半导体设备",
+              "NodeType": 2,
+              "NodeLevel": 2,
+              "NodeNum": 2,
+              "NodeImportant": 3,
+              "ProductCode": "PRD0025395",
+              "ProductName": "半导体设备",
+              "ParentNodeCode": "IC00070105",
+              "IndustryChainStype": 1,
+              "ProductDefine": "半导体设备是指用于半导体制造过程中的各种专业机械设备，包括光刻机、刻蚀机、薄膜沉积设备、离子注入机、晶圆检测设备等。这些设备在半导体芯片的生产流程中起着至关重要的作用，从硅片的初始处理到最终的封装测试。半导体设备的技术复杂度高，对精度和洁净度要求严格，广泛应用于计算机、通信、消费电子、汽车电子等领域，是全球高科技产业发展的基石。随着科技的进步和市场需求的增长，半导体设备市场具有巨大的发展潜力和广阔的市场空间。",
+              "CompanyCount": 12801,
+              "Children": [
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007061",
+                  "NodeName": "制造设备",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 1,
+                  "NodeImportant": 3,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007005",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 399,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007064",
+                      "NodeName": "单晶炉",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0002279",
+                      "ProductName": "单晶炉",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "单晶炉，全称硅单晶生长炉，主要用于制造半导体硅单晶，是太阳能光伏产业和半导体集成电路行业关键设备之一。它采用物理气相沉积方法，通过高温熔化硅材料，然后通过籽晶拉晶工艺形成高纯度硅单晶。单晶炉的性能直接影响硅晶片的质量和生产效率，其市场空间随着太阳能光伏行业的快速发展和半导体技术的不断进步而持续扩大，是现代高科技产业中的重要设备。",
+                      "CompanyCount": 49,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007065",
+                      "NodeName": "气相外延炉",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0025518",
+                      "ProductName": "气相外延炉",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "气相外延炉，也称为化学气相沉积（CVD）外延炉，是一种用于半导体制造的关键设备。它通过在高温条件下，使含有目标材料的气体在硅片表面发生化学反应，形成单晶层，从而实现对外延层的精确控制。这种设备广泛应用于硅基半导体、化合物半导体材料的生长，如硅碳化物、氮化镓、磷化铟等，对于制造高性能的微电子和光电子器件，如晶体管、LED、太阳能电池等至关重要。气相外延炉的技术要求高，市场空间广阔，是全球半导体产业链中的重要一环。",
+                      "CompanyCount": 8,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007066",
+                      "NodeName": "氧化炉",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0025539",
+                      "ProductName": "氧化炉",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "氧化炉是一种工业设备，主要用于将材料在氧化气氛中进行高温处理，使材料表面形成氧化层。它广泛应用于半导体制造、新材料开发、金属表面处理等领域。通过氧化炉，可以精确控制温度和气氛，确保材料氧化过程的稳定性和一致性。氧化炉的市场应用价值在于其在电子器件制造中的关键作用，特别是在集成电路和芯片生产中，用于形成二氧化硅层，以隔离和保护电路。随着电子科技的发展，氧化炉的市场需求持续增长，具有广阔的市场空间和技术创新潜力。",
+                      "CompanyCount": 23,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007067",
+                      "NodeName": "溅射台",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 4,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0001918",
+                      "ProductName": "溅射台",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "溅射台是一种先进的材料沉积设备，主要用于半导体、纳米材料、光学涂层等领域。它通过高速粒子（如氩离子）撞击靶材，使靶材表面的原子或分子溅射出来，并沉积在基片上形成薄膜。溅射台可以实现高精度、高纯度的薄膜沉积，广泛应用于电子器件制造、光伏、显示器等行业，对于提升产品性能和可靠性具有重要作用。其设计通常包括真空系统、溅射源、目标旋转装置、基片加热和控制系统等，以优化沉积过程和薄膜质量。",
+                      "CompanyCount": 17,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007068",
+                      "NodeName": "单晶硅抛光机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 5,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0022494",
+                      "ProductName": "单晶硅抛光机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "单晶硅抛光机是一种精密的半导体生产设备，主要用于硅片的表面抛光工艺，以提高硅片的平整度和光洁度。该机器采用先进的抛光技术，结合化学机械抛光（CMP）原理，能够有效去除单晶硅片上的微小缺陷，达到纳米级的表面精度。单晶硅抛光机广泛应用于集成电路、太阳能电池、硅基光学器件等领域，对于提升芯片性能和器件的可靠性至关重要。其市场空间随着半导体行业的发展而持续扩大，特别是在高科技和新能源行业有着广阔的应用前景。",
+                      "CompanyCount": 12,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007069",
+                      "NodeName": "光刻机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 6,
+                      "NodeImportant": 2,
+                      "ProductCode": "PRD0011749",
+                      "ProductName": "光刻机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "光刻机，又称掩模对准曝光机，是半导体制造中的关键设备，主要用于在硅片上复制电路图案。它通过将光束投射到掩模上，然后将图案转移到光敏材料覆盖的硅片上来实现微小电路的精确雕刻。光刻机在电子工业中扮演着核心角色，是集成电路（IC）制造过程中的核心技术之一，直接影响着芯片的性能和良率。由于其技术复杂度高，目前全球市场主要由少数几家厂商主导，应用价值主要体现在提升半导体器件的集成度和性能，广泛应用于计算机、通信、消费电子等众多领域。",
+                      "CompanyCount": 59,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007070",
+                      "NodeName": "离子注入机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 7,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0009606",
+                      "ProductName": "离子注入机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "离子注入机是一种高科技的材料表面改性设备，主要用于半导体制造工艺中。它通过将特定的离子加速到高能量，然后将这些离子精确地注入到半导体材料中，以改变材料的电学特性，如掺杂半导体，实现器件的控制和性能优化。这种设备广泛应用于集成电路制造、光伏、传感器以及新材料研究等领域，是现代电子工业不可或缺的关键设备，对于提升芯片性能和良率具有重要作用。",
+                      "CompanyCount": 20,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007072",
+                      "NodeName": "晶圆划片机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 8,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022173",
+                      "ProductName": "晶圆划片机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "晶圆划片机是一种精密的半导体设备，主要用于将完整的硅晶圆切割成单独的芯片。该设备采用高速、高精度的切割技术，确保在切割过程中减少对晶圆的损伤和碎片产生。晶圆划片机广泛应用于集成电路、LED、传感器等半导体器件的制造流程中，是半导体封装工艺的关键步骤。随着全球半导体行业的发展，晶圆划片机的市场需求持续增长，市场空间广阔，是高科技制造业中的重要设备之一。",
+                      "CompanyCount": 22,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007073",
+                      "NodeName": "晶片减薄机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 9,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022165",
+                      "ProductName": "晶片减薄机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "晶片减薄机是一种半导体制造设备，主要用于对晶圆进行减薄处理，以降低晶片的厚度。该设备通常采用湿法或干法刻蚀技术，通过化学或物理方式减少晶圆背面的材料，以达到所需的厚度，同时保持晶圆表面的平整和完整性。晶片减薄机在半导体行业中有广泛应用，对于提高芯片封装的密度和优化电子设备的性能至关重要。减薄过程有助于减少芯片的热影响和提高散热效率，同时为后续的封装步骤如芯片粘接和引线键合提供必要的空间。",
+                      "CompanyCount": 17,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007074",
+                      "NodeName": "单晶硅滚磨机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 10,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0022486",
+                      "ProductName": "单晶硅滚磨机",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "单晶硅滚磨机是一种专业用于硅片加工的精密设备，主要用于单晶硅晶棒的研磨和抛光。该机器采用先进的滚磨技术，能够高效、精确地去除硅棒表面的多余材料，使其达到理想的厚度和表面光洁度。在半导体和光伏行业，单晶硅滚磨机是晶片制造过程中的关键设备，对于提高硅片质量和生产效率具有重要作用。其应用价值体现在能够确保硅片的尺寸精度和表面质量，从而提升太阳能电池或半导体器件的性能。市场空间随着太阳能和半导体行业的持续发展而不断扩大，是高科技制造业中的重要一环。",
+                      "CompanyCount": 7,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007075",
+                      "NodeName": "CMP设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 11,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0021948",
+                      "ProductName": "CMP设备",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "CMP设备，全称为Chemical Mechanical Planarization设备，是半导体制造中的关键工艺设备。它结合了化学腐蚀和机械研磨技术，用于平坦化硅片表面的多层薄膜，确保集成电路的精度和性能。CMP过程在晶圆制造的多个步骤中都至关重要，包括金属互连层的平坦化和dielectric材料的抛光。随着半导体技术的不断发展，CMP设备在提高芯片性能、缩小工艺节点方面发挥着重要作用，市场空间随着全球半导体行业的增长而持续扩大。",
+                      "CompanyCount": 13,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007076",
+                      "NodeName": "涂胶显影设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 12,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0021976",
+                      "ProductName": "涂胶显影设备",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "涂胶显影设备是一种在微电子制造和半导体工艺中至关重要的专业设备。它主要用于在硅片、电路板等基材上精确涂布光刻胶，然后通过曝光和显影过程，形成预设的微细图案。该设备结合了精密的机械运动、光学系统和自动化控制技术，确保胶层的均匀性和图案的精度，广泛应用于集成电路、显示面板、光伏太阳能等领域。涂胶显影设备对于提升半导体器件的性能和良率具有决定性影响，其市场随着全球电子科技的发展而持续增长，特别是在高科技和智能制造行业有广阔的应用空间。",
+                      "CompanyCount": 75,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007077",
+                      "NodeName": "刻蚀设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 13,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0003588",
+                      "ProductName": "刻蚀设备",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "刻蚀设备，也称为蚀刻机或光刻机，是半导体制造中的关键设备。它主要用于在硅片上精确地去除特定材料，形成集成电路中的各种微小结构。该设备结合了物理和化学刻蚀技术，能够按照光刻胶的模板对半导体材料进行选择性去除。刻蚀设备在电子、微电子、纳米技术等领域有广泛应用，对于提升芯片性能和缩小工艺节点至关重要。随着科技的发展，刻蚀设备在精度、效率和环保等方面不断取得突破，市场空间随着全球半导体需求的增长而持续扩大。",
+                      "CompanyCount": 85,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007084",
+                      "NodeName": "薄膜沉积设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 14,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0002432",
+                      "ProductName": "薄膜沉积设备",
+                      "ParentNodeCode": "IC0007061",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "薄膜沉积设备是一种在材料表面沉积各种薄膜的高科技设备，常用于半导体、显示器、太阳能电池等行业。它通过物理气相沉积（PVD）或化学气相沉积（CVD）等技术，将材料蒸发或反应生成的气态分子沉积在基片上，形成具有特定性质的薄膜。这些薄膜可以是导电、绝缘、光学、磁性等，对于提升器件性能和功能至关重要。薄膜沉积设备在现代电子工业中扮演着重要角色，市场空间随着科技发展和新型电子设备的需求持续扩大。",
+                      "CompanyCount": 78,
+                      "Children": []
+                    }
+                  ]
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007062",
+                  "NodeName": "封装设备",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 2,
+                  "NodeImportant": 3,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007005",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 5187,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007090",
+                      "NodeName": "贴片机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0001131",
+                      "ProductName": "贴片机",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "贴片机，也称为SMT贴装设备，是电子组装行业中用于自动将电子元件贴装到PCB印制电路板上的精密设备。它来源于自动化制造技术，主要用于提高生产效率和精度。贴片机能够快速、准确地定位和安装各种大小、形状的贴片元件，包括电阻、电容、IC等。应用广泛，涵盖消费电子、通信、汽车电子、医疗设备等多个领域。随着电子行业的发展，贴片机市场空间持续扩大，尤其是高端、智能化的贴片机需求日益增长。",
+                      "CompanyCount": 1207,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007071",
+                      "NodeName": "引线键合机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022181",
+                      "ProductName": "引线键合机",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "引线键合机是一种微电子封装设备，主要用于半导体芯片与外部引线之间的连接。它通过超声波、热能和压力将细小的金属丝（通常为金、铝）键合到芯片的电极和外部引脚上，形成电流传导的路径。这种设备广泛应用于集成电路、传感器、LED和其他微电子器件的制造过程中，是半导体封装的关键步骤之一。引线键合机的技术精度高，自动化程度强，对于提高产品良率和生产效率具有重要作用，市场空间随着全球半导体行业的增长而持续扩大。",
+                      "CompanyCount": 25,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007093",
+                      "NodeName": "激光打标机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0007514",
+                      "ProductName": "激光打标机",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "激光打标机是一种利用激光束在各种不同物质表面刻印永久标记的设备。它源于先进的激光技术，主要用于产品标识、二维码、序列号、公司logo等的精准打标。激光打标机广泛应用于电子元器件、五金工具、汽车零部件、医疗器械、航空航天、包装行业等领域，提供高精度、非接触、速度快且耐磨损的标记效果。由于其高效、环保和低维护成本，市场空间持续扩大，尤其在个性化定制和智能制造趋势下，其应用前景广阔。",
+                      "CompanyCount": 1764,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007094",
+                      "NodeName": "IC切筋成型机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 4,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022193",
+                      "ProductName": "IC切筋成型机",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "IC切筋成型机是一种专业用于半导体封装工艺的设备，主要用于切割IC芯片的切割道（金线）和成型。该机器采用精密的机械和光学系统，确保在切割过程中对IC芯片的精确控制，减少芯片损伤，提高产品良率。它广泛应用于电子制造业，特别是集成电路、半导体器件的生产。通过自动化操作，能提高生产效率，降低成本，适应大规模生产的市场需求。",
+                      "CompanyCount": 11,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007095",
+                      "NodeName": "电镀设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 5,
+                      "NodeImportant": 4,
+                      "ProductCode": "PRD0058141",
+                      "ProductName": "电镀设备",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电镀设备是一种用于电化学沉积的工业设备，通过在工件表面形成金属或其他材料的涂层，以达到防腐、装饰或赋予特殊性能的目的。这些设备通常包括电源、电镀槽、悬挂装置、搅拌系统、温度控制装置以及用于处理电镀液的过滤和循环系统。电镀设备广泛应用于汽车、航空航天、电子、五金、首饰等行业，对于提高产品的耐腐蚀性、耐磨性以及外观质量具有重要作用。随着环保要求的提高，现代电镀设备也注重环保性能，如减少废水排放和优化能源使用。",
+                      "CompanyCount": 2137,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007096",
+                      "NodeName": "半导体清洗设备",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 6,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022011",
+                      "ProductName": "半导体清洗设备",
+                      "ParentNodeCode": "IC0007062",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "半导体清洗设备是半导体制造工艺中的关键设备，用于清除晶圆表面的杂质、颗粒和有机物等，确保器件性能和良率。它利用化学液体、湿法清洗或干法刻蚀技术，在微观尺度上清洁半导体材料。这些设备在集成电路、太阳能电池、LED等高科技领域有广泛应用，对于提升半导体器件的稳定性和可靠性至关重要。随着半导体技术的不断发展，清洗设备的市场需求持续增长，市场空间广阔且竞争激烈。",
+                      "CompanyCount": 66,
+                      "Children": []
+                    }
+                  ]
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007063",
+                  "NodeName": "半导体测试设备",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 3,
+                  "NodeImportant": 3,
+                  "ProductCode": "PRD0001457",
+                  "ProductName": "半导体测试设备",
+                  "ParentNodeCode": "IC0007005",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "半导体测试设备是一种用于检测和验证半导体器件性能的专业设备，它能够对集成电路、芯片等进行功能测试和参数测量。这类设备广泛应用于半导体制造业和研发领域，确保产品在出厂前满足设计规格和功能要求。通过复杂的测试程序，它可以检测半导体的电气特性，如电流、电压、信号处理能力等，帮助制造商识别和修复潜在的问题，提高产品质量和可靠性。随着半导体技术的不断发展，这类设备的市场需求持续增长，市场空间广阔，是半导体产业链中不可或缺的一环。",
+                  "CompanyCount": 289,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007097",
+                      "NodeName": "探针台",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0008890",
+                      "ProductName": "探针台",
+                      "ParentNodeCode": "IC0007063",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "探针台是一种精密的电子设备，主要用于半导体器件的测试和表征。它提供了与芯片进行电气接触的平台，通过探针与芯片上的各个测试点对齐接触，实现对芯片功能和性能的验证。探针台广泛应用于晶圆级测试、封装前的裸片测试以及研发阶段的集成电路调试。它在半导体制造、科研机构和电子工程领域具有重要应用价值，对于确保芯片质量和优化设计起到关键作用。市场上的探针台种类多样，可根据测试需求和精度要求进行选择。",
+                      "CompanyCount": 85,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007098",
+                      "NodeName": "半导体测试分选机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022093",
+                      "ProductName": "半导体测试分选机",
+                      "ParentNodeCode": "IC0007063",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "半导体测试分选机是一种专业用于半导体器件功能测试和参数筛选的自动化设备。它主要用于晶圆切割后的芯片进行电气性能测试，根据测试结果将良品与不良品进行分类。该设备结合了高精度的测试技术与高效的分选机制，能够快速、准确地检测半导体芯片的功能，确保产品质量。在电子制造、集成电路、半导体行业等领域有广泛应用，是生产线中的关键设备，对于提高生产效率和降低人工成本起着重要作用。",
+                      "CompanyCount": 19,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007099",
+                      "NodeName": "半导体测试机",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 3,
+                      "ProductCode": "PRD0022077",
+                      "ProductName": "半导体测试机",
+                      "ParentNodeCode": "IC0007063",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "半导体测试机是一种专用于检测和验证半导体器件性能的精密设备。它源于电子工程领域，主要用于半导体芯片的制造和研发过程中，确保芯片的功能正常、性能稳定。该设备能够进行电气参数测试、故障定位、功能模拟等多种测试，广泛应用于集成电路、微电子、光电半导体等行业。通过精确的测试，半导体测试机帮助制造商提升产品质量，降低不良品率，对于保障电子产品的可靠性和市场竞争力具有重要意义。随着半导体行业的快速发展，该设备的市场空间持续扩大，尤其是在5G、人工智能、物联网等新兴领域有广阔的应用前景。",
+                      "CompanyCount": 56,
+                      "Children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007008",
+              "NodeName": "EDA软件(电子设计自动化)",
+              "NodeType": 2,
+              "NodeLevel": 2,
+              "NodeNum": 3,
+              "NodeImportant": 2,
+              "ProductCode": "PRD0022501",
+              "ProductName": "EDA软件",
+              "ParentNodeCode": "IC00070105",
+              "IndustryChainStype": 1,
+              "ProductDefine": "EDA（Electronic Design Automation）软件是电子设计自动化工具的简称，主要用于集成电路设计和半导体制造。它集成了电路设计、布局布线、仿真、物理验证、信号完整性分析等多种功能，帮助工程师实现从概念到芯片的复杂设计流程。EDA软件在半导体行业中扮演着至关重要的角色，极大地提高了设计效率和准确性，广泛应用于通信、计算机、消费电子、汽车电子等领域，市场空间广阔且技术门槛高。",
+              "CompanyCount": 99,
+              "Children": []
+            }
+          ]
+        },
+        {
+          "IndustryChainCode": "IC0007",
+          "IndustryChainName": "集成电路",
+          "NodeCode": "IC00070106",
+          "NodeName": "设计、制造、封测",
+          "NodeType": 1,
+          "NodeLevel": 1,
+          "NodeNum": 2,
+          "NodeImportant": 0,
+          "ProductCode": "",
+          "ProductName": "",
+          "ParentNodeCode": "",
+          "IndustryChainStype": 1,
+          "ProductDefine": null,
+          "CompanyCount": 230895,
+          "NodeNumDesc": "中游",
+          "Children": [
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007001",
+              "NodeName": "IC设计",
+              "NodeType": 1,
+              "NodeLevel": 2,
+              "NodeNum": 1,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC00070106",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 175093,
+              "Children": [
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007007",
+                  "NodeName": "集成电路设计",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 1,
+                  "NodeImportant": 1,
+                  "ProductCode": "PRD0113963",
+                  "ProductName": "集成电路设计",
+                  "ParentNodeCode": "IC0007001",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "集成电路设计，也称为芯片设计，是电子工程领域的一个分支，过程包括概念开发、电路设计、布局布线、验证和测试，最终制造出能够执行特定计算或控制功能的微型化电路。集成电路在现代科技中扮演着核心角色，广泛应用于计算机、通信设备、消费电子、医疗设备、汽车系统以及航空航天等多个领域。由于技术的快速发展，集成电路设计持续推动着摩尔定律的前进，不断实现更小、更快、更高效的芯片，市场空间巨大且不断创新。",
+                  "CompanyCount": 175081,
+                  "Children": []
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007009",
+                  "NodeName": "半导体IP授权服务",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 2,
+                  "NodeImportant": 2,
+                  "ProductCode": "PRD0022638",
+                  "ProductName": "半导体IP授权服务",
+                  "ParentNodeCode": "IC0007001",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "半导体IP授权服务是指半导体设计公司向其他芯片制造商或设计公司提供其知识产权（IP）的使用权。这些IP可以是预设计的电路模块，如CPU核、GPU核、内存控制器等，或者是特定的工艺技术或软件。通过授权，客户能够快速开发出具有竞争力的芯片产品，缩短设计周期，降低研发风险。半导体IP授权服务在全球半导体行业中扮演着关键角色，尤其在高度集成的系统级芯片（SoC）设计中，市场空间广阔，随着物联网、5G、人工智能等领域的快速发展，其应用价值和市场需求持续增长。",
+                  "CompanyCount": 37,
+                  "Children": []
+                }
+              ]
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007002",
+              "NodeName": "IC制造",
+              "NodeType": 1,
+              "NodeLevel": 2,
+              "NodeNum": 2,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC00070106",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 57393,
+              "Children": [
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007013",
+                  "NodeName": "电子元件制造",
+                  "NodeType": 1,
+                  "NodeLevel": 3,
+                  "NodeNum": 1,
+                  "NodeImportant": 0,
+                  "ProductCode": "",
+                  "ProductName": "",
+                  "ParentNodeCode": "IC0007002",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": null,
+                  "CompanyCount": 57285,
+                  "Children": [
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007018",
+                      "NodeName": "晶体管",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 1,
+                      "NodeImportant": 5,
+                      "ProductCode": "PRD0024572",
+                      "ProductName": "晶体管",
+                      "ParentNodeCode": "IC0007013",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "晶体管，全称为半导体晶体管，是一种基础电子元件，由半导体材料如硅或锗制成。它主要功能是作为电流的开关和放大器，广泛应用于各种电子设备中。晶体管的工作原理基于载流子在PN结或MESFET（金属-绝缘体-半导体场效应晶体管）中的控制流动。自20世纪40年代发明以来，晶体管的发展极大地推动了信息技术的进步，成为现代计算机、通信设备、消费电子等领域的核心组件。其小型化和高性能特性使其在微电子学中占有重要地位，市场应用空间广阔，对全球科技发展有着深远影响。",
+                      "CompanyCount": 2279,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007019",
+                      "NodeName": "电阻器",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 2,
+                      "NodeImportant": 5,
+                      "ProductCode": "PRD0001466",
+                      "ProductName": "电阻器",
+                      "ParentNodeCode": "IC0007013",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电阻器是一种电子元件，主要用于电路中，以提供电阻，即阻碍电流流动的作用。它的主要功能包括电压分压、电流限制、负载电阻、信号衰减等。电阻器可以由碳、碳电阻、金属膜、碳膜、合金等材料制成，有固定电阻和可变电阻两种类型。电阻器广泛应用于各种电子设备、电源、放大器、测量仪器、控制系统等领域，是电子工程中最基本且不可或缺的组件之一。市场上的电阻器种类繁多，满足不同电路设计和应用需求。",
+                      "CompanyCount": 7973,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007020",
+                      "NodeName": "电容器",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 3,
+                      "NodeImportant": 5,
+                      "ProductCode": "PRD0011125",
+                      "ProductName": "电容器",
+                      "ParentNodeCode": "IC0007013",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电容器是一种电子元件，用于储存电能，其工作原理基于两个导体之间的电场存储。它在电路中起到滤波、耦合、调谐、能量储存等作用。电容器广泛应用在各种电子设备中，如电源电路、音频设备、通信系统、计算机硬件和家电产品等。根据材料和结构的不同，电容器有多种类型，如陶瓷电容器、铝电解电容器、钽电解电容器和薄膜电容器等。全球电容器市场持续增长，随着电子技术的发展，其应用领域不断拓宽，市场前景广阔。",
+                      "CompanyCount": 16224,
+                      "Children": []
+                    },
+                    {
+                      "IndustryChainCode": "IC0007",
+                      "IndustryChainName": "集成电路",
+                      "NodeCode": "IC0007021",
+                      "NodeName": "电感器",
+                      "NodeType": 2,
+                      "NodeLevel": 4,
+                      "NodeNum": 4,
+                      "NodeImportant": 5,
+                      "ProductCode": "PRD0009480",
+                      "ProductName": "电感器",
+                      "ParentNodeCode": "IC0007013",
+                      "IndustryChainStype": 1,
+                      "ProductDefine": "电感器是一种电子元件，基于电磁感应原理，用于存储能量并阻抗交流电流的变化。它由绕在磁芯或无芯材料上的导线圈构成，常用于滤波、谐振、调谐、延迟或增益电路。电感器在各种电子设备中广泛应用，如电源供应器、音响设备、通信系统、电脑主板和电视机等，是现代电子技术不可或缺的组成部分。其市场空间广泛，随着电子技术的不断发展，对电感器的需求持续增长，尤其是在高频和高精度应用领域。",
+                      "CompanyCount": 36703,
+                      "Children": []
+                    }
+                  ]
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007012",
+                  "NodeName": "集成电路制造服务",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 2,
+                  "NodeImportant": 1,
+                  "ProductCode": "PRD0022718",
+                  "ProductName": "集成电路制造服务",
+                  "ParentNodeCode": "IC0007002",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "集成电路制造服务是为客户提供从芯片设计到生产的全方位解决方案。这项服务包括晶圆制造、封装测试，以及定制化服务，满足不同客户对芯片性能、功耗和尺寸的需求。集成电路是现代电子设备的核心，广泛应用于通信、计算机、消费电子、汽车电子、医疗设备等多个领域。随着科技的发展，集成电路制造服务市场持续增长，尤其在5G、人工智能和物联网等新兴技术的推动下，市场空间巨大，竞争也日益激烈。",
+                  "CompanyCount": 119,
+                  "Children": []
+                }
+              ]
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC0007003",
+              "NodeName": "封装测试",
+              "NodeType": 1,
+              "NodeLevel": 2,
+              "NodeNum": 3,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC00070106",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 395,
+              "Children": [
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007023",
+                  "NodeName": "晶圆测试",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 1,
+                  "NodeImportant": 3,
+                  "ProductCode": "PRD0022797",
+                  "ProductName": "晶圆测试",
+                  "ParentNodeCode": "IC0007003",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "晶圆测试，也称为半导体晶圆测试或集成电路测试，是半导体制造过程中的关键步骤。它涉及对生产出的晶圆上的各个芯片进行功能和性能检测，以确保它们在封装前符合设计规格。这项测试包括电气特性测试、故障定位和质量验证，旨在发现制造缺陷、设计错误或性能问题。晶圆测试对于优化生产效率、减少不良品率和保证终端产品的可靠性至关重要。随着半导体技术的不断发展，晶圆测试的复杂性和重要性也在持续提升，市场对于高效、精准的测试解决方案有着持续的需求。",
+                  "CompanyCount": 60,
+                  "Children": []
+                },
+                {
+                  "IndustryChainCode": "IC0007",
+                  "IndustryChainName": "集成电路",
+                  "NodeCode": "IC0007022",
+                  "NodeName": "集成电路封测服务",
+                  "NodeType": 2,
+                  "NodeLevel": 3,
+                  "NodeNum": 2,
+                  "NodeImportant": 2,
+                  "ProductCode": "PRD0022782",
+                  "ProductName": "集成电路封测服务",
+                  "ParentNodeCode": "IC0007003",
+                  "IndustryChainStype": 1,
+                  "ProductDefine": "集成电路封测服务是指对集成电路进行封装和测试的专业服务。这一过程包括将制造完成的晶圆上的芯片切割下来，然后用金属引线连接芯片与外部电路，最后封装在保护壳内，以确保芯片的稳定运行和保护。测试环节则确保每个封装后的集成电路功能正常、性能达标。集成电路封测是半导体产业链中的重要环节，连接芯片制造与电子产品应用，对于提升芯片的可靠性和市场竞争力具有关键作用。全球市场对集成电路封测服务的需求持续增长，特别是在5G、人工智能、物联网等新兴领域，封测服务的市场空间广阔。",
+                  "CompanyCount": 392,
+                  "Children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "IndustryChainCode": "IC0007",
+          "IndustryChainName": "集成电路",
+          "NodeCode": "IC0007006",
+          "NodeName": "IC应用",
+          "NodeType": 3,
+          "NodeLevel": 1,
+          "NodeNum": 3,
+          "NodeImportant": 0,
+          "ProductCode": "",
+          "ProductName": "",
+          "ParentNodeCode": "",
+          "IndustryChainStype": 1,
+          "ProductDefine": null,
+          "CompanyCount": 0,
+          "NodeNumDesc": "下游",
+          "Children": [
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC00070100",
+              "NodeName": "消费电子",
+              "NodeType": 3,
+              "NodeLevel": 2,
+              "NodeNum": 1,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC0007006",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 0,
+              "Children": []
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC00070101",
+              "NodeName": "汽车电子",
+              "NodeType": 3,
+              "NodeLevel": 2,
+              "NodeNum": 2,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC0007006",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 0,
+              "Children": []
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC00070102",
+              "NodeName": "计算机",
+              "NodeType": 3,
+              "NodeLevel": 2,
+              "NodeNum": 3,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC0007006",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 0,
+              "Children": []
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC00070103",
+              "NodeName": "通信",
+              "NodeType": 3,
+              "NodeLevel": 2,
+              "NodeNum": 4,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC0007006",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 0,
+              "Children": []
+            },
+            {
+              "IndustryChainCode": "IC0007",
+              "IndustryChainName": "集成电路",
+              "NodeCode": "IC00070104",
+              "NodeName": "物联网",
+              "NodeType": 3,
+              "NodeLevel": 2,
+              "NodeNum": 5,
+              "NodeImportant": 0,
+              "ProductCode": "",
+              "ProductName": "",
+              "ParentNodeCode": "IC0007006",
+              "IndustryChainStype": 1,
+              "ProductDefine": null,
+              "CompanyCount": 0,
+              "Children": []
+            }
+          ]
+        }
+      ],
+      "CompanyCount": 252869,
+      "IndustryChainName": "集成电路",
+      "IndustryChainDefine": "集成电路（integrated circuit）是一种微型电子器件或部件。采用一定的工艺，把一个电路中所需的晶体管、电阻、电容和电感等元件及布线互连一起，制作在一小块或几小块半导体晶片或介质基片上，然后封装在一个管壳内，成为能执行特定电路或系统功能的微型结构。集成电路被称为电子产品的“心脏”，是当下信息技术产业的基础与核心，也是支撑国家经济社会发展和保障国家安全的战略性、基础性和先导性产业，在各行各业中发挥着非常重要的作用。我国是集成电路需求大国，但所需集成电路高度依赖进口，近年来，集成电路国产化替代取得一定进展，中国海关总署最新数据显示，2023年中国累计进口集成电路4795.6亿颗，较2022年下降10.8%；进口金额3494亿美元，同比下降15.4%。",
+      "AreaCompanyInfo": [
+        {
+          "Value": "GD",
+          "Count": 84093,
+          "Desc": "广东省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 770,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 95,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 2052,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 4293,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "JS",
+          "Count": 26991,
+          "Desc": "江苏省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 691,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 73,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 896,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 2659,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "FJ",
+          "Count": 17714,
+          "Desc": "福建省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 170,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 8,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 342,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 1075,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "ZJ",
+          "Count": 16256,
+          "Desc": "浙江省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 342,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 34,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 585,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 1330,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "SH",
+          "Count": 13018,
+          "Desc": "上海市",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 404,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 58,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 675,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 1050,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "SD",
+          "Count": 10532,
+          "Desc": "山东省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 90,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 13,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 429,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 861,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "SC",
+          "Count": 10295,
+          "Desc": "四川省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 147,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 9,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 298,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 860,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "SAX",
+          "Count": 8502,
+          "Desc": "陕西省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 82,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 5,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 121,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 1085,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "AH",
+          "Count": 7937,
+          "Desc": "安徽省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 157,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 12,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 337,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 788,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "BJ",
+          "Count": 6627,
+          "Desc": "北京市",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 281,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 35,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 346,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 840,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HUB",
+          "Count": 6444,
+          "Desc": "湖北省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 94,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 13,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 202,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 763,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HEN",
+          "Count": 5717,
+          "Desc": "河南省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 22,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 8,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 122,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 354,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HUN",
+          "Count": 5713,
+          "Desc": "湖南省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 63,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 8,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 243,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 571,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HB",
+          "Count": 5241,
+          "Desc": "河北省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 24,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 4,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 96,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 340,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "LN",
+          "Count": 3684,
+          "Desc": "辽宁省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 30,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 8,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 66,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 412,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "JX",
+          "Count": 3409,
+          "Desc": "江西省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 27,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 2,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 142,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 222,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "CQ",
+          "Count": 3125,
+          "Desc": "重庆市",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 27,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 1,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 135,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 224,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HAIN",
+          "Count": 2517,
+          "Desc": "海南省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 3,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 7,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 30,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "TJ",
+          "Count": 2326,
+          "Desc": "天津市",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 33,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 7,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 80,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 263,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "GX",
+          "Count": 1888,
+          "Desc": "广西壮族自治区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 8,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 1,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 32,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 81,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "GZ",
+          "Count": 1529,
+          "Desc": "贵州省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 11,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 2,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 12,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 39,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HLJ",
+          "Count": 1405,
+          "Desc": "黑龙江省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 8,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 1,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 19,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 152,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "SX",
+          "Count": 1380,
+          "Desc": "山西省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 9,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 44,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 80,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "YN",
+          "Count": 1373,
+          "Desc": "云南省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 4,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 2,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 25,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 78,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "XJ",
+          "Count": 1351,
+          "Desc": "新疆维吾尔自治区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 5,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 3,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 6,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 27,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "GS",
+          "Count": 1032,
+          "Desc": "甘肃省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 5,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 1,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 9,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 27,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "JL",
+          "Count": 1009,
+          "Desc": "吉林省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 13,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 2,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 42,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 77,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "NMG",
+          "Count": 902,
+          "Desc": "内蒙古自治区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 8,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 2,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 11,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 45,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "NX",
+          "Count": 507,
+          "Desc": "宁夏回族自治区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 5,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 13,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 19,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "XZ",
+          "Count": 199,
+          "Desc": "西藏自治区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 0,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 0,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 3,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "QH",
+          "Count": 148,
+          "Desc": "青海省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 2,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 2,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 2,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "HK",
+          "Count": 4,
+          "Desc": "香港特别行政区",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 1,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 3,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 0,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 0,
+              "Desc": "高新技术"
+            }
+          ]
+        },
+        {
+          "Value": "TW",
+          "Count": 1,
+          "Desc": "台湾省",
+          "Items": [
+            {
+              "Value": "roundCount",
+              "Count": 0,
+              "Desc": "融资企业"
+            },
+            {
+              "Value": "listingCount",
+              "Count": 0,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 0,
+              "Desc": "专精特新"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 0,
+              "Desc": "高新技术"
+            }
+          ]
+        }
+      ],
+      "StatisticsChart": [
+        {
+          "Key": "capitalization",
+          "Items": [
+            {
+              "Value": "23-6",
+              "Count": 68513.17,
+              "Desc": "68513.17亿元"
+            },
+            {
+              "Value": "23-7",
+              "Count": 66082.36,
+              "Desc": "66082.36亿元"
+            },
+            {
+              "Value": "23-8",
+              "Count": 64143.89,
+              "Desc": "64143.89亿元"
+            },
+            {
+              "Value": "23-9",
+              "Count": 62256.29,
+              "Desc": "62256.29亿元"
+            },
+            {
+              "Value": "23-10",
+              "Count": 62878.74,
+              "Desc": "62878.74亿元"
+            },
+            {
+              "Value": "23-11",
+              "Count": 63009.1,
+              "Desc": "63009.1亿元"
+            },
+            {
+              "Value": "23-12",
+              "Count": 61753.46,
+              "Desc": "61753.46亿元"
+            },
+            {
+              "Value": "24-1",
+              "Count": 47857.76,
+              "Desc": "47857.76亿元"
+            },
+            {
+              "Value": "24-2",
+              "Count": 56404.2,
+              "Desc": "56404.2亿元"
+            },
+            {
+              "Value": "24-3",
+              "Count": 55656.6,
+              "Desc": "55656.6亿元"
+            },
+            {
+              "Value": "24-4",
+              "Count": 55428.75,
+              "Desc": "55428.75亿元"
+            },
+            {
+              "Value": "24-5",
+              "Count": 54697.78,
+              "Desc": "54697.78亿元"
+            },
+            {
+              "Value": "24-6",
+              "Count": 53345.58,
+              "Desc": "53345.58亿元"
+            },
+            {
+              "Value": "24-7",
+              "Count": 54211.46,
+              "Desc": "54211.46亿元"
+            },
+            {
+              "Value": "24-8",
+              "Count": 50265.13,
+              "Desc": "50265.13亿元"
+            },
+            {
+              "Value": "24-9",
+              "Count": 61622.85,
+              "Desc": "61622.85亿元"
+            },
+            {
+              "Value": "24-10",
+              "Count": 68726.02,
+              "Desc": "68726.02亿元"
+            },
+            {
+              "Value": "24-11",
+              "Count": 69876.2,
+              "Desc": "69876.2亿元"
+            },
+            {
+              "Value": "24-12",
+              "Count": 68583.24,
+              "Desc": "68583.24亿元"
+            },
+            {
+              "Value": "25-1",
+              "Count": 67198.14,
+              "Desc": "67198.14亿元"
+            },
+            {
+              "Value": "25-2",
+              "Count": 77488.64,
+              "Desc": "77488.64亿元"
+            },
+            {
+              "Value": "25-3",
+              "Count": 70982.66,
+              "Desc": "70982.66亿元"
+            },
+            {
+              "Value": "25-4",
+              "Count": 68808.38,
+              "Desc": "68808.38亿元"
+            },
+            {
+              "Value": "25-5",
+              "Count": 66698.81,
+              "Desc": "66698.81亿元"
+            },
+            {
+              "Value": "25-6",
+              "Count": 66900.43,
+              "Desc": "66900.43亿元"
+            }
+          ]
+        },
+        {
+          "Key": "patent",
+          "Items": [
+            {
+              "Value": 2015,
+              "Count": 28988,
+              "Items": [
+                {
+                  "Value": "2212个",
+                  "Count": 2212,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "26540个",
+                  "Count": 26540,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "236个",
+                  "Count": 236,
+                  "Desc": "外观设计"
+                }
+              ]
+            },
+            {
+              "Value": 2016,
+              "Count": 41677,
+              "Items": [
+                {
+                  "Value": "30293个",
+                  "Count": 30293,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "10098个",
+                  "Count": 10098,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "1286个",
+                  "Count": 1286,
+                  "Desc": "外观设计"
+                }
+              ]
+            },
+            {
+              "Value": 2017,
+              "Count": 51245,
+              "Items": [
+                {
+                  "Value": "2004个",
+                  "Count": 2004,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "13441个",
+                  "Count": 13441,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "35800个",
+                  "Count": 35800,
+                  "Desc": "发明专利"
+                }
+              ]
+            },
+            {
+              "Value": 2018,
+              "Count": 69076,
+              "Items": [
+                {
+                  "Value": "23876个",
+                  "Count": 23876,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "41997个",
+                  "Count": 41997,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "3203个",
+                  "Count": 3203,
+                  "Desc": "外观设计"
+                }
+              ]
+            },
+            {
+              "Value": 2019,
+              "Count": 85805,
+              "Items": [
+                {
+                  "Value": "29116个",
+                  "Count": 29116,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "52476个",
+                  "Count": 52476,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "4213个",
+                  "Count": 4213,
+                  "Desc": "外观设计"
+                }
+              ]
+            },
+            {
+              "Value": 2020,
+              "Count": 113493,
+              "Items": [
+                {
+                  "Value": "45256个",
+                  "Count": 45256,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "61519个",
+                  "Count": 61519,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "6718个",
+                  "Count": 6718,
+                  "Desc": "外观设计"
+                }
+              ]
+            },
+            {
+              "Value": 2021,
+              "Count": 149953,
+              "Items": [
+                {
+                  "Value": "63549个",
+                  "Count": 63549,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "8390个",
+                  "Count": 8390,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "78014个",
+                  "Count": 78014,
+                  "Desc": "发明专利"
+                }
+              ]
+            },
+            {
+              "Value": 2022,
+              "Count": 162160,
+              "Items": [
+                {
+                  "Value": "9749个",
+                  "Count": 9749,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "76479个",
+                  "Count": 76479,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "75932个",
+                  "Count": 75932,
+                  "Desc": "实用新型"
+                }
+              ]
+            },
+            {
+              "Value": 2023,
+              "Count": 136982,
+              "Items": [
+                {
+                  "Value": "8911个",
+                  "Count": 8911,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "64836个",
+                  "Count": 64836,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "63235个",
+                  "Count": 63235,
+                  "Desc": "发明专利"
+                }
+              ]
+            },
+            {
+              "Value": 2024,
+              "Count": 138164,
+              "Items": [
+                {
+                  "Value": "10692个",
+                  "Count": 10692,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "62118个",
+                  "Count": 62118,
+                  "Desc": "实用新型"
+                },
+                {
+                  "Value": "65354个",
+                  "Count": 65354,
+                  "Desc": "发明专利"
+                }
+              ]
+            },
+            {
+              "Value": 2025,
+              "Count": 16777,
+              "Items": [
+                {
+                  "Value": "8066个",
+                  "Count": 8066,
+                  "Desc": "发明专利"
+                },
+                {
+                  "Value": "1097个",
+                  "Count": 1097,
+                  "Desc": "外观设计"
+                },
+                {
+                  "Value": "7614个",
+                  "Count": 7614,
+                  "Desc": "实用新型"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Key": "financingevent",
+          "Items": [
+            {
+              "Value": "14-1",
+              "Count": 12,
+              "Desc": "12件"
+            },
+            {
+              "Value": "14-2",
+              "Count": 6,
+              "Desc": "6件"
+            },
+            {
+              "Value": "14-3",
+              "Count": 24,
+              "Desc": "24件"
+            },
+            {
+              "Value": "14-4",
+              "Count": 18,
+              "Desc": "18件"
+            },
+            {
+              "Value": "14-5",
+              "Count": 9,
+              "Desc": "9件"
+            },
+            {
+              "Value": "14-6",
+              "Count": 18,
+              "Desc": "18件"
+            },
+            {
+              "Value": "14-7",
+              "Count": 13,
+              "Desc": "13件"
+            },
+            {
+              "Value": "14-8",
+              "Count": 17,
+              "Desc": "17件"
+            },
+            {
+              "Value": "14-9",
+              "Count": 28,
+              "Desc": "28件"
+            },
+            {
+              "Value": "14-10",
+              "Count": 17,
+              "Desc": "17件"
+            },
+            {
+              "Value": "14-11",
+              "Count": 15,
+              "Desc": "15件"
+            },
+            {
+              "Value": "14-12",
+              "Count": 35,
+              "Desc": "35件"
+            },
+            {
+              "Value": "15-1",
+              "Count": 22,
+              "Desc": "22件"
+            },
+            {
+              "Value": "15-2",
+              "Count": 19,
+              "Desc": "19件"
+            },
+            {
+              "Value": "15-3",
+              "Count": 36,
+              "Desc": "36件"
+            },
+            {
+              "Value": "15-4",
+              "Count": 28,
+              "Desc": "28件"
+            },
+            {
+              "Value": "15-5",
+              "Count": 33,
+              "Desc": "33件"
+            },
+            {
+              "Value": "15-6",
+              "Count": 27,
+              "Desc": "27件"
+            },
+            {
+              "Value": "15-7",
+              "Count": 47,
+              "Desc": "47件"
+            },
+            {
+              "Value": "15-8",
+              "Count": 32,
+              "Desc": "32件"
+            },
+            {
+              "Value": "15-9",
+              "Count": 37,
+              "Desc": "37件"
+            },
+            {
+              "Value": "15-10",
+              "Count": 29,
+              "Desc": "29件"
+            },
+            {
+              "Value": "15-11",
+              "Count": 47,
+              "Desc": "47件"
+            },
+            {
+              "Value": "15-12",
+              "Count": 58,
+              "Desc": "58件"
+            },
+            {
+              "Value": "16-1",
+              "Count": 44,
+              "Desc": "44件"
+            },
+            {
+              "Value": "16-2",
+              "Count": 17,
+              "Desc": "17件"
+            },
+            {
+              "Value": "16-3",
+              "Count": 90,
+              "Desc": "90件"
+            },
+            {
+              "Value": "16-4",
+              "Count": 33,
+              "Desc": "33件"
+            },
+            {
+              "Value": "16-5",
+              "Count": 29,
+              "Desc": "29件"
+            },
+            {
+              "Value": "16-6",
+              "Count": 48,
+              "Desc": "48件"
+            },
+            {
+              "Value": "16-7",
+              "Count": 38,
+              "Desc": "38件"
+            },
+            {
+              "Value": "16-8",
+              "Count": 49,
+              "Desc": "49件"
+            },
+            {
+              "Value": "16-9",
+              "Count": 44,
+              "Desc": "44件"
+            },
+            {
+              "Value": "16-10",
+              "Count": 42,
+              "Desc": "42件"
+            },
+            {
+              "Value": "16-11",
+              "Count": 43,
+              "Desc": "43件"
+            },
+            {
+              "Value": "16-12",
+              "Count": 51,
+              "Desc": "51件"
+            },
+            {
+              "Value": "17-1",
+              "Count": 50,
+              "Desc": "50件"
+            },
+            {
+              "Value": "17-2",
+              "Count": 33,
+              "Desc": "33件"
+            },
+            {
+              "Value": "17-3",
+              "Count": 48,
+              "Desc": "48件"
+            },
+            {
+              "Value": "17-4",
+              "Count": 34,
+              "Desc": "34件"
+            },
+            {
+              "Value": "17-5",
+              "Count": 47,
+              "Desc": "47件"
+            },
+            {
+              "Value": "17-6",
+              "Count": 57,
+              "Desc": "57件"
+            },
+            {
+              "Value": "17-7",
+              "Count": 53,
+              "Desc": "53件"
+            },
+            {
+              "Value": "17-8",
+              "Count": 51,
+              "Desc": "51件"
+            },
+            {
+              "Value": "17-9",
+              "Count": 43,
+              "Desc": "43件"
+            },
+            {
+              "Value": "17-10",
+              "Count": 39,
+              "Desc": "39件"
+            },
+            {
+              "Value": "17-11",
+              "Count": 62,
+              "Desc": "62件"
+            },
+            {
+              "Value": "17-12",
+              "Count": 67,
+              "Desc": "67件"
+            },
+            {
+              "Value": "18-1",
+              "Count": 71,
+              "Desc": "71件"
+            },
+            {
+              "Value": "18-2",
+              "Count": 53,
+              "Desc": "53件"
+            },
+            {
+              "Value": "18-3",
+              "Count": 43,
+              "Desc": "43件"
+            },
+            {
+              "Value": "18-4",
+              "Count": 43,
+              "Desc": "43件"
+            },
+            {
+              "Value": "18-5",
+              "Count": 57,
+              "Desc": "57件"
+            },
+            {
+              "Value": "18-6",
+              "Count": 77,
+              "Desc": "77件"
+            },
+            {
+              "Value": "18-7",
+              "Count": 63,
+              "Desc": "63件"
+            },
+            {
+              "Value": "18-8",
+              "Count": 70,
+              "Desc": "70件"
+            },
+            {
+              "Value": "18-9",
+              "Count": 55,
+              "Desc": "55件"
+            },
+            {
+              "Value": "18-10",
+              "Count": 50,
+              "Desc": "50件"
+            },
+            {
+              "Value": "18-11",
+              "Count": 56,
+              "Desc": "56件"
+            },
+            {
+              "Value": "18-12",
+              "Count": 65,
+              "Desc": "65件"
+            },
+            {
+              "Value": "19-1",
+              "Count": 70,
+              "Desc": "70件"
+            },
+            {
+              "Value": "19-2",
+              "Count": 44,
+              "Desc": "44件"
+            },
+            {
+              "Value": "19-3",
+              "Count": 55,
+              "Desc": "55件"
+            },
+            {
+              "Value": "19-4",
+              "Count": 66,
+              "Desc": "66件"
+            },
+            {
+              "Value": "19-5",
+              "Count": 57,
+              "Desc": "57件"
+            },
+            {
+              "Value": "19-6",
+              "Count": 42,
+              "Desc": "42件"
+            },
+            {
+              "Value": "19-7",
+              "Count": 86,
+              "Desc": "86件"
+            },
+            {
+              "Value": "19-8",
+              "Count": 66,
+              "Desc": "66件"
+            },
+            {
+              "Value": "19-9",
+              "Count": 68,
+              "Desc": "68件"
+            },
+            {
+              "Value": "19-10",
+              "Count": 57,
+              "Desc": "57件"
+            },
+            {
+              "Value": "19-11",
+              "Count": 87,
+              "Desc": "87件"
+            },
+            {
+              "Value": "19-12",
+              "Count": 99,
+              "Desc": "99件"
+            },
+            {
+              "Value": "20-1",
+              "Count": 61,
+              "Desc": "61件"
+            },
+            {
+              "Value": "20-2",
+              "Count": 29,
+              "Desc": "29件"
+            },
+            {
+              "Value": "20-3",
+              "Count": 80,
+              "Desc": "80件"
+            },
+            {
+              "Value": "20-4",
+              "Count": 89,
+              "Desc": "89件"
+            },
+            {
+              "Value": "20-5",
+              "Count": 70,
+              "Desc": "70件"
+            },
+            {
+              "Value": "20-6",
+              "Count": 86,
+              "Desc": "86件"
+            },
+            {
+              "Value": "20-7",
+              "Count": 93,
+              "Desc": "93件"
+            },
+            {
+              "Value": "20-8",
+              "Count": 107,
+              "Desc": "107件"
+            },
+            {
+              "Value": "20-9",
+              "Count": 123,
+              "Desc": "123件"
+            },
+            {
+              "Value": "20-10",
+              "Count": 87,
+              "Desc": "87件"
+            },
+            {
+              "Value": "20-11",
+              "Count": 100,
+              "Desc": "100件"
+            },
+            {
+              "Value": "20-12",
+              "Count": 183,
+              "Desc": "183件"
+            },
+            {
+              "Value": "21-1",
+              "Count": 145,
+              "Desc": "145件"
+            },
+            {
+              "Value": "21-2",
+              "Count": 101,
+              "Desc": "101件"
+            },
+            {
+              "Value": "21-3",
+              "Count": 134,
+              "Desc": "134件"
+            },
+            {
+              "Value": "21-4",
+              "Count": 145,
+              "Desc": "145件"
+            },
+            {
+              "Value": "21-5",
+              "Count": 116,
+              "Desc": "116件"
+            },
+            {
+              "Value": "21-6",
+              "Count": 128,
+              "Desc": "128件"
+            },
+            {
+              "Value": "21-7",
+              "Count": 146,
+              "Desc": "146件"
+            },
+            {
+              "Value": "21-8",
+              "Count": 184,
+              "Desc": "184件"
+            },
+            {
+              "Value": "21-9",
+              "Count": 175,
+              "Desc": "175件"
+            },
+            {
+              "Value": "21-10",
+              "Count": 141,
+              "Desc": "141件"
+            },
+            {
+              "Value": "21-11",
+              "Count": 202,
+              "Desc": "202件"
+            },
+            {
+              "Value": "21-12",
+              "Count": 236,
+              "Desc": "236件"
+            },
+            {
+              "Value": "22-1",
+              "Count": 206,
+              "Desc": "206件"
+            },
+            {
+              "Value": "22-2",
+              "Count": 121,
+              "Desc": "121件"
+            },
+            {
+              "Value": "22-3",
+              "Count": 183,
+              "Desc": "183件"
+            },
+            {
+              "Value": "22-4",
+              "Count": 127,
+              "Desc": "127件"
+            },
+            {
+              "Value": "22-5",
+              "Count": 126,
+              "Desc": "126件"
+            },
+            {
+              "Value": "22-6",
+              "Count": 168,
+              "Desc": "168件"
+            },
+            {
+              "Value": "22-7",
+              "Count": 184,
+              "Desc": "184件"
+            },
+            {
+              "Value": "22-8",
+              "Count": 191,
+              "Desc": "191件"
+            },
+            {
+              "Value": "22-9",
+              "Count": 151,
+              "Desc": "151件"
+            },
+            {
+              "Value": "22-10",
+              "Count": 155,
+              "Desc": "155件"
+            },
+            {
+              "Value": "22-11",
+              "Count": 128,
+              "Desc": "128件"
+            },
+            {
+              "Value": "22-12",
+              "Count": 190,
+              "Desc": "190件"
+            },
+            {
+              "Value": "23-1",
+              "Count": 157,
+              "Desc": "157件"
+            },
+            {
+              "Value": "23-2",
+              "Count": 127,
+              "Desc": "127件"
+            },
+            {
+              "Value": "23-3",
+              "Count": 151,
+              "Desc": "151件"
+            },
+            {
+              "Value": "23-4",
+              "Count": 145,
+              "Desc": "145件"
+            },
+            {
+              "Value": "23-5",
+              "Count": 139,
+              "Desc": "139件"
+            },
+            {
+              "Value": "23-6",
+              "Count": 141,
+              "Desc": "141件"
+            },
+            {
+              "Value": "23-7",
+              "Count": 167,
+              "Desc": "167件"
+            },
+            {
+              "Value": "23-8",
+              "Count": 161,
+              "Desc": "161件"
+            },
+            {
+              "Value": "23-9",
+              "Count": 144,
+              "Desc": "144件"
+            },
+            {
+              "Value": "23-10",
+              "Count": 145,
+              "Desc": "145件"
+            },
+            {
+              "Value": "23-11",
+              "Count": 144,
+              "Desc": "144件"
+            },
+            {
+              "Value": "23-12",
+              "Count": 189,
+              "Desc": "189件"
+            },
+            {
+              "Value": "24-1",
+              "Count": 150,
+              "Desc": "150件"
+            },
+            {
+              "Value": "24-2",
+              "Count": 118,
+              "Desc": "118件"
+            },
+            {
+              "Value": "24-3",
+              "Count": 116,
+              "Desc": "116件"
+            },
+            {
+              "Value": "24-4",
+              "Count": 123,
+              "Desc": "123件"
+            },
+            {
+              "Value": "24-5",
+              "Count": 93,
+              "Desc": "93件"
+            },
+            {
+              "Value": "24-6",
+              "Count": 118,
+              "Desc": "118件"
+            },
+            {
+              "Value": "24-7",
+              "Count": 112,
+              "Desc": "112件"
+            },
+            {
+              "Value": "24-8",
+              "Count": 101,
+              "Desc": "101件"
+            },
+            {
+              "Value": "24-9",
+              "Count": 123,
+              "Desc": "123件"
+            },
+            {
+              "Value": "24-10",
+              "Count": 91,
+              "Desc": "91件"
+            },
+            {
+              "Value": "24-11",
+              "Count": 114,
+              "Desc": "114件"
+            },
+            {
+              "Value": "24-12",
+              "Count": 167,
+              "Desc": "167件"
+            },
+            {
+              "Value": "25-1",
+              "Count": 172,
+              "Desc": "172件"
+            },
+            {
+              "Value": "25-2",
+              "Count": 115,
+              "Desc": "115件"
+            },
+            {
+              "Value": "25-3",
+              "Count": 132,
+              "Desc": "132件"
+            },
+            {
+              "Value": "25-4",
+              "Count": 127,
+              "Desc": "127件"
+            },
+            {
+              "Value": "25-5",
+              "Count": 105,
+              "Desc": "105件"
+            },
+            {
+              "Value": "25-6",
+              "Count": 68,
+              "Desc": "68件"
+            }
+          ]
+        },
+        {
+          "Key": "importantcompany",
+          "Items": [
+            {
+              "Value": "listingCount",
+              "Count": 410,
+              "Desc": "上市企业"
+            },
+            {
+              "Value": "zjtxCount",
+              "Count": 7393,
+              "Desc": "专精特新企业"
+            },
+            {
+              "Value": "gxjsCount",
+              "Count": 18658,
+              "Desc": "高新技术企业"
+            },
+            {
+              "Value": "AllCount",
+              "Count": 252869,
+              "Desc": "产业链企业"
+            }
+          ]
+        },
+        {
+          "Key": "registercapi",
+          "Items": [
+            {
+              "Value": "1000万以下",
+              "Count": 219999,
+              "Desc": "1000万以下"
+            },
+            {
+              "Value": "1000万-5000万",
+              "Count": 23159,
+              "Desc": "1000万-5000万"
+            },
+            {
+              "Value": "5000万-1亿",
+              "Count": 5264,
+              "Desc": "5000万-1亿"
+            },
+            {
+              "Value": "1亿-10亿",
+              "Count": 3867,
+              "Desc": "1亿-10亿"
+            },
+            {
+              "Value": "10亿以上",
+              "Count": 619,
+              "Desc": "10亿以上"
+            }
+          ]
+        },
+        {
+          "Key": "startyear",
+          "Items": [
+            {
+              "Value": "2016",
+              "Count": 9759,
+              "Desc": "2016"
+            },
+            {
+              "Value": "2017",
+              "Count": 12070,
+              "Desc": "2017"
+            },
+            {
+              "Value": "2018",
+              "Count": 15120,
+              "Desc": "2018"
+            },
+            {
+              "Value": "2019",
+              "Count": 20408,
+              "Desc": "2019"
+            },
+            {
+              "Value": "2020",
+              "Count": 22782,
+              "Desc": "2020"
+            },
+            {
+              "Value": "2021",
+              "Count": 29590,
+              "Desc": "2021"
+            },
+            {
+              "Value": "2022",
+              "Count": 29784,
+              "Desc": "2022"
+            },
+            {
+              "Value": "2023",
+              "Count": 32828,
+              "Desc": "2023"
+            },
+            {
+              "Value": "2024",
+              "Count": 25741,
+              "Desc": "2024"
+            },
+            {
+              "Value": "2025",
+              "Count": 8766,
+              "Desc": "2025"
+            }
+          ]
+        }
+      ]
+    },
+    "vipInfo": null
+  }
+>>>>>>> 38effd7 ( Please enter the commit message for your changes. Lines starting)
 }

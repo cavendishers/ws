@@ -225,7 +225,7 @@ class ChainSidebar {
             
             // 检查graphData是否可用和DOM是否ready
             if (typeof graphData !== 'undefined' && graphData.Children) {
-                const chainPoints = document.querySelectorAll('.node-level-2, .node-level-3, .node-level-4');
+                const chainPoints = document.querySelectorAll('.node-level-2, .node-level-3, .node-level-4, .node-level-5');
                 
                 if (chainPoints.length > 0) {
                     // 数据和DOM都ready，立即绑定
@@ -257,7 +257,7 @@ class ChainSidebar {
                 this.buildChainPointMap(graphData.Children);
             }
             
-            const chainPoints = document.querySelectorAll('.node-level-1, .node-level-2, .node-level-3, .node-level-4');
+            const chainPoints = document.querySelectorAll('.node-level-1, .node-level-2, .node-level-3, .node-level-4, .node-level-5');
             
             chainPoints.forEach((node) => {
                 // 从节点的文本内容匹配链点数据

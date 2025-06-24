@@ -38,26 +38,31 @@ document.addEventListener('DOMContentLoaded', function () {
         const containerRect = container.getBoundingClientRect();
         const zoomContainerRect = zoomPanContainer.getBoundingClientRect();
         
-        // 计算合适的缩放比例（稍微缩小一点，留出边距）
-        const scaleX = (zoomContainerRect.width - 80) / containerRect.width;
-        const scaleY = (zoomContainerRect.height - 80) / containerRect.height;
+        // 计算合适的缩放比例（预留更多边距）
+        const marginX = 100; // 水平边距
+        const marginY = 80;  // 垂直边距
+        const scaleX = (zoomContainerRect.width - marginX) / containerRect.width;
+        const scaleY = (zoomContainerRect.height - marginY) / containerRect.height;
         scale = Math.min(scaleX, scaleY, 1); // 不要放大，只缩小
         
         // 确保最小缩放不会太小
-        scale = Math.max(scale, 0.25);
+        scale = Math.max(scale, 0.2);
         
         // 计算水平居中位置
-        translateX = (zoomContainerRect.width - containerRect.width * scale) / 2;
+        const scaledWidth = containerRect.width * scale;
+        translateX = Math.max(20, (zoomContainerRect.width - scaledWidth) / 2);
         
         // 调整垂直位置 - 只留出少量顶部间隙而不是垂直居中
-        const topMargin = 10; // 顶部固定间隙，可以根据需要调整
+        const topMargin = 20; // 顶部固定间隙
         translateY = topMargin;
         
         // 确保图表不会被底部裁剪
         const scaledHeight = containerRect.height * scale;
         if (topMargin + scaledHeight > zoomContainerRect.height) {
-            // 如果高度超出视口，调整vertical scroll而不改变缩放
-            translateY = Math.min(topMargin, zoomContainerRect.height - scaledHeight);
+            // 如果高度超出视口，调整缩放以适应
+            const newScale = (zoomContainerRect.height - topMargin - 20) / containerRect.height;
+            scale = Math.max(newScale, 0.2);
+            translateY = topMargin;
         }
         
         // 应用变换
@@ -67,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.style.visibility = 'visible';
         
         console.log(`自动适应: 缩放比例=${scale.toFixed(2)}, 位置X=${translateX.toFixed(0)}px, Y=${translateY.toFixed(0)}px`);
+        console.log(`容器尺寸: ${containerRect.width}x${containerRect.height}, 视口尺寸: ${zoomContainerRect.width}x${zoomContainerRect.height}`);
     }
 
     // 页面加载时立即适应视窗，不使用延时
@@ -186,7 +192,17 @@ function renderGraph(nodes, parentElement) {
                     const childCount = countAllDescendants(node);
                     const MAX_NODES_PER_COLUMN = 20;
                     const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
-                    const actualColumns = Math.min(requiredColumns, 4);
+                    
+                    // 根据屏幕宽度智能限制列数
+                    const screenWidth = window.innerWidth;
+                    let maxColumns = 4;
+                    if (screenWidth < 1200) {
+                        maxColumns = 2;
+                    } else if (screenWidth < 1600) {
+                        maxColumns = 3;
+                    }
+                    
+                    const actualColumns = Math.min(requiredColumns, maxColumns);
                     
                     // 现在节点已经添加到DOM，可以找到父元素
                     if (actualColumns > 3) {
@@ -196,6 +212,8 @@ function renderGraph(nodes, parentElement) {
                     } else if (actualColumns > 1) {
                         columnDiv.classList.add('width-columns-2');
                     }
+                    
+                    console.log(`屏幕宽度: ${screenWidth}px, 最大列数: ${maxColumns}, 实际列数: ${actualColumns}`);
                 }
             });
             parentElement.appendChild(columnDiv);

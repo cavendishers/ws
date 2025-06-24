@@ -110,12 +110,13 @@ body, button, input, select, textarea {
     display: flex;
     padding: 40px;
     gap: 32px;
-    min-width: min-content;
+    min-width: fit-content;
     transform-origin: 0 0;
     transition: transform 0.2s ease;
     position: relative;
     background-color: #212D48;
     background-image: linear-gradient(to bottom, #23304D, #212D48);
+    width: max-content;
 }
 
 .industry-column {
@@ -159,20 +160,57 @@ body, button, input, select, textarea {
     background-color: var(--downstream-title-bg);
 }
 
-/* 增加不同列数的列宽度 */
+/* 增加不同列数的列宽度 - 响应式设计 */
 .industry-column.width-columns-2 {
-    min-width: 650px;
-    max-width: 700px;
+    min-width: 480px;
+    max-width: 580px;
 }
 
 .industry-column.width-columns-3 {
-    min-width: 950px;
-    max-width: 1020px;
+    min-width: 680px;
+    max-width: 780px;
 }
 
 .industry-column.width-columns-4 {
-    min-width: 1250px;
-    max-width: 1340px;
+    min-width: 880px;
+    max-width: 980px;
+}
+
+/* 响应式宽度调整 */
+@media (max-width: 1600px) {
+    .industry-column.width-columns-3 {
+        min-width: 600px;
+        max-width: 700px;
+    }
+    
+    .industry-column.width-columns-4 {
+        min-width: 780px;
+        max-width: 880px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .industry-column.width-columns-3 {
+        min-width: 520px;
+        max-width: 620px;
+    }
+    
+    .industry-column.width-columns-4 {
+        min-width: 680px;
+        max-width: 780px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .industry-column.width-columns-3 {
+        min-width: 450px;
+        max-width: 550px;
+    }
+    
+    .industry-column.width-columns-4 {
+        min-width: 580px;
+        max-width: 680px;
+    }
 }
 
 .industry-column .column-title-container {
@@ -211,10 +249,13 @@ body, button, input, select, textarea {
 
 .upstream-column .node-level-3,
 .upstream-column .node-level-4,
+.upstream-column .node-level-5,
 .midstream-column .node-level-3,
 .midstream-column .node-level-4,
+.midstream-column .node-level-5,
 .downstream-column .node-level-3,
-.downstream-column .node-level-4 {
+.downstream-column .node-level-4,
+.downstream-column .node-level-5 {
     background-color: var(--node-light-fill);
     color: #DCE2F0;
     border: 1px dashed var(--node-tertiary);
@@ -255,7 +296,8 @@ body, button, input, select, textarea {
 
 .node-level-1-items-container,
 .node-level-2-items-container,
-.node-level-3-items-container {
+.node-level-3-items-container,
+.node-level-4-items-container {
     background-color: rgba(45, 58, 92, 0.8);
     border: 1px solid rgba(95, 125, 190, 0.2);
     border-radius: 8px;
@@ -291,7 +333,8 @@ body, button, input, select, textarea {
 
 .multi-column-layout > .node-level-2,
 .multi-column-layout > .node-level-3,
-.multi-column-layout > .node-level-4 {
+.multi-column-layout > .node-level-4,
+.multi-column-layout > .node-level-5 {
     min-width: 280px;
     max-height: fit-content;
 }
@@ -327,20 +370,37 @@ body, button, input, select, textarea {
     color: #DCE2F0;
 }
 
-.node-level-3:hover, .node-level-4:hover {
+.node-level-5 {
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.node-level-5:not(.has-children) {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: #DCE2F0;
+}
+
+.node-level-3:hover, .node-level-4:hover, .node-level-5:hover {
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(97, 131, 217, 0.2);
 }
 
 .horizontal-group-parent > .node-level-2-items-container,
-.horizontal-group-parent > .node-level-3-items-container {
+.horizontal-group-parent > .node-level-3-items-container,
+.horizontal-group-parent > .node-level-4-items-container {
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
 }
 
 .horizontal-group-parent > .node-level-2-items-container > .node-level-3,
-.horizontal-group-parent > .node-level-3-items-container > .node-level-4 {
+.horizontal-group-parent > .node-level-3-items-container > .node-level-4,
+.horizontal-group-parent > .node-level-4-items-container > .node-level-5 {
     flex-grow: 1;
     min-width: 100px;
 }
@@ -490,6 +550,9 @@ body, button, input, select, textarea {
     padding: 15px;
     margin-top: 5px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden; /* 防止内容溢出 */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* 有子节点的节点样式 - 使用线框而非填充色 */
@@ -554,7 +617,7 @@ body, button, input, select, textarea {
     z-index: 1;
 }
 
-/* level-3 和 level-4 使用虚线框 */
+/* level-3、level-4 和 level-5 使用虚线框 */
 .node-level-3 {
     background-color: var(--node-light-fill);
     border: 1px dashed var(--node-tertiary);
@@ -567,8 +630,14 @@ body, button, input, select, textarea {
     color: #DCE2F0;
 }
 
-/* level-3 和 level-4 的标题样式 */
-.node-level-3.has-children, .node-level-4.has-children {
+.node-level-5 {
+    background-color: var(--node-light-fill);
+    border: 1px dashed var(--node-tertiary);
+    color: #DCE2F0;
+}
+
+/* level-3、level-4 和 level-5 的标题样式 */
+.node-level-3.has-children, .node-level-4.has-children, .node-level-5.has-children {
     position: relative;
     padding-top: 32px;
     display: flex;
@@ -576,7 +645,7 @@ body, button, input, select, textarea {
     align-items: center;
 }
 
-.node-level-3.has-children::before, .node-level-4.has-children::before {
+.node-level-3.has-children::before, .node-level-4.has-children::before, .node-level-5.has-children::before {
     content: "";
     position: absolute;
     top: 0;
@@ -590,13 +659,17 @@ body, button, input, select, textarea {
     transform: translateX(-50%);
 }
 
-.node-level-3.has-children .node-title, .node-level-4.has-children .node-title {
+.node-level-3.has-children .node-title, .node-level-4.has-children .node-title, .node-level-5.has-children .node-title {
     position: relative;
     z-index: 1;
 }
 
 
-/* 为包含node-level-3-items-container的node-level-3元素设置实线边框 */
+/* 为包含items-container的节点元素设置实线边框 */
 .node-level-3:has(.node-level-3-items-container) {
+    border: 1px solid var(--node-tertiary);
+}
+
+.node-level-4:has(.node-level-4-items-container) {
     border: 1px solid var(--node-tertiary);
 }

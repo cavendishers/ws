@@ -48,9 +48,9 @@ body, button, input, select, textarea {
 
 /* 图表特定样式 */
 .chart-view-options {
-    padding: 0px 0px;
+    padding: 0;
     background-color: transparent;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 0.0625rem solid var(--border-light);
     display: flex;
     justify-content: flex-end;
     margin-bottom: 1.25rem;
@@ -58,23 +58,23 @@ body, button, input, select, textarea {
 
 .view-option {
     background-color: var(--input-bg);
-    border: 1px solid var(--border-light);
-    padding: 8px 16px;
-    margin-left: -1px;
+    border: 0.0625rem solid var(--border-light);
+    padding: 0.5rem 1rem;
+    margin-left: -0.0625rem;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-secondary-light);
     transition: all 0.25s ease;
 }
 .view-option:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
     margin-left: 0;
 }
 .view-option:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
 }
 .view-option.active {
     background-color: var(--secondary);
@@ -102,14 +102,14 @@ body, button, input, select, textarea {
     cursor: grab;
     background-color: #212D48;
     background-image: linear-gradient(to bottom, #23304D, #212D48);
-    border-radius: 12px;
-    min-height: 800px;
+    border-radius: 0.75rem;
+    min-height: 50rem;
 }
 
 #industry-chain-container {
     display: flex;
-    padding: 40px;
-    gap: 32px;
+    padding: 2.5rem;
+    gap: 2rem;
     min-width: fit-content;
     transform-origin: 0 0;
     transition: transform 0.2s ease;
@@ -120,17 +120,17 @@ body, button, input, select, textarea {
 }
 
 .industry-column {
-    min-width: 320px;
+    min-width: 23.75rem;
     padding: 0;
-    border-radius: 12px;
+    border-radius: 0.75rem;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
     align-self: flex-start;
     background-color: #2A3754;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    border: 1px solid #36435F;
+    box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.12);
+    border: 0.0625rem solid #36435F;
 }
 
 /* 上游部分样式 */
@@ -162,70 +162,75 @@ body, button, input, select, textarea {
 
 /* 增加不同列数的列宽度 - 响应式设计 */
 .industry-column.width-columns-2 {
-    min-width: 480px;
-    max-width: 580px;
+    min-width: 45rem;
+    max-width: 51.25rem;
 }
 
 .industry-column.width-columns-3 {
-    min-width: 680px;
-    max-width: 780px;
+    min-width: 67.5rem;
+    max-width: 73.75rem;
 }
 
 .industry-column.width-columns-4 {
-    min-width: 880px;
-    max-width: 980px;
+    min-width: 90rem;
+    max-width: 96.25rem;
 }
 
 /* 响应式宽度调整 */
-@media (max-width: 1600px) {
+@media (max-width: 100rem) {
     .industry-column.width-columns-3 {
-        min-width: 600px;
-        max-width: 700px;
+        min-width: 62.5rem;
+        max-width: 68.75rem;
     }
     
     .industry-column.width-columns-4 {
-        min-width: 780px;
-        max-width: 880px;
+        min-width: 83.75rem;
+        max-width: 90rem;
     }
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 87.5rem) {
     .industry-column.width-columns-3 {
-        min-width: 520px;
-        max-width: 620px;
+        min-width: 52.5rem;
+        max-width: 58.75rem;
     }
     
     .industry-column.width-columns-4 {
-        min-width: 680px;
-        max-width: 780px;
+        min-width: 70rem;
+        max-width: 76.25rem;
     }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 75rem) {
+    .industry-column.width-columns-2 {
+        min-width: 45rem;
+        max-width: 48.75rem;
+    }
+    
     .industry-column.width-columns-3 {
-        min-width: 450px;
-        max-width: 550px;
+        min-width: 45rem;
+        max-width: 51.25rem;
     }
     
     .industry-column.width-columns-4 {
-        min-width: 580px;
-        max-width: 680px;
+        min-width: 45rem;
+        max-width: 51.25rem;
     }
 }
 
 .industry-column .column-title-container {
-    padding: 0px;
-    border-radius: 12px 12px 0 0;
+    padding: 0;
+    border-radius: 0.75rem 0.75rem 0 0;
     margin-bottom: 0;
     text-align: center;
     background-color: var(--secondary);
 }
 
 .industry-column .column-title {
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 600;
     color: #F2F5FC;
-    padding: 10px 16px;
+    padding: 0.625rem 1rem;
     display: inline-block;
     letter-spacing: -0.01em;
 }
@@ -236,7 +241,7 @@ body, button, input, select, textarea {
 .downstream-column .node-level-1 {
     background-color: var(--node-primary);
     color: #F2F5FC;
-    box-shadow: 0 4px 8px rgba(61, 86, 150, 0.25);
+    box-shadow: 0 0.25rem 0.5rem rgba(61, 86, 150, 0.25);
 }
 
 .upstream-column .node-level-2,
@@ -244,7 +249,7 @@ body, button, input, select, textarea {
 .downstream-column .node-level-2 {
     background-color: var(--node-secondary);
     color: #F2F5FC;
-    box-shadow: 0 3px 6px rgba(77, 104, 176, 0.25);
+    box-shadow: 0 0.1875rem 0.375rem rgba(77, 104, 176, 0.25);
 }
 
 .upstream-column .node-level-3,
@@ -258,38 +263,37 @@ body, button, input, select, textarea {
 .downstream-column .node-level-5 {
     background-color: var(--node-light-fill);
     color: #DCE2F0;
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
 }
 
 .node-level-1 {
-    padding: 5px 0px 0px 0px;
-    border-radius: 8px;
+    padding: 0.3125rem 0 0 0;
+    border-radius: 0.5rem;
     font-weight: 600;
     text-align: center;
-    font-size: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 1rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
     letter-spacing: -0.005em;
 }
 
 .node-level-1 {
-    border: 1px solid var(--node-primary);
+    border: 0.0625rem solid var(--node-primary);
     color: #ffffff;
     background-color: transparent;
 }
 
 .node-level-2 {
-    padding: 5px 0px 0px 0px;
-    border-radius: 8px;
+    padding: 0.3125rem 0 0 0;
+    border-radius: 0.5rem;
     font-weight: 500;
     text-align: center;
-    margin-top: 12px;
-    font-size: 15px;
-    flex: 1;
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
     transition: all 0.25s ease;
 }
 
 .node-level-2 {
-    border: 1px solid var(--node-secondary);
+    border: 0.0625rem solid var(--node-secondary);
     color: #ffffff;
     background-color: transparent;
 }
@@ -299,24 +303,25 @@ body, button, input, select, textarea {
 .node-level-3-items-container,
 .node-level-4-items-container {
     background-color: rgba(45, 58, 92, 0.8);
-    border: 1px solid rgba(95, 125, 190, 0.2);
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 5px;
+    border: 0.0625rem solid rgba(95, 125, 190, 0.2);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-top: 0.3125rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 /* 多列布局样式 */
 .node-level-1-items-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(21.875rem, 1fr));
+    gap: 0.875rem;
+    box-sizing: border-box;
 }
 
 .multi-column-layout {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(21.875rem, 1fr));
 }
 
 .columns-2 {
@@ -335,59 +340,69 @@ body, button, input, select, textarea {
 .multi-column-layout > .node-level-3,
 .multi-column-layout > .node-level-4,
 .multi-column-layout > .node-level-5 {
-    min-width: 280px;
+    min-width: 20.625rem;
+    max-width: 23.75rem;
     max-height: fit-content;
+    box-sizing: border-box;
 }
 
 .node-level-3 {
-    width: 240px;
-    padding: 10px 12px;
-    border-radius: 6px;
+    width: 100%;
+    min-width: 17.5rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.375rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.25s ease;
+    box-sizing: border-box;
 }
 
 .node-level-3:not(.has-children) {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 .node-level-4 {
-    padding: 10px 12px;
-    border-radius: 6px;
+    width: 100%;
+    max-width: 17.5rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.375rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.25s ease;
+    box-sizing: border-box;
 }
 
 .node-level-4:not(.has-children) {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 .node-level-5 {
-    padding: 10px 12px;
-    border-radius: 6px;
+    width: 100%;
+    max-width: 17.5rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.375rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.25s ease;
+    box-sizing: border-box;
 }
 
 .node-level-5:not(.has-children) {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 .node-level-3:hover, .node-level-4:hover, .node-level-5:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(97, 131, 217, 0.2);
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.1875rem 0.5rem rgba(97, 131, 217, 0.2);
 }
 
 .horizontal-group-parent > .node-level-2-items-container,
@@ -402,20 +417,20 @@ body, button, input, select, textarea {
 .horizontal-group-parent > .node-level-3-items-container > .node-level-4,
 .horizontal-group-parent > .node-level-4-items-container > .node-level-5 {
     flex-grow: 1;
-    min-width: 100px;
+    min-width: 6.25rem;
 }
 
 .arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2.5rem;
     color: var(--accent);
     align-self: flex-start;
-    padding-top: 0px;
-    min-width: 40px;
+    padding-top: 0;
+    min-width: 2.5rem;
     transition: all 0.3s ease;
-    text-shadow: 0 2px 4px rgba(66, 102, 172, 0.2);
+    text-shadow: 0 0.125rem 0.25rem rgba(66, 102, 172, 0.2);
     opacity: 0.85;
 }
 
@@ -423,29 +438,29 @@ body, button, input, select, textarea {
     transform: scale(1.1);
     opacity: 1;
     color: var(--text-primary-light);
-    text-shadow: 0 2px 8px rgba(66, 102, 172, 0.4);
+    text-shadow: 0 0.125rem 0.5rem rgba(66, 102, 172, 0.4);
 }
 
 /* 侧边栏操作 */
 .graph-sidebar-actions {
-    width: 70px;
+    width: 4.375rem;
     background-color: #2A3754;
-    border-left: 1px solid #36435F;
+    border-left: 0.0625rem solid #36435F;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
-    margin-left: 20px;
-    border-radius: 12px;
+    padding-top: 1.25rem;
+    margin-left: 1.25rem;
+    border-radius: 0.75rem;
     height: fit-content;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.12);
 }
 
 .graph-sidebar-icon-group {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .graph-sidebar-item {
@@ -454,18 +469,18 @@ body, button, input, select, textarea {
     align-items: center;
     cursor: pointer;
     color: #A7B3D2;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 500;
     text-align: center;
     width: 100%;
-    padding: 10px 0;
+    padding: 0.625rem 0;
     transition: all 0.25s ease;
 }
 
 .graph-sidebar-item i {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 6px;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 0.375rem;
 }
 
 .graph-sidebar-item:hover {
@@ -477,13 +492,13 @@ body, button, input, select, textarea {
 .graph-footer {
     background-color: #2A3754;
     text-align: center;
-    padding: 16px;
-    font-size: 13px;
+    padding: 1rem;
+    font-size: 0.8125rem;
     font-weight: 400;
     color: #A7B3D2;
-    border-top: 1px solid #36435F;
+    border-top: 0.0625rem solid #36435F;
     margin-top: 1.5rem;
-    border-radius: 12px;
+    border-radius: 0.75rem;
     position: relative;
     z-index: 1;
     width: 100%;
@@ -492,11 +507,11 @@ body, button, input, select, textarea {
 
 .section-card {
     background-color: #2A3754;
-    border-radius: 12px;
+    border-radius: 0.75rem;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    border: 1px solid #36435F;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border: 0.0625rem solid #36435F;
+    box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.12);
 }
 
 .section-title {
@@ -505,7 +520,7 @@ body, button, input, select, textarea {
     color: #F2F5FC;
     margin-bottom: 0.8rem;
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid #36435F;
+    border-bottom: 0.0625rem solid #36435F;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -518,18 +533,18 @@ body, button, input, select, textarea {
 
 /* 简洁滚动条 */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 0.5rem;
+    height: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
     background: #212D48;
-    border-radius: 4px;
+    border-radius: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb {
     background: #4266AC;
-    border-radius: 4px;
+    border-radius: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -539,17 +554,17 @@ body, button, input, select, textarea {
 /* 节点标题优化 */
 .node-title {
     font-weight: 500;
-    font-size: 20px;
+    font-size: 1.25rem;
     letter-spacing: -0.005em;
 }
 
 /* 多列包装器样式 */
 .multi-columns-wrapper {
     background-color: rgba(45, 58, 92, 0.8);
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 5px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 0.5rem;
+    padding: 0.9375rem;
+    margin-top: 0.3125rem;
+    box-shadow: 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.08);
     overflow: hidden; /* 防止内容溢出 */
     width: 100%;
     box-sizing: border-box;
@@ -559,13 +574,13 @@ body, button, input, select, textarea {
 .node-level-1.has-children {
     color: #F2F5FC;
     background-color: transparent;
-    border: 2px solid var(--node-primary);
+    border: 0.125rem solid var(--node-primary);
     position: relative;
-    padding-top: 40px;
+    padding-top: 2.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(61, 86, 150, 0.15);
+    box-shadow: 0 0.25rem 0.75rem rgba(61, 86, 150, 0.15);
 }
 
 .node-level-1.has-children::before {
@@ -573,11 +588,11 @@ body, button, input, select, textarea {
     position: absolute;
     top: 0;
     width: 70%;
-    height: 40px;
+    height: 2.5rem;
     background-color: var(--node-primary);
     background-image: linear-gradient(to right, #3A5998, #4366AC);
     z-index: 0;
-    border-radius: 7px 7px 0 0;
+    border-radius: 0.4375rem 0.4375rem 0 0;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -590,9 +605,9 @@ body, button, input, select, textarea {
 .node-level-2.has-children {
     color: #F2F5FC;
     background-color: transparent;
-    border: 2px solid var(--node-secondary);
+    border: 0.125rem solid var(--node-secondary);
     position: relative;
-    padding-top: 36px;
+    padding-top: 2.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -603,11 +618,11 @@ body, button, input, select, textarea {
     position: absolute;
     top: 0;
     width: 70%;
-    height: 36px;
+    height: 2.25rem;
     background-color: var(--node-secondary);
     background-image: linear-gradient(to right, #4266AC, #4A6DB2);
     z-index: 0;
-    border-radius: 7px 7px 0 0;
+    border-radius: 0.4375rem 0.4375rem 0 0;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -620,26 +635,26 @@ body, button, input, select, textarea {
 /* level-3、level-4 和 level-5 使用虚线框 */
 .node-level-3 {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 .node-level-4 {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 .node-level-5 {
     background-color: var(--node-light-fill);
-    border: 1px dashed var(--node-tertiary);
+    border: 0.0625rem dashed var(--node-tertiary);
     color: #DCE2F0;
 }
 
 /* level-3、level-4 和 level-5 的标题样式 */
 .node-level-3.has-children, .node-level-4.has-children, .node-level-5.has-children {
     position: relative;
-    padding-top: 32px;
+    padding-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -650,11 +665,11 @@ body, button, input, select, textarea {
     position: absolute;
     top: 0;
     width: 70%;
-    height: 32px;
+    height: 2rem;
     background-color: var(--node-tertiary);
     background-image: linear-gradient(to right, #5A82CC, #5F87D1);
     z-index: 0;
-    border-radius: 5px 5px 0 0;
+    border-radius: 0.3125rem 0.3125rem 0 0;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -667,9 +682,9 @@ body, button, input, select, textarea {
 
 /* 为包含items-container的节点元素设置实线边框 */
 .node-level-3:has(.node-level-3-items-container) {
-    border: 1px solid var(--node-tertiary);
+    border: 0.0625rem solid var(--node-tertiary);
 }
 
 .node-level-4:has(.node-level-4-items-container) {
-    border: 1px solid var(--node-tertiary);
+    border: 0.0625rem solid var(--node-tertiary);
 }

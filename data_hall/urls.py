@@ -64,4 +64,7 @@ urlpatterns = [
     path('api/regions/districts/', api_views.DistrictListAPIView.as_view(), name='district_list'),
     path('api/regions/<str:region_type>/<str:region_code>/', api_views.RegionDetailAPIView.as_view(), name='region_detail'),
     path('api/regions/search/', api_views.RegionSearchAPIView.as_view(), name='region_search'),
+    
+    # 调试路由
+    path('debug/region-selector/', views.region_selector_debug, name='region_selector_debug'),
 ] 

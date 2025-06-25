@@ -19,12 +19,19 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from django.http import JsonResponse
+
+def chrome_devtools_json(request):
+    """处理Chrome DevTools的配置文件请求"""
+    return JsonResponse({})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('data_hall.urls')),
     # 添加favicon.ico路由
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
+    # 处理Chrome DevTools配置文件请求
+    path('.well-known/appspecific/com.chrome.devtools.json', chrome_devtools_json, name='chrome_devtools'),
 ]
 
 # 在开发环境中提供静态文件

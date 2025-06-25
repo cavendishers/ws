@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'data_hall/css/vendor/font-awesome.min.css' %}"/>
 <link rel="stylesheet" href="{% static 'data_hall/css/industry_chain.css' %}">
 <link rel="stylesheet" href="{% static 'data_hall/css/chain-sidebar.css' %}">
-<!-- <link rel="stylesheet" href="{% static 'data_hall/css/region-selector.css' %}"> -->
+<link rel="stylesheet" href="{% static 'data_hall/css/region-selector.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -77,6 +77,7 @@
     <footer class="graph-footer mt-auto">
         以上数据基于公开信息分析挖掘的成果，仅供参考，不构成任何明示或暗示的观点或保证。
     </footer>
+    
 </div>
 {% endblock %}
 
@@ -85,7 +86,12 @@
 // 从后端获取产业链数据，传递给外部JS文件
 const graphData = JSON.parse('{{ chain_data|escapejs }}');
 </script>
-<!-- <script src="{% static 'data_hall/js/region-selector.js' %}"></script> -->
+
+<!-- 地区数据DOM缓存 - 由后端预渲染 -->
+{{ region_dom_cache|safe }}
+
+<script src="{% static 'data_hall/js/region-selector.js' %}"></script>
 <script src="{% static 'data_hall/js/industry_detail.js' %}"></script>
 <script src="{% static 'data_hall/js/chain-sidebar.js' %}"></script>
+
 {% endblock %}

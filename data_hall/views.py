@@ -15,6 +15,7 @@ from .models import IndustryChain, ChainPoint
 from .forms import LoginForm, RegistrationForm, PasswordResetRequestForm
 from django.contrib import messages
 from django.core.cache import cache
+from django.conf import settings
 
 
 
@@ -873,6 +874,7 @@ def password_reset_request(request):
 def industry_detail(request, industry_code=None):
     """产业链详情页面"""
     import json
+    from .utils.region_selector_utils import region_selector_helper
     
     # 如果没有指定产业代码，则默认为'IC0001'（新能源汽车）
     if not industry_code:
@@ -967,11 +969,15 @@ def industry_detail(request, industry_code=None):
     # 将chain_data转换为JSON字符串
     chain_data_json = json.dumps(chain_data)
     
+    # 生成地区选择器的预渲染HTML
+    region_dom_cache = region_selector_helper.generate_region_dom_cache()
+    
     # 构建上下文数据
     context = {
         'industry_name': industry_name,
         'available_industries': available_industries,  # 传递所有可用的产业链名称到模板
         'chain_data': chain_data_json,  # 传递产业链数据到模板
+        'region_dom_cache': region_dom_cache,  # 传递地区选择器的预渲染HTML
     }
     
     return render(request, 'data_hall/industry_detail.html', context)
@@ -996,3 +1002,18 @@ def build_node_tree(node, all_nodes):
         node_data["Children"].append(child_data)
     
     return node_data
+
+def region_selector_debug(request):
+    """地区选择器调试页面"""
+    from django.http import HttpResponse
+    import os
+    
+    # 读取调试页面
+    debug_file_path = os.path.join(settings.BASE_DIR, 'test_region_debug.html')
+    
+    try:
+        with open(debug_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return HttpResponse(content)
+    except FileNotFoundError:
+        return HttpResponse('<h1>调试页面未找到</h1><p>请确保 test_region_debug.html 文件存在</p>')

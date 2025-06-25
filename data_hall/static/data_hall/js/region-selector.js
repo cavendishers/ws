@@ -1,53 +1,73 @@
 /**
- * 三级联动地区选择器类
+ * 三级联动地区选择器类 - 基于后端预渲染HTML
  */
 class RegionSelector {
     constructor() {
-        this.modal = null;
-        this.regionsData = null;
-        this.selectedRegions = new Set(); // 存储选中的地区代码
-        this.currentProvince = null;
-        this.currentCity = null;
-        this.searchKeyword = '';
-        this.onConfirm = null; // 确认回调函数
-        this.isLoading = false;
-        this.searchDebounceTimer = null; // 搜索防抖定时器
+        console.log('RegionSelector 构造函数开始执行...');
         
-        // 缓存DOM元素
-        this.provinceColumn = null;
-        this.cityColumn = null;
-        this.districtColumn = null;
-        this.searchInput = null;
-        this.selectedCountEl = null;
-        
-        this.init();
+        try {
+            this.modal = null;
+            this.selectedRegions = new Set(); // 存储实际选中的地区代码
+            this.currentProvince = null;
+            this.currentCity = null;
+            this.searchKeyword = '';
+            this.onConfirm = null;
+            this.searchDebounceTimer = null;
+            
+            // 缓存DOM元素
+            this.provinceColumn = null;
+            this.cityColumn = null;
+            this.districtColumn = null;
+            this.searchInput = null;
+            this.selectedCountEl = null;
+            this.regionDomCache = null;
+            
+            this.init();
+            console.log('RegionSelector 构造完成');
+        } catch (error) {
+            console.error('RegionSelector 构造失败:', error);
+            throw error;
+        }
     }
     
     /**
      * 初始化
      */
-    async init() {
-        await this.loadRegionsData();
+    init() {
+        this.loadRegionDomCache();
         this.createModal();
         this.bindEvents();
     }
     
     /**
-     * 加载地区数据
+     * 加载地区DOM缓存
      */
-    async loadRegionsData() {
-        try {
-            const response = await fetch('/static/data_hall/js/regions-data.json');
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    loadRegionDomCache() {
+        console.log('开始加载地区DOM缓存...');
+        
+        let templateElement = document.getElementById('region-dom-cache');
+        
+        if (!templateElement) {
+            console.error('未找到地区数据缓存，请确保页面包含 #region-dom-cache 元素');
+            
+            const templates = document.querySelectorAll('template');
+            for (let template of templates) {
+                if (template.innerHTML.includes('region-item')) {
+                    templateElement = template;
+                    break;
+                }
             }
-            this.regionsData = await response.json();
-            console.log('地区数据加载成功');
-        } catch (error) {
-            console.error('加载地区数据失败:', error);
-            // 使用默认数据或显示错误
-            this.regionsData = { "86": {} };
+            
+            if (!templateElement) return;
         }
+        
+        if (templateElement.tagName.toLowerCase() === 'template') {
+            this.regionDomCache = templateElement.content || templateElement;
+        } else {
+            this.regionDomCache = templateElement;
+        }
+        
+        console.log('地区DOM缓存加载成功');
     }
     
     /**
@@ -115,9 +135,8 @@ class RegionSelector {
             </div>
         `;
         
-        this.getAppendContainer().appendChild(this.modal);
+        document.body.appendChild(this.modal);
         
-        // 缓存DOM元素
         this.provinceColumn = this.modal.querySelector('#province-column');
         this.cityColumn = this.modal.querySelector('#city-column');
         this.districtColumn = this.modal.querySelector('#district-column');
@@ -126,112 +145,34 @@ class RegionSelector {
     }
     
     /**
-     * 获取模态框应该添加到的容器
-     * 在全屏模式下添加到全屏元素，否则添加到body
-     */
-    getAppendContainer() {
-        // 检查是否在全屏模式
-        if (document.fullscreenElement) {
-            return document.fullscreenElement;
-        }
-        return document.body;
-    }
-    
-    /**
-     * 确保模态框在正确的容器中
-     */
-    ensureCorrectContainer() {
-        if (!this.modal) return;
-        
-        const targetContainer = this.getAppendContainer();
-        
-        // 如果模态框不在正确的容器中，重新附加
-        if (this.modal.parentElement !== targetContainer) {
-            console.log('重新附加地区选择器到正确容器:', targetContainer === document.body ? 'body' : 'fullscreen element');
-            targetContainer.appendChild(this.modal);
-        }
-    }
-    
-    /**
-     * 处理全屏状态变化
-     */
-    handleFullscreenChange() {
-        // 如果模态框已打开，需要重新附加到正确的容器
-        if (this.modal && this.modal.classList.contains('active')) {
-            const newContainer = this.getAppendContainer();
-            
-            // 如果当前容器不是目标容器，则重新附加
-            if (this.modal.parentElement !== newContainer) {
-                console.log('全屏状态变化，重新附加地区选择器到正确容器');
-                
-                // 保存当前状态
-                const modalClasses = this.modal.className;
-                
-                // 重新附加到正确的容器
-                newContainer.appendChild(this.modal);
-                
-                // 恢复状态
-                this.modal.className = modalClasses;
-            }
-        }
-    }
-    
-    /**
      * 绑定事件
      */
     bindEvents() {
-        // 关闭按钮
-        const closeBtn = this.modal.querySelector('.region-selector-close');
-        closeBtn.addEventListener('click', () => this.hide());
-        
-        // 点击遮罩关闭
+        this.modal.querySelector('.region-selector-close').addEventListener('click', () => this.hide());
         this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
-                this.hide();
-            }
+            if (e.target === this.modal) this.hide();
         });
         
-        // ESC键关闭
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.modal.classList.contains('active')) {
                 this.hide();
             }
         });
         
-        // 监听全屏状态变化
-        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('msfullscreenchange', () => this.handleFullscreenChange());
-        
-        // 搜索输入（添加防抖）
         this.searchInput.addEventListener('input', (e) => {
             this.searchKeyword = e.target.value.trim();
+            clearTimeout(this.searchDebounceTimer);
             
-            // 清除之前的防抖定时器
-            if (this.searchDebounceTimer) {
-                clearTimeout(this.searchDebounceTimer);
-            }
-            
-            // 如果搜索关键词为空，立即执行
             if (!this.searchKeyword) {
-                this.performSearch();
+                this.loadProvinces();
                 return;
             }
             
-            // 设置防抖延迟
-            this.searchDebounceTimer = setTimeout(() => {
-                this.performSearch();
-            }, 200);
+            this.searchDebounceTimer = setTimeout(() => this.performSearch(), 200);
         });
         
-        // 重置按钮
-        const resetBtn = this.modal.querySelector('.region-btn-reset');
-        resetBtn.addEventListener('click', () => this.reset());
-        
-        // 确定按钮
-        const confirmBtn = this.modal.querySelector('.region-btn-confirm');
-        confirmBtn.addEventListener('click', () => this.confirm());
+        this.modal.querySelector('.region-btn-reset').addEventListener('click', () => this.reset());
+        this.modal.querySelector('.region-btn-confirm').addEventListener('click', () => this.confirm());
     }
     
     /**
@@ -241,10 +182,6 @@ class RegionSelector {
         this.selectedRegions = new Set(selectedRegions);
         this.onConfirm = onConfirm;
         
-        // 确保模态框在正确的容器中
-        this.ensureCorrectContainer();
-        
-        // 如果没有选中的地区，完全重置状态
         if (selectedRegions.length === 0) {
             this.currentProvince = null;
             this.currentCity = null;
@@ -256,10 +193,7 @@ class RegionSelector {
         this.loadProvinces();
         this.updateSelectedCount();
         
-        // 聚焦搜索框
-        setTimeout(() => {
-            this.searchInput.focus();
-        }, 300);
+        setTimeout(() => this.searchInput.focus(), 300);
     }
     
     /**
@@ -274,38 +208,90 @@ class RegionSelector {
     }
     
     /**
+     * 从DOM缓存中获取地区项
+     */
+    getRegionItemsFromCache(type, parentCode = null) {
+        if (!this.regionDomCache) return [];
+        
+        let items = this.regionDomCache.querySelectorAll(`[data-type="${type}"]`);
+        
+        if (parentCode) {
+            return Array.from(items).filter(item => item.getAttribute('data-parent') === parentCode);
+        } else if (type === 'province') {
+            return Array.from(items).filter(item => {
+                const parent = item.getAttribute('data-parent');
+                return !parent || parent === '';
+            });
+        }
+        
+        return Array.from(items);
+    }
+    
+    /**
      * 加载省份列表
      */
     loadProvinces() {
-        if (!this.regionsData || !this.regionsData['86']) {
-            this.showError(this.provinceColumn, '省份数据加载失败');
+        if (!this.regionDomCache) {
+            this.showError(this.provinceColumn, '地区数据未加载');
             return;
         }
         
-        const provinces = this.regionsData['86'];
-        const provinceItems = Object.entries(provinces).map(([code, name]) => {
-            const isSelected = this.selectedRegions.has(code);
-            return this.createRegionItem(code, name, isSelected, 'province');
+        const provinceItems = this.getRegionItemsFromCache('province');
+        
+        if (provinceItems.length === 0) {
+            this.showError(this.provinceColumn, '省份数据为空');
+            return;
+        }
+        
+        const processedItems = provinceItems.map(item => {
+            const cloned = item.cloneNode(true);
+            const code = cloned.getAttribute('data-code');
+            
+            this.updateItemSelectionState(cloned, code);
+            this.addChildCount(cloned, code);
+            
+            return cloned;
         });
         
-        this.provinceColumn.innerHTML = provinceItems.join('');
+        this.provinceColumn.innerHTML = '';
+        processedItems.forEach(item => this.provinceColumn.appendChild(item));
+        
         this.bindColumnEvents(this.provinceColumn, 'province');
         
-        // 如果有选中的省份，自动展开第一个选中的省份
-        const selectedProvinceCode = Object.keys(provinces).find(code => this.selectedRegions.has(code));
-        if (selectedProvinceCode) {
-            this.loadCities(selectedProvinceCode);
-            // 设置该省份为激活状态
-            const provinceItem = this.provinceColumn.querySelector(`[data-code="${selectedProvinceCode}"]`);
-            if (provinceItem) {
-                this.provinceColumn.querySelectorAll('.region-item').forEach(i => i.classList.remove('active'));
-                provinceItem.classList.add('active');
-            }
+        // 自动展开有选中子项的省份
+        const expandProvinceCode = this.findProvinceToExpand();
+        if (expandProvinceCode) {
+            this.loadCities(expandProvinceCode);
+            this.setActiveItem(this.provinceColumn, expandProvinceCode);
         } else {
-            // 如果没有选中的省份，确保其他列显示初始状态
             this.showEmpty(this.cityColumn, '请先选择省份');
             this.showEmpty(this.districtColumn, '请先选择城市');
         }
+    }
+    
+    /**
+     * 查找需要展开的省份
+     */
+    findProvinceToExpand() {
+        const provinceItems = this.getRegionItemsFromCache('province');
+        
+        // 优先展开直接选中的省份
+        for (let item of provinceItems) {
+            const code = item.getAttribute('data-code');
+            if (this.selectedRegions.has(code)) {
+                return code;
+            }
+        }
+        
+        // 其次展开有选中子项的省份
+        for (let item of provinceItems) {
+            const code = item.getAttribute('data-code');
+            if (this.hasSelectedChildren(code)) {
+                return code;
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -314,36 +300,63 @@ class RegionSelector {
     loadCities(provinceCode) {
         this.currentProvince = provinceCode;
         
-        if (!this.regionsData[provinceCode]) {
+        const cityItems = this.getRegionItemsFromCache('city', provinceCode);
+        
+        if (cityItems.length === 0) {
             this.showEmpty(this.cityColumn, '该省份暂无城市数据');
             this.showEmpty(this.districtColumn, '请先选择城市');
             return;
         }
         
-        const cities = this.regionsData[provinceCode];
-        const cityItems = Object.entries(cities).map(([code, name]) => {
-            const isSelected = this.selectedRegions.has(code);
-            return this.createRegionItem(code, name, isSelected, 'city');
+        const processedItems = cityItems.map(item => {
+            const cloned = item.cloneNode(true);
+            const code = cloned.getAttribute('data-code');
+            
+            this.updateItemSelectionState(cloned, code);
+            this.addChildCount(cloned, code);
+            
+            return cloned;
         });
         
-        this.cityColumn.innerHTML = cityItems.join('');
+        this.cityColumn.innerHTML = '';
+        processedItems.forEach(item => this.cityColumn.appendChild(item));
+        
         this.bindColumnEvents(this.cityColumn, 'city');
         
-        // 清空区县列表
         this.showEmpty(this.districtColumn, '请先选择城市');
         this.currentCity = null;
         
-        // 如果当前省份有选中的城市，自动展开第一个选中的城市
-        const selectedCityCode = Object.keys(cities).find(code => this.selectedRegions.has(code));
-        if (selectedCityCode) {
-            this.loadDistricts(selectedCityCode);
-            // 设置该城市为激活状态
-            const cityItem = this.cityColumn.querySelector(`[data-code="${selectedCityCode}"]`);
-            if (cityItem) {
-                this.cityColumn.querySelectorAll('.region-item').forEach(i => i.classList.remove('active'));
-                cityItem.classList.add('active');
+        // 自动展开有选中子项的城市
+        const expandCityCode = this.findCityToExpand(provinceCode);
+        if (expandCityCode) {
+            this.loadDistricts(expandCityCode);
+            this.setActiveItem(this.cityColumn, expandCityCode);
+        }
+    }
+    
+    /**
+     * 查找需要展开的城市
+     */
+    findCityToExpand(provinceCode) {
+        const cityItems = this.getRegionItemsFromCache('city', provinceCode);
+        
+        // 优先展开直接选中的城市
+        for (let item of cityItems) {
+            const code = item.getAttribute('data-code');
+            if (this.selectedRegions.has(code)) {
+                return code;
             }
         }
+        
+        // 其次展开有选中子项的城市
+        for (let item of cityItems) {
+            const code = item.getAttribute('data-code');
+            if (this.hasSelectedChildren(code)) {
+                return code;
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -352,43 +365,143 @@ class RegionSelector {
     loadDistricts(cityCode) {
         this.currentCity = cityCode;
         
-        if (!this.regionsData[cityCode]) {
+        const districtItems = this.getRegionItemsFromCache('district', cityCode);
+        
+        if (districtItems.length === 0) {
             this.showEmpty(this.districtColumn, '该城市暂无区县数据');
             return;
         }
         
-        const districts = this.regionsData[cityCode];
-        const districtItems = Object.entries(districts).map(([code, name]) => {
-            const isSelected = this.selectedRegions.has(code);
-            return this.createRegionItem(code, name, isSelected, 'district');
+        const processedItems = districtItems.map(item => {
+            const cloned = item.cloneNode(true);
+            const code = cloned.getAttribute('data-code');
+            
+            this.updateItemSelectionState(cloned, code);
+            
+            return cloned;
         });
         
-        this.districtColumn.innerHTML = districtItems.join('');
+        this.districtColumn.innerHTML = '';
+        processedItems.forEach(item => this.districtColumn.appendChild(item));
+        
         this.bindColumnEvents(this.districtColumn, 'district');
     }
     
     /**
-     * 创建地区选项HTML
+     * 更新项目选中状态
      */
-    createRegionItem(code, name, isSelected, type) {
-        const childCount = this.getChildCount(code);
-        const countText = childCount > 0 ? `(${childCount})` : '';
+    updateItemSelectionState(item, code) {
+        const isSelected = this.isRegionSelected(code);
+        const checkbox = item.querySelector('.region-checkbox');
         
-        return `
-            <div class="region-item ${isSelected ? 'selected' : ''}" data-code="${code}" data-name="${name}" data-type="${type}">
-                <input type="checkbox" class="region-checkbox" ${isSelected ? 'checked' : ''}>
-                <span class="region-name">${name}</span>
-                ${countText ? `<span class="region-count">${countText}</span>` : ''}
-            </div>
-        `;
+        if (checkbox) {
+            checkbox.checked = isSelected;
+        }
+        
+        item.classList.toggle('selected', isSelected);
+    }
+    
+    /**
+     * 判断地区是否被选中（包括直接选中和通过父级选中）
+     */
+    isRegionSelected(code) {
+        // 1. 直接选中
+        if (this.selectedRegions.has(code)) {
+            return true;
+        }
+        
+        // 2. 通过父级选中
+        const parentCodes = this.getAllParentCodes(code);
+        return parentCodes.some(parentCode => this.selectedRegions.has(parentCode));
+    }
+    
+    /**
+     * 添加子级数量显示
+     */
+    addChildCount(item, code) {
+        const childCount = this.getChildCount(code);
+        const countEl = item.querySelector('.region-count');
+        
+        if (countEl) {
+            countEl.textContent = childCount > 0 ? `(${childCount})` : '';
+        } else if (childCount > 0) {
+            const countSpan = document.createElement('span');
+            countSpan.className = 'region-count';
+            countSpan.textContent = `(${childCount})`;
+            item.appendChild(countSpan);
+        }
+    }
+    
+    /**
+     * 设置激活项目
+     */
+    setActiveItem(column, code) {
+        column.querySelectorAll('.region-item').forEach(i => i.classList.remove('active'));
+        const item = column.querySelector(`[data-code="${code}"]`);
+        if (item) {
+            item.classList.add('active');
+        }
     }
     
     /**
      * 获取子级数量
      */
     getChildCount(code) {
-        if (!this.regionsData[code]) return 0;
-        return Object.keys(this.regionsData[code]).length;
+        if (!this.regionDomCache) return 0;
+        return this.regionDomCache.querySelectorAll(`[data-parent="${code}"]`).length;
+    }
+    
+    /**
+     * 检查是否有选中的子地区
+     */
+    hasSelectedChildren(code) {
+        const childCodes = this.getAllChildCodes(code);
+        return childCodes.some(childCode => this.selectedRegions.has(childCode));
+    }
+    
+    /**
+     * 获取所有子地区代码
+     */
+    getAllChildCodes(parentCode) {
+        if (!this.regionDomCache) return [];
+        
+        const childCodes = [];
+        const directChildren = this.regionDomCache.querySelectorAll(`[data-parent="${parentCode}"]`);
+        
+        directChildren.forEach(child => {
+            const childCode = child.getAttribute('data-code');
+            childCodes.push(childCode);
+            
+            const grandChildren = this.getAllChildCodes(childCode);
+            childCodes.push(...grandChildren);
+        });
+        
+        return childCodes;
+    }
+    
+    /**
+     * 获取所有父地区代码
+     */
+    getAllParentCodes(code) {
+        if (!this.regionDomCache) return [];
+        
+        const parentCodes = [];
+        let currentCode = code;
+        
+        while (currentCode) {
+            const item = this.regionDomCache.querySelector(`[data-code="${currentCode}"]`);
+            if (!item) break;
+            
+            const parentCode = item.getAttribute('data-parent');
+            if (parentCode) {
+                parentCodes.push(parentCode);
+                currentCode = parentCode;
+            } else {
+                break;
+            }
+        }
+        
+        return parentCodes;
     }
     
     /**
@@ -398,130 +511,257 @@ class RegionSelector {
         const items = column.querySelectorAll('.region-item');
         
         items.forEach(item => {
-            const code = item.dataset.code;
-            const name = item.dataset.name;
+            const code = item.getAttribute('data-code');
             const checkbox = item.querySelector('.region-checkbox');
             
             // 复选框点击事件
             checkbox.addEventListener('change', (e) => {
                 e.stopPropagation();
-                this.toggleSelection(code, name, item, checkbox.checked);
+                
+                if (checkbox.checked) {
+                    // 复选框勾选是直接选择
+                    this.selectRegion(code, true);
+                    // 勾选时自动展开下级
+                    this.expandRegion(type, code, column, item);
+                } else {
+                    this.deselectRegion(code);
+                }
+                
+                this.updateAllDisplayedSelectionStates();
+                this.updateSelectedCount();
             });
             
-            // 项目点击事件（选中/取消选中并展开下级）
+            // 项目点击事件 - 展开下级
             item.addEventListener('click', (e) => {
                 if (e.target === checkbox) return;
                 
-                // 切换选中状态
-                if (this.selectedRegions.has(code)) {
-                    // 取消选中，同时移除下级地区
-                    this.removeRegionAndChildren(code);
-                    checkbox.checked = false;
-                    item.classList.remove('selected');
-                } else {
-                    // 选中
-                    this.selectedRegions.add(code);
-                    checkbox.checked = true;
-                    item.classList.add('selected');
-                }
-                this.updateSelectedCount();
-                
-                // 移除同级的active状态
-                items.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                
-                // 根据类型加载下级数据
-                if (type === 'province') {
-                    this.loadCities(code);
-                } else if (type === 'city') {
-                    this.loadDistricts(code);
-                }
-            });
-            
-            // 悬停效果（用于预览下级）
-            item.addEventListener('mouseenter', () => {
-                if (type === 'province' && this.currentProvince !== code) {
-                    // 可以在这里添加预览功能
-                }
+                this.expandRegion(type, code, column, item);
             });
         });
     }
     
     /**
-     * 切换选择状态
+     * 展开地区
      */
-    toggleSelection(code, name, item, isSelected) {
-        if (isSelected) {
-            this.selectedRegions.add(code);
-            item.classList.add('selected');
-        } else {
-            // 取消选中时，同时移除下级地区
-            this.removeRegionAndChildren(code);
-            item.classList.remove('selected');
-        }
+    expandRegion(type, code, column, item) {
+        column.querySelectorAll('.region-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
         
-        this.updateSelectedCount();
+        if (type === 'province') {
+            this.loadCities(code);
+        } else if (type === 'city') {
+            this.loadDistricts(code);
+        }
     }
     
     /**
-     * 移除地区及其所有下级地区
+     * 选中地区（文氏图包含关系逻辑）
      */
-    removeRegionAndChildren(code) {
-        // 移除自身
+    selectRegion(code, isDirectSelection = true) {
+        // 1. 添加当前地区
+        this.selectedRegions.add(code);
+        
+        // 2. 如果是直接选择，且有子地区，则选中所有子地区
+        if (isDirectSelection) {
+            const directChildCodes = this.getDirectChildCodes(code);
+            if (directChildCodes.length > 0) {
+                // 直接选择父地区时，选中所有子地区
+                const allChildCodes = this.getAllChildCodes(code);
+                allChildCodes.forEach(childCode => {
+                    this.selectedRegions.add(childCode);
+                });
+            }
+        }
+        
+        // 3. 检查是否需要自动选中父地区（跳级选择）
+        const parentCodes = this.getAllParentCodes(code);
+        const shouldSelectParents = this.isSkipLevelSelection(code, parentCodes);
+        
+        if (shouldSelectParents) {
+            // 跳级选择时自动选中父地区，但不触发父地区的子地区选择
+            parentCodes.forEach(parentCode => {
+                this.selectedRegions.add(parentCode);
+            });
+        }
+        
+        // 4. 智能优化选择
+        this.optimizeSelections();
+    }
+    
+    /**
+     * 判断是否为跳级选择
+     */
+    isSkipLevelSelection(code, parentCodes) {
+        // 如果没有父地区，不是跳级选择
+        if (parentCodes.length === 0) {
+            return false;
+        }
+        
+        // 获取直接父地区
+        const directParentCode = parentCodes[0];
+        
+        // 如果直接父地区已经被选中，说明不是跳级选择
+        if (this.selectedRegions.has(directParentCode)) {
+            return false;
+        }
+        
+        // 检查当前的展开状态来判断是否为跳级选择
+        // 如果当前地区的直接父地区正在展开状态（即当前页面显示了该地区），则不是跳级选择
+        if (this.isParentCurrentlyExpanded(code, directParentCode)) {
+            return false;
+        }
+        
+        // 检查是否有任何父地区已经被选中
+        // 如果有父地区已被选中，说明当前选择是在已有父地区基础上的正常选择
+        const hasSelectedParent = parentCodes.some(parentCode => 
+            this.selectedRegions.has(parentCode)
+        );
+        
+        // 只有在没有任何父地区被选中，且不在展开状态下的情况下，才认为是跳级选择
+        return !hasSelectedParent;
+    }
+    
+    /**
+     * 检查父地区是否当前正在展开状态
+     */
+    isParentCurrentlyExpanded(code, directParentCode) {
+        if (!this.regionDomCache) return false;
+        
+        // 获取当前地区的类型
+        const currentItem = this.regionDomCache.querySelector(`[data-code="${code}"]`);
+        if (!currentItem) return false;
+        
+        const currentType = currentItem.getAttribute('data-type');
+        
+        // 根据地区类型检查相应的展开状态
+        if (currentType === 'city') {
+            // 如果是城市，检查当前展开的省份是否为其父地区
+            return this.currentProvince === directParentCode;
+        } else if (currentType === 'district') {
+            // 如果是区县，检查当前展开的城市是否为其父地区
+            return this.currentCity === directParentCode;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * 取消选中地区
+     */
+    deselectRegion(code) {
+        // 1. 移除当前地区
         this.selectedRegions.delete(code);
         
-        // 获取所有下级地区并移除
+        // 2. 移除所有子地区
         const childCodes = this.getAllChildCodes(code);
         childCodes.forEach(childCode => {
             this.selectedRegions.delete(childCode);
         });
         
-        // 更新当前显示的界面中的选中状态
-        this.updateCurrentViewSelection();
+        // 3. 检查父地区是否需要取消选中
+        this.checkParentDeselection(code);
     }
     
     /**
-     * 获取某个地区的所有下级地区代码
+     * 检查父地区是否需要取消选中
      */
-    getAllChildCodes(parentCode) {
-        const childCodes = [];
+    checkParentDeselection(code) {
+        const parentCodes = this.getAllParentCodes(code);
         
-        // 直接下级
-        if (this.regionsData[parentCode]) {
-            const directChildren = Object.keys(this.regionsData[parentCode]);
-            childCodes.push(...directChildren);
+        parentCodes.forEach(parentCode => {
+            // 如果父地区被选中，检查是否还有其他子地区被选中
+            if (this.selectedRegions.has(parentCode)) {
+                const directChildCodes = this.getDirectChildCodes(parentCode);
+                const hasSelectedDirectChildren = directChildCodes.some(childCode => 
+                    this.selectedRegions.has(childCode)
+                );
+                
+                // 如果没有直接子地区被选中，则取消父地区选中
+                if (!hasSelectedDirectChildren) {
+                    this.selectedRegions.delete(parentCode);
+                }
+            }
+        });
+    }
+    
+    /**
+     * 获取直接子地区代码（仅一级子地区）
+     */
+    getDirectChildCodes(parentCode) {
+        if (!this.regionDomCache) return [];
+        
+        const directChildren = this.regionDomCache.querySelectorAll(`[data-parent="${parentCode}"]`);
+        return Array.from(directChildren).map(child => child.getAttribute('data-code'));
+    }
+    
+    /**
+     * 优化选择（如果父地区的所有直接子地区都被选中，则只保留父地区）
+     */
+    optimizeSelections() {
+        const selectedArray = Array.from(this.selectedRegions);
+        const toRemove = new Set();
+        
+        selectedArray.forEach(code => {
+            if (this.selectedRegions.has(code) && !toRemove.has(code)) {
+                const directChildCodes = this.getDirectChildCodes(code);
+                
+                if (directChildCodes.length > 0) {
+                    // 检查是否所有直接子地区都被选中
+                    const allDirectChildrenSelected = directChildCodes.every(childCode => 
+                        this.selectedRegions.has(childCode)
+                    );
+                    
+                    if (allDirectChildrenSelected) {
+                        // 标记要移除的所有子地区（包括间接子地区）
+                        const allChildCodes = this.getAllChildCodes(code);
+                        allChildCodes.forEach(childCode => {
+                            toRemove.add(childCode);
+                        });
+                    }
+                }
+            }
+        });
+        
+        // 执行移除操作
+        toRemove.forEach(code => {
+            this.selectedRegions.delete(code);
+        });
+    }
+    
+    /**
+     * 计算有效选中地区数量（最顶层的选择数量）
+     */
+    calculateEffectiveCount() {
+        const selectedArray = Array.from(this.selectedRegions);
+        let effectiveCount = 0;
+        
+        selectedArray.forEach(code => {
+            // 检查是否有更高级别的父地区也被选中
+            const parentCodes = this.getAllParentCodes(code);
+            const hasSelectedParent = parentCodes.some(parentCode => 
+                this.selectedRegions.has(parentCode)
+            );
             
-            // 递归获取下下级
-            directChildren.forEach(childCode => {
-                const grandChildren = this.getAllChildCodes(childCode);
-                childCodes.push(...grandChildren);
-            });
-        }
+            // 如果没有更高级别的父地区被选中，则计入有效数量
+            if (!hasSelectedParent) {
+                effectiveCount++;
+            }
+        });
         
-        return childCodes;
+        return effectiveCount;
     }
     
     /**
-     * 更新当前视图中的选中状态
+     * 更新所有显示的选中状态
      */
-    updateCurrentViewSelection() {
-        // 更新所有列中的选中状态
+    updateAllDisplayedSelectionStates() {
         [this.provinceColumn, this.cityColumn, this.districtColumn].forEach(column => {
             if (column) {
                 const items = column.querySelectorAll('.region-item');
                 items.forEach(item => {
-                    const code = item.dataset.code;
-                    const checkbox = item.querySelector('.region-checkbox');
-                    
-                    if (code && checkbox) {
-                        const isSelected = this.selectedRegions.has(code);
-                        checkbox.checked = isSelected;
-                        
-                        if (isSelected) {
-                            item.classList.add('selected');
-                        } else {
-                            item.classList.remove('selected');
-                        }
+                    const code = item.getAttribute('data-code');
+                    if (code) {
+                        this.updateItemSelectionState(item, code);
                     }
                 });
             }
@@ -532,11 +772,6 @@ class RegionSelector {
      * 执行搜索
      */
     performSearch() {
-        if (!this.searchKeyword) {
-            this.loadProvinces();
-            return;
-        }
-        
         const searchResults = this.searchRegions(this.searchKeyword);
         this.displaySearchResults(searchResults);
     }
@@ -545,31 +780,32 @@ class RegionSelector {
      * 搜索地区
      */
     searchRegions(keyword) {
+        if (!this.regionDomCache) return [];
+        
         const results = [];
         const keywordLower = keyword.toLowerCase();
+        const allItems = this.regionDomCache.querySelectorAll('.region-item');
         
-        // 搜索所有级别的地区，包括省份
-        for (const [parentCode, regions] of Object.entries(this.regionsData)) {
-            for (const [code, name] of Object.entries(regions)) {
-                // 检查是否匹配搜索关键词
-                if (this.matchesKeyword(name, keyword, keywordLower)) {
-                    const path = this.getRegionPath(code, parentCode);
-                    results.push({
-                        code,
-                        name,
-                        path,
-                        level: this.getRegionLevel(code, parentCode),
-                        isSelected: this.selectedRegions.has(code)
-                    });
-                }
+        allItems.forEach(item => {
+            const code = item.dataset.code;
+            const name = item.dataset.name;
+            const type = item.dataset.type;
+            const parent = item.dataset.parent;
+            
+            if (this.matchesKeyword(name, keyword, keywordLower)) {
+                const path = this.getRegionPath(code, type, parent);
+                results.push({
+                    code,
+                    name,
+                    path,
+                    level: this.getRegionLevel(type),
+                    isSelected: this.isRegionSelected(code)
+                });
             }
-        }
+        });
         
-        // 按级别排序：省份 > 城市 > 区县
         results.sort((a, b) => {
-            if (a.level !== b.level) {
-                return a.level - b.level;
-            }
+            if (a.level !== b.level) return a.level - b.level;
             return a.name.localeCompare(b.name);
         });
         
@@ -580,63 +816,45 @@ class RegionSelector {
      * 检查名称是否匹配关键词
      */
     matchesKeyword(name, keyword, keywordLower) {
-        // 直接匹配
         if (name.includes(keyword) || name.toLowerCase().includes(keywordLower)) {
             return true;
         }
         
-        // 去掉常见后缀再匹配
         const cleanName = name.replace(/(省|市|自治区|特别行政区|区|县|自治县|自治州)$/, '');
         const cleanKeyword = keyword.replace(/(省|市|自治区|特别行政区|区|县|自治县|自治州)$/, '');
         
-        if (cleanName.includes(cleanKeyword) || cleanName.toLowerCase().includes(keywordLower)) {
-            return true;
-        }
-        
-        return false;
+        return cleanName.includes(cleanKeyword) || cleanName.toLowerCase().includes(keywordLower);
     }
     
     /**
      * 获取地区级别
      */
-    getRegionLevel(code, parentCode) {
-        if (parentCode === '86') {
-            return 1; // 省级
-        } else if (code.endsWith('00') && code.length === 6) {
-            return 2; // 市级
-        } else {
-            return 3; // 区县级
-        }
+    getRegionLevel(type) {
+        const levels = { province: 1, city: 2, district: 3 };
+        return levels[type] || 3;
     }
     
     /**
      * 获取地区路径
      */
-    getRegionPath(code, parentCode = null) {
+    getRegionPath(code, type, parentCode = null) {
+        if (!this.regionDomCache || type === 'province') return [];
+        
         const path = [];
         
-        // 如果是省级（父级是86）
-        if (parentCode === '86') {
-            return []; // 省级没有上级路径
-        }
-        
-        // 根据代码长度和格式判断级别
-        if (code.length === 6) {
-            if (code.endsWith('00')) {
-                // 城市级
-                const provinceCode = code.substring(0, 2) + '0000';
-                const provinceName = this.findRegionName(provinceCode);
-                if (provinceName) path.push(provinceName);
-            } else {
-                // 区县级
-                const cityCode = code.substring(0, 4) + '00';
-                const provinceCode = code.substring(0, 2) + '0000';
+        if (parentCode) {
+            const parentItem = this.regionDomCache.querySelector(`[data-code="${parentCode}"]`);
+            if (parentItem) {
+                const parentName = parentItem.dataset.name;
+                const parentType = parentItem.dataset.type;
+                const grandParentCode = parentItem.dataset.parent;
                 
-                const provinceName = this.findRegionName(provinceCode);
-                const cityName = this.findRegionName(cityCode);
+                const parentPath = this.getRegionPath(parentCode, parentType, grandParentCode);
+                path.push(...parentPath);
                 
-                if (provinceName) path.push(provinceName);
-                if (cityName && cityName !== '市辖区') path.push(cityName);
+                if (parentName && !this.isIgnoredRegion(parentName)) {
+                    path.push(parentName);
+                }
             }
         }
         
@@ -644,28 +862,39 @@ class RegionSelector {
     }
     
     /**
-     * 查找地区名称
+     * 根据代码查找地区名称
      */
     findRegionName(code) {
-        for (const [parentCode, regions] of Object.entries(this.regionsData)) {
-            if (regions[code]) {
-                return regions[code];
-            }
-        }
-        return null;
+        if (!this.regionDomCache) return null;
+        
+        const item = this.regionDomCache.querySelector(`[data-code="${code}"]`);
+        return item ? item.dataset.name : null;
     }
     
     /**
-     * 根据名称查找地区代码
+     * 根据地区名称查找代码
      */
     findRegionCode(name) {
-        for (const [parentCode, regions] of Object.entries(this.regionsData)) {
-            for (const [code, regionName] of Object.entries(regions)) {
-                if (regionName === name) {
-                    return code;
-                }
+        if (!this.regionDomCache || !name) return null;
+        
+        // 直接匹配地区名称
+        const items = this.regionDomCache.querySelectorAll('[data-name]');
+        for (const item of items) {
+            if (item.dataset.name === name) {
+                return item.dataset.code;
             }
         }
+        
+        // 如果直接匹配失败，尝试去除常见后缀再匹配
+        const cleanName = name.replace(/(省|市|自治区|特别行政区|区|县|自治县|自治州)$/, '');
+        for (const item of items) {
+            const itemName = item.dataset.name;
+            const cleanItemName = itemName.replace(/(省|市|自治区|特别行政区|区|县|自治县|自治州)$/, '');
+            if (cleanItemName === cleanName) {
+                return item.dataset.code;
+            }
+        }
+        
         return null;
     }
     
@@ -680,25 +909,11 @@ class RegionSelector {
             return;
         }
         
-        // 在省份列显示搜索结果
         const resultItems = results.map(result => {
-            let pathText = '';
-            let levelText = '';
-            
-            // 根据级别显示不同的标识
-            switch (result.level) {
-                case 1:
-                    levelText = '<span class="level-tag level-province">省</span>';
-                    break;
-                case 2:
-                    levelText = '<span class="level-tag level-city">市</span>';
-                    pathText = result.path.length > 0 ? ` (${result.path.join(' > ')})` : '';
-                    break;
-                case 3:
-                    levelText = '<span class="level-tag level-district">区</span>';
-                    pathText = result.path.length > 0 ? ` (${result.path.join(' > ')})` : '';
-                    break;
-            }
+            const levelTags = { 1: '省', 2: '市', 3: '区' };
+            const levelClass = result.level === 1 ? 'province' : result.level === 2 ? 'city' : 'district';
+            const levelText = `<span class="level-tag level-${levelClass}">${levelTags[result.level]}</span>`;
+            const pathText = result.path.length > 0 ? ` (${result.path.join(' > ')})` : '';
             
             return `
                 <div class="region-item search-highlight ${result.isSelected ? 'selected' : ''}" 
@@ -713,7 +928,6 @@ class RegionSelector {
         this.provinceColumn.innerHTML = resultItems.join('');
         this.bindSearchResultEvents();
         
-        // 清空其他列
         this.showEmpty(this.cityColumn, '搜索模式下不显示');
         this.showEmpty(this.districtColumn, '搜索模式下不显示');
     }
@@ -726,115 +940,39 @@ class RegionSelector {
         
         items.forEach(item => {
             const code = item.dataset.code;
-            const name = item.dataset.name;
             const checkbox = item.querySelector('.region-checkbox');
             
-            // 复选框点击事件
             checkbox.addEventListener('change', (e) => {
                 e.stopPropagation();
-                this.toggleSearchResultSelection(code, name, item, checkbox.checked);
+                
+                if (checkbox.checked) {
+                    // 搜索结果中的勾选也是直接选择
+                    this.selectRegion(code, true);
+                } else {
+                    this.deselectRegion(code);
+                }
+                
+                this.updateSearchResultsDisplay();
+                this.updateSelectedCount();
             });
             
-            // 项目点击事件（搜索结果中点击切换选中状态）
             item.addEventListener('click', (e) => {
                 if (e.target === checkbox) return;
                 
-                // 切换选中状态
-                if (this.selectedRegions.has(code)) {
-                    // 取消选中，同时移除下级地区
-                    this.removeRegionAndChildren(code);
+                // 搜索模式下点击只是切换选择状态，不展开
+                if (this.isRegionSelected(code)) {
+                    this.deselectRegion(code);
                     checkbox.checked = false;
-                    item.classList.remove('selected');
                 } else {
-                    // 选中，同时添加上级地区
-                    this.selectRegionWithParents(code);
+                    // 搜索结果中的点击也是直接选择
+                    this.selectRegion(code, true);
                     checkbox.checked = true;
-                    item.classList.add('selected');
                 }
+                
+                item.classList.toggle('selected', this.isRegionSelected(code));
                 this.updateSelectedCount();
-                this.updateSearchResultsDisplay();
             });
         });
-    }
-    
-    /**
-     * 切换搜索结果选择状态（带上级地区自动选择）
-     */
-    toggleSearchResultSelection(code, name, item, isSelected) {
-        if (isSelected) {
-            // 选中时，自动添加上级地区
-            this.selectRegionWithParents(code);
-            item.classList.add('selected');
-        } else {
-            // 取消选中时，移除该地区及其下级地区
-            this.removeRegionAndChildren(code);
-            item.classList.remove('selected');
-        }
-        this.updateSelectedCount();
-        this.updateSearchResultsDisplay();
-    }
-    
-    /**
-     * 选择地区并自动添加其上级地区
-     */
-    selectRegionWithParents(code) {
-        // 添加当前地区
-        this.selectedRegions.add(code);
-        
-        // 获取该地区的完整路径并添加所有上级地区
-        const parentCodes = this.getParentCodes(code);
-        parentCodes.forEach(parentCode => {
-            const parentName = this.findRegionName(parentCode);
-            // 只添加有效的上级地区（排除"市辖区"等无意义的行政区划）
-            if (parentName && !this.isIgnoredRegion(parentName)) {
-                this.selectedRegions.add(parentCode);
-            }
-        });
-    }
-    
-    /**
-     * 获取地区的所有上级地区代码
-     */
-    getParentCodes(code) {
-        const parentCodes = [];
-        
-        // 根据代码长度和格式判断级别
-        if (code.length === 6) {
-            if (!code.endsWith('00')) {
-                // 区县级，查找其市级和省级上级
-                const cityCode = this.findParentCode(code);
-                if (cityCode) {
-                    parentCodes.push(cityCode);
-                    
-                    // 继续查找市的上级（省）
-                    const provinceCode = this.findParentCode(cityCode);
-                    if (provinceCode) {
-                        parentCodes.push(provinceCode);
-                    }
-                }
-            } else {
-                // 市级，查找其省级上级
-                const provinceCode = this.findParentCode(code);
-                if (provinceCode) {
-                    parentCodes.push(provinceCode);
-                }
-            }
-        }
-        
-        return parentCodes;
-    }
-    
-    /**
-     * 查找地区的直接上级代码
-     */
-    findParentCode(code) {
-        // 遍历所有数据，找到包含该代码的父级
-        for (const [parentCode, regions] of Object.entries(this.regionsData)) {
-            if (regions[code]) {
-                return parentCode;
-            }
-        }
-        return null;
     }
     
     /**
@@ -845,14 +983,10 @@ class RegionSelector {
         items.forEach(item => {
             const code = item.dataset.code;
             const checkbox = item.querySelector('.region-checkbox');
-            const isSelected = this.selectedRegions.has(code);
+            const isSelected = this.isRegionSelected(code);
             
             checkbox.checked = isSelected;
-            if (isSelected) {
-                item.classList.add('selected');
-            } else {
-                item.classList.remove('selected');
-            }
+            item.classList.toggle('selected', isSelected);
         });
     }
     
@@ -888,7 +1022,8 @@ class RegionSelector {
      * 更新选中数量
      */
     updateSelectedCount() {
-        this.selectedCountEl.textContent = this.selectedRegions.size;
+        const effectiveCount = this.calculateEffectiveCount();
+        this.selectedCountEl.textContent = effectiveCount;
     }
     
     /**
@@ -898,15 +1033,11 @@ class RegionSelector {
         this.selectedRegions.clear();
         this.updateSelectedCount();
         
-        // 清除搜索状态
         this.searchKeyword = '';
         this.searchInput.value = '';
-        
-        // 重置导航状态
         this.currentProvince = null;
         this.currentCity = null;
         
-        // 重新加载初始视图
         this.loadProvinces();
         this.showEmpty(this.cityColumn, '请先选择省份');
         this.showEmpty(this.districtColumn, '请先选择城市');
@@ -918,7 +1049,6 @@ class RegionSelector {
     confirm() {
         const selectedRegionNames = [];
         
-        // 获取选中地区的名称，过滤掉"市辖区"等无意义的行政区划
         for (const code of this.selectedRegions) {
             const name = this.findRegionName(code);
             if (name && !this.isIgnoredRegion(name)) {
@@ -934,7 +1064,7 @@ class RegionSelector {
     }
     
     /**
-     * 判断是否为需要忽略的地区（如市辖区）
+     * 判断是否为需要忽略的地区
      */
     isIgnoredRegion(name) {
         const ignoredNames = ['市辖区', '县', '自治区直辖县级行政区划', '市辖县'];
@@ -963,15 +1093,44 @@ class RegionSelector {
     }
 }
 
-// 创建全局实例
+// 全局实例
 window.regionSelector = null;
 
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', async function() {
+// 初始化函数
+function initRegionSelector() {
     try {
+        console.log('开始初始化地区选择器...');
         window.regionSelector = new RegionSelector();
         console.log('地区选择器初始化完成');
+        return true;
     } catch (error) {
         console.error('地区选择器初始化失败:', error);
+        return false;
     }
+}
+
+// 初始化机制
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            if (!window.regionSelector) {
+                initRegionSelector();
+            }
+        }, 100);
+    });
+} else {
+    setTimeout(() => {
+        if (!window.regionSelector) {
+            initRegionSelector();
+        }
+    }, 50);
+}
+
+// 备用初始化
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        if (!window.regionSelector) {
+            initRegionSelector();
+        }
+    }, 200);
 }); 

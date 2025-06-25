@@ -224,14 +224,8 @@ function createColumn(title) {
 }
 
 function createNodeElement(nodeData) {
-    // 如果是二级节点且没有子节点，则降级为三级节点
-    let effectiveNodeLevel = nodeData.NodeLevel;
-    if (nodeData.NodeLevel === 2 && (!nodeData.Children || nodeData.Children.length === 0)) {
-        effectiveNodeLevel = 3;
-    }
-    
     const nodeElement = document.createElement('div');
-    nodeElement.className = `node-level-${effectiveNodeLevel}`;
+    nodeElement.className = `node-level-${nodeData.NodeLevel}`;
     
     // 如果是顶级分类节点（上游/中游/下游），不显示文本
     if (nodeData.NodeNumDesc && ["上游", "中游", "下游"].includes(nodeData.NodeNumDesc)) {
@@ -244,16 +238,28 @@ function createNodeElement(nodeData) {
         nodeElement.appendChild(titleElement);
     }
 
-    if (nodeData.Children && nodeData.Children.length > 0) {
+    // 特殊处理：如果是 node-level2 且没有子节点，创建一个同名的 node-level3 子节点
+    let childrenToProcess = nodeData.Children;
+    if (nodeData.NodeLevel === 2 && (!nodeData.Children || nodeData.Children.length === 0)) {
+        // 创建一个模拟的 node-level3 子节点
+        const simulatedChild = {
+            NodeName: nodeData.NodeName,
+            NodeLevel: 3,
+            Children: []
+        };
+        childrenToProcess = [simulatedChild];
+    }
+
+    if (childrenToProcess && childrenToProcess.length > 0) {
         // 对于第一级和第二级节点，使用多列布局
-        if (nodeData.NodeLevel === 1 || (nodeData.NodeLevel === 2 && nodeData.Children.length > 0)) {
+        if (nodeData.NodeLevel === 1 || nodeData.NodeLevel === 2) {
             // 递归计算所有子孙节点的总数量
-            const childCount = countAllDescendants(nodeData);
-            console.log(childCount)
+            const childCount = countAllDescendantsFromChildren(childrenToProcess);
             
-            // 根据节点级别设置每列最大节点数
-            const MAX_NODES_PER_COLUMN = nodeData.NodeLevel === 1 ? 26 : 18;
+            // 计算需要的列数（每列最多20个节点）
+            const MAX_NODES_PER_COLUMN = 20;
             const requiredColumns = distributeNodesPerColumn(childCount, MAX_NODES_PER_COLUMN);
+            
             // 根据节点级别设置不同的最大列数
             let maxColumns = nodeData.NodeLevel === 1 ? 4 : 3; // Level 1最多4列，Level 2最多3列
             
@@ -266,8 +272,7 @@ function createNodeElement(nodeData) {
             }
             
             const actualColumns = Math.min(requiredColumns, maxColumns);
-            console.log(`Level ${nodeData.NodeLevel} 节点 "${nodeData.NodeName}" 每列最大节点数=${MAX_NODES_PER_COLUMN}, 最大列数=${maxColumns}, 实际列数=${actualColumns}`);
-
+            
             // 创建多列容器（外层容器）
             const columnsContainer = document.createElement('div');
             columnsContainer.className = 'multi-columns-wrapper';
@@ -283,7 +288,7 @@ function createNodeElement(nodeData) {
             }
             
             // 计算每个子节点及其子孙节点的数量，用于分配列
-            let childrenWithCounts = nodeData.Children.map(child => {
+            let childrenWithCounts = childrenToProcess.map(child => {
                 const count = countAllDescendants(child) + 1; // +1 表示节点自身
                 return { node: child, count: count };
             });
@@ -334,13 +339,15 @@ function createNodeElement(nodeData) {
                 }
             }
             
+            console.log(`Level ${nodeData.NodeLevel} 节点 "${nodeData.NodeName}": 屏幕宽度=${screenWidth}px, 最大列数=${maxColumns}, 实际列数=${actualColumns}`);
+            
             return nodeElement;
         } else {
             // 对于三级及以下节点，使用原来的逻辑
             const childrenContainer = document.createElement('div');
-            childrenContainer.className = `node-level-${effectiveNodeLevel}-items-container`;
+            childrenContainer.className = `node-level-${nodeData.NodeLevel}-items-container`;
             
-            nodeData.Children.forEach(childNode => {
+            childrenToProcess.forEach(childNode => {
                 const childElement = createNodeElement(childNode);
                 childrenContainer.appendChild(childElement);
             });
@@ -360,6 +367,22 @@ function countAllDescendants(node) {
     
     // 递归计算每个子节点的子孙节点数量
     for (const child of node.Children) {
+        count += countAllDescendants(child);
+    }
+    
+    return count;
+}
+
+// 计算子节点数组中所有节点及其子孙节点的总数量
+function countAllDescendantsFromChildren(children) {
+    if (!children || children.length === 0) {
+        return 0;
+    }
+    
+    let count = children.length; // 直接子节点数量
+    
+    // 递归计算每个子节点的子孙节点数量
+    for (const child of children) {
         count += countAllDescendants(child);
     }
     

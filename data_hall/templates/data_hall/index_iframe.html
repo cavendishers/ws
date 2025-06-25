@@ -93,6 +93,10 @@
 <div id="ai-search-overlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm items-center justify-center p-4 hidden transition-opacity duration-300 ease-in-out">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col relative transform transition-all duration-300 ease-in-out scale-95 opacity-0" id="ai-overlay-content">
         <button id="ai-search-close" class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 text-2xl z-10"><i class="fas fa-times"></i></button>
+        <!-- 会话管理预留入口 -->
+        <button id="session-management-trigger" class="absolute top-4 right-16 text-gray-500 hover:text-gray-700 text-xl z-10" title="会话管理（功能开发中）">
+            <i class="fas fa-history"></i>
+        </button>
         <!-- Content Area with Scrolling -->
         <div id="overlay-scroll-container" class="p-6 md:p-8 flex-grow overflow-y-auto overlay-content-scroll">
             <h2 class="text-xl font-semibold text-gray-800 mb-2">AI 智能体</h2>
@@ -155,86 +159,13 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- AI聊天管理器已在 base.html 中加载 -->
+<!-- AI助手首页管理器 -->
+<script src="{% static 'data_hall/js/ai-assistant/index.js' %}"></script>
+
 <script>
-    // 加载新势力企业名单数据
-    function loadTopCompanies() {
-        const tbody = document.getElementById('topCompanyTbody');
-        if (!tbody) {
-            console.error('找不到表格主体元素 #topCompanyTbody');
-            return;
-        }
-        
-        console.log('=============================================');
-        console.log('开始获取新势力企业名单数据...');
-        
-        // 显示加载状态
-        tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center">加载中...</td></tr>';
-        
-        // 调用API获取数据
-        const apiUrl = '/api/top-companies/?limit=10';
-        console.log('请求URL:', apiUrl);
-        
-        fetch(apiUrl)
-            .then(response => {
-                console.log('API响应状态码:', response.status);
-                console.log('API响应状态文本:', response.statusText);
-                if (!response.ok) {
-                    throw new Error(`网络错误，状态码: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('获取到的完整数据:', JSON.stringify(data));
-                if (data && data.companies && Array.isArray(data.companies) && data.companies.length > 0) {
-                    console.log(`成功获取到 ${data.companies.length} 条企业数据`);
-                    
-                    // 渲染表格
-                    renderTopCompaniesTable(data.companies);
-                } else {
-                    console.warn('API返回无效数据格式或空数据:', data);
-                    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center">暂无数据</td></tr>';
-                }
-                console.log('=============================================');
-            })
-            .catch(error => {
-                console.error('获取企业数据失败:', error);
-                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center text-red-400">数据加载失败</td></tr>';
-                console.log('=============================================');
-            });
-    }
-
-    // 渲染企业表格
-    function renderTopCompaniesTable(companies) {
-        const tbody = document.getElementById('topCompanyTbody');
-        if (!tbody) return;
-
-        tbody.innerHTML = companies.map((company, index) => `
-            <tr class="hover:bg-[#1A2B5E] transition-colors">
-                <td class="px-4 py-3">
-                    <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[var(--button-highlight)] rounded-full">
-                        ${index + 1}
-                    </span>
-                </td>
-                <td class="px-4 py-3">
-                    <div class="flex flex-col">
-                        <span class="font-medium text-white">${company.name || '未知企业'}</span>
-                        <span class="text-xs text-gray-400">${company.industry || '未知行业'}</span>
-                    </div>
-                </td>
-                <td class="px-4 py-3 text-gray-300">${company.city || '未知'}</td>
-                <td class="px-4 py-3 text-gray-300">${company.district || '未知'}</td>
-                <td class="px-4 py-3">
-                    <span class="text-yellow-400 font-semibold">${(company.score || 0).toFixed(1)}</span>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    // 页面加载时获取数据
-    document.addEventListener('DOMContentLoaded', function() {
-        loadTopCompanies();
-        console.log('Iframe首页已加载');
-    });
+// iframe版本专用的AI助手适配
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Iframe首页版本加载完成');
+});
 </script>
 {% endblock %} 

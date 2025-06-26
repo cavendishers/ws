@@ -28,6 +28,9 @@
 {% endblock %}
 
 {% block content %}
+<!-- 引入首页AI聊天组件 -->
+{% include 'data_hall/components/ai_homepage_chat.html' %}
+
 <!-- Hero Section -->
 <section id="home" class="min-h-screen flex items-center pb-16  md:pb-24">
     <div class="container mx-auto px-6 h-full">
@@ -220,89 +223,23 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            console.log('AI搜索框被点击，尝试打开聊天窗口...');
+            console.log('AI搜索框被点击，打开首页AI聊天界面...');
             
-            // 查找AI聊天窗口相关元素
-            const chatWindow = document.getElementById('chat-window');
-            const minimizedTrigger = document.getElementById('minimized-trigger');
-            const aiChatWidget = document.getElementById('ai-chat-widget');
-            
-            if (chatWindow && aiChatWidget) {
-                console.log('找到聊天窗口元素，准备显示...');
-                
-                // 如果聊天窗口已经显示，直接聚焦到输入框
-                if (!chatWindow.classList.contains('hidden')) {
-                    console.log('聊天窗口已显示，聚焦到输入框');
-                    const chatInput = document.getElementById('chat-input');
-                    if (chatInput) {
-                        chatInput.focus();
-                    }
-                    return;
-                }
-                
-                console.log('直接显示聊天窗口');
-                
-                // 直接实现恢复聊天的逻辑，不依赖模拟点击
-                if (minimizedTrigger && !minimizedTrigger.classList.contains('hidden')) {
-                    // 如果最小化触发器可见，先添加退出动画
-                    minimizedTrigger.classList.add('minimized-exit');
-                    
-                    setTimeout(() => {
-                        minimizedTrigger.classList.add('hidden');
-                        minimizedTrigger.classList.remove('minimized-exit');
-                        
-                        // 显示聊天窗口
-                        showChatWindow();
-                    }, 300);
-                } else {
-                    // 直接显示聊天窗口
-                    showChatWindow();
-                }
-                
-                function showChatWindow() {
-                    // 确保最小化触发器隐藏
-                    if (minimizedTrigger) {
-                        minimizedTrigger.classList.add('hidden');
-                        // 停止脉冲动画
-                        const pulseRing = minimizedTrigger.querySelector('.animate-ping');
-                        if (pulseRing) {
-                            pulseRing.style.opacity = '0';
-                        }
-                    }
-                    
-                    // 显示聊天窗口
-                    chatWindow.classList.remove('hidden');
-                    chatWindow.classList.add('flex', 'flex-col', 'window-enter');
-                    
-                    // 调整窗口位置到右下角
-                    aiChatWidget.style.left = '';
-                    aiChatWidget.style.top = '';
-                    aiChatWidget.style.right = '1.5rem';
-                    aiChatWidget.style.bottom = '1.5rem';
-                    
-                    // 移除动画类（避免重复触发）
-                    setTimeout(() => {
-                        chatWindow.classList.remove('window-enter');
-                    }, 400);
-                    
-                    // 聚焦到输入框
-                    const chatInput = document.getElementById('chat-input');
-                    if (chatInput) {
-                        setTimeout(() => {
-                            chatInput.focus();
-                        }, 100);
-                    }
-                    
-                    console.log('聊天窗口已显示');
-                }
+            // 使用新的首页AI聊天界面
+            if (window.homepageAIChat) {
+                window.homepageAIChat.open();
             } else {
-                console.error('未找到聊天窗口元素');
-                console.log('chatWindow:', chatWindow);
-                console.log('aiChatWidget:', aiChatWidget);
+                console.error('首页AI聊天管理器未初始化');
+                // 延迟重试
+                setTimeout(() => {
+                    if (window.homepageAIChat) {
+                        window.homepageAIChat.open();
+                    }
+                }, 100);
             }
         });
         
-        console.log('AI搜索框点击事件已绑定');
+        console.log('AI搜索框点击事件已绑定到首页聊天界面');
     } else {
         console.error('未找到AI搜索框元素');
     }

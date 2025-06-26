@@ -1,0 +1,837 @@
+{% load static %}
+
+<!-- Markdown解析器和XSS防护库 -->
+<script src="https://cdn.jsdelivr.net/npm/marked@5.1.1/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+
+<!-- AI聊天核心功能 -->
+<script src="{% static 'data_hall/js/ai-chat.js' %}"></script>
+
+<!-- 首页AI聊天界面CSS -->
+<link rel="stylesheet" href="{% static 'data_hall/css/ai_chat_widget.css' %}" />
+
+<!-- 首页AI聊天界面专用样式 -->
+<style>
+/* 首页AI聊天覆盖层 */
+#homepage-ai-chat-overlay {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* 首页AI聊天容器 */
+#homepage-ai-chat {
+    background: linear-gradient(145deg, 
+        rgba(0, 32, 64, 0.95) 0%, 
+        rgba(0, 40, 80, 0.92) 50%,
+        rgba(0, 28, 60, 0.95) 100%);
+    backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+    box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.5),
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(0, 191, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 191, 255, 0.15);
+    border-radius: 16px;
+    width: 90vw;
+    max-width: 900px;
+    height: 80vh;
+    max-height: 700px;
+    min-height: 500px;
+    position: relative;
+}
+
+/* 添加微妙的渐变纹理 */
+#homepage-ai-chat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 191, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#homepage-ai-chat > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 首页AI聊天进入动画 */
+#homepage-ai-chat-overlay.show {
+    animation: overlayFadeIn 0.3s ease-out;
+}
+
+#homepage-ai-chat.show {
+    animation: homepageChatSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 首页AI聊天退出动画 */
+#homepage-ai-chat-overlay.hide {
+    animation: overlayFadeOut 0.3s ease-out;
+}
+
+#homepage-ai-chat.hide {
+    animation: homepageChatSlideOut 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+@keyframes overlayFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes homepageChatSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+}
+
+@keyframes homepageChatSlideOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) translateY(20px);
+    }
+}
+
+/* 首页AI聊天标题栏 */
+#homepage-chat-header {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(0, 191, 255, 0.15);
+    padding: 20px 24px;
+    border-radius: 16px 16px 0 0;
+}
+
+/* 首页AI聊天消息区域 */
+#homepage-chat-messages {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(80vh - 200px);
+}
+
+#homepage-chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-track {
+    background: rgba(0, 191, 255, 0.05);
+    border-radius: 4px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 191, 255, 0.2);
+    border-radius: 4px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 191, 255, 0.3);
+}
+
+/* 首页AI聊天输入区域 */
+#homepage-chat-input-area {
+    padding: 20px 24px 24px;
+    border-top: 1px solid rgba(0, 191, 255, 0.15);
+    border-radius: 0 0 16px 16px;
+}
+
+/* 输入框和发送按钮容器 - 严格对齐 */
+.homepage-input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* 首页AI聊天输入框 */
+#homepage-chat-input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none;
+    min-height: 60px;
+    max-height: 150px;
+    flex: 1;
+}
+
+#homepage-chat-input:focus {
+    outline: none;
+    border-color: var(--button-highlight);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+}
+
+#homepage-chat-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* 首页AI聊天发送按钮 - 与输入框严格对齐 */
+#homepage-send-btn {
+    background: var(--button-highlight);
+    border: none;
+    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-bottom: 6px; /* 微调对齐 */
+}
+
+#homepage-send-btn:hover:not(:disabled) {
+    background: rgba(0, 191, 255, 0.9);
+    transform: scale(1.05);
+}
+
+#homepage-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 首页AI聊天消息样式 */
+.homepage-chat-message-user {
+    background: linear-gradient(135deg, var(--button-highlight) 0%, rgba(0, 191, 255, 0.8) 100%);
+    color: white;
+    margin-left: auto;
+    margin-right: 0;
+    border-radius: 18px 18px 4px 18px;
+    padding: 12px 18px;
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+.homepage-chat-message-ai {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 18px 18px 18px 4px;
+    padding: 16px 20px;
+    max-width: 85%;
+    border: 1px solid rgba(0, 191, 255, 0.1);
+}
+
+/* 首页AI聊天关闭按钮 */
+#homepage-chat-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+}
+
+#homepage-chat-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #homepage-ai-chat {
+        width: 95vw;
+        height: 85vh;
+        max-height: none;
+        border-radius: 12px;
+    }
+    
+    #homepage-chat-header {
+        padding: 16px 20px;
+    }
+    
+    #homepage-chat-messages {
+        padding: 20px 16px;
+        max-height: calc(85vh - 180px);
+    }
+    
+    #homepage-chat-input-area {
+        padding: 16px 20px 20px;
+    }
+    
+    #homepage-chat-input {
+        font-size: 16px;
+        padding: 14px 16px;
+        min-height: 50px;
+    }
+    
+    .homepage-chat-message-user,
+    .homepage-chat-message-ai {
+        max-width: 90%;
+        font-size: 15px;
+    }
+}
+
+/* Markdown内容样式继承 */
+.homepage-chat-message-ai .markdown-content,
+.homepage-chat-message-user .markdown-content {
+    line-height: 1.6;
+    word-wrap: break-word;
+    color: inherit;
+}
+
+/* 加载状态样式 */
+.homepage-typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 18px 18px 18px 4px;
+    max-width: 100px;
+    margin-bottom: 16px;
+}
+
+.homepage-typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 191, 255, 0.6);
+    margin: 0 2px;
+    animation: homepageTypingAnimation 1.4s infinite ease-in-out;
+}
+
+.homepage-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.homepage-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.homepage-typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes homepageTypingAnimation {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+</style>
+
+<!-- 确保CSRF token可用 -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<!-- 首页AI聊天界面 -->
+<div id="homepage-ai-chat-overlay" class="fixed inset-0 hidden" style="transform: translateZ(0); display: none; align-items: center; justify-content: center;">
+    <div id="homepage-ai-chat" class="relative flex flex-col" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <!-- 关闭按钮 -->
+        <button id="homepage-chat-close-btn" type="button">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        
+        <!-- 头部 -->
+        <div id="homepage-chat-header">
+            <div class="flex items-center space-x-4">
+                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI Assistant" class="w-12 h-12 opacity-90" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
+                <div>
+                    <h2 class="text-white font-semibold text-xl mb-1">AI智能助手</h2>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <p class="text-gray-300 text-sm">为您提供专业的产业研究支持</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天消息区域 -->
+        <div id="homepage-chat-messages" class="flex-1 space-y-4">
+            <!-- 欢迎消息 -->
+            <div class="flex items-start space-x-3">
+                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="homepage-chat-message-ai">
+                    <div class="markdown-content">
+                        <p>你好！我是AI智能助手，专注于中国新势力企业态势感知与产业链分析。我可以帮助您：</p>
+                        <ul>
+                            <li>🏢 查询企业信息和发展态势</li>
+                            <li>📊 分析产业链结构和关联关系</li>
+                            <li>🎯 提供企业排名和评估数据</li>
+                            <li>🗺️ 解读区域产业分布情况</li>
+                            <li>📈 生成专业的产业研究报告</li>
+                        </ul>
+                        <p>请告诉我您想了解什么信息，我会为您提供专业的分析和解答。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 输入区域 -->
+        <div id="homepage-chat-input-area">
+            <!-- 输入框和发送按钮 - 严格对齐 -->
+            <div class="homepage-input-container">
+                <textarea 
+                    id="homepage-chat-input" 
+                    placeholder="请输入您的问题，比如：介绍一下人工智能产业的发展现状..." 
+                    rows="1"
+                ></textarea>
+                <button id="homepage-send-btn" type="button">
+                    <svg class="w-5 h-5 send-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    <svg class="w-5 h-5 stop-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h12v12H6z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 首页AI聊天管理器
+class HomepageAIChatManager {
+    constructor() {
+        this.isOpen = false;
+        this.chatManager = null;
+        this.markdownRenderer = null;
+        this.isClosing = false;
+        
+        this.initializeElements();
+        this.initializeEventListeners();
+        this.initializeMarkdownRenderer();
+        
+        console.log('首页AI聊天管理器初始化完成');
+    }
+    
+    initializeElements() {
+        this.overlay = document.getElementById('homepage-ai-chat-overlay');
+        this.chatContainer = document.getElementById('homepage-ai-chat');
+        this.messagesContainer = document.getElementById('homepage-chat-messages');
+        this.inputArea = document.getElementById('homepage-chat-input');
+        this.sendBtn = document.getElementById('homepage-send-btn');
+        this.closeBtn = document.getElementById('homepage-chat-close-btn');
+    }
+    
+    initializeEventListeners() {
+        // 关闭按钮
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.close());
+        }
+        
+        // 点击覆盖层关闭
+        if (this.overlay) {
+            this.overlay.addEventListener('click', (e) => {
+                if (e.target === this.overlay) {
+                    this.close();
+                }
+            });
+        }
+        
+        // ESC键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+        
+        // 发送按钮
+        if (this.sendBtn) {
+            this.sendBtn.addEventListener('click', () => this.sendMessage());
+        }
+        
+        // 输入框Enter发送
+        if (this.inputArea) {
+            this.inputArea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            });
+            
+            // 自动调整输入框高度
+            this.inputArea.addEventListener('input', () => {
+                this.autoResizeInput();
+            });
+        }
+    }
+    
+    // 初始化Markdown渲染器
+    initializeMarkdownRenderer() {
+        if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                tables: true,
+                sanitize: false,
+                smartLists: true,
+                smartypants: false
+            });
+            
+            this.markdownRenderer = {
+                render: (markdown) => {
+                    try {
+                        const rawHtml = marked.parse(markdown);
+                        return DOMPurify.sanitize(rawHtml, {
+                            ALLOWED_TAGS: [
+                                'p', 'br', 'strong', 'em', 'u', 'strike', 'del',
+                                'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                'ul', 'ol', 'li',
+                                'blockquote', 'code', 'pre',
+                                'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                                'a', 'hr', 'span', 'div'
+                            ],
+                            ALLOWED_ATTR: ['href', 'title', 'class', 'id', 'target']
+                        });
+                    } catch (error) {
+                        console.error('Markdown渲染失败:', error);
+                        return this.escapeHtml(markdown);
+                    }
+                },
+                escapeHtml: (text) => {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                }
+            };
+        } else {
+            // 延迟初始化
+            setTimeout(() => this.initializeMarkdownRenderer(), 100);
+        }
+    }
+    
+    // 获取或创建AI聊天管理器实例
+    async getChatManager() {
+        if (!this.chatManager) {
+            // 等待AIChatManager加载
+            let attempts = 0;
+            while (typeof AIChatManager === 'undefined' && attempts < 10) {
+                console.log('等待AIChatManager加载...');
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+            
+            if (typeof AIChatManager === 'undefined') {
+                throw new Error('AIChatManager未能正确加载');
+            }
+            
+            console.log('初始化AI聊天管理器...');
+            this.chatManager = new AIChatManager({
+                apiUrl: '/api/ai/chat/',
+                historyUrl: '/api/ai/history/',
+                systemPrompt: '你是一个专业的产业研究智能助手，专注于分析中国新势力企业和产业链数据。请基于系统数据提供准确、专业、有见地的回答。'
+            });
+            await this.chatManager.initialize();
+            console.log('AI聊天管理器初始化完成');
+        }
+        return this.chatManager;
+    }
+    
+    // 打开聊天界面
+    async open() {
+        if (this.isOpen || this.isClosing) return;
+        
+        console.log('打开首页AI聊天界面');
+        
+        // 获取聊天管理器
+        await this.getChatManager();
+        
+        // 显示界面
+        this.overlay.classList.remove('hidden');
+        this.overlay.style.display = 'flex';
+        this.overlay.classList.add('show');
+        this.chatContainer.classList.add('show');
+        
+        this.isOpen = true;
+        
+        // 聚焦输入框
+        setTimeout(() => {
+            if (this.inputArea) {
+                this.inputArea.focus();
+            }
+        }, 300);
+        
+        // 加载历史消息
+        this.loadChatHistory();
+    }
+    
+    // 关闭聊天界面 - 添加关闭动画
+    close() {
+        if (!this.isOpen || this.isClosing) return;
+        
+        console.log('关闭首页AI聊天界面');
+        
+        this.isClosing = true;
+        
+        // 移除显示类，添加隐藏类
+        this.overlay.classList.remove('show');
+        this.overlay.classList.add('hide');
+        this.chatContainer.classList.remove('show');
+        this.chatContainer.classList.add('hide');
+        
+        // 等待动画完成后隐藏
+        setTimeout(() => {
+            this.overlay.classList.add('hidden');
+            this.overlay.style.display = 'none';
+            this.overlay.classList.remove('hide');
+            this.chatContainer.classList.remove('hide');
+            this.isOpen = false;
+            this.isClosing = false;
+        }, 300);
+    }
+    
+    // 加载聊天历史
+    async loadChatHistory() {
+        if (!this.chatManager) return;
+        
+        try {
+            const messages = await this.chatManager.getAllMessages();
+            this.renderMessages(messages);
+        } catch (error) {
+            console.error('加载聊天历史失败:', error);
+        }
+    }
+    
+    // 渲染消息列表
+    renderMessages(messages) {
+        if (!this.messagesContainer) return;
+        
+        // 保存欢迎消息
+        const welcomeMessage = this.messagesContainer.querySelector('.homepage-chat-message-ai').parentElement;
+        
+        // 清空消息容器，但保留欢迎消息
+        this.messagesContainer.innerHTML = '';
+        if (welcomeMessage) {
+            this.messagesContainer.appendChild(welcomeMessage);
+        }
+        
+        // 渲染历史消息（如果有的话）
+        if (messages && messages.length > 0) {
+            console.log('渲染历史消息:', messages.length, '条');
+            messages.forEach(message => {
+                this.addMessageToUI(message.role, message.content, false);
+            });
+        } else {
+            console.log('没有历史消息需要渲染');
+        }
+        
+        this.scrollToBottom();
+    }
+    
+    // 发送消息
+    async sendMessage() {
+        const message = this.inputArea.value.trim();
+        if (!message) return;
+        
+        console.log('发送消息:', message);
+        
+        // 清空输入框
+        this.inputArea.value = '';
+        this.autoResizeInput();
+        
+        // 添加用户消息到UI
+        this.addMessageToUI('user', message);
+        
+        // 显示加载状态
+        this.showTypingIndicator();
+        
+        // 禁用发送按钮
+        this.setSendButtonState(true);
+        
+        try {
+            console.log('获取AI聊天管理器...');
+            const chatManager = await this.getChatManager();
+            
+            console.log('发送消息到AI:', message);
+            const response = await chatManager.sendMessage(message);
+            
+            console.log('收到AI响应:', response, '类型:', typeof response);
+            
+            // 隐藏加载状态
+            this.hideTypingIndicator();
+            
+            if (response) {
+                // AIChatManager.sendMessage 直接返回AI回复内容（字符串）
+                // 而不是包含content字段的对象
+                const aiContent = typeof response === 'string' ? response : response.content;
+                if (aiContent && aiContent.trim()) {
+                    console.log('添加AI回复到UI:', aiContent);
+                    // 添加AI回复到UI
+                    this.addMessageToUI('assistant', aiContent);
+                } else {
+                    console.error('AI回复内容为空:', aiContent);
+                    throw new Error('AI回复内容为空');
+                }
+            } else {
+                console.error('未收到AI响应');
+                throw new Error('未收到AI响应');
+            }
+        } catch (error) {
+            console.error('发送消息失败:', error);
+            console.error('错误详情:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+            this.hideTypingIndicator();
+            this.addMessageToUI('assistant', `抱歉，我遇到了问题：${error.message}。请稍后再试。`);
+        } finally {
+            // 恢复发送按钮
+            this.setSendButtonState(false);
+        }
+    }
+    
+    // 添加消息到UI
+    addMessageToUI(role, content, animate = true) {
+        if (!this.messagesContainer) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start space-x-3 mb-4';
+        
+        if (role === 'user') {
+            messageDiv.innerHTML = `
+                <div class="flex-1"></div>
+                <div class="homepage-chat-message-user">
+                    <div class="markdown-content">${this.renderContent(content)}</div>
+                </div>
+            `;
+        } else {
+            const logoUrl = '{% static "ai_assistant_logo.jpg" %}';
+            messageDiv.innerHTML = `
+                <img src="${logoUrl}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <div class="homepage-chat-message-ai">
+                    <div class="markdown-content">${this.renderContent(content)}</div>
+                </div>
+            `;
+        }
+        
+        if (animate) {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(10px)';
+        }
+        
+        this.messagesContainer.appendChild(messageDiv);
+        
+        if (animate) {
+            setTimeout(() => {
+                messageDiv.style.transition = 'all 0.3s ease';
+                messageDiv.style.opacity = '1';
+                messageDiv.style.transform = 'translateY(0)';
+            }, 50);
+        }
+        
+        this.scrollToBottom();
+    }
+    
+    // 渲染消息内容
+    renderContent(content) {
+        if (this.markdownRenderer) {
+            return this.markdownRenderer.render(content);
+        } else {
+            // 降级处理
+            return content.replace(/\n/g, '<br>');
+        }
+    }
+    
+    // 显示打字指示器
+    showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'flex items-start space-x-3 mb-4';
+        indicator.id = 'homepage-typing-indicator';
+        const logoUrl = '{% static "ai_assistant_logo.jpg" %}';
+        indicator.innerHTML = `
+            <img src="${logoUrl}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <div class="homepage-typing-indicator">
+                <div class="homepage-typing-dot"></div>
+                <div class="homepage-typing-dot"></div>
+                <div class="homepage-typing-dot"></div>
+            </div>
+        `;
+        
+        this.messagesContainer.appendChild(indicator);
+        this.scrollToBottom();
+    }
+    
+    // 隐藏打字指示器
+    hideTypingIndicator() {
+        const indicator = document.getElementById('homepage-typing-indicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+    
+    // 设置发送按钮状态
+    setSendButtonState(isLoading) {
+        if (!this.sendBtn) return;
+        
+        const sendIcon = this.sendBtn.querySelector('.send-icon');
+        const stopIcon = this.sendBtn.querySelector('.stop-icon');
+        
+        if (isLoading) {
+            this.sendBtn.disabled = true;
+            sendIcon.classList.add('hidden');
+            stopIcon.classList.remove('hidden');
+        } else {
+            this.sendBtn.disabled = false;
+            sendIcon.classList.remove('hidden');
+            stopIcon.classList.add('hidden');
+        }
+    }
+    
+    // 自动调整输入框高度
+    autoResizeInput() {
+        if (!this.inputArea) return;
+        
+        this.inputArea.style.height = 'auto';
+        this.inputArea.style.height = Math.min(this.inputArea.scrollHeight, 150) + 'px';
+    }
+    
+    // 滚动到底部
+    scrollToBottom() {
+        if (this.messagesContainer) {
+            this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+        }
+    }
+}
+
+// 全局初始化
+window.homepageAIChat = null;
+
+// DOM加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    window.homepageAIChat = new HomepageAIChatManager();
+});
+</script> 

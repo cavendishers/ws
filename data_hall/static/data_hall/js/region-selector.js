@@ -7,7 +7,7 @@ class RegionSelector {
         
         try {
             this.modal = null;
-            this.selectedRegions = new Set(); // 存储实际选中的地区代码
+            this.effectiveSelections = new Set(); // 存储有效的筛选条件（最细粒度）
             this.currentProvince = null;
             this.currentCity = null;
             this.searchKeyword = '';
@@ -179,7 +179,7 @@ class RegionSelector {
      * 显示选择器
      */
     show(selectedRegions = [], onConfirm = null) {
-        this.selectedRegions = new Set(selectedRegions);
+        this.effectiveSelections = new Set(selectedRegions); // 初始化时认为传入的都是有效选择
         this.onConfirm = onConfirm;
         
         if (selectedRegions.length === 0) {
@@ -402,17 +402,42 @@ class RegionSelector {
     }
     
     /**
-     * 判断地区是否被选中（包括直接选中和通过父级选中）
+     * 判断地区是否应该显示为选中状态
      */
     isRegionSelected(code) {
-        // 1. 直接选中
-        if (this.selectedRegions.has(code)) {
+        // 1. 检查是否是有效选择
+        if (this.effectiveSelections.has(code)) {
             return true;
         }
         
-        // 2. 通过父级选中
+        // 2. 检查是否有子级在有效选择中（父级应该显示为选中，但不影响具体的子级显示）
+        const allChildCodes = this.getAllChildCodes(code);
+        const hasEffectiveChild = allChildCodes.some(childCode => 
+            this.effectiveSelections.has(childCode)
+        );
+        
+        if (hasEffectiveChild) {
+            // 如果有子级被有效选择，父级显示为选中，但要检查是否所有同级都应该显示为选中
+            return this.shouldParentShowAsSelected(code);
+        }
+        
+        // 3. 检查是否通过父级有效选择而被包含
         const parentCodes = this.getAllParentCodes(code);
-        return parentCodes.some(parentCode => this.selectedRegions.has(parentCode));
+        return parentCodes.some(parentCode => this.effectiveSelections.has(parentCode));
+    }
+    
+    /**
+     * 判断父级是否应该显示为选中状态
+     */
+    shouldParentShowAsSelected(parentCode) {
+        // 如果父级本身是有效选择，则显示为选中
+        if (this.effectiveSelections.has(parentCode)) {
+            return true;
+        }
+        
+        // 如果有任何子级是有效选择，父级也应该显示为选中（用于显示层级关系）
+        const allChildCodes = this.getAllChildCodes(parentCode);
+        return allChildCodes.some(childCode => this.effectiveSelections.has(childCode));
     }
     
     /**
@@ -452,11 +477,11 @@ class RegionSelector {
     }
     
     /**
-     * 检查是否有选中的子地区
+     * 检查是否有有效选中的子地区
      */
     hasSelectedChildren(code) {
         const childCodes = this.getAllChildCodes(code);
-        return childCodes.some(childCode => this.selectedRegions.has(childCode));
+        return childCodes.some(childCode => this.effectiveSelections.has(childCode));
     }
     
     /**
@@ -555,134 +580,105 @@ class RegionSelector {
     }
     
     /**
-     * 选中地区（文氏图包含关系逻辑）
+     * 选中地区（新的逻辑：基于有效选择动态计算显示状态）
      */
     selectRegion(code, isDirectSelection = true) {
-        // 1. 添加当前地区
-        this.selectedRegions.add(code);
+        console.log(`选择地区: ${this.findRegionName(code)} (${code}), 直接选择: ${isDirectSelection}`);
         
-        // 2. 如果是直接选择，且有子地区，则选中所有子地区
         if (isDirectSelection) {
-            const directChildCodes = this.getDirectChildCodes(code);
-            if (directChildCodes.length > 0) {
-                // 直接选择父地区时，选中所有子地区
-                const allChildCodes = this.getAllChildCodes(code);
-                allChildCodes.forEach(childCode => {
-                    this.selectedRegions.add(childCode);
-                });
+            // 1. 直接选择时，这是一个有效的筛选条件
+            this.effectiveSelections.add(code);
+            console.log(`添加有效选择: ${this.findRegionName(code)}`);
+            
+            // 2. 如果选择了父级地区，移除其所有子级的有效选择（保持最粗粒度）
+            const allChildCodes = this.getAllChildCodes(code);
+            allChildCodes.forEach(childCode => {
+                if (this.effectiveSelections.has(childCode)) {
+                    this.effectiveSelections.delete(childCode);
+                    console.log(`移除子级有效选择: ${this.findRegionName(childCode)}`);
+                }
+            });
+            
+            // 3. 如果选择了子级地区，检查是否需要移除父级的有效选择（保持最细粒度）
+            const parentCodes = this.getAllParentCodes(code);
+            parentCodes.forEach(parentCode => {
+                if (this.effectiveSelections.has(parentCode)) {
+                    this.effectiveSelections.delete(parentCode);
+                    console.log(`移除父级有效选择: ${this.findRegionName(parentCode)}`);
+                }
+            });
+            
+            // 4. 直辖市特殊处理
+            this.handleMunicipalitySpecialCase(code, isDirectSelection);
+        }
+        
+        console.log('当前有效选择:', Array.from(this.effectiveSelections).map(c => this.findRegionName(c)));
+    }
+    
+    /**
+     * 处理直辖市特殊情况
+     */
+    handleMunicipalitySpecialCase(code, isDirectSelection) {
+        const regionName = this.findRegionName(code);
+        const parentCodes = this.getAllParentCodes(code);
+        
+        // 如果当前选择的是"市辖区"，需要优化为直辖市
+        if (regionName === '市辖区' && parentCodes.length > 0 && isDirectSelection) {
+            const municipalityCode = parentCodes[parentCodes.length - 1];
+            const municipalityName = this.findRegionName(municipalityCode);
+            
+            if (municipalityName && this.isMunicipality(municipalityName)) {
+                // 移除市辖区的有效选择，改为直辖市
+                this.effectiveSelections.delete(code);
+                this.effectiveSelections.add(municipalityCode);
+                console.log(`直辖市特殊处理：将${regionName}优化为${municipalityName}`);
             }
         }
         
-        // 3. 检查是否需要自动选中父地区（跳级选择）
-        const parentCodes = this.getAllParentCodes(code);
-        const shouldSelectParents = this.isSkipLevelSelection(code, parentCodes);
-        
-        if (shouldSelectParents) {
-            // 跳级选择时自动选中父地区，但不触发父地区的子地区选择
-            parentCodes.forEach(parentCode => {
-                this.selectedRegions.add(parentCode);
-            });
+        // 如果选择了市辖区下的区县，检查是否需要直辖市特殊处理
+        if (parentCodes.length >= 2 && isDirectSelection) {
+            const directParentName = this.findRegionName(parentCodes[0]);
+            const grandParentCode = parentCodes[1];
+            const grandParentName = this.findRegionName(grandParentCode);
+            
+            if (directParentName === '市辖区' && grandParentName && this.isMunicipality(grandParentName)) {
+                // 对于直辖市下的区县选择，保持区县级别的有效选择不变
+                console.log(`直辖市区县选择：${regionName}，保持区县级别的选择`);
+            }
         }
-        
-        // 4. 智能优化选择
-        this.optimizeSelections();
     }
     
     /**
-     * 判断是否为跳级选择
+     * 判断是否为直辖市
      */
-    isSkipLevelSelection(code, parentCodes) {
-        // 如果没有父地区，不是跳级选择
-        if (parentCodes.length === 0) {
-            return false;
-        }
-        
-        // 获取直接父地区
-        const directParentCode = parentCodes[0];
-        
-        // 如果直接父地区已经被选中，说明不是跳级选择
-        if (this.selectedRegions.has(directParentCode)) {
-            return false;
-        }
-        
-        // 检查当前的展开状态来判断是否为跳级选择
-        // 如果当前地区的直接父地区正在展开状态（即当前页面显示了该地区），则不是跳级选择
-        if (this.isParentCurrentlyExpanded(code, directParentCode)) {
-            return false;
-        }
-        
-        // 检查是否有任何父地区已经被选中
-        // 如果有父地区已被选中，说明当前选择是在已有父地区基础上的正常选择
-        const hasSelectedParent = parentCodes.some(parentCode => 
-            this.selectedRegions.has(parentCode)
-        );
-        
-        // 只有在没有任何父地区被选中，且不在展开状态下的情况下，才认为是跳级选择
-        return !hasSelectedParent;
+    isMunicipality(name) {
+        const municipalities = ['北京市', '上海市', '天津市', '重庆市'];
+        return municipalities.includes(name);
     }
     
-    /**
-     * 检查父地区是否当前正在展开状态
-     */
-    isParentCurrentlyExpanded(code, directParentCode) {
-        if (!this.regionDomCache) return false;
-        
-        // 获取当前地区的类型
-        const currentItem = this.regionDomCache.querySelector(`[data-code="${code}"]`);
-        if (!currentItem) return false;
-        
-        const currentType = currentItem.getAttribute('data-type');
-        
-        // 根据地区类型检查相应的展开状态
-        if (currentType === 'city') {
-            // 如果是城市，检查当前展开的省份是否为其父地区
-            return this.currentProvince === directParentCode;
-        } else if (currentType === 'district') {
-            // 如果是区县，检查当前展开的城市是否为其父地区
-            return this.currentCity === directParentCode;
-        }
-        
-        return false;
-    }
+
     
     /**
      * 取消选中地区
      */
     deselectRegion(code) {
-        // 1. 移除当前地区
-        this.selectedRegions.delete(code);
+        console.log(`取消选择地区: ${this.findRegionName(code)} (${code})`);
         
-        // 2. 移除所有子地区
+        // 1. 从有效选择中移除当前地区
+        this.effectiveSelections.delete(code);
+        
+        // 2. 从有效选择中移除所有子地区
         const childCodes = this.getAllChildCodes(code);
         childCodes.forEach(childCode => {
-            this.selectedRegions.delete(childCode);
+            this.effectiveSelections.delete(childCode);
         });
         
-        // 3. 检查父地区是否需要取消选中
-        this.checkParentDeselection(code);
+        console.log('取消选择后有效选择:', Array.from(this.effectiveSelections).map(c => this.findRegionName(c)));
     }
     
-    /**
-     * 检查父地区是否需要取消选中
-     */
-    checkParentDeselection(code) {
-        const parentCodes = this.getAllParentCodes(code);
-        
-        parentCodes.forEach(parentCode => {
-            // 如果父地区被选中，检查是否还有其他子地区被选中
-            if (this.selectedRegions.has(parentCode)) {
-                const directChildCodes = this.getDirectChildCodes(parentCode);
-                const hasSelectedDirectChildren = directChildCodes.some(childCode => 
-                    this.selectedRegions.has(childCode)
-                );
-                
-                // 如果没有直接子地区被选中，则取消父地区选中
-                if (!hasSelectedDirectChildren) {
-                    this.selectedRegions.delete(parentCode);
-                }
-            }
-        });
-    }
+
+    
+
     
     /**
      * 获取直接子地区代码（仅一级子地区）
@@ -694,61 +690,13 @@ class RegionSelector {
         return Array.from(directChildren).map(child => child.getAttribute('data-code'));
     }
     
-    /**
-     * 优化选择（如果父地区的所有直接子地区都被选中，则只保留父地区）
-     */
-    optimizeSelections() {
-        const selectedArray = Array.from(this.selectedRegions);
-        const toRemove = new Set();
-        
-        selectedArray.forEach(code => {
-            if (this.selectedRegions.has(code) && !toRemove.has(code)) {
-                const directChildCodes = this.getDirectChildCodes(code);
-                
-                if (directChildCodes.length > 0) {
-                    // 检查是否所有直接子地区都被选中
-                    const allDirectChildrenSelected = directChildCodes.every(childCode => 
-                        this.selectedRegions.has(childCode)
-                    );
-                    
-                    if (allDirectChildrenSelected) {
-                        // 标记要移除的所有子地区（包括间接子地区）
-                        const allChildCodes = this.getAllChildCodes(code);
-                        allChildCodes.forEach(childCode => {
-                            toRemove.add(childCode);
-                        });
-                    }
-                }
-            }
-        });
-        
-        // 执行移除操作
-        toRemove.forEach(code => {
-            this.selectedRegions.delete(code);
-        });
-    }
+
     
     /**
-     * 计算有效选中地区数量（最顶层的选择数量）
+     * 计算有效选中地区数量（基于最细粒度的有效选择）
      */
     calculateEffectiveCount() {
-        const selectedArray = Array.from(this.selectedRegions);
-        let effectiveCount = 0;
-        
-        selectedArray.forEach(code => {
-            // 检查是否有更高级别的父地区也被选中
-            const parentCodes = this.getAllParentCodes(code);
-            const hasSelectedParent = parentCodes.some(parentCode => 
-                this.selectedRegions.has(parentCode)
-            );
-            
-            // 如果没有更高级别的父地区被选中，则计入有效数量
-            if (!hasSelectedParent) {
-                effectiveCount++;
-            }
-        });
-        
-        return effectiveCount;
+        return this.effectiveSelections.size;
     }
     
     /**
@@ -1030,7 +978,7 @@ class RegionSelector {
      * 重置选择
      */
     reset() {
-        this.selectedRegions.clear();
+        this.effectiveSelections.clear();
         this.updateSelectedCount();
         
         this.searchKeyword = '';
@@ -1047,21 +995,28 @@ class RegionSelector {
      * 确认选择
      */
     confirm() {
+        const selectedRegionCodes = Array.from(this.effectiveSelections);
         const selectedRegionNames = [];
         
-        for (const code of this.selectedRegions) {
+        // 获取有效选择的地区名称
+        for (const code of this.effectiveSelections) {
             const name = this.findRegionName(code);
             if (name && !this.isIgnoredRegion(name)) {
                 selectedRegionNames.push(name);
             }
         }
         
+        console.log('确认选择 - 有效地区代码:', selectedRegionCodes);
+        console.log('确认选择 - 有效地区名称:', selectedRegionNames);
+        
         if (this.onConfirm) {
-            this.onConfirm(Array.from(this.selectedRegions), selectedRegionNames);
+            // 传递有效选择的地区代码和名称
+            this.onConfirm(selectedRegionCodes, selectedRegionNames);
         }
         
         this.hide();
     }
+
     
     /**
      * 判断是否为需要忽略的地区
@@ -1072,20 +1027,20 @@ class RegionSelector {
     }
     
     /**
-     * 获取选中的地区
+     * 获取有效选中的地区
      */
     getSelectedRegions() {
-        return Array.from(this.selectedRegions);
+        return Array.from(this.effectiveSelections);
     }
     
     /**
-     * 获取选中地区的名称
+     * 获取有效选中地区的名称
      */
     getSelectedRegionNames() {
         const names = [];
-        for (const code of this.selectedRegions) {
+        for (const code of this.effectiveSelections) {
             const name = this.findRegionName(code);
-            if (name) {
+            if (name && !this.isIgnoredRegion(name)) {
                 names.push(name);
             }
         }
@@ -1133,4 +1088,32 @@ window.addEventListener('load', function() {
             initRegionSelector();
         }
     }, 200);
-}); 
+});
+
+// 测试新的地区选择逻辑的函数（用于调试和验证）
+function testRegionSelectionLogic() {
+    console.log('=== 新地区选择逻辑测试 ===');
+    
+    if (!window.regionSelector) {
+        console.error('regionSelector 未初始化');
+        return;
+    }
+    
+    const selector = window.regionSelector;
+    
+    // 测试直辖市判断
+    console.log('直辖市判断测试:');
+    console.log('- 北京市是直辖市:', selector.isMunicipality('北京市'));
+    console.log('- 上海市是直辖市:', selector.isMunicipality('上海市'));
+    console.log('- 天津市是直辖市:', selector.isMunicipality('天津市'));
+    console.log('- 重庆市是直辖市:', selector.isMunicipality('重庆市'));
+    console.log('- 广东省是直辖市:', selector.isMunicipality('广东省'));
+    
+    // 测试选择逻辑
+    console.log('\n选择逻辑测试:');
+    console.log('- 有效选择数量:', selector.effectiveSelections.size);
+    console.log('- 计算的有效数量:', selector.calculateEffectiveCount());
+    console.log('- 有效选择内容:', selector.getSelectedRegionNames());
+    
+    console.log('=== 测试完成 ===');
+}

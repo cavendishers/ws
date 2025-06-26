@@ -120,6 +120,11 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- AI聊天小部件 - 在iframe版本中也包含 -->
+    {% if request.session.user_id %}
+    {% include 'data_hall/components/ai_chat_widget.html' %}
+    {% endif %}
+
     <!-- 页脚 -->
     <footer class="bg-[#0A1A3A] py-8 border-t border-[rgba(255,255,255,0.1)]" style="margin-top: 2rem;">
         <div class="container mx-auto px-6">
@@ -137,10 +142,8 @@
         </div>
     </footer>
 
-    <!-- 聊天持久化存储 -->
-    <script src="{% static 'data_hall/js/chat-storage.js' %}"></script>
-    <!-- 聊天记录同步管理器 -->
-    <script src="{% static 'data_hall/js/ai-assistant/sync.js' %}"></script>
+    <!-- AI聊天管理器 -->
+    <script src="{% static 'data_hall/js/ai-chat.js' %}"></script>
     <!-- 自定义脚本 -->
     <script src="{% static 'data_hall/js/main.js' %}"></script>
     <script>

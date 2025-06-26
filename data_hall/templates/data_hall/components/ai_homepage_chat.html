@@ -12,6 +12,14 @@
 
 <!-- 首页AI聊天界面专用样式 -->
 <style>
+/* CSS变量定义 - 对齐ai_chat_widget.css */
+:root {
+    --primary: #002040;
+    --bg-secondary: rgba(0, 40, 80, 0.8);
+    --button-highlight: #00bfff;
+    --text-primary: rgba(255, 255, 255, 0.94);
+    --text-secondary: rgba(255, 255, 255, 0.6);
+}
 /* 首页AI聊天覆盖层 */
 #homepage-ai-chat-overlay {
     background: rgba(0, 0, 0, 0.8);
@@ -38,11 +46,11 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(0, 191, 255, 0.15);
     border-radius: 16px;
-    width: 90vw;
-    max-width: 900px;
-    height: 80vh;
-    max-height: 700px;
-    min-height: 500px;
+    width: 95vw;
+    max-width: 1200px;
+    height: 85vh;
+    max-height: 800px;
+    min-height: 600px;
     position: relative;
 }
 
@@ -136,8 +144,14 @@
 /* 首页AI聊天消息区域 */
 #homepage-chat-messages {
     padding: 24px;
+    /* 避免因为悬停按钮导致的横向滚动 */
+    overflow-x: visible;
     overflow-y: auto;
-    max-height: calc(80vh - 200px);
+    max-height: calc(85vh - 220px);
+    /* 适度的左右内边距来容纳按钮 */
+    padding-left: 40px;
+    padding-right: 40px;
+    box-sizing: border-box;
 }
 
 #homepage-chat-messages::-webkit-scrollbar {
@@ -158,7 +172,7 @@
     background: rgba(0, 191, 255, 0.3);
 }
 
-/* 首页AI聊天输入区域 */
+/* 首页AI聊天输入区域 - 对齐ai_chat_widget.css */
 #homepage-chat-input-area {
     padding: 20px 24px 24px;
     border-top: 1px solid rgba(0, 191, 255, 0.15);
@@ -172,16 +186,23 @@
     gap: 12px;
 }
 
-/* 首页AI聊天输入框 */
+/* 首页AI聊天输入框 - 对齐ai_chat_widget.css中的#chat-input样式 */
 #homepage-chat-input {
-    background: rgba(255, 255, 255, 0.08);
+    font-family: inherit;
+    line-height: 1.25;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(145deg, 
+        rgba(0, 48, 96, 0.70) 0%, 
+        rgba(0, 32, 64, 0.75) 100%);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    -webkit-font-smoothing: antialiased;
+    color: rgba(255, 255, 255, 0.95) !important;
+    resize: none;
+    overflow-y: hidden;
     border: 1px solid rgba(0, 191, 255, 0.2);
-    color: white;
     border-radius: 12px;
     padding: 16px 20px;
     font-size: 16px;
-    line-height: 1.5;
-    resize: none;
     min-height: 60px;
     max-height: 150px;
     flex: 1;
@@ -190,17 +211,35 @@
 #homepage-chat-input:focus {
     outline: none;
     border-color: var(--button-highlight);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+    box-shadow: 
+        0 0 0 2px rgba(0, 191, 255, 0.1),
+        0 2px 8px rgba(0, 191, 255, 0.15);
+    background: var(--bg-secondary)/80;
+    transform: translateY(-1px);
+}
+
+#homepage-chat-input:hover:not(:focus) {
+    border-color: rgba(0, 191, 255, 0.25);
+    background: var(--bg-secondary)/70;
 }
 
 #homepage-chat-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
-/* 首页AI聊天发送按钮 - 与输入框严格对齐 */
+#homepage-chat-input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* 首页AI聊天发送按钮 - 对齐ai_chat_widget.css中的#send-btn样式 */
 #homepage-send-btn {
-    background: var(--button-highlight);
+    background: linear-gradient(135deg, var(--button-highlight)/90, #0ea5e9/90);
+    box-shadow: 0 1px 4px rgba(0, 191, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 36px;
+    min-width: 36px;
     border: none;
     border-radius: 10px;
     width: 48px;
@@ -209,42 +248,67 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
     flex-shrink: 0;
     margin-bottom: 6px; /* 微调对齐 */
 }
 
 #homepage-send-btn:hover:not(:disabled) {
-    background: rgba(0, 191, 255, 0.9);
-    transform: scale(1.05);
+    background: linear-gradient(135deg, var(--button-highlight), #0ea5e9);
+    box-shadow: 0 2px 8px rgba(0, 191, 255, 0.3);
+    transform: translateY(-1px) scale(1.02);
+}
+
+#homepage-send-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
 }
 
 #homepage-send-btn:disabled {
-    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
-/* 首页AI聊天消息样式 */
+/* 首页AI聊天消息样式 - 对齐ai_chat_widget.css */
 .homepage-chat-message-user {
-    background: linear-gradient(135deg, var(--button-highlight) 0%, rgba(0, 191, 255, 0.8) 100%);
-    color: white;
+    background: linear-gradient(135deg, 
+        var(--button-highlight)/90 0%, 
+        #0ea5e9/88 100%);
+    color: rgba(255, 255, 255, 0.96);
     margin-left: auto;
     margin-right: 0;
-    border-radius: 18px 18px 4px 18px;
+    border-radius: 12px 12px 2px 12px;
     padding: 12px 18px;
     max-width: 75%;
+    box-shadow: 
+        0 2px 6px rgba(0, 191, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px);
+    position: relative;
+    transition: none;
+    overflow: visible;
     word-wrap: break-word;
 }
 
 .homepage-chat-message-ai {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary);
+    background: linear-gradient(145deg, 
+        rgba(0, 40, 80, 0.75) 0%, 
+        rgba(0, 32, 64, 0.80) 100%);
+    color: rgba(255, 255, 255, 0.94);
     margin-left: 0;
     margin-right: auto;
-    border-radius: 18px 18px 18px 4px;
+    border-radius: 12px 12px 12px 2px;
     padding: 16px 20px;
-    max-width: 85%;
-    border: 1px solid rgba(0, 191, 255, 0.1);
+    max-width: 75%;
+    border: 1px solid rgba(0, 191, 255, 0.12);
+    backdrop-filter: blur(6px) saturate(120%);
+    box-shadow: 
+        0 3px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    transition: none;
+    overflow: visible;
 }
 
 /* 首页AI聊天关闭按钮 */
@@ -275,8 +339,8 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
     #homepage-ai-chat {
-        width: 95vw;
-        height: 85vh;
+        width: 98vw;
+        height: 90vh;
         max-height: none;
         border-radius: 12px;
     }
@@ -287,7 +351,7 @@
     
     #homepage-chat-messages {
         padding: 20px 16px;
-        max-height: calc(85vh - 180px);
+        max-height: calc(90vh - 200px);
     }
     
     #homepage-chat-input-area {
@@ -313,6 +377,218 @@
     line-height: 1.6;
     word-wrap: break-word;
     color: inherit;
+}
+
+/* Markdown内容基本样式 */
+.homepage-chat-message-ai .markdown-content h1,
+.homepage-chat-message-ai .markdown-content h2,
+.homepage-chat-message-ai .markdown-content h3,
+.homepage-chat-message-ai .markdown-content h4,
+.homepage-chat-message-ai .markdown-content h5,
+.homepage-chat-message-ai .markdown-content h6 {
+    margin: 12px 0 8px 0;
+    font-weight: 600;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content h1 { font-size: 1.5em; }
+.homepage-chat-message-ai .markdown-content h2 { font-size: 1.3em; }
+.homepage-chat-message-ai .markdown-content h3 { font-size: 1.2em; }
+.homepage-chat-message-ai .markdown-content h4,
+.homepage-chat-message-ai .markdown-content h5,
+.homepage-chat-message-ai .markdown-content h6 { font-size: 1.1em; }
+
+.homepage-chat-message-ai .markdown-content p {
+    margin: 8px 0;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content ul,
+.homepage-chat-message-ai .markdown-content ol {
+    margin: 8px 0;
+    padding-left: 20px;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content li {
+    margin: 4px 0;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content code {
+    background: rgba(0, 0, 0, 0.2);
+    color: #fbbf24;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+}
+
+.homepage-chat-message-ai .markdown-content pre {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+}
+
+.homepage-chat-message-ai .markdown-content pre code {
+    background: none;
+    color: #e5e7eb;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.85em;
+}
+
+.homepage-chat-message-ai .markdown-content strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content em {
+    font-style: italic;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content blockquote {
+    border-left: 3px solid rgba(0, 191, 255, 0.5);
+    margin: 8px 0;
+    padding-left: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 用户消息的Markdown样式 */
+.homepage-chat-message-user .markdown-content h1,
+.homepage-chat-message-user .markdown-content h2,
+.homepage-chat-message-user .markdown-content h3,
+.homepage-chat-message-user .markdown-content h4,
+.homepage-chat-message-user .markdown-content h5,
+.homepage-chat-message-user .markdown-content h6,
+.homepage-chat-message-user .markdown-content p,
+.homepage-chat-message-user .markdown-content li,
+.homepage-chat-message-user .markdown-content strong,
+.homepage-chat-message-user .markdown-content em {
+    color: inherit;
+}
+
+.homepage-chat-message-user .markdown-content code {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fcd34d;
+}
+
+.homepage-chat-message-user .markdown-content pre {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 悬浮按钮样式 - 完全对齐ai_chat_widget.css */
+.homepage-message-hover-actions {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease-in, visibility 0.15s ease-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    gap: 6px;
+    z-index: 15;
+    font-family: inherit;
+    max-width: fit-content;
+    white-space: nowrap;
+    background: transparent;
+    height: auto;
+    min-height: 40px;
+}
+
+/* AI消息的悬浮按钮（右侧显示） */
+.homepage-chat-message-ai:hover .homepage-message-hover-actions,
+.homepage-chat-message-ai .homepage-message-hover-actions:hover {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
+}
+
+.homepage-chat-message-ai .homepage-message-hover-actions {
+    left: calc(100% + 2px);
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.4s ease-in 0.3s, visibility 0.4s ease-in 0.3s;
+}
+
+/* 用户消息的悬浮按钮（左侧显示） */
+.homepage-chat-message-user:hover .homepage-message-hover-actions,
+.homepage-chat-message-user .homepage-message-hover-actions:hover {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
+}
+
+.homepage-chat-message-user .homepage-message-hover-actions {
+    right: calc(100% + 2px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.4s ease-in 0.3s, visibility 0.4s ease-in 0.3s;
+}
+
+/* 悬浮按钮样式 */
+.homepage-message-action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: relative;
+}
+
+.homepage-message-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.homepage-message-action-btn svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    display: block;
+    margin: auto;
+}
+
+/* 扩展悬停检测区域 */
+.homepage-chat-message-ai::after,
+.homepage-chat-message-user::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: transparent;
+    pointer-events: auto;
+    z-index: 5;
+}
+
+.homepage-chat-message-ai::after {
+    right: -20px;
+}
+
+.homepage-chat-message-user::after {
+    left: -20px;
 }
 
 /* 加载状态样式 */
@@ -349,6 +625,159 @@
         opacity: 1;
     }
 }
+
+/* 🔧 编辑状态下的消息气泡 - 无缝融合设计 */
+.homepage-chat-message-user:has(.message-edit-input) {
+  position: relative;
+  padding: 0 !important; /* 编辑时移除气泡内边距 */
+  background: transparent !important; /* 编辑时让编辑框背景显示 */
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.homepage-chat-message-user:has(.message-edit-input) .markdown-content,
+.homepage-chat-message-user:has(.message-edit-input) p {
+  display: none !important; /* 完全隐藏原文本，避免布局冲突 */
+}
+
+.homepage-chat-message-user .message-edit-input {
+  position: relative;
+  z-index: 10;
+  margin: 0 !important; /* 重置边距，让编辑框完全接管布局 */
+  border-radius: 12px !important; /* 保持与气泡一致的圆角 */
+}
+
+/* 🎯 编辑状态指示器 */
+.homepage-chat-message-user:has(.message-edit-input)::before {
+  content: "✏️ 编辑中...";
+  position: absolute;
+  top: -24px;
+  right: 0;
+  font-size: 11px;
+  color: rgba(0, 191, 255, 0.8);
+  background: rgba(0, 191, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  z-index: 5;
+  pointer-events: none;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeInEditIndicator 0.3s ease-out 0.1s forwards;
+}
+
+/* 推荐问题卡片样式 */
+.recommendation-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 20px;
+}
+
+/* 聊天消息项样式 */
+.chat-message-item {
+    margin-top: 16px;
+}
+
+.recommendation-card {
+    background: linear-gradient(135deg, 
+        rgba(0, 40, 80, 0.6) 0%, 
+        rgba(0, 32, 64, 0.7) 100%);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+}
+
+.recommendation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(0, 191, 255, 0.02) 0%, 
+        rgba(59, 130, 246, 0.01) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.recommendation-card:hover {
+    border-color: rgba(0, 191, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.2),
+        0 2px 8px rgba(0, 191, 255, 0.1);
+}
+
+.recommendation-card:hover::before {
+    opacity: 1;
+}
+
+.recommendation-card:active {
+    transform: translateY(-1px);
+}
+
+.card-emoji {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.card-title {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.card-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.card-subtitle:last-child {
+    margin-bottom: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .recommendation-cards-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .recommendation-card {
+        padding: 16px;
+    }
+    
+    .card-emoji {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+    
+    .card-subtitle {
+        font-size: 13px;
+    }
+}
 </style>
 
 <!-- 确保CSRF token可用 -->
@@ -379,22 +808,46 @@
         </div>
         
         <!-- 聊天消息区域 -->
-        <div id="homepage-chat-messages" class="flex-1 space-y-4">
-            <!-- 欢迎消息 -->
-            <div class="flex items-start space-x-3">
-                <img src="{% static 'ai_assistant_logo.jpg' %}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
-                <div class="homepage-chat-message-ai">
-                    <div class="markdown-content">
-                        <p>你好！我是AI智能助手，专注于中国新势力企业态势感知与产业链分析。我可以帮助您：</p>
-                        <ul>
-                            <li>🏢 查询企业信息和发展态势</li>
-                            <li>📊 分析产业链结构和关联关系</li>
-                            <li>🎯 提供企业排名和评估数据</li>
-                            <li>🗺️ 解读区域产业分布情况</li>
-                            <li>📈 生成专业的产业研究报告</li>
-                        </ul>
-                        <p>请告诉我您想了解什么信息，我会为您提供专业的分析和解答。</p>
-                    </div>
+        <div id="homepage-chat-messages" class="flex-1">
+            <!-- 推荐问题卡片 -->
+            <div class="recommendation-cards-container">
+                <div class="recommendation-card" data-question="近几年新势力企业呈现怎么样的变化趋势？">
+                    <span class="card-emoji">📈</span>
+                    <div class="card-title">查趋势</div>
+                    <div class="card-subtitle">近几年新势力企业呈现怎么样的变化趋势？</div>
+                    <div class="card-subtitle">哪些行业的新势力企业增长最快？</div>
+                </div>
+                
+                <div class="recommendation-card" data-question="合成生物哪些细分赛道的新势力企业最多？代表企业是哪些？">
+                    <span class="card-emoji">🏭</span>
+                    <div class="card-title">查产业</div>
+                    <div class="card-subtitle">合成生物哪些细分赛道的新势力企业最多？代表企业是哪些？</div>
+                </div>
+                
+                <div class="recommendation-card" data-question="最近一年获得B轮以上融资的新势力企业有哪些？">
+                    <span class="card-emoji">📊</span>
+                    <div class="card-title">查市场动态</div>
+                    <div class="card-subtitle">最近一年获得B轮以上融资的新势力企业有哪些？</div>
+                </div>
+                
+                <div class="recommendation-card" data-question="新势力企业中有哪些企业是专精特新企业？">
+                    <span class="card-emoji">🧪</span>
+                    <div class="card-title">查技术能力</div>
+                    <div class="card-subtitle">新势力企业中有哪些企业是专精特新企业？</div>
+                    <div class="card-subtitle">有哪些解决国外卡脖子技术的产品？</div>
+                </div>
+                
+                <div class="recommendation-card" data-question="未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？">
+                    <span class="card-emoji">🔮</span>
+                    <div class="card-title">查未来趋势</div>
+                    <div class="card-subtitle">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</div>
+                </div>
+                
+                <div class="recommendation-card" data-question="低空经济企业有哪些应用场景？">
+                    <span class="card-emoji">🧭</span>
+                    <div class="card-title">查应用场景</div>
+                    <div class="card-subtitle">低空经济企业有哪些应用场景？</div>
+                    <div class="card-subtitle">政府扶持可以哪几方面展开？</div>
                 </div>
             </div>
         </div>
@@ -429,10 +882,14 @@ class HomepageAIChatManager {
         this.chatManager = null;
         this.markdownRenderer = null;
         this.isClosing = false;
+        this.isAIResponding = false;
+        this.markdownInitRetries = 0; // 添加重试计数器
         
         this.initializeElements();
         this.initializeEventListeners();
         this.initializeMarkdownRenderer();
+        this.enhanceHoverButtonExperience();
+        this.bindRecommendationCards();
         
         console.log('首页AI聊天管理器初始化完成');
     }
@@ -444,6 +901,12 @@ class HomepageAIChatManager {
         this.inputArea = document.getElementById('homepage-chat-input');
         this.sendBtn = document.getElementById('homepage-send-btn');
         this.closeBtn = document.getElementById('homepage-chat-close-btn');
+        
+        // 初始化发送按钮状态 - 对齐ai_chat_widget.html
+        if (this.sendBtn && this.inputArea) {
+            this.sendBtn.disabled = true; // 初始时禁用发送按钮
+            this.sendBtn.title = '发送消息';
+        }
     }
     
     initializeEventListeners() {
@@ -452,9 +915,10 @@ class HomepageAIChatManager {
             this.closeBtn.addEventListener('click', () => this.close());
         }
         
-        // 点击覆盖层关闭
+        // 点击覆盖层关闭 - 修复bug：只有明确点击外部才关闭
         if (this.overlay) {
             this.overlay.addEventListener('click', (e) => {
+                // 只有点击到覆盖层本身才关闭，避免因选择文本等操作误关闭
                 if (e.target === this.overlay) {
                     this.close();
                 }
@@ -475,37 +939,52 @@ class HomepageAIChatManager {
         
         // 输入框Enter发送
         if (this.inputArea) {
-            this.inputArea.addEventListener('keydown', (e) => {
+            this.inputArea.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     this.sendMessage();
                 }
             });
             
-            // 自动调整输入框高度
+            // 自动调整输入框高度和发送按钮状态
             this.inputArea.addEventListener('input', () => {
                 this.autoResizeInput();
+                // 更新发送按钮状态 - 对齐ai_chat_widget的逻辑
+                if (this.sendBtn && !this.isAIResponding) {
+                    this.sendBtn.disabled = this.inputArea.value.trim() === '';
+                }
             });
         }
     }
     
     // 初始化Markdown渲染器
     initializeMarkdownRenderer() {
+        console.log('初始化Markdown渲染器... 重试次数:', this.markdownInitRetries);
+        console.log('marked可用:', typeof marked !== 'undefined');
+        console.log('DOMPurify可用:', typeof DOMPurify !== 'undefined');
+        
         if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+            console.log('配置Markdown渲染器...');
+            
             marked.setOptions({
                 breaks: true,
                 gfm: true,
                 tables: true,
                 sanitize: false,
                 smartLists: true,
-                smartypants: false
+                smartypants: false,
+                headerIds: false,  // 避免ID冲突
+                mangle: false      // 保持简洁的输出
             });
             
             this.markdownRenderer = {
                 render: (markdown) => {
                     try {
+                        console.log('渲染Markdown内容:', markdown.substring(0, 100) + '...');
                         const rawHtml = marked.parse(markdown);
-                        return DOMPurify.sanitize(rawHtml, {
+                        console.log('Marked解析结果:', rawHtml.substring(0, 200) + '...');
+                        
+                        const sanitizedHtml = DOMPurify.sanitize(rawHtml, {
                             ALLOWED_TAGS: [
                                 'p', 'br', 'strong', 'em', 'u', 'strike', 'del',
                                 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -516,8 +995,12 @@ class HomepageAIChatManager {
                             ],
                             ALLOWED_ATTR: ['href', 'title', 'class', 'id', 'target']
                         });
+                        
+                        console.log('DOMPurify清理结果:', sanitizedHtml.substring(0, 200) + '...');
+                        return sanitizedHtml;
                     } catch (error) {
                         console.error('Markdown渲染失败:', error);
+                        console.error('原始内容:', markdown);
                         return this.escapeHtml(markdown);
                     }
                 },
@@ -527,9 +1010,17 @@ class HomepageAIChatManager {
                     return div.innerHTML;
                 }
             };
+            
+            console.log('Markdown渲染器初始化成功');
+            this.markdownInitRetries = 0; // 重置重试计数器
         } else {
-            // 延迟初始化
-            setTimeout(() => this.initializeMarkdownRenderer(), 100);
+            this.markdownInitRetries++;
+            if (this.markdownInitRetries < 10) { // 最多重试10次
+                console.warn(`Markdown库未完全加载，延迟初始化... (${this.markdownInitRetries}/10)`);
+                setTimeout(() => this.initializeMarkdownRenderer(), 300 * this.markdownInitRetries);
+            } else {
+                console.error('Markdown库加载失败，将使用基本渲染器');
+            }
         }
     }
     
@@ -629,13 +1120,13 @@ class HomepageAIChatManager {
     renderMessages(messages) {
         if (!this.messagesContainer) return;
         
-        // 保存欢迎消息
-        const welcomeMessage = this.messagesContainer.querySelector('.homepage-chat-message-ai').parentElement;
+        // 保存推荐卡片容器
+        const recommendationContainer = this.messagesContainer.querySelector('.recommendation-cards-container');
         
-        // 清空消息容器，但保留欢迎消息
+        // 清空消息容器，但保留推荐卡片
         this.messagesContainer.innerHTML = '';
-        if (welcomeMessage) {
-            this.messagesContainer.appendChild(welcomeMessage);
+        if (recommendationContainer) {
+            this.messagesContainer.appendChild(recommendationContainer);
         }
         
         // 渲染历史消息（如果有的话）
@@ -651,32 +1142,44 @@ class HomepageAIChatManager {
         this.scrollToBottom();
     }
     
-    // 发送消息
+    // 发送消息 - 对齐ai_chat_widget.html
     async sendMessage() {
         const message = this.inputArea.value.trim();
-        if (!message) return;
+        if (message === '') return;
         
-        console.log('发送消息:', message);
+        // 标准化Unicode字符，确保表情符号正确处理 - 对齐ai_chat_widget.html
+        const normalizedMessage = message.normalize('NFC');
+
+        // 如果AI正在响应，则停止当前响应 - 对齐ai_chat_widget.html
+        if (this.isAIResponding) {
+            // TODO: 实现停止AI响应的逻辑
+            console.log('停止AI响应');
+            return;
+        }
         
-        // 清空输入框
+        console.log('发送消息:', normalizedMessage);
+        
+        // 清空输入框并重置高度 - 对齐ai_chat_widget.html
         this.inputArea.value = '';
+        this.inputArea.style.height = 'auto';
+        this.inputArea.style.height = '60px'; // 重置为最小高度
         this.autoResizeInput();
         
         // 添加用户消息到UI
-        this.addMessageToUI('user', message);
+        this.addMessageToUI('user', normalizedMessage);
         
         // 显示加载状态
         this.showTypingIndicator();
         
-        // 禁用发送按钮
+        // 设置AI响应状态
         this.setSendButtonState(true);
         
         try {
             console.log('获取AI聊天管理器...');
             const chatManager = await this.getChatManager();
             
-            console.log('发送消息到AI:', message);
-            const response = await chatManager.sendMessage(message);
+            console.log('发送消息到AI:', normalizedMessage);
+            const response = await chatManager.sendMessage(normalizedMessage);
             
             console.log('收到AI响应:', response, '类型:', typeof response);
             
@@ -685,11 +1188,9 @@ class HomepageAIChatManager {
             
             if (response) {
                 // AIChatManager.sendMessage 直接返回AI回复内容（字符串）
-                // 而不是包含content字段的对象
                 const aiContent = typeof response === 'string' ? response : response.content;
                 if (aiContent && aiContent.trim()) {
                     console.log('添加AI回复到UI:', aiContent);
-                    // 添加AI回复到UI
                     this.addMessageToUI('assistant', aiContent);
                 } else {
                     console.error('AI回复内容为空:', aiContent);
@@ -701,15 +1202,10 @@ class HomepageAIChatManager {
             }
         } catch (error) {
             console.error('发送消息失败:', error);
-            console.error('错误详情:', {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            });
             this.hideTypingIndicator();
             this.addMessageToUI('assistant', `抱歉，我遇到了问题：${error.message}。请稍后再试。`);
         } finally {
-            // 恢复发送按钮
+            // 恢复发送按钮状态
             this.setSendButtonState(false);
         }
     }
@@ -719,13 +1215,34 @@ class HomepageAIChatManager {
         if (!this.messagesContainer) return;
         
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'flex items-start space-x-3 mb-4';
+        messageDiv.className = 'flex items-start space-x-3 mb-4 chat-message-item';
         
         if (role === 'user') {
             messageDiv.innerHTML = `
                 <div class="flex-1"></div>
                 <div class="homepage-chat-message-user">
                     <div class="markdown-content">${this.renderContent(content)}</div>
+                    <!-- 用户消息悬浮按钮 -->
+                    <div class="homepage-message-hover-actions">
+                        <button class="message-action-btn regenerate-btn" title="重新生成">
+                            <span class="btn-tooltip">重新生成</span>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                        <button class="message-action-btn edit-btn" title="编辑消息">
+                            <span class="btn-tooltip">编辑消息</span>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="message-action-btn delete-btn" title="删除消息">
+                            <span class="btn-tooltip">删除消息</span>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             `;
         } else {
@@ -734,6 +1251,21 @@ class HomepageAIChatManager {
                 <img src="${logoUrl}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
                 <div class="homepage-chat-message-ai">
                     <div class="markdown-content">${this.renderContent(content)}</div>
+                    <!-- AI消息悬浮按钮 -->
+                    <div class="homepage-message-hover-actions">
+                        <button class="message-action-btn regenerate-btn" title="重新生成">
+                            <span class="btn-tooltip">重新生成</span>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                        <button class="message-action-btn copy-btn" title="复制内容">
+                            <span class="btn-tooltip">复制内容</span>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -754,16 +1286,722 @@ class HomepageAIChatManager {
         }
         
         this.scrollToBottom();
+        
+        // 为新添加的消息绑定悬浮按钮事件
+        this.bindMessageHoverActions(messageDiv);
+    }
+    
+    // 绑定消息悬浮按钮事件
+    bindMessageHoverActions(messageDiv) {
+        const copyBtn = messageDiv.querySelector('.copy-btn');
+        const regenerateBtn = messageDiv.querySelector('.regenerate-btn');
+        const editBtn = messageDiv.querySelector('.edit-btn');
+        const deleteBtn = messageDiv.querySelector('.delete-btn');
+        
+        if (copyBtn) {
+            copyBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.copyMessage(copyBtn);
+            });
+        }
+        
+        if (regenerateBtn) {
+            regenerateBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.regenerateResponse(regenerateBtn);
+            });
+        }
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.editMessage(editBtn);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteMessage(deleteBtn);
+            });
+        }
+    }
+    
+    // 复制消息功能 - 完全对齐ai_chat_widget.html
+    copyMessage(button) {
+        // 获取消息内容元素
+        const messageContainer = button.closest('.homepage-chat-message-ai, .homepage-chat-message-user');
+        const messageContentEl = messageContainer.querySelector('.markdown-content');
+        const messageText = messageContentEl.textContent || messageContentEl.innerText;
+        
+        // 复制到剪贴板
+        navigator.clipboard.writeText(messageText).then(() => {
+            // 显示复制成功提示
+            const originalTitle = button.title;
+            button.title = '已复制！';
+            button.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            
+            setTimeout(() => {
+                button.title = originalTitle;
+                button.style.borderColor = '';
+            }, 1500);
+        }).catch(() => {
+            // 降级方案 - 选择文本
+            const range = document.createRange();
+            const selection = window.getSelection();
+            
+            range.selectNodeContents(messageContentEl);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            // 显示提示
+            const originalTitle = button.title;
+            button.title = '已选择文本';
+            setTimeout(() => {
+                button.title = originalTitle;
+                selection.removeAllRanges();
+            }, 1500);
+        });
+    }
+    
+    // 重新生成功能 - 完全对齐ai_chat_widget.html
+    async regenerateResponse(button) {
+        // 获取用户消息内容和对应的用户消息容器
+        let userMessage = '';
+        let userMessageContainer = null;
+        let targetAiMessageContainer = null;
+        
+        // 查找用户消息和对应的AI回复
+        const messageContainer = button.closest('.flex.items-start');
+        const isUserMessage = messageContainer.querySelector('.homepage-chat-message-user') !== null;
+        const isAiMessage = messageContainer.querySelector('.homepage-chat-message-ai') !== null;
+        
+        if (isUserMessage) {
+            // 从用户消息按钮触发
+            userMessageContainer = messageContainer;
+            const userMessageEl = messageContainer.querySelector('.homepage-chat-message-user .markdown-content');
+            if (userMessageEl) {
+                userMessage = userMessageEl.textContent.trim() || userMessageEl.innerText.trim();
+            }
+            
+            // 查找对应的AI回复
+            let nextElement = messageContainer.nextElementSibling;
+            while (nextElement) {
+                const aiMessage = nextElement.querySelector('.homepage-chat-message-ai');
+                if (aiMessage) {
+                    targetAiMessageContainer = nextElement;
+                    break;
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+        } else if (isAiMessage) {
+            // 从AI消息按钮触发
+            targetAiMessageContainer = messageContainer;
+            
+            // 往前查找对应的用户消息
+            let prevElement = messageContainer.previousElementSibling;
+            while (prevElement) {
+                const userMessageEl = prevElement.querySelector('.homepage-chat-message-user .markdown-content');
+                if (userMessageEl) {
+                    userMessage = userMessageEl.textContent.trim() || userMessageEl.innerText.trim();
+                    userMessageContainer = prevElement;
+                    break;
+                }
+                prevElement = prevElement.previousElementSibling;
+            }
+        }
+        
+        if (!userMessage) {
+            console.warn('未找到用户消息内容');
+            alert('未找到要重新生成的用户消息');
+            return;
+        }
+        
+        console.log('准备重新生成AI回复，用户消息:', userMessage);
+        
+        // 设置重新生成状态
+        this.setSendButtonState(true);
+        
+        // 如果有现有的AI回复，显示重新生成状态
+        let originalContent = '';
+        let aiMessageBubble = null;
+        let typingDiv = null;
+        
+        if (targetAiMessageContainer) {
+            aiMessageBubble = targetAiMessageContainer.querySelector('.homepage-chat-message-ai');
+            if (aiMessageBubble) {
+                const messageContentEl = aiMessageBubble.querySelector('.markdown-content');
+                if (messageContentEl) {
+                    originalContent = messageContentEl.textContent || messageContentEl.innerText;
+                    
+                    // 隐藏原文本，显示打字指示器
+                    messageContentEl.style.display = 'none';
+                    
+                    // 创建打字指示器
+                    typingDiv = document.createElement('div');
+                    typingDiv.className = 'homepage-typing-indicator';
+                    typingDiv.innerHTML = `
+                        <div class="homepage-typing-dot"></div>
+                        <div class="homepage-typing-dot"></div>
+                        <div class="homepage-typing-dot"></div>
+                    `;
+                    
+                    aiMessageBubble.insertBefore(typingDiv, messageContentEl);
+                    aiMessageBubble.classList.add('message-regenerating');
+                }
+            }
+        } else {
+            // 没有现有AI回复，显示新的打字指示器
+            this.showTypingIndicator();
+            typingDiv = document.getElementById('homepage-typing-indicator');
+        }
+        
+        try {
+            // 获取聊天管理器并调用重新生成
+            const chatManager = await this.getChatManager();
+            
+            // 获取用户消息ID用于重新生成请求
+            let userMessageId = null;
+            const allMessages = chatManager.getAllMessages();
+            const matchingUserMsg = allMessages.find(msg => 
+                msg.role === 'user' && msg.content.trim() === userMessage.trim()
+            );
+            if (matchingUserMsg) {
+                userMessageId = matchingUserMsg.id;
+                console.log('找到用户消息ID:', userMessageId);
+            }
+            
+            const newAiResponse = await chatManager.regenerateResponse(userMessage, userMessageId);
+            
+            if (newAiResponse) {
+                if (targetAiMessageContainer && aiMessageBubble) {
+                    // 更新现有的AI回复
+                    const messageContentEl = aiMessageBubble.querySelector('.markdown-content');
+                    if (messageContentEl) {
+                        messageContentEl.innerHTML = this.renderContent(newAiResponse);
+                        messageContentEl.style.display = '';
+                    }
+                    
+                    // 清理打字指示器和状态
+                    if (typingDiv && typingDiv.parentNode) {
+                        typingDiv.parentNode.removeChild(typingDiv);
+                    }
+                    aiMessageBubble.classList.remove('message-regenerating');
+                } else {
+                    // 添加新的AI回复到UI
+                    this.hideTypingIndicator();
+                    this.addMessageToUI('assistant', newAiResponse);
+                }
+                
+                console.log('重新生成成功');
+            } else {
+                throw new Error('重新生成返回空内容');
+            }
+            
+        } catch (error) {
+            console.error('重新生成失败:', error);
+            
+            // 清理打字指示器
+            if (typingDiv && typingDiv.parentNode) {
+                typingDiv.parentNode.removeChild(typingDiv);
+            }
+            
+            // 恢复状态
+            if (aiMessageBubble) {
+                const messageContentEl = aiMessageBubble.querySelector('.markdown-content');
+                if (messageContentEl) {
+                    messageContentEl.innerHTML = this.renderContent(originalContent);
+                    messageContentEl.style.display = '';
+                }
+                aiMessageBubble.classList.remove('message-regenerating');
+            } else {
+                this.hideTypingIndicator();
+                this.addMessageToUI('assistant', '重新生成失败，请检查网络连接后重试。');
+            }
+        } finally {
+            this.setSendButtonState(false);
+        }
+    }
+    
+    // 编辑消息功能 - 完全对齐ai_chat_widget.html
+    editMessage(button) {
+        // 获取消息内容元素
+        const messageContentEl = button.closest('.homepage-chat-message-user').querySelector('.markdown-content');
+        const originalText = messageContentEl.textContent || messageContentEl.innerText;
+        const messageBubble = button.closest('.homepage-chat-message-user');
+        
+        // 创建编辑输入框 - 使用ai_chat_widget.css中的样式类
+        const editInput = document.createElement('textarea');
+        editInput.value = originalText;
+        
+        // 智能检测长文本模式 - 使用正确的CSS类名
+        const isLongText = originalText.length > 100 || originalText.split('\n').length > 3;
+        const baseClass = 'message-edit-input'; // 使用ai_chat_widget.css中的类名
+        editInput.className = isLongText ? `${baseClass} long-text-mode` : baseClass;
+        
+        // 设置智能placeholder - 完全对齐ai_chat_widget.html
+        if (isLongText) {
+            editInput.placeholder = '✏️ 长文本编辑模式已启用\n\n💡 优化功能:\n• 更大的编辑空间\n• 智能自动扩展\n• Enter = 保存, Shift+Enter = 换行\n• Esc = 取消编辑';
+        } else {
+            editInput.placeholder = '✏️ 编辑你的问题...\n💡 Enter保存, Esc取消';
+        }
+        
+        // 临时隐藏原文本
+        messageContentEl.style.opacity = '0';
+        messageContentEl.style.pointerEvents = 'none';
+        
+        // 在气泡内插入编辑框
+        messageBubble.appendChild(editInput);
+        
+        // 智能高度计算 - 对齐ai_chat_widget.html的逻辑
+        const baseMinHeight = isLongText ? 56 : 40;
+        const maxHeight = isLongText ? 320 : 200;
+        const lineHeight = 18;
+        
+        // 计算初始高度
+        const lines = originalText.split('\n').length;
+        const estimatedLines = Math.max(lines, Math.ceil(originalText.length / 40));
+        const contentHeight = Math.max(estimatedLines * lineHeight + 32, baseMinHeight);
+        const initialHeight = Math.min(contentHeight, maxHeight);
+        
+        // 设置初始高度
+        editInput.style.height = initialHeight + 'px';
+        editInput.style.minHeight = baseMinHeight + 'px';
+        editInput.style.maxHeight = maxHeight + 'px';
+        
+        // 智能自动高度调整 - 完全对齐ai_chat_widget.html
+        const adjustHeight = () => {
+            editInput.style.height = 'auto';
+            editInput.style.overflowY = 'hidden';
+            
+            const scrollHeight = editInput.scrollHeight;
+            const newHeight = Math.max(scrollHeight, baseMinHeight);
+            const finalHeight = Math.min(newHeight, maxHeight);
+            
+            editInput.style.height = finalHeight + 'px';
+            
+            if (scrollHeight > maxHeight) {
+                editInput.style.overflowY = 'auto';
+            } else {
+                editInput.style.overflowY = 'hidden';
+                editInput.scrollTop = 0;
+            }
+        };
+        
+        // 聚焦和选择文本 - 对齐ai_chat_widget.html
+        setTimeout(() => {
+            editInput.focus();
+            if (originalText.length < 50) {
+                editInput.select();
+            } else {
+                editInput.setSelectionRange(originalText.length, originalText.length);
+                editInput.scrollTop = editInput.scrollHeight;
+            }
+        }, 50);
+        
+        // 事件监听器
+        editInput.addEventListener('input', adjustHeight);
+        
+        // 动态长文本检测 - 对齐ai_chat_widget.html
+        editInput.addEventListener('input', (e) => {
+            const currentText = editInput.value;
+            const shouldBeLongText = currentText.length > 100 || currentText.split('\n').length > 3;
+            const currentlyLongText = editInput.classList.contains('long-text-mode');
+            
+            if (shouldBeLongText && !currentlyLongText) {
+                editInput.classList.add('long-text-mode');
+                editInput.placeholder = '✏️ 长文本编辑模式已启用\n\n💡 优化功能:\n• 更大的编辑空间\n• 智能自动扩展\n• Enter = 保存, Shift+Enter = 换行\n• Esc = 取消编辑';
+            } else if (!shouldBeLongText && currentlyLongText && currentText.length < 80) {
+                editInput.classList.remove('long-text-mode');
+                editInput.placeholder = '✏️ 编辑你的问题...\n💡 Enter保存, Esc取消';
+            }
+            
+            adjustHeight();
+            
+            // 智能保存提示
+            if (editInput.value.trim() !== originalText.trim() && editInput.value.trim() !== '') {
+                editInput.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+            } else {
+                editInput.style.borderColor = '';
+            }
+        });
+        
+        // 保存函数 - 保持不变，已经实现完整
+        const saveEdit = async () => {
+            const newText = editInput.value.trim();
+            if (newText && newText !== originalText) {
+                try {
+                    const chatManager = await this.getChatManager();
+                    const allMessages = chatManager.getAllMessages();
+                    
+                    // 查找用户消息
+                    let userMessage = allMessages.find(msg => 
+                        msg.role === 'user' && msg.content.trim() === originalText.trim()
+                    );
+                    
+                    if (userMessage && userMessage.id) {
+                        // 调用后端API更新消息内容
+                        await chatManager.updateMessage(userMessage.id, newText);
+                        console.log('消息已成功保存到后端:', newText);
+                        
+                        // 更新UI显示
+                        messageContentEl.innerHTML = this.renderContent(newText);
+                        
+                        // 同步更新本地消息数组
+                        const localMessageIndex = allMessages.findIndex(msg => msg.id === userMessage.id);
+                        if (localMessageIndex !== -1) {
+                            chatManager.messages[localMessageIndex].content = newText;
+                        }
+                    } else {
+                        // 降级处理
+                        console.log('未找到消息ID，仅更新本地UI');
+                        messageContentEl.innerHTML = this.renderContent(newText);
+                    }
+                } catch (error) {
+                    console.error('保存编辑消息失败:', error);
+                    messageContentEl.innerHTML = this.renderContent(newText);
+                }
+            } else if (newText === originalText) {
+                messageContentEl.innerHTML = this.renderContent(newText);
+            }
+            
+            // 清理编辑状态
+            editInput.remove();
+            messageContentEl.style.opacity = '';
+            messageContentEl.style.pointerEvents = '';
+        };
+        
+        // 取消函数
+        const cancelEdit = () => {
+            editInput.remove();
+            messageContentEl.style.opacity = '';
+            messageContentEl.style.pointerEvents = '';
+        };
+        
+        // 键盘事件 - 完全对齐ai_chat_widget.html
+        editInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveEdit();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                cancelEdit();
+            } else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                saveEdit();
+            } else if (e.key === 'z' && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+                e.preventDefault();
+                editInput.value = originalText;
+                adjustHeight();
+                editInput.style.borderColor = '';
+            }
+        });
+        
+        // 失焦保存 - 对齐ai_chat_widget.html
+        editInput.addEventListener('blur', (e) => {
+            const relatedTarget = e.relatedTarget;
+            if (relatedTarget && (relatedTarget.tagName === 'INPUT' || relatedTarget.tagName === 'TEXTAREA')) {
+                return;
+            }
+            
+            const currentText = editInput.value.trim();
+            if (currentText !== originalText.trim() && currentText !== '') {
+                saveEdit();
+            } else if (currentText === '') {
+                cancelEdit();
+            } else {
+                cancelEdit();
+            }
+        });
+        
+        // 初始调整高度
+        setTimeout(adjustHeight, 0);
+    }
+    
+    // 删除消息功能 - 完全对齐ai_chat_widget.html  
+    async deleteMessage(button) {
+        // 确认是否要删除
+        if (!confirm('确定要删除这条消息吗？此操作无法撤销，将同时删除对应的AI回复。')) {
+            return;
+        }
+        
+        // 查找消息容器
+        const messageContainer = button.closest('.flex.items-start');
+        if (!messageContainer) {
+            console.warn('未找到消息容器');
+            return;
+        }
+        
+        // 只处理用户消息删除
+        const userMessageElement = messageContainer.querySelector('.homepage-chat-message-user');
+        if (!userMessageElement) {
+            console.warn('只能删除用户消息');
+            return;
+        }
+
+        // 获取用户消息内容
+        const messageContentEl = userMessageElement.querySelector('.markdown-content');
+        if (!messageContentEl) {
+            console.warn('未找到消息内容');
+            return;
+        }
+
+        const userMessageContent = messageContentEl.textContent || messageContentEl.innerText;
+        console.log('准备删除用户消息:', userMessageContent);
+
+        try {
+            // 获取聊天管理器
+            const chatManager = await this.getChatManager();
+            
+            // 在本地消息中查找对应的用户消息ID
+            const userMessage = chatManager.getAllMessages().find(msg => 
+                msg.role === 'user' && msg.content.trim() === userMessageContent.trim()
+            );
+
+            if (!userMessage || !userMessage.id) {
+                throw new Error('未找到对应的用户消息ID');
+            }
+
+            console.log('找到用户消息ID:', userMessage.id);
+
+            // 显示删除中状态
+            messageContainer.style.opacity = '0.5';
+            messageContainer.style.pointerEvents = 'none';
+
+            // 调用后端API删除消息对
+            await chatManager.deleteMessagePair(userMessage.id);
+
+            // 查找要删除的UI元素（用户消息和对应的AI回复）
+            let nextElement = messageContainer.nextElementSibling;
+            const messagesToDelete = [messageContainer];
+            
+            // 查找紧随其后的AI回复消息
+            while (nextElement) {
+                const aiMessage = nextElement.querySelector('.homepage-chat-message-ai');
+                if (aiMessage) {
+                    messagesToDelete.push(nextElement);
+                    break;
+                }
+                // 如果遇到另一个用户消息，停止查找
+                if (nextElement.querySelector('.homepage-chat-message-user')) {
+                    break;
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+            
+            // 添加删除动画并移除UI元素
+            messagesToDelete.forEach((element, index) => {
+                element.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+                
+                setTimeout(() => {
+                    if (element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+                }, 300 + index * 100);
+            });
+            
+            console.log(`消息删除成功: 用户消息及其${messagesToDelete.length - 1}条AI回复已从数据库和UI中删除`);
+
+        } catch (error) {
+            console.error('删除消息失败:', error);
+            
+            // 恢复UI状态
+            messageContainer.style.opacity = '';
+            messageContainer.style.pointerEvents = '';
+            
+            // 显示错误提示
+            let errorMessage = '删除消息失败，请稍后重试。';
+            if (error.message.includes('未找到')) {
+                errorMessage = '未找到要删除的消息，可能已被删除。';
+            }
+            
+            alert(errorMessage);
+        }
+    }
+    
+    // 增强悬停按钮用户体验 - 完全对齐ai_chat_widget.html
+    enhanceHoverButtonExperience() {
+        let hoverTimeout = null;
+        
+        // 为所有消息容器添加增强的悬停逻辑
+        document.addEventListener('mouseover', (e) => {
+            const messageContainer = e.target.closest('.homepage-chat-message-ai, .homepage-chat-message-user');
+            const hoverActions = e.target.closest('.homepage-message-hover-actions');
+            
+            if (messageContainer || hoverActions) {
+                // 清除任何现有的隐藏计时器
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = null;
+                }
+                
+                // 如果悬停在消息上，显示对应的按钮
+                if (messageContainer) {
+                    const actions = messageContainer.querySelector('.homepage-message-hover-actions');
+                    if (actions) {
+                        actions.style.opacity = '1';
+                        actions.style.visibility = 'visible';
+                        actions.style.transition = 'opacity 0.1s ease-out, visibility 0.1s ease-out';
+                    }
+                }
+            }
+        });
+        
+        // 处理鼠标离开
+        document.addEventListener('mouseout', (e) => {
+            const messageContainer = e.target.closest('.homepage-chat-message-ai, .homepage-chat-message-user');
+            const hoverActions = e.target.closest('.homepage-message-hover-actions');
+            
+            // 检查鼠标是否真的离开了消息区域
+            if (messageContainer || hoverActions) {
+                const relatedTarget = e.relatedTarget;
+                const sameContainer = relatedTarget && 
+                    (relatedTarget.closest('.homepage-chat-message-ai, .homepage-chat-message-user') === messageContainer ||
+                     relatedTarget.closest('.homepage-message-hover-actions') === (messageContainer ? messageContainer.querySelector('.homepage-message-hover-actions') : hoverActions));
+                
+                if (!sameContainer) {
+                    // 延迟隐藏，给用户时间移动鼠标
+                    hoverTimeout = setTimeout(() => {
+                        const actions = messageContainer ? 
+                            messageContainer.querySelector('.homepage-message-hover-actions') : 
+                            hoverActions;
+                        
+                        if (actions && !actions.matches(':hover') && 
+                            !actions.closest('.homepage-chat-message-ai, .homepage-chat-message-user').matches(':hover')) {
+                            actions.style.opacity = '0';
+                            actions.style.visibility = 'hidden';
+                            actions.style.transition = 'opacity 0.3s ease-in, visibility 0.3s ease-in';
+                        }
+                    }, 200); // 200ms延迟，给用户足够时间
+                }
+            }
+        });
+        
+        // 为按钮添加直接悬停检测
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('.homepage-message-action-btn')) {
+                const actions = e.target.closest('.homepage-message-hover-actions');
+                if (actions) {
+                    // 清除隐藏计时器
+                    if (hoverTimeout) {
+                        clearTimeout(hoverTimeout);
+                        hoverTimeout = null;
+                    }
+                    
+                    // 确保按钮组保持可见
+                    actions.style.opacity = '1';
+                    actions.style.visibility = 'visible';
+                    actions.style.transition = 'none';
+                }
+            }
+        });
+        
+        console.log('首页AI聊天悬停按钮体验增强已启用');
     }
     
     // 渲染消息内容
     renderContent(content) {
+        console.log('renderContent被调用，内容长度:', content.length);
+        console.log('markdownRenderer可用:', !!this.markdownRenderer);
+        
         if (this.markdownRenderer) {
-            return this.markdownRenderer.render(content);
+            try {
+                const result = this.markdownRenderer.render(content);
+                console.log('Markdown渲染成功');
+                return result;
+            } catch (error) {
+                console.error('Markdown渲染器调用失败:', error);
+                return this.basicMarkdownRender(content);
+            }
         } else {
-            // 降级处理
-            return content.replace(/\n/g, '<br>');
+            console.warn('Markdown渲染器不可用，使用基本渲染');
+            return this.basicMarkdownRender(content);
         }
+    }
+    
+    // 基本Markdown渲染（降级方案）
+    basicMarkdownRender(content) {
+        console.log('使用基本Markdown渲染');
+        
+        // 转义HTML特殊字符
+        let html = content
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        
+        // 基本Markdown语法处理
+        html = html
+            // 标题
+            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+            
+            // 粗体和斜体
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            
+            // 代码块
+            .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+            .replace(/`(.*?)`/g, '<code>$1</code>');
+        
+        // 处理列表 - 改进的处理方式
+        const lines = html.split('\n');
+        const processedLines = [];
+        let inList = false;
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const isListItem = /^[\s]*-[\s]+(.*)$/.test(line);
+            
+            if (isListItem) {
+                const match = line.match(/^[\s]*-[\s]+(.*)$/);
+                if (!inList) {
+                    processedLines.push('<ul>');
+                    inList = true;
+                }
+                processedLines.push(`<li>${match[1]}</li>`);
+            } else {
+                if (inList) {
+                    processedLines.push('</ul>');
+                    inList = false;
+                }
+                processedLines.push(line);
+            }
+        }
+        
+        // 如果文档结束时还在列表中，关闭列表
+        if (inList) {
+            processedLines.push('</ul>');
+        }
+        
+        html = processedLines.join('\n');
+        
+        // 处理换行和段落
+        html = html
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>');
+        
+        // 包装段落
+        if (html && !html.startsWith('<')) {
+            html = '<p>' + html + '</p>';
+        }
+        
+        // 清理多余的段落标签
+        html = html
+            .replace(/<p><\/p>/g, '')
+            .replace(/<p>(<[uo]l>)/g, '$1')
+            .replace(/(<\/[uo]l>)<\/p>/g, '$1')
+            .replace(/<p>(<h[1-6]>)/g, '$1')
+            .replace(/(<\/h[1-6]>)<\/p>/g, '$1')
+            .replace(/<p>(<pre>)/g, '$1')
+            .replace(/(<\/pre>)<\/p>/g, '$1');
+        
+        console.log('基本渲染结果:', html.substring(0, 200) + '...');
+        return html;
     }
     
     // 显示打字指示器
@@ -793,21 +2031,27 @@ class HomepageAIChatManager {
         }
     }
     
-    // 设置发送按钮状态
+    // 设置发送按钮状态 - 对齐ai_chat_widget.html
     setSendButtonState(isLoading) {
         if (!this.sendBtn) return;
+        
+        this.isAIResponding = isLoading; // 更新AI响应状态
         
         const sendIcon = this.sendBtn.querySelector('.send-icon');
         const stopIcon = this.sendBtn.querySelector('.stop-icon');
         
         if (isLoading) {
-            this.sendBtn.disabled = true;
+            this.sendBtn.classList.add('send-btn-sending');
             sendIcon.classList.add('hidden');
             stopIcon.classList.remove('hidden');
+            this.sendBtn.disabled = false; // 发送中时允许点击停止
+            this.sendBtn.title = '停止生成';
         } else {
-            this.sendBtn.disabled = false;
+            this.sendBtn.classList.remove('send-btn-sending');
             sendIcon.classList.remove('hidden');
             stopIcon.classList.add('hidden');
+            this.sendBtn.disabled = this.inputArea.value.trim() === ''; // 根据输入框内容设置
+            this.sendBtn.title = '发送消息';
         }
     }
     
@@ -824,6 +2068,37 @@ class HomepageAIChatManager {
         if (this.messagesContainer) {
             this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
         }
+    }
+
+    // 绑定推荐卡片点击事件
+    bindRecommendationCards() {
+        // 使用事件委托，避免因为DOM更新导致事件丢失
+        if (this.messagesContainer) {
+            this.messagesContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.recommendation-card');
+                if (card) {
+                    const question = card.getAttribute('data-question');
+                    if (question && this.inputArea) {
+                        // 将推荐问题填入输入框
+                        this.inputArea.value = question;
+                        this.autoResizeInput();
+                        
+                        // 更新发送按钮状态
+                        if (this.sendBtn && !this.isAIResponding) {
+                            this.sendBtn.disabled = false;
+                        }
+                        
+                        // 聚焦输入框
+                        this.inputArea.focus();
+                        
+                        // 可选：自动发送问题
+                        // this.sendMessage();
+                    }
+                }
+            });
+        }
+        
+        console.log('推荐卡片点击事件已绑定');
     }
 }
 

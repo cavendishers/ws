@@ -13,16 +13,331 @@
         display: none !important;
     }
     
-    /* 搜索框悬停效果增强 */
-    #ai-search-trigger:hover {
-        box-shadow: 0 4px 20px rgba(0, 191, 255, 0.15);
-        transform: translateY(-1px);
+    /* AI搜索框新样式 */
+    /* #ai-search-trigger .grid {
+        height: 800px;
+        width: 800px;
+        background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),
+            linear-gradient(to bottom, #0f0f10 1px, transparent 1px);
+        background-size: 1rem 1rem;
+        background-position: center center;
+        position: absolute;
+        z-index: -1;
+        filter: blur(1px);
+    } */
+    
+    #ai-search-trigger .white,
+    #ai-search-trigger .border,
+    #ai-search-trigger .darkBorderBg,
+    #ai-search-trigger .glow {
+        max-height: clamp(55px, 7vw, 85px);
+        max-width: clamp(340px, 38vw, 580px);
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        overflow: hidden;
+        z-index: -1;
+        border-radius: 12px;
+        filter: blur(3px);
     }
     
-    /* 搜索框内的按钮悬停效果 */
-    #ai-search-trigger button:hover {
-        background: var(--button-highlight) !important;
-        box-shadow: 0 2px 8px rgba(0, 191, 255, 0.3);
+    #ai-search-trigger .input {
+        background-color: #010201;
+        border: none;
+        width: clamp(320px, 35vw, 560px);
+        height: clamp(40px, 4.375vw, 70px);
+        border-radius: 10px;
+        color: white;
+        padding-inline: clamp(45px, 5vw, 70px);
+        font-size: clamp(14px, 1.5vw, 18px);
+    }
+    
+    #ai-search-trigger #ai-poda {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #ai-search-trigger .input::placeholder {
+        color: #c0b9c0;
+    }
+    
+    #ai-search-trigger .input:focus {
+        outline: none;
+    }
+    
+    #ai-search-trigger #ai-main:focus-within > #ai-input-mask {
+        display: none;
+    }
+    
+    #ai-search-trigger #ai-input-mask {
+        pointer-events: none;
+        width: clamp(80px, 10vw, 120px);
+        height: clamp(15px, 2vw, 25px);
+        position: absolute;
+        top: clamp(12px, 2.8vw, 22px);
+        left: clamp(50px, 5.5vw, 70px);
+    }
+    
+    #ai-search-trigger #ai-pink-mask {
+        pointer-events: none;
+        width: clamp(25px, 3vw, 35px);
+        height: clamp(15px, 2vw, 25px);
+        position: absolute;
+        background: #cf30aa;
+        top: clamp(8px, 1.5vw, 12px);
+        left: clamp(3px, 0.5vw, 5px);
+        filter: blur(20px);
+        opacity: 0.8;
+        transition: all 2s;
+    }
+    
+    #ai-search-trigger #ai-main:hover > #ai-pink-mask {
+        opacity: 0;
+    }
+    
+    #ai-search-trigger .white {
+        max-height: clamp(48px, 6.5vw, 78px);
+        max-width: clamp(330px, 37vw, 570px);
+        border-radius: 10px;
+        filter: blur(2px);
+    }
+    
+    #ai-search-trigger .white::before {
+        content: "";
+        z-index: -2;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(83deg);
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        filter: brightness(1.4);
+        background-image: conic-gradient(
+            rgba(0, 0, 0, 0) 0%,
+            #a099d8,
+            rgba(0, 0, 0, 0) 8%,
+            rgba(0, 0, 0, 0) 50%,
+            #dfa2da,
+            rgba(0, 0, 0, 0) 58%
+        );
+        transition: all 2s;
+    }
+    
+    #ai-search-trigger .border {
+        max-height: clamp(46px, 6.2vw, 74px);
+        max-width: clamp(325px, 36.5vw, 565px);
+        border-radius: 11px;
+        filter: blur(0.5px);
+    }
+    
+    #ai-search-trigger .border::before {
+        content: "";
+        z-index: -2;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(70deg);
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        filter: brightness(1.3);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-image: conic-gradient(
+            #1c191c,
+            #402fb5 5%,
+            #1c191c 14%,
+            #1c191c 50%,
+            #cf30aa 60%,
+            #1c191c 64%
+        );
+        transition: all 2s;
+    }
+    
+    #ai-search-trigger .darkBorderBg {
+        max-height: clamp(50px, 6.8vw, 80px);
+        max-width: clamp(335px, 37.5vw, 575px);
+    }
+    
+    #ai-search-trigger .darkBorderBg::before {
+        content: "";
+        z-index: -2;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(82deg);
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-image: conic-gradient(
+            rgba(0, 0, 0, 0),
+            #18116a,
+            rgba(0, 0, 0, 0) 10%,
+            rgba(0, 0, 0, 0) 50%,
+            #6e1b60,
+            rgba(0, 0, 0, 0) 60%
+        );
+        transition: all 2s;
+    }
+    
+    #ai-search-trigger #ai-poda:hover > .darkBorderBg::before {
+        transform: translate(-50%, -50%) rotate(-98deg);
+    }
+    
+    #ai-search-trigger #ai-poda:hover > .glow::before {
+        transform: translate(-50%, -50%) rotate(-120deg);
+    }
+    
+    #ai-search-trigger #ai-poda:hover > .white::before {
+        transform: translate(-50%, -50%) rotate(-97deg);
+    }
+    
+    #ai-search-trigger #ai-poda:hover > .border::before {
+        transform: translate(-50%, -50%) rotate(-110deg);
+    }
+    
+    #ai-search-trigger #ai-poda:focus-within > .darkBorderBg::before {
+        transform: translate(-50%, -50%) rotate(442deg);
+        transition: all 4s;
+    }
+    
+    #ai-search-trigger #ai-poda:focus-within > .glow::before {
+        transform: translate(-50%, -50%) rotate(420deg);
+        transition: all 4s;
+    }
+    
+    #ai-search-trigger #ai-poda:focus-within > .white::before {
+        transform: translate(-50%, -50%) rotate(443deg);
+        transition: all 4s;
+    }
+    
+    #ai-search-trigger #ai-poda:focus-within > .border::before {
+        transform: translate(-50%, -50%) rotate(430deg);
+        transition: all 4s;
+    }
+    
+    #ai-search-trigger .glow {
+        overflow: hidden;
+        filter: blur(30px);
+        opacity: 0.4;
+        max-height: clamp(95px, 12vw, 155px);
+        max-width: clamp(380px, 42vw, 620px);
+    }
+    
+    #ai-search-trigger .glow:before {
+        content: "";
+        z-index: -2;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(60deg);
+        position: absolute;
+        width: 999px;
+        height: 999px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-image: conic-gradient(
+            #000,
+            #402fb5 5%,
+            #000 38%,
+            #000 50%,
+            #cf30aa 60%,
+            #000 87%
+        );
+        transition: all 2s;
+    }
+    
+    #ai-search-trigger #ai-filter-icon {
+        position: absolute;
+        top: 50%;
+        right: clamp(10px, 1.25vw, 15px);
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        height: clamp(25px, 2.8vw, 40px);
+        width: clamp(24px, 2.7vw, 38px);
+        isolation: isolate;
+        overflow: hidden;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #161329, black, #1d1b4b);
+        border: 1px solid transparent;
+        cursor: pointer;
+        color: white;
+    }
+    
+    #ai-search-trigger .filterBorder {
+        height: clamp(27px, 3vw, 42px);
+        width: clamp(25px, 2.9vw, 40px);
+        position: absolute;
+        overflow: hidden;
+        top: 50%;
+        right: clamp(9px, 1.15vw, 14px);
+        transform: translateY(-50%);
+        border-radius: 10px;
+    }
+    
+    #ai-search-trigger .filterBorder::before {
+        content: "";
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(90deg);
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        filter: brightness(1.35);
+        background-image: conic-gradient(
+            rgba(0, 0, 0, 0),
+            #3d3a4f,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0) 50%,
+            #3d3a4f,
+            rgba(0, 0, 0, 0) 100%
+        );
+        animation: ai-rotate 4s linear infinite;
+    }
+    
+    #ai-search-trigger #ai-main {
+        position: relative;
+    }
+    
+    #ai-search-trigger #ai-search-icon {
+        position: absolute;
+        left: clamp(15px, 1.75vw, 20px);
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(20px, 2.2vw, 24px);
+        height: clamp(20px, 2.2vw, 24px);
+    }
+    
+    #ai-search-trigger #ai-search-icon svg {
+        width: 100%;
+        height: 100%;
+        max-width: 24px;
+        max-height: 24px;
+    }
+    
+    #ai-search-trigger #ai-filter-icon i {
+        font-size: clamp(12px, 1.3vw, 16px);
+    }
+    
+    @keyframes ai-rotate {
+        100% {
+            transform: translate(-50%, -50%) rotate(450deg);
+        }
     }
 </style>
 {% endblock %}
@@ -38,11 +353,41 @@
             <!-- Left Column -->
             <div class="flex flex-col justify-center h-full text-center md:text-left py-8 z-10">
                 <!-- AI Search Trigger -->
-                <div id="ai-search-trigger" class="relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm cursor-pointer hover:border-[var(--button-highlight)] transition-all duration-300 group p-1 max-w-xl mx-auto md:mx-0 mb-12">
-                    <span class="text-gray-500 text-base flex-grow text-left px-4 py-2">试着问我一些问题吧...</span>
-                    <button class="bg-[var(--button-highlight)] text-white px-5 h-10 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors flex items-center space-x-2">
-                        <i class="fas fa-paper-plane text-xs"></i><span>发送</span>
-                    </button>
+                <div id="ai-search-trigger" class="cursor-pointer w-fit mx-auto md:mx-0 mb-12" style="position: relative;">
+                    
+                    <div id="ai-poda">
+                        <div class="glow"></div>
+                        <div class="darkBorderBg"></div>
+                        <div class="darkBorderBg"></div>
+                        <div class="darkBorderBg"></div>
+                        <div class="white"></div>
+                        <div class="border"></div>
+                        <div id="ai-main">
+                            <input placeholder="试着问我一些问题吧..." type="text" name="text" class="input" readonly />
+                            <div id="ai-input-mask"></div>
+                            <div id="ai-pink-mask"></div>
+                            <div class="filterBorder"></div>
+                            <div id="ai-filter-icon">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
+                            <div id="ai-search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" height="24" fill="none" class="feather feather-search">
+                                    <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+                                    <line stroke="url(#searchl)" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                                    <defs>
+                                        <linearGradient gradientTransform="rotate(50)" id="search">
+                                            <stop stop-color="#f8e7f8" offset="0%"></stop>
+                                            <stop stop-color="#b6a9b7" offset="50%"></stop>
+                                        </linearGradient>
+                                        <linearGradient id="searchl">
+                                            <stop stop-color="#b6a9b7" offset="0%"></stop>
+                                            <stop stop-color="#837484" offset="50%"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- Product Buttons -->
                 <div id="product-buttons" class="max-w-xl mx-auto md:mx-0">
@@ -217,31 +562,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // AI搜索框点击事件处理
     const aiSearchTrigger = document.getElementById('ai-search-trigger');
+    const aiInput = document.querySelector('#ai-search-trigger .input');
+    const aiFilterIcon = document.getElementById('ai-filter-icon');
+    
+    function openAIChat(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('AI搜索框被点击，打开首页AI聊天界面...');
+        
+        // 使用新的首页AI聊天界面
+        if (window.homepageAIChat) {
+            window.homepageAIChat.open();
+        } else {
+            console.error('首页AI聊天管理器未初始化');
+            // 延迟重试
+            setTimeout(() => {
+                if (window.homepageAIChat) {
+                    window.homepageAIChat.open();
+                }
+            }, 100);
+        }
+    }
     
     if (aiSearchTrigger) {
-        aiSearchTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('AI搜索框被点击，打开首页AI聊天界面...');
-            
-            // 使用新的首页AI聊天界面
-            if (window.homepageAIChat) {
-                window.homepageAIChat.open();
-            } else {
-                console.error('首页AI聊天管理器未初始化');
-                // 延迟重试
-                setTimeout(() => {
-                    if (window.homepageAIChat) {
-                        window.homepageAIChat.open();
-                    }
-                }, 100);
-            }
-        });
-        
+        aiSearchTrigger.addEventListener('click', openAIChat);
         console.log('AI搜索框点击事件已绑定到首页聊天界面');
     } else {
         console.error('未找到AI搜索框元素');
+    }
+    
+    // 为输入框添加点击事件
+    if (aiInput) {
+        aiInput.addEventListener('click', openAIChat);
+        console.log('AI输入框点击事件已绑定');
+    }
+    
+    // 为发送按钮添加点击事件
+    if (aiFilterIcon) {
+        aiFilterIcon.addEventListener('click', openAIChat);
+        console.log('AI发送按钮点击事件已绑定');
     }
 });
 </script>

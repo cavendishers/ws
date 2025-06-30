@@ -48,9 +48,9 @@
             <div class="flex items-center space-x-4">
                 {% if request.session.user_id %}
                 <div class="relative group">
-                    <button class="flex items-center space-x-1 bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">
-                        <span>{{ request.session.username }}</span>
-                        <i class="fas fa-chevron-down text-xs"></i>
+                    <button class="flex items-center space-x-1 bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors max-w-xs">
+                        <span class="truncate flex-1 min-w-0">{{ request.session.username }}</span>
+                        <i class="fas fa-chevron-down text-xs flex-shrink-0"></i>
                     </button>
                     <div class="absolute hidden group-hover:block right-0 bg-[var(--bg-secondary)] p-4 rounded-lg w-48 space-y-3 shadow-xl mt-2 border border-[rgba(0,191,255,0.1)] z-50">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>

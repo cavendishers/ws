@@ -16,7 +16,18 @@ document.addEventListener('DOMContentLoaded', function() {
     '低空经济': 'low_altitude_economy.jpg',
     '半导体': 'semiconductor.jpg',
     '大数据': 'big_data.jpg',
-    '云计算': 'cloud_computing.jpg'
+    '云计算': 'cloud_computing.jpg',
+    '元宇宙': 'metaverse.jpg',
+    '量子计算': 'quantum_computing.jpg',
+    '生物医药': 'biopharmaceutical.jpg',
+    '新材料': 'new_materials.jpg',
+    '新能源': 'new_energy.jpg',
+    '新基建': 'new_infrastructure.jpg',
+    '新消费': 'new_consumption.jpg',
+    '新农业': 'new_agriculture.jpg',
+    '新金融': 'new_finance.jpg',
+    '新制造': 'new_manufacturing.jpg',
+    '集成电路': 'integrated_circuit.jpg',
   };
   
   // 中文名称到英文代码的映射表 - 作为备用方案
@@ -30,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
     '低空经济': 'LAE',
     '半导体': 'SEMICONDUCTOR',
     '大数据': 'BIGDATA',
-    '云计算': 'CLOUD'
+    '云计算': 'CLOUD',
+    '元宇宙': 'METAVERSE'
   };
   
   // 获取模态框元素（保留以备将来可能需要的模态框功能）

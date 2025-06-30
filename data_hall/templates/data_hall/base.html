@@ -177,21 +177,21 @@
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
                 <div class="relative" id="user-dropdown-container">
-                    <button id="user-dropdown-btn" class="flex items-center space-x-3 bg-gradient-to-r from-[var(--bg-secondary)] to-[var(--button-inactive)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[rgba(0,191,255,0.08)] hover:shadow-lg transition-all duration-300 focus:outline-none border border-[rgba(255,255,255,0.1)] backdrop-blur-sm">
-                        <div class="w-7 h-7 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                    <button id="user-dropdown-btn" class="flex items-center space-x-3 bg-gradient-to-r from-[var(--bg-secondary)] to-[var(--button-inactive)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[rgba(0,191,255,0.08)] hover:shadow-lg transition-all duration-300 focus:outline-none border border-[rgba(255,255,255,0.1)] backdrop-blur-sm max-w-xs">
+                        <div class="w-7 h-7 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">
                             {{ user.username|first|upper }}
                         </div>
-                        <span class="font-medium">{{ user.username }}</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 ml-1" id="user-dropdown-icon"></i>
+                        <span class="font-medium truncate flex-1 min-w-0">{{ user.username }}</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 ml-1 flex-shrink-0" id="user-dropdown-icon"></i>
                     </button>
                     <div id="user-dropdown" class="absolute hidden right-0 mt-3 w-64 bg-[var(--bg-secondary)] rounded-xl shadow-2xl border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden backdrop-blur-md">
                         <div class="p-4 bg-gradient-to-r from-[rgba(2,4,10,0.7)] via-[rgba(30,41,59,0.8)] to-[rgba(2,4,10,0.7)] border-b border-[rgba(255,255,255,0.08)]">
                             <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
+                                <div class="w-12 h-12 bg-gradient-to-br from-[var(--button-highlight)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-sm font-bold shadow-lg flex-shrink-0">
                                     {{ user.username|first|upper }}
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-white font-semibold text-sm">{{ user.username }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white font-semibold text-sm truncate">{{ user.username }}</p>
                                     <p class="text-[var(--text-secondary)] text-xs truncate">{{ user.email|default:"用户" }}</p>
                                 </div>
                             </div>

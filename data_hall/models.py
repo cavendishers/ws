@@ -159,16 +159,6 @@ class ChainPoint(models.Model):
         on_delete=models.CASCADE,
         related_name='chain_points'
     )
-    # 新增字段来存储JSON中的额外信息
-    node_type = models.IntegerField("节点类型", null=True, blank=True, help_text="1=分类节点, 2=产品节点, 3=下游应用")
-    node_num = models.IntegerField("节点序号", null=True, blank=True)
-    node_important = models.IntegerField("重要程度", null=True, blank=True, help_text="0-5级重要程度")
-    product_code = models.CharField("产品代码", max_length=50, blank=True, null=True)
-    product_name = models.CharField("产品名称", max_length=255, blank=True, null=True)
-    parent_node_code = models.CharField("父节点代码", max_length=50, blank=True, null=True)
-    product_define = models.TextField("产品定义", blank=True, null=True)
-    company_count = models.IntegerField("企业数量", default=0, help_text="该链点关联的企业数量")
-    node_num_desc = models.CharField("节点描述", max_length=100, blank=True, null=True, help_text="如：上游、中游、下游")
     created_at = models.DateTimeField("创建时间", auto_now_add=True)
     updated_at = models.DateTimeField("更新时间", auto_now=True)
 
@@ -179,18 +169,16 @@ class ChainPoint(models.Model):
         indexes = [
             models.Index(fields=['level']),  # 层级索引
             models.Index(fields=['parent']),  # 父节点索引
-            models.Index(fields=['code']),     # 节点代码索引
-            models.Index(fields=['node_type']),  # 节点类型索引
-            models.Index(fields=['node_important']),  # 重要程度索引
+            models.Index(fields=['code'])     # 节点代码索引
         ]
 
     def __str__(self):
         return f"{self.code}-{self.name}"
     
     @property
-    def actual_company_count(self):
+    def company_count(self):
         """
-        计算该链点实际关联的企业数量（从关联表中统计）
+        计算该链点关联的企业数量
         """
         return self.companies.count()
 
@@ -208,6 +196,10 @@ class ChainPointCompany(models.Model):
         on_delete=models.CASCADE,
         related_name='chain_points'
     )
+    score = models.DecimalField("关联分数", max_digits=5, decimal_places=2, null=True, help_text="企业与该链点的关联分数")
+    node_type = models.IntegerField("节点类型", null=True, help_text="节点类型(1或2)")
+    node_importance = models.IntegerField("节点重要性", null=True, help_text="节点重要性(0-5)")
+    level = models.IntegerField("层级", null=True, help_text="所在层级")
     created_at = models.DateTimeField("创建时间", auto_now_add=True)
 
     class Meta:
@@ -215,11 +207,16 @@ class ChainPointCompany(models.Model):
         verbose_name_plural = "链点-公司关联"
         db_table = "chain_point_company"
         indexes = [
-            models.Index(fields=['chain_point', 'company'])  # 复合索引
+            models.Index(fields=['score'], name='idx_cpc_score'),
+            models.Index(fields=['node_type'], name='idx_cpc_node_type'),
+            models.Index(fields=['level'], name='idx_cpc_level'),
+            models.Index(fields=['chain_point', 'score'], name='idx_cpc_point_score'),
+            models.Index(fields=['company', 'score'], name='idx_cpc_company_score'),
+            models.Index(fields=['level', 'node_type'], name='idx_cpc_level_type')
         ]
 
     def __str__(self):
-        return f"{self.chain_point} ← {self.company}"
+        return f"{self.company.company_name} - {self.chain_point.name}"
 
 # 中国省市区三级联动模型
 class Province(models.Model):

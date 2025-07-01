@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',  # 添加CORS支持
     'data_hall',
+    'users',
+    'ai_assistant',
 ]
 
 MIDDLEWARE = [

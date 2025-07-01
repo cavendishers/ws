@@ -31,7 +31,7 @@ class AIChatAPIView(APIView):
         return Response({
             'success': False,
             'error': 'AI聊天服务已迁移到腾讯智能体',
-            'message': '请使用新的API接口 /api/ai/chat/',
+            'message': '请使用新的API接口 /ai/api/chat/',
             'migration_note': '原DeepSeek服务已停用，请使用腾讯智能体服务'
         }, status=status.HTTP_410_GONE)
 
@@ -104,7 +104,7 @@ class AIChatConfigAPIView(APIView):
                 'provider': 'deprecated',
                 'status': 'migrated',
                 'message': 'AI服务已迁移到腾讯智能体',
-                'new_endpoint': '/api/ai/config/'
+                'new_endpoint': '/ai/api/config/'
             }
         }, status=status.HTTP_200_OK)
 
@@ -116,6 +116,6 @@ def ai_health_check(request):
     return Response({
         'status': 'deprecated',
         'message': 'AI服务已迁移到腾讯智能体',
-        'new_endpoint': '/api/ai/health/',
+        'new_endpoint': '/ai/api/health/',
         'timestamp': timezone.now().isoformat()
     }, status=status.HTTP_200_OK) 

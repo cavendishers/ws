@@ -1,14 +1,12 @@
 from django.urls import path
 from . import views
 from . import api_views
-from . import tencent_ai_views
 
 app_name = 'data_hall'
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('shell/', views.shell, name='shell'),
-    path('chat-widget/', views.chat_widget, name='chat_widget'),
     
     # 原有页面路由
     path('ranking/', views.ranking, name='ranking'),
@@ -20,10 +18,6 @@ urlpatterns = [
     path('map/', views.map_view, name='map'),
     path('report/', views.report, name='report'),
     path('news/', views.news, name='news'),
-    path('login/', views.login, name='login'),
-    path('logout/', views.logout, name='logout'),
-    path('register/', views.register, name='register'),
-    path('password-reset/', views.password_reset_request, name='password_reset'),
     
     # iframe版本页面路由
     path('iframe/', views.index_iframe, name='index_iframe'),
@@ -34,7 +28,8 @@ urlpatterns = [
     path('iframe/map/', views.map_iframe, name='map_iframe'),
     path('iframe/report/', views.report_iframe, name='report_iframe'),
     path('iframe/news/', views.news_iframe, name='news_iframe'),
-    path('iframe/login/', views.login_iframe, name='login_iframe'),
+    
+    # API路由
     path('api/filter-data/', views.get_filter_data, name='filter-data'),
     path('api/company-stats/', views.get_company_stats, name='company-stats'),
     path('api/company-locations/', views.get_company_locations, name='company-locations'),
@@ -43,16 +38,6 @@ urlpatterns = [
     path('api/company-rankings/', views.get_company_rankings, name='company_rankings'),
     path('api/enterpriseList.json', views.get_enterprise_list, name='enterprise_list'),
     path('api/precisionList.json', views.get_precision_list, name='precision_list'),
-    # AI聊天API路由 - 使用腾讯智能体
-    path('api/ai/chat/', tencent_ai_views.AIChatAPIView.as_view(), name='ai_chat_api'),
-    path('api/ai/chat/config/', tencent_ai_views.TencentChatConfigAPIView.as_view(), name='ai_chat_config'),
-    path('api/ai/health/', tencent_ai_views.ai_health_check, name='ai_health_check'),
-    path('api/ai/history/', tencent_ai_views.ChatHistoryAPIView.as_view(), name='ai_chat_history'),
-    path('api/ai/sessions/', tencent_ai_views.TencentSessionsAPIView.as_view(), name='ai_sessions'),
-    path('api/ai/history/<str:session_id>/', tencent_ai_views.TencentChatHistoryAPIView.as_view(), name='ai_chat_history_detail'),
-    
-    # DeepSeek接口已移除 - 现在仅使用腾讯智能体
-    # 如需访问已废弃的接口，请使用腾讯智能体的对应接口
     path('api/top-companies/', views.get_top_companies, name='top_companies'),
     path('api/yearly-stats/', views.get_yearly_stats, name='yearly_stats'),
     

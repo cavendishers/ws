@@ -1,22 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.contrib.messages import success, error, info
 from django.http import JsonResponse
 from django.db.models import Count
 from .models import CompanyInfo, CompanyRanking, CompanyFinancing, IndustryChain
 from django.db.models import Q
 import json
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-# OpenAI已迁移到ai_services.py模块
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST, require_http_methods
 from .models import IndustryChain, ChainPoint
-from .forms import LoginForm, RegistrationForm, PasswordResetRequestForm
 from django.contrib import messages
 from django.core.cache import cache
 from django.conf import settings
-
 
 
 def index(request):
@@ -26,10 +20,6 @@ def index(request):
 def shell(request):
     """Shell容器页面视图"""
     return render(request, 'data_hall/shell.html')
-
-def chat_widget(request):
-    """独立的聊天助手页面视图"""
-    return render(request, 'data_hall/chat_widget_standalone.html')
 
 def index_iframe(request):
     """首页iframe版本视图"""
@@ -82,10 +72,6 @@ def news(request, iframe_mode=False):
     template = 'data_hall/news.html'
     return render(request, template)
 
-# 删除重复的iframe版本视图函数
-# ranking_iframe, industry_iframe, enterprise_iframe, map_iframe, 
-# report_iframe, news_iframe, precision_iframe 等函数已合并
-
 # iframe版本视图的包装器
 def ranking_iframe(request):
     return ranking(request, iframe_mode=True)
@@ -107,71 +93,6 @@ def news_iframe(request):
 
 def precision_iframe(request):
     return precision(request, iframe_mode=True)
-
-def login_iframe(request):
-    """登录iframe版本视图（安全版）"""
-    # 如果用户已经登录，直接跳转到首页
-    if request.user.is_authenticated:
-        return redirect('data_hall:index_iframe')
-    
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            
-            # 清除登录失败计数
-            ip_address = form.get_client_ip(request)
-            cache_key = f'login_attempts_{ip_address}'
-            cache.delete(cache_key)
-            
-            # 处理"记住我"功能
-            if form.cleaned_data.get('remember_me'):
-                request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
-            else:
-                request.session.set_expiry(0)  # 浏览器关闭即失效
-            
-            return redirect('data_hall:index_iframe')
-    else:
-        form = LoginForm()
-    
-    return render(request, 'data_hall/login.html', {'form': form})
-
-def login(request):
-    """安全登录页面"""
-    # 如果用户已经登录，直接跳转到首页
-    if request.user.is_authenticated:
-        return redirect('data_hall:index')
-    
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            
-            # 清除登录失败计数
-            ip_address = form.get_client_ip(request)
-            cache_key = f'login_attempts_{ip_address}'
-            cache.delete(cache_key)
-            
-            # 处理"记住我"功能
-            if form.cleaned_data.get('remember_me'):
-                request.session.set_expiry(60 * 60 * 24 * 14)  # 2周
-            else:
-                request.session.set_expiry(0)  # 浏览器关闭即失效
-            
-            messages.success(request, f'欢迎回来，{user.username}！')
-            
-            # 重定向到下一页或首页
-            next_url = request.GET.get('next') or 'data_hall:index'
-            return redirect(next_url)
-        else:
-            # 表单验证失败，错误信息已包含在form.errors中
-            pass
-    else:
-        form = LoginForm()
-    
-    return render(request, 'data_hall/login.html', {'form': form})
 
 def get_filter_data(request):
     """获取筛选选项数据"""
@@ -659,9 +580,6 @@ def get_precision_list(request):
     
     return JsonResponse(result, safe=False)
 
-# 旧的AI聊天函数已迁移到 ai_views.py
-# 现在使用新的基于DeepSeek的AI聊天系统
-
 def get_top_companies(request):
     """获取新势力企业名单 - 根据综合得分排序"""
     print("====== 开始处理新势力企业名单请求 ======")
@@ -826,51 +744,6 @@ def get_yearly_stats(request):
         'yearly_stats': result
     })
 
-def logout(request):
-    """用户安全退出登录"""
-    if request.user.is_authenticated:
-        username = request.user.username
-        auth_logout(request)
-        messages.info(request, f'您已安全退出，再见 {username}！')
-    
-    return redirect('data_hall:index')
-
-
-def register(request):
-    """用户注册页面"""
-    # 如果用户已经登录，直接跳转到首页
-    if request.user.is_authenticated:
-        return redirect('data_hall:index')
-    
-    if request.method == 'POST':
-        form = RegistrationForm(data=request.POST)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            messages.success(request, f'注册成功！欢迎加入，{user.username}！')
-            return redirect('data_hall:index')
-    else:
-        form = RegistrationForm()
-    
-    return render(request, 'data_hall/register.html', {'form': form})
-
-
-def password_reset_request(request):
-    """密码重置请求页面"""
-    if request.user.is_authenticated:
-        return redirect('data_hall:index')
-    
-    if request.method == 'POST':
-        form = PasswordResetRequestForm(data=request.POST)
-        if form.is_valid():
-            # TODO: 实现邮件发送功能
-            messages.info(request, '密码重置邮件已发送到您的邮箱，请查收。')
-            return redirect('data_hall:login')
-    else:
-        form = PasswordResetRequestForm()
-    
-    return render(request, 'data_hall/password_reset.html', {'form': form})
-    
 def industry_detail(request, industry_code=None):
     """产业链详情页面"""
     import json

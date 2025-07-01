@@ -28,6 +28,9 @@ def chrome_devtools_json(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('data_hall.urls')),
+    # 新应用路由
+    path('users/', include('users.urls')),
+    path('ai/', include('ai_assistant.urls')),
     # 添加favicon.ico路由
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
     # 处理Chrome DevTools配置文件请求

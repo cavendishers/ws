@@ -1,7 +1,7 @@
 {% extends 'data_hall/base.html' %}
 {% load static %}
 
-{% block title %}登录 - 中国新势力企业态势感知系统{% endblock %}
+{% block title %}注册 - 中国新势力企业态势感知系统{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'data_hall/css/auth_light_sweep.css' %}" />
@@ -92,41 +92,46 @@ html, body {
 
 .auth-right {
     flex: 1; /* 占据剩余的54%空间 */
-    padding: 60px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .auth-form-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
 }
 
 .auth-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .auth-title {
-    font-size: 1.875rem;
+    font-size: 1.75rem;
     font-weight: 600;
     color: #1F2937;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.025em;
 }
 
 .auth-subtitle {
     color: #6B7280;
     font-size: 0.875rem;
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
     .form-group {
         margin-bottom: 24px;
         position: relative;
+    }
+
+    .form-group.password-group {
+        position: relative;
+        margin-bottom: 28px;
     }
 
 .form-label {
@@ -139,10 +144,10 @@ html, body {
 
 .form-input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 2px solid #E5E7EB;
-    border-radius: 10px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     background: #FFFFFF;
     color: #1F2937;
     transition: all 0.2s ease;
@@ -158,65 +163,55 @@ html, body {
 
 .form-input::placeholder {
     color: #9CA3AF;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
 }
 
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
+/* 重新设计密码提示区域 */
+.password-helper {
+    position: absolute;
+    bottom: -22px;
+    left: 0;
+    right: 0;
+    height: 18px; /* 固定高度，避免抖动 */
+    font-size: 0.75rem;
+    color: #64748B;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
-.checkbox-group {
+.password-helper.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.password-strength-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.form-checkbox {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #D1D5DB;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s ease;
+.password-strength-bar {
+    flex: 1;
+    height: 3px;
+    background: #E5E7EB;
+    border-radius: 2px;
+    overflow: hidden;
 }
 
-.form-checkbox:checked {
-    background: #6366F1;
-    border-color: #6366F1;
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
 }
 
-.form-checkbox:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-}
-
-.checkbox-label {
-    font-size: 0.875rem;
-    color: #6B7280;
-    cursor: pointer;
-}
-
-.forgot-link {
-    font-size: 0.875rem;
-    color: #6366F1;
-    text-decoration: none;
+.password-strength-text {
+    font-size: 0.7rem;
     font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.forgot-link:hover {
-    color: #4F46E5;
+    min-width: 50px;
+    text-align: right;
 }
 
 .submit-button {
@@ -224,13 +219,13 @@ html, body {
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     color: white;
     border: none;
-    padding: 16px 24px;
-    border-radius: 10px;
+    padding: 14px 24px;
+    border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
 }
 
@@ -245,6 +240,7 @@ html, body {
 
 .auth-footer {
     text-align: center;
+    margin-bottom: 12px;
 }
 
 .auth-footer-text {
@@ -263,15 +259,33 @@ html, body {
     color: #4F46E5;
 }
 
-    .success-message {
-        background: #F0FDF4;
-        border: 1px solid #BBF7D0;
-        color: #16A34A;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        margin-bottom: 20px;
-    }
+.terms-text {
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 0.75rem;
+    margin-bottom: 12px;
+}
+
+.terms-link {
+    color: #6366F1;
+    text-decoration: none;
+}
+
+.terms-link:hover {
+    color: #4F46E5;
+}
+
+
+
+.success-message {
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    color: #16A34A;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+}
 
 @media (max-width: 768px) {
     .auth-container {
@@ -294,11 +308,19 @@ html, body {
     
     .auth-right {
         flex: 1;
-        padding: 40px 30px;
+        padding: 30px 25px;
     }
     
     .auth-form-container {
         max-width: 100%;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group.password-group {
+        margin-bottom: 24px;
     }
     
     .brand-title {
@@ -308,37 +330,27 @@ html, body {
     .auth-title {
         font-size: 1.5rem;
     }
-    
-    .form-options {
-        flex-direction: column;
-        gap: 16px;
-        align-items: stretch;
-    }
-    
-    .forgot-link {
-        text-align: center;
-    }
 }
 
 @media (max-width: 480px) {
     .auth-right {
-        padding: 30px 20px;
+        padding: 25px 20px;
     }
     
     .form-input {
-        padding: 12px 14px;
-        font-size: 0.875rem;
+        padding: 11px 12px;
+        font-size: 0.85rem;
     }
     
     .submit-button {
-        padding: 14px 20px;
+        padding: 12px 20px;
+    }
+    
+    .auth-header {
+        margin-bottom: 25px;
     }
 }
 </style>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'data_hall/js/auth.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -353,7 +365,7 @@ html, body {
         <div class="auth-left">
             <div class="brand-content">
                 <div class="brand-logo">
-                    <i class="fas fa-chart-line text-white text-2xl"></i>
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
                 </div>
                 <h1 class="brand-title">新势力感知</h1>
                 <p class="brand-subtitle">企业态势感知系统</p>
@@ -364,10 +376,10 @@ html, body {
         <div class="auth-right">
             <div class="auth-form-container">
                 <div class="auth-header">
-                    <h2 class="auth-title">欢迎回来</h2>
-                    <p class="auth-subtitle">请登录您的账户以继续</p>
+                    <h2 class="auth-title">创建账户</h2>
+                    <p class="auth-subtitle">加入我们，开启企业态势感知之旅</p>
                 </div>
-                
+               
                 <!-- Form -->
                 <form method="POST">
                     {% csrf_token %}
@@ -390,7 +402,7 @@ html, body {
                                name="{{ form.username.name }}"
                                id="{{ form.username.id_for_label }}"
                                class="form-input"
-                               placeholder="请输入用户名"
+                               placeholder="请输入用户名（至少3个字符）"
                                value="{{ form.username.value|default:'' }}"
                                minlength="3"
                                pattern="[\w\-\u4e00-\u9fa5]+"
@@ -399,52 +411,88 @@ html, body {
 
                     </div>
                     
-                    <!-- Password Field -->
+                    <!-- Email Field -->
                     <div class="form-group">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            邮箱地址
+                        </label>
+                        <input type="email" 
+                               name="{{ form.email.name }}"
+                               id="{{ form.email.id_for_label }}"
+                               class="form-input"
+                               placeholder="请输入邮箱地址"
+                               value="{{ form.email.value|default:'' }}"
+                               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                               title="请输入有效的邮箱地址，如：example@email.com"
+                               required>
+
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="form-group password-group">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
                             密码
                         </label>
                         <input type="password" 
-                               name="{{ form.password.name }}"
-                               id="{{ form.password.id_for_label }}"
+                               name="{{ form.password1.name }}"
+                               id="{{ form.password1.id_for_label }}"
                                class="form-input"
-                               placeholder="请输入密码"
+                               placeholder="请设置安全密码"
                                minlength="8"
-                               title="密码至少需要8个字符"
+                               title="密码至少需要8个字符，建议包含大小写字母、数字和特殊字符"
+                               required>
+                        <div class="password-helper" id="password-helper">
+                            <div class="password-strength-wrapper">
+                                <div class="password-strength-bar">
+                                    <div class="password-strength-fill" id="strength-fill"></div>
+                                </div>
+                                <div class="password-strength-text" id="strength-text">弱</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            确认密码
+                        </label>
+                        <input type="password" 
+                               name="{{ form.password2.name }}"
+                               id="{{ form.password2.id_for_label }}"
+                               class="form-input"
+                               placeholder="请再次输入密码"
+                               minlength="8"
+                               title="请再次输入相同的密码以确认"
                                required>
 
                     </div>
 
-                    <!-- Options Row -->
-                    <div class="form-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" 
-                                   name="{{ form.remember_me.name }}"
-                                   id="{{ form.remember_me.id_for_label }}"
-                                   class="form-checkbox"
-                                   {% if form.remember_me.value %}checked{% endif %}>
-                            <label for="{{ form.remember_me.id_for_label }}" class="checkbox-label">
-                                记住我
-                            </label>
-                        </div>
-                        <a href="{% url 'data_hall:password_reset' %}" class="forgot-link">
-                            忘记密码？
-                        </a>
-                    </div>
-
                     <!-- Submit Button -->
                     <button type="submit" class="submit-button auth-submit-btn">
-                        登录
+                        创建账户
                     </button>
                     
                     <!-- Footer -->
                     <div class="auth-footer">
-                        <span class="auth-footer-text">还没有账户？</span>
-                        <a href="{% url 'data_hall:register' %}" class="auth-footer-link">立即注册</a>
+                        <span class="auth-footer-text">已有账户？</span>
+                        <a href="{% url 'users:login' %}" class="auth-footer-link">立即登录</a>
+                    </div>
+                    
+                    <!-- Terms -->
+                    <div class="terms-text">
+                        注册即表示您同意我们的
+                        <a href="#" class="terms-link">服务条款</a>
+                        和
+                        <a href="#" class="terms-link">隐私政策</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'data_hall/js/auth.js' %}"></script>
 {% endblock %} 

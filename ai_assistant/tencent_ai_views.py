@@ -55,7 +55,7 @@ class TencentChatAPIView(APIView):
     """
     腾讯智能体聊天API视图
     
-    POST /api/ai/chat/
+    POST /ai/api/chat/
     
     请求格式:
     {
@@ -140,7 +140,7 @@ class TencentSessionsAPIView(APIView):
     """
     腾讯智能体会话列表API视图
     
-    GET /api/ai/sessions/ - 获取所有会话列表
+    GET /ai/api/sessions/ - 获取所有会话列表
     """
     
     permission_classes = [AllowAny]  # 可以根据需要调整权限
@@ -177,7 +177,7 @@ class TencentChatHistoryAPIView(APIView):
     """
     腾讯智能体聊天历史API视图
     
-    GET /api/ai/history/<session_id>/ - 获取指定会话的聊天记录
+    GET /ai/api/history/<session_id>/ - 获取指定会话的聊天记录
     """
     
     permission_classes = [AllowAny]  # 可以根据需要调整权限
@@ -215,7 +215,7 @@ class TencentChatConfigAPIView(APIView):
     """
     腾讯智能体配置API视图
     
-    GET /api/ai/config/ - 获取AI配置信息
+    GET /ai/api/config/ - 获取AI配置信息
     """
     
     permission_classes = [AllowAny]

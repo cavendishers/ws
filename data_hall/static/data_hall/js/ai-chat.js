@@ -7,8 +7,8 @@ if (typeof window.AIChatManager !== 'undefined') {
 class AIChatManager {
   constructor(options = {}) {
     // 配置选项 - 使用腾讯智能体API
-    this.apiUrl = options.apiUrl || '/api/ai/chat/';
-    this.sessionsUrl = options.sessionsUrl || '/api/ai/sessions/';
+    this.apiUrl = options.apiUrl || '/ai/api/chat/';
+    this.sessionsUrl = options.sessionsUrl || '/ai/api/sessions/';
     this.modelName = options.modelName || 'tencent-agent';
     this.systemPrompt = options.systemPrompt || '你是一个产业研究智能助手，专注于分析新势力企业和产业链数据。请基于数据提供准确、专业的回答。';
     
@@ -371,8 +371,8 @@ console.log('AI聊天管理器类已加载 - 腾讯智能体版本');
 // 全局AI聊天管理器实例（在保护块外面，确保总是创建）
 if (!window.aiChatManager) {
   window.aiChatManager = new window.AIChatManager({
-    apiUrl: '/api/ai/chat/',
-    sessionsUrl: '/api/ai/sessions/',
+    apiUrl: '/ai/api/chat/',
+    sessionsUrl: '/ai/api/sessions/',
     modelName: 'tencent-agent',
     systemPrompt: '你是一个产业研究智能助手，专注于分析新势力企业和产业链数据。请基于数据提供准确、专业的回答。'
   });

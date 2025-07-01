@@ -248,10 +248,11 @@ class PasswordResetRequestForm(forms.Form):
         if not email:
             raise ValidationError('邮箱地址不能为空')
         
+        # Normalize email
         email = email.lower().strip()
         
-        # Check if email exists
+        # Check if email exists in database
         if not DjangoUser.objects.filter(email__iexact=email).exists():
-            raise ValidationError('该邮箱未注册')
+            raise ValidationError('该邮箱地址未注册')
         
         return email 

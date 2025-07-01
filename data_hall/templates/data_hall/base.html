@@ -206,7 +206,7 @@
                                 设置
                             </a>
                             <div class="border-t border-[rgba(255,255,255,0.08)] my-2 mx-2"></div>
-                            <a href="{% url 'data_hall:logout' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(239,68,68,0.1)] hover:text-red-400 transition-all duration-200 group">
+                            <a href="{% url 'users:logout' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(239,68,68,0.1)] hover:text-red-400 transition-all duration-200 group">
                                 <i class="fas fa-sign-out-alt mr-3 text-base w-5 group-hover:translate-x-1 transition-transform"></i>
                                 退出登录
                             </a>
@@ -214,8 +214,8 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'data_hall:register' %}" class="text-[var(--text-secondary)] hover:text-[var(--button-highlight)] px-3 py-2 text-sm font-medium transition-colors">注册</a>
-                <a href="{% url 'data_hall:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
+                <a href="{% url 'users:register' %}" class="text-[var(--text-secondary)] hover:text-[var(--button-highlight)] px-3 py-2 text-sm font-medium transition-colors">注册</a>
+                <a href="{% url 'users:login' %}" class="bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
                 {% endif %}
                 <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-bars"></i>
@@ -261,13 +261,13 @@
                     <div class="pl-4 space-y-3 mt-2">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
-                        <a href="{% url 'data_hall:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
+                        <a href="{% url 'users:logout' %}" class="block hover:text-blue-400 text-sm py-2">退出登录</a>
                     </div>
                 </div>
                 {% else %}
                 <div class="space-y-3">
-                    <a href="{% url 'data_hall:register' %}" class="block text-center bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 border border-[var(--button-highlight)]">注册</a>
-                    <a href="{% url 'data_hall:login' %}" class="block text-center bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90">登录</a>
+                    <a href="{% url 'users:register' %}" class="block text-center bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 border border-[var(--button-highlight)]">注册</a>
+                    <a href="{% url 'users:login' %}" class="block text-center bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90">登录</a>
                 </div>
                 {% endif %}
             </div>
@@ -281,7 +281,7 @@
 
     <!-- AI聊天小部件 - 只在用户登录状态下显示 -->
     {% if user.is_authenticated and request.resolver_match.url_name not in 'login,register,password_reset' %}
-    {% include 'data_hall/components/ai_chat_widget.html' %}
+    {% include 'ai_assistant/components/ai_chat_widget.html' %}
     {% endif %}
 
     <!-- 页脚 - 在认证页面不显示 -->

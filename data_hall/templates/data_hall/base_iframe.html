@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="#" data-url="{% url 'data_hall:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
+                <a href="#" data-url="{% url 'users:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-colors">登录</a>
                 {% endif %}
                 <button class="mobile-menu-button xl:hidden text-xl text-[var(--text-secondary)] hover:text-white">
                     <i class="fas fa-bars"></i>
@@ -105,11 +105,11 @@
                     <div class="pl-4 space-y-3 mt-2">
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">个人中心</a>
                         <a href="#" class="block hover:text-blue-400 text-sm py-2">设置</a>
-                        <a href="#" data-url="{% url 'data_hall:logout' %}" class="nav-link block hover:text-blue-400 text-sm py-2">退出登录</a>
+                        <a href="#" data-url="{% url 'users:logout' %}" class="nav-link block hover:text-blue-400 text-sm py-2">退出登录</a>
                     </div>
                 </div>
                 {% else %}
-                <a href="#" data-url="{% url 'data_hall:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
+                <a href="#" data-url="{% url 'users:login_iframe' %}" class="nav-link bg-[var(--button-highlight)] text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 text-center">登录</a>
                 {% endif %}
             </div>
         </div>
@@ -122,7 +122,7 @@
 
     <!-- AI聊天小部件 - 在iframe版本中也包含 -->
     {% if request.session.user_id %}
-    {% include 'data_hall/components/ai_chat_widget.html' %}
+    {% include 'ai_assistant/components/ai_chat_widget.html' %}
     {% endif %}
 
     <!-- 页脚 -->

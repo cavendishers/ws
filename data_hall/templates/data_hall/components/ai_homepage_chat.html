@@ -369,14 +369,26 @@
     z-index: 10;
     /* 侧边栏默认隐藏，通过transform控制显示 */
     transform: translateX(-100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 🔧 优化动画性能，确保最丝滑的体验 */
+    transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
+    /* 🔧 强制GPU加速，避免卡顿 */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* 🔧 启用硬件加速 */
+    -webkit-transform: translateX(-100%);
+    -webkit-transition: -webkit-transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
+    /* 🔧 避免子元素重绘影响动画 */
+    contain: layout;
 }
 
 .chat-sidebar.show {
     transform: translateX(0);
+    /* 🔧 优化显示状态的GPU加速 */
+    -webkit-transform: translateX(0);
 }
 
 /* 聊天内容区域 - 动态填充整个容器 */
@@ -390,8 +402,13 @@
     border-radius: inherit;
     position: relative;
     z-index: 5;
-    /* 🔧 添加过渡动画，实现平滑的布局变化 */
-    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 🔧 优化过渡动画，与侧边栏同步，确保丝滑体验 */
+    transition: margin-left 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* 🔧 启用GPU加速 */
+    will-change: margin-left, width;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 /* 🔧 当侧边栏显示时，聊天内容区域向右推挤（仅桌面端） */
@@ -417,9 +434,15 @@
     background: rgba(0, 0, 0, 0.3);
     z-index: 8;
     opacity: 0;
-    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 🔧 与侧边栏动画同步，确保一致的体验 */
+    transition: opacity 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     pointer-events: none;
     border-radius: inherit;
+    /* 🔧 启用GPU加速 */
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .sidebar-overlay.show {
@@ -1061,16 +1084,21 @@
 .recommendation-card {
     background: linear-gradient(135deg, rgba(0, 40, 80, 0.65) 0%, rgba(0, 32, 64, 0.75) 100%);
     border: 1px solid rgba(0, 191, 255, 0.22);
-    border-radius: 12px; /* 稍微减少圆角 */
-    padding: 16px; /* 大幅减少内部padding */
+    border-radius: 14px; /* 优化圆角 */
+    padding: 20px; /* 适当增加内部padding */
     cursor: default; /* 卡片本身不可点击 */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
     /* 🔧 确保卡片内容在所有情况下都能正确显示 */
     min-width: 0;
     box-sizing: border-box;
+    /* 🔧 启用GPU加速优化悬浮效果 */
+    will-change: transform, box-shadow, border-color;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .recommendation-card::before {
@@ -1080,61 +1108,83 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 191, 255, 0.03) 0%, rgba(59, 130, 246, 0.02) 100%);
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     pointer-events: none;
+    border-radius: inherit;
 }
 
 .recommendation-card:hover::before {
     opacity: 1;
 }
 
-/* 卡片头部：emoji和title在同一行 - 紧凑布局 */
+/* 🔧 增强卡片悬浮效果 - 简约而优雅 */
+.recommendation-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(0, 191, 255, 0.4);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 3px 10px rgba(0, 191, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(0, 40, 80, 0.75) 0%, rgba(0, 32, 64, 0.85) 100%);
+}
+
+.recommendation-card:active {
+    transform: translateY(-2px) scale(1.01);
+    transition-duration: 0.1s;
+}
+
+/* 卡片头部：emoji和title在同一行 - 优化布局 */
 .card-header {
     display: flex;
     align-items: center;
-    gap: 10px; /* 减少间距 */
-    margin-bottom: 12px; /* 减少底部边距 */
+    gap: 12px; /* 优化间距 */
+    margin-bottom: 16px; /* 优化底部边距 */
 }
 
 .card-emoji {
-    font-size: 22px; /* 稍微减小emoji尺寸 */
+    font-size: 24px; /* 适当增大emoji尺寸 */
     flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .card-title {
     color: rgba(255, 255, 255, 0.96);
-    font-size: 16px; /* 稍微减小字体 */
+    font-size: 17px; /* 优化字体大小 */
     font-weight: 600;
     line-height: 1.3;
     margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* 可点击的副标题 - 紧凑布局 */
+/* 可点击的副标题 - 优化布局 */
 .card-subtitle {
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 13px; /* 稍微减小字体 */
-    line-height: 1.4; /* 减少行高 */
-    margin-bottom: 6px; /* 减少底部边距 */
-    padding: 6px 10px; /* 减少内边距 */
-    border-radius: 6px; /* 减少圆角 */
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px; /* 优化字体大小 */
+    line-height: 1.45; /* 优化行高 */
+    margin-bottom: 8px; /* 优化底部边距 */
+    padding: 8px 12px; /* 优化内边距 */
+    border-radius: 8px; /* 优化圆角 */
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     border: 1px solid transparent;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .card-subtitle:hover {
-    background: rgba(0, 191, 255, 0.08);
-    border-color: rgba(0, 191, 255, 0.25);
-    color: rgba(255, 255, 255, 0.9);
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 191, 255, 0.1);
+    background: rgba(0, 191, 255, 0.12);
+    border-color: rgba(0, 191, 255, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateX(3px) translateY(-1px);
+    box-shadow: 0 3px 12px rgba(0, 191, 255, 0.15);
 }
 
 .card-subtitle:active {
-    transform: translateX(2px);
-    background: rgba(0, 191, 255, 0.12);
+    transform: translateX(1px) translateY(0px);
+    background: rgba(0, 191, 255, 0.15);
+    transition-duration: 0.1s;
 }
 
 .card-subtitle:last-child {
@@ -1161,9 +1211,9 @@
         /* 🔧 移动端：1列6行布局 */
         grid-template-columns: 1fr;
         grid-template-rows: repeat(6, auto);
-        gap: 10px;
-        padding: 14px;
-        margin-bottom: 20px;
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
     }
     
     /* 🔧 移动端侧边栏展开时仍保持单列布局 */
@@ -1172,7 +1222,11 @@
     }
     
     .recommendation-card {
-        padding: 14px; /* 减少移动端内部padding */
+        padding: 18px; /* 优化移动端内部padding */
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-3px) scale(1.015);
     }
     
     #homepage-chat-messages {
@@ -1184,16 +1238,21 @@
     }
     
     .card-emoji {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .card-title {
-        font-size: 15px;
+        font-size: 16px;
     }
     
     .card-subtitle {
-        font-size: 12px;
-        padding: 5px 8px; /* 移动端减少内边距 */
+        font-size: 13px;
+        padding: 7px 10px; /* 移动端优化内边距 */
+    }
+    
+    .card-header {
+        gap: 10px;
+        margin-bottom: 14px;
     }
     
     .homepage-chat-message-user,

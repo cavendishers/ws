@@ -42,14 +42,20 @@
     }
     
     #ai-search-trigger .input {
-        background-color: #010201;
-        border: none;
+        background: linear-gradient(145deg, rgba(10, 26, 58, 0.82) 0%, rgba(0, 32, 64, 0.85) 100%);
+        border: 1px solid rgba(0, 191, 255, 0.3);
+        backdrop-filter: blur(16px) saturate(140%);
         width: clamp(320px, 35vw, 560px);
         height: clamp(40px, 4.375vw, 70px);
         border-radius: 10px;
-        color: white;
+        color: rgba(255, 255, 255, 0.95);
         padding-inline: clamp(45px, 5vw, 70px);
         font-size: clamp(14px, 1.5vw, 18px);
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.2), 
+            0 1px 6px rgba(0, 191, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15),
+            inset 0 -1px 0 rgba(0, 191, 255, 0.1);
     }
     
     #ai-search-trigger #ai-poda {
@@ -59,11 +65,20 @@
     }
     
     #ai-search-trigger .input::placeholder {
-        color: #c0b9c0;
+        color: rgba(255, 255, 255, 0.6);
     }
     
     #ai-search-trigger .input:focus {
         outline: none;
+        border-color: rgba(0, 191, 255, 0.6);
+        box-shadow: 
+            0 6px 25px rgba(0, 0, 0, 0.2), 
+            0 0 0 3px rgba(0, 191, 255, 0.2),
+            0 2px 12px rgba(0, 191, 255, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            inset 0 -1px 0 rgba(0, 191, 255, 0.15);
+        background: linear-gradient(145deg, rgba(10, 26, 58, 0.88) 0%, rgba(0, 32, 64, 0.92) 100%);
+        transform: translateY(-1px);
     }
     
     #ai-search-trigger #ai-main:focus-within > #ai-input-mask {
@@ -84,7 +99,7 @@
         width: clamp(25px, 3vw, 35px);
         height: clamp(15px, 2vw, 25px);
         position: absolute;
-        background: #cf30aa;
+        background: linear-gradient(45deg, rgba(0, 191, 255, 0.7), rgba(255, 193, 7, 0.5));
         top: clamp(8px, 1.5vw, 12px);
         left: clamp(3px, 0.5vw, 5px);
         filter: blur(20px);
@@ -93,7 +108,23 @@
     }
     
     #ai-search-trigger #ai-main:hover > #ai-pink-mask {
-        opacity: 0;
+        opacity: 0.5;
+        transform: scale(1.15);
+        background: linear-gradient(45deg, rgba(0, 191, 255, 0.85), rgba(255, 193, 7, 0.7));
+    }
+    
+    /* 悬浮时增强光效 */
+    #ai-search-trigger #ai-poda:hover .glow {
+        animation: ai-glow-pulse 2.2s ease-in-out infinite;
+        opacity: 0.9;
+    }
+    
+    #ai-search-trigger #ai-poda:hover .white {
+        filter: blur(1px) brightness(1.5);
+    }
+    
+    #ai-search-trigger #ai-poda:hover .border {
+        filter: blur(0.3px) brightness(1.4);
     }
     
     #ai-search-trigger .white {
@@ -118,10 +149,12 @@
         filter: brightness(1.4);
         background-image: conic-gradient(
             rgba(0, 0, 0, 0) 0%,
-            #a099d8,
+            rgba(0, 191, 255, 0.7),
+            rgba(255, 193, 7, 0.25) 4%,
             rgba(0, 0, 0, 0) 8%,
             rgba(0, 0, 0, 0) 50%,
-            #dfa2da,
+            rgba(59, 130, 246, 0.6),
+            rgba(255, 154, 0, 0.2) 54%,
             rgba(0, 0, 0, 0) 58%
         );
         transition: all 2s;
@@ -144,16 +177,18 @@
         position: absolute;
         width: 600px;
         height: 600px;
-        filter: brightness(1.3);
+        filter: brightness(1.35);
         background-repeat: no-repeat;
         background-position: 0 0;
         background-image: conic-gradient(
-            #1c191c,
-            #402fb5 5%,
-            #1c191c 14%,
-            #1c191c 50%,
-            #cf30aa 60%,
-            #1c191c 64%
+            rgba(2, 4, 10, 0.9),
+            rgba(0, 191, 255, 0.8) 5%,
+            rgba(255, 193, 7, 0.3) 8%,
+            rgba(2, 4, 10, 0.9) 14%,
+            rgba(2, 4, 10, 0.9) 50%,
+            rgba(59, 130, 246, 0.7) 60%,
+            rgba(255, 152, 0, 0.25) 62%,
+            rgba(2, 4, 10, 0.9) 64%
         );
         transition: all 2s;
     }
@@ -177,10 +212,12 @@
         background-position: 0 0;
         background-image: conic-gradient(
             rgba(0, 0, 0, 0),
-            #18116a,
+            rgba(0, 191, 255, 0.6),
+            rgba(255, 193, 7, 0.28) 4%,
             rgba(0, 0, 0, 0) 10%,
             rgba(0, 0, 0, 0) 50%,
-            #6e1b60,
+            rgba(59, 130, 246, 0.6),
+            rgba(255, 152, 0, 0.22) 56%,
             rgba(0, 0, 0, 0) 60%
         );
         transition: all 2s;
@@ -225,7 +262,7 @@
     #ai-search-trigger .glow {
         overflow: hidden;
         filter: blur(30px);
-        opacity: 0.4;
+        opacity: 0.5;
         max-height: clamp(95px, 12vw, 155px);
         max-width: clamp(380px, 42vw, 620px);
     }
@@ -243,12 +280,14 @@
         background-repeat: no-repeat;
         background-position: 0 0;
         background-image: conic-gradient(
-            #000,
-            #402fb5 5%,
-            #000 38%,
-            #000 50%,
-            #cf30aa 60%,
-            #000 87%
+            rgba(0, 0, 0, 0.9),
+            rgba(0, 191, 255, 0.6) 5%,
+            rgba(255, 193, 7, 0.35) 8%,
+            rgba(0, 0, 0, 0.9) 38%,
+            rgba(0, 0, 0, 0.9) 50%,
+            rgba(59, 130, 246, 0.5) 60%,
+            rgba(255, 152, 0, 0.28) 63%,
+            rgba(0, 0, 0, 0.9) 87%
         );
         transition: all 2s;
     }
@@ -267,10 +306,21 @@
         isolation: isolate;
         overflow: hidden;
         border-radius: 10px;
-        background: linear-gradient(180deg, #161329, black, #1d1b4b);
-        border: 1px solid transparent;
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.7) 0%, rgba(59, 130, 246, 0.75) 100%);
+        border: 1px solid rgba(0, 191, 255, 0.4);
         cursor: pointer;
-        color: white;
+        color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 1px 6px rgba(0, 191, 255, 0.15);
+        transition: all 0.3s ease;
+    }
+    
+    #ai-search-trigger #ai-filter-icon:hover {
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.85) 0%, rgba(59, 130, 246, 0.9) 100%);
+        box-shadow: 0 2px 8px rgba(0, 191, 255, 0.2);
+        border-color: rgba(0, 191, 255, 0.5);
+        color: rgba(255, 255, 255, 0.95);
+        /* 移除transform动画，避免过多动效 */
     }
     
     #ai-search-trigger .filterBorder {
@@ -295,17 +345,20 @@
         height: 600px;
         background-repeat: no-repeat;
         background-position: 0 0;
-        filter: brightness(1.35);
+        filter: brightness(1.2);
         background-image: conic-gradient(
             rgba(0, 0, 0, 0),
-            #3d3a4f,
+            rgba(0, 191, 255, 0.5),
+            rgba(255, 193, 7, 0.25) 8%,
             rgba(0, 0, 0, 0) 50%,
             rgba(0, 0, 0, 0) 50%,
-            #3d3a4f,
+            rgba(59, 130, 246, 0.4),
+            rgba(255, 152, 0, 0.2) 92%,
             rgba(0, 0, 0, 0) 100%
         );
-        animation: ai-rotate 4s linear infinite;
+        animation: ai-rotate 6s linear infinite;
     }
+    
     
     #ai-search-trigger #ai-main {
         position: relative;
@@ -338,6 +391,22 @@
         100% {
             transform: translate(-50%, -50%) rotate(450deg);
         }
+    }
+    
+    /* 增加呼吸光效动画 */
+    @keyframes ai-glow-pulse {
+        0%, 100% {
+            opacity: 0.4;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    }
+    
+    #ai-search-trigger .glow {
+        animation: ai-glow-pulse 3s ease-in-out infinite;
     }
 </style>
 {% endblock %}

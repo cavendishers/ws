@@ -31,7 +31,7 @@ import django
 django.setup()
 
 # 导入服务
-from data_hall.services import TencentAgentService
+from ai_assistant.services import TencentAgentService
 
 
 def print_separator(title):

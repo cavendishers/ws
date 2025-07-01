@@ -15,7 +15,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 import django
 django.setup()
 
-from data_hall.services import TencentAgentService
+from ai_assistant.services import TencentAgentService
 
 async def quick_test():
     print("🚀 快速测试腾讯智能体重构")

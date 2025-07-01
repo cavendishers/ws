@@ -282,67 +282,7 @@ class District(models.Model):
     def __str__(self):
         return f"{self.city.name}-{self.name}"
 
-class ChatMessage(models.Model):
-    """聊天消息模型"""
-    
-    ROLE_CHOICES = [
-        ('user', '用户'),
-        ('assistant', 'AI助手'),
-        ('system', '系统'),
-    ]
-    
-    user = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name='chat_messages',
-        verbose_name='用户'
-    )
-    role = models.CharField(
-        '角色', 
-        max_length=20, 
-        choices=ROLE_CHOICES,
-        default='user'
-    )
-    content = models.TextField('消息内容')
-    created_at = models.DateTimeField('创建时间', auto_now_add=True)
-    updated_at = models.DateTimeField('更新时间', auto_now=True)
-    
-    # 可选字段：用于关联会话或存储额外元数据
-    session_id = models.CharField(
-        '会话ID', 
-        max_length=100, 
-        blank=True, 
-        null=True,
-        help_text='用于标识同一会话的消息'
-    )
-    metadata = models.JSONField(
-        '元数据', 
-        blank=True, 
-        null=True,
-        help_text='存储额外的消息元数据，如模型版本、耗时等'
-    )
-
-    class Meta:
-        verbose_name = '聊天消息'
-        verbose_name_plural = '聊天消息'
-        db_table = 'chat_message'
-        ordering = ['-created_at']  # 按创建时间倒序
-        indexes = [
-            models.Index(fields=['user', '-created_at']),  # 用户+时间复合索引
-            models.Index(fields=['user', 'role']),  # 用户+角色索引
-            models.Index(fields=['session_id']),  # 会话ID索引
-            models.Index(fields=['-created_at']),  # 时间索引
-        ]
-
-    def __str__(self):
-        return f"{self.user.username} - {self.get_role_display()} - {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
-
-    @classmethod
-    def get_user_conversation_history(cls, user, limit=20):
-        """获取用户最近的对话历史，按时间正序返回"""
-        return cls.objects.filter(user=user).order_by('created_at')[:limit]
-    
-    @classmethod
-    def delete_user_messages(cls, user):
-        """删除用户的所有聊天记录"""
-        return cls.objects.filter(user=user).delete()
+# ChatMessage模型已移除 - 现在使用腾讯智能体API管理会话和消息
+# class ChatMessage(models.Model):
+#     """聊天消息模型 - 已停用，使用腾讯API"""
+#     pass

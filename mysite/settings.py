@@ -1,8 +1,12 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -113,7 +117,16 @@ REST_FRAMEWORK = {
     ],
 }
 
-# AI配置
+# AI配置 - 腾讯智能体
+TENCENT_SECRET_ID = os.getenv('TENCENT_SECRET_ID')
+TENCENT_SECRET_KEY = os.getenv('TENCENT_SECRET_KEY')
+TENCENT_REGION = os.getenv('TENCENT_REGION', 'ap-guangzhou')
+TENCENT_BOT_APP_KEY = os.getenv('TENCENT_BOT_APP_KEY')
+TENCENT_VISITOR_BIZ_ID = os.getenv('TENCENT_VISITOR_BIZ_ID', '666')
+TENCENT_CONN_TYPE_API = 5
+TENCENT_WEBSOCKET_URL = 'wss://wss.lke.cloud.tencent.com/v1/qbot/chat/conn/?EIO=4&transport=websocket'
+
+# 保留原有DeepSeek配置（作为备用）
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')  # 从环境变量读取API密钥
 DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
 DEEPSEEK_MODEL = 'deepseek-chat'

@@ -1,334 +1,161 @@
 """
-AI聊天服务层
-处理与DeepSeek API的交互逻辑
+AI服务工具类
+主要功能已迁移到腾讯智能体服务 (data_hall/services.py)
+此文件保留一些通用的工具函数
 """
 import logging
-import asyncio
 from typing import List, Dict, Any, Optional
-import httpx
-from django.conf import settings
-from openai import OpenAI
-import json
-
-from .emoji_utils import sanitize_for_db, prepare_for_display, decode_emojis
 
 logger = logging.getLogger('ai_chat')
 
 
-class DeepSeekChatService:
-    """DeepSeek聊天服务"""
-    
-    def __init__(self):
-        self.api_key = settings.DEEPSEEK_API_KEY
-        self.base_url = settings.DEEPSEEK_BASE_URL
-        self.model = settings.DEEPSEEK_MODEL
-        self.max_tokens = settings.DEEPSEEK_MAX_TOKENS
-        self.temperature = settings.DEEPSEEK_TEMPERATURE
-        self.system_prompt = settings.DEEPSEEK_SYSTEM_PROMPT
-        
-        # 验证API密钥
-        if not self.api_key or self.api_key.strip() == '':
-            error_msg = "DeepSeek API密钥未设置或为空。请设置环境变量 DEEPSEEK_API_KEY"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        # 验证其他必要配置
-        if not self.base_url:
-            error_msg = "DeepSeek API基础URL未设置"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        if not self.model:
-            error_msg = "DeepSeek模型名称未设置"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        # 初始化OpenAI客户端
-        try:
-            self.client = OpenAI(
-                api_key=self.api_key,
-                base_url=self.base_url
-            )
-        except Exception as e:
-            error_msg = f"初始化DeepSeek客户端失败: {str(e)}"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        logger.info(f"DeepSeek服务初始化完成，模型: {self.model}")
-        logger.info(f"API密钥状态: {'已设置' if self.api_key else '未设置'} (长度: {len(self.api_key) if self.api_key else 0})")
-    
-    def _build_messages(self, user_message: str, conversation_history: Optional[List[Dict]] = None) -> List[Dict[str, str]]:
-        """构建消息列表"""
-        messages = []
-        
-        # 添加系统提示
-        if self.system_prompt:
-            messages.append({
-                "role": "system", 
-                "content": self.system_prompt
-            })
-        
-        # 添加对话历史（如果有）
-        if conversation_history:
-            messages.extend(conversation_history)
-        
-        # 添加当前用户消息
-        messages.append({
-            "role": "user",
-            "content": user_message
-        })
-        
-        return messages
-    
-    def chat_completion(self, user_message: str, conversation_history: Optional[List[Dict]] = None) -> Dict[str, Any]:
-        """
-        发送聊天请求到DeepSeek API
-        
-        Args:
-            user_message: 用户消息
-            conversation_history: 对话历史
-            
-        Returns:
-            包含响应内容和元数据的字典
-        """
-        try:
-            logger.info(f"开始处理聊天请求: {user_message[:50]}...")
-            
-            # 构建消息列表
-            messages = self._build_messages(user_message, conversation_history)
-            
-            logger.info(f"构建的消息列表长度: {len(messages)}")
-            
-            # 调用API
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                max_tokens=self.max_tokens,
-                temperature=self.temperature,
-                stream=False
-            )
-            
-            # 提取响应内容
-            ai_response = response.choices[0].message.content
-            
-            # 构建返回数据
-            result = {
-                'success': True,
-                'response': ai_response,
-                'model': self.model,
-                'usage': {
-                    'prompt_tokens': getattr(response.usage, 'prompt_tokens', 0),
-                    'completion_tokens': getattr(response.usage, 'completion_tokens', 0),
-                    'total_tokens': getattr(response.usage, 'total_tokens', 0)
-                },
-                'metadata': {
-                    'finish_reason': response.choices[0].finish_reason,
-                    'created': response.created
-                }
-            }
-            
-            logger.info(f"AI响应成功生成，长度: {len(ai_response)} 字符")
-            return result
-            
-        except Exception as e:
-            logger.error(f"DeepSeek API调用失败: {str(e)}", exc_info=True)
-            return {
-                'success': False,
-                'response': f"抱歉，AI服务暂时不可用。错误信息：{str(e)}",
-                'error': str(e),
-                'error_type': type(e).__name__
-            }
-    
-    async def chat_completion_async(self, user_message: str, conversation_history: Optional[List[Dict]] = None) -> Dict[str, Any]:
-        """
-        异步版本的聊天完成
-        
-        Args:
-            user_message: 用户消息
-            conversation_history: 对话历史
-            
-        Returns:
-            包含响应内容和元数据的字典
-        """
-        try:
-            logger.info(f"开始异步处理聊天请求: {user_message[:50]}...")
-            
-            # 构建消息列表
-            messages = self._build_messages(user_message, conversation_history)
-            
-            # 使用httpx进行异步请求
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                payload = {
-                    "model": self.model,
-                    "messages": messages,
-                    "max_tokens": self.max_tokens,
-                    "temperature": self.temperature,
-                    "stream": False
-                }
-                
-                headers = {
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type": "application/json"
-                }
-                
-                response = await client.post(
-                    f"{self.base_url}/chat/completions",
-                    json=payload,
-                    headers=headers
-                )
-                
-                response.raise_for_status()
-                data = response.json()
-                
-                # 提取响应内容
-                ai_response = data['choices'][0]['message']['content']
-                
-                result = {
-                    'success': True,
-                    'response': ai_response,
-                    'model': self.model,
-                    'usage': data.get('usage', {}),
-                    'metadata': {
-                        'finish_reason': data['choices'][0].get('finish_reason'),
-                        'created': data.get('created')
-                    }
-                }
-                
-                logger.info(f"异步AI响应成功生成，长度: {len(ai_response)} 字符")
-                return result
-                
-        except Exception as e:
-            logger.error(f"异步DeepSeek API调用失败: {str(e)}", exc_info=True)
-            return {
-                'success': False,
-                'response': f"抱歉，AI服务暂时不可用。错误信息：{str(e)}",
-                'error': str(e),
-                'error_type': type(e).__name__
-            }
-
-
-class ChatMessageProcessor:
-    """聊天消息处理器"""
+class MessageProcessor:
+    """消息处理工具类 - 通用消息处理功能"""
     
     @staticmethod
     def parse_user_input(request_data: Dict[str, Any]) -> str:
-        """
-        解析用户输入，支持多种格式，并处理表情符号
+        """从请求数据中提取用户消息"""
+        if not request_data:
+            return ""
         
-        Args:
-            request_data: 请求数据
-            
-        Returns:
-            用户消息字符串
-        """
-        # 尝试从不同字段获取消息
-        message = request_data.get('messages', '')
+        # 支持多种消息字段格式
+        message_fields = ['messages', 'message', 'content', 'text']
         
-        # 如果messages是列表，提取用户消息
-        if isinstance(message, list):
-            user_messages = [msg.get('content', '') for msg in message if msg.get('role') == 'user']
-            message = user_messages[-1] if user_messages else ''
+        for field in message_fields:
+            if field in request_data and request_data[field]:
+                message = request_data[field]
+                
+                # 如果是字符串，直接返回
+                if isinstance(message, str):
+                    return message.strip()
+                
+                # 如果是列表，提取最后一条用户消息
+                if isinstance(message, list) and len(message) > 0:
+                    last_message = message[-1]
+                    if isinstance(last_message, dict) and 'content' in last_message:
+                        return str(last_message['content']).strip()
+                    elif isinstance(last_message, str):
+                        return last_message.strip()
         
-        # 如果messages是字符串，直接使用
-        elif isinstance(message, str):
-            pass
-        
-        # 兼容其他可能的字段名
-        else:
-            message = request_data.get('message', '') or request_data.get('content', '')
-        
-        # 处理表情符号：如果消息包含HTML实体编码的表情符号，解码为原始表情符号
-        message_str = str(message).strip()
-        
-        # 检查是否是前端发送的编码表情符号
-        if request_data.get('encode_emojis') or request_data.get('X-Emoji-Encoding'):
-            logger.info("检测到前端发送的编码表情符号，进行解码处理")
-            message_str = decode_emojis(message_str)
-        
-        logger.debug(f"解析用户输入: 原始='{message}', 处理后='{message_str}'")
-        return message_str
+        return ""
     
     @staticmethod
-    def extract_conversation_history(request_data: Dict[str, Any]) -> Optional[List[Dict]]:
-        """
-        提取对话历史，并处理其中的表情符号
+    def validate_message(message: str) -> bool:
+        """验证消息是否有效"""
+        if not message or not isinstance(message, str):
+            return False
         
-        Args:
-            request_data: 请求数据
-            
-        Returns:
-            对话历史列表或None
-        """
-        messages = request_data.get('messages', [])
+        # 检查消息长度
+        if len(message.strip()) == 0:
+            return False
         
-        if isinstance(messages, list) and len(messages) > 1:
-            # 过滤掉系统消息和最后一条用户消息
-            history = []
-            for msg in messages[:-1]:  # 排除最后一条消息
-                if msg.get('role') in ['user', 'assistant'] and msg.get('content'):
-                    content = msg['content']
-                    
-                    # 如果包含编码的表情符号，解码处理
-                    if request_data.get('encode_emojis') or request_data.get('X-Emoji-Encoding'):
-                        content = decode_emojis(content)
-                    
-                    history.append({
-                        'role': msg['role'],
-                        'content': content
-                    })
-                    
-            logger.debug(f"提取对话历史: {len(history)} 条记录")
-            return history if history else None
+        if len(message) > 8000:  # 限制消息长度
+            return False
         
-        return None
+        return True
+    
+    @staticmethod
+    def clean_message(message: str) -> str:
+        """清理消息内容"""
+        if not message:
+            return ""
+        
+        # 移除首尾空白字符
+        cleaned = message.strip()
+        
+        # 移除多余的换行符
+        cleaned = '\n'.join(line.rstrip() for line in cleaned.split('\n'))
+        
+        return cleaned
+
+
+class ChatMessageProcessor(MessageProcessor):
+    """
+    聊天消息处理器 - 兼容性类
+    原有功能已迁移到腾讯智能体，此类仅保留基本功能
+    """
     
     @staticmethod
     def prepare_message_for_storage(content: str) -> str:
         """
         为数据库存储准备消息内容
-        
-        Args:
-            content: 消息内容
-            
-        Returns:
-            处理后的消息内容
+        注意：现在主要由腾讯云管理存储，此方法仅用于兼容性
         """
-        try:
-            # 使用emoji工具处理
-            processed_content = sanitize_for_db(content)
-            logger.debug(f"消息存储预处理: '{content}' -> '{processed_content}'")
-            return processed_content
-        except Exception as e:
-            logger.error(f"消息存储预处理失败: {str(e)}")
-            return content
+        if not content:
+            return ""
+        
+        # 基本清理
+        cleaned = MessageProcessor.clean_message(content)
+        
+        logger.debug(f"消息已准备存储: {cleaned[:50]}...")
+        return cleaned
     
     @staticmethod
     def prepare_message_for_display(content: str) -> str:
         """
         为前端显示准备消息内容
-        
-        Args:
-            content: 数据库中的消息内容
-            
-        Returns:
-            处理后的消息内容
+        注意：现在主要由腾讯云管理显示，此方法仅用于兼容性
         """
-        try:
-            # 使用emoji工具处理
-            processed_content = prepare_for_display(content)
-            logger.debug(f"消息显示预处理: '{content}' -> '{processed_content}'")
-            return processed_content
-        except Exception as e:
-            logger.error(f"消息显示预处理失败: {str(e)}")
-            return content
+        if not content:
+            return ""
+        
+        # 基本清理
+        cleaned = MessageProcessor.clean_message(content)
+        
+        logger.debug(f"消息已准备显示: {cleaned[:50]}...")
+        return cleaned
+    
+    @staticmethod
+    def extract_conversation_history(request_data: Dict[str, Any]) -> Optional[List[Dict]]:
+        """
+        从请求数据中提取对话历史
+        注意：现在主要由腾讯云管理对话历史，此方法仅用于兼容性
+        """
+        logger.info("对话历史提取功能已迁移到腾讯智能体")
+        return None
 
 
-# 全局服务实例
-_deepseek_service = None
+# 兼容性函数
+def get_deepseek_service():
+    """
+    已废弃的DeepSeek服务获取函数
+    抛出异常提示已迁移
+    """
+    raise NotImplementedError(
+        "DeepSeek服务已废弃，请使用腾讯智能体服务。"
+        "导入: from .services import TencentAgentService"
+    )
 
-def get_deepseek_service() -> DeepSeekChatService:
-    """获取DeepSeek服务实例（单例模式）"""
-    global _deepseek_service
-    if _deepseek_service is None:
-        _deepseek_service = DeepSeekChatService()
-    return _deepseek_service 
+
+def get_ai_service():
+    """
+    获取AI服务的通用函数
+    现在返回腾讯智能体服务
+    """
+    try:
+        from .services import TencentAgentService
+        return TencentAgentService()
+    except ImportError as e:
+        logger.error(f"无法导入腾讯智能体服务: {str(e)}")
+        raise NotImplementedError("AI服务不可用，请检查腾讯智能体服务配置")
+
+
+# 健康检查函数
+def check_ai_service_health() -> Dict[str, Any]:
+    """检查AI服务健康状态"""
+    try:
+        service = get_ai_service()
+        return {
+            'status': 'healthy',
+            'provider': 'tencent',
+            'service_available': True,
+            'message': '腾讯智能体服务正常'
+        }
+    except Exception as e:
+        return {
+            'status': 'unhealthy',
+            'provider': 'tencent',
+            'service_available': False,
+            'error': str(e),
+            'message': 'AI服务不可用'
+        } 

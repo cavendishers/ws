@@ -63,36 +63,40 @@ html, body {
     color: white;
     z-index: 1;
     position: relative;
+    padding: 20px;
 }
 
 .brand-logo {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    width: 88px;
+    height: 88px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 24px;
-    backdrop-filter: blur(10px);
+    margin: 0 auto 28px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .brand-title {
-    font-size: 2rem;
+    font-size: 2.125rem;
     font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
 }
 
 .brand-subtitle {
-    font-size: 1.125rem;
-    opacity: 0.9;
+    font-size: 1.1rem;
+    opacity: 0.92;
     font-weight: 400;
+    letter-spacing: 0.01em;
 }
 
 .auth-right {
     flex: 1; /* 占据剩余的54%空间 */
-    padding: 40px;
+    padding: 32px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -102,115 +106,179 @@ html, body {
 
 .auth-form-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
 }
 
 .auth-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 }
 
 .auth-title {
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-size: 1.875rem;
+    font-weight: 700;
     color: #1F2937;
-    margin-bottom: 6px;
-    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
 }
 
 .auth-subtitle {
     color: #6B7280;
-    font-size: 0.875rem;
-    margin-top: 4px;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    font-weight: 400;
+    letter-spacing: 0.005em;
 }
 
-    .form-group {
-        margin-bottom: 24px;
-        position: relative;
-    }
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
 
-    .form-group.password-group {
-        position: relative;
-        margin-bottom: 28px;
-    }
+.form-group.password-group {
+    position: relative;
+    margin-bottom: 32px;
+}
 
 .form-label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #374151;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
 }
 
 .form-input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 14px 16px;
     border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
     background: #FFFFFF;
     color: #1F2937;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     box-sizing: border-box;
+    font-weight: 400;
+    letter-spacing: 0.01em;
 }
 
 .form-input:focus {
     outline: none;
     border-color: #6366F1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
     transform: translateY(-1px);
 }
 
 .form-input::placeholder {
     color: #9CA3AF;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 400;
 }
 
-/* 重新设计密码提示区域 */
-.password-helper {
+/* 密码要求提示区域 */
+.password-requirements {
     position: absolute;
-    bottom: -22px;
+    bottom: -28px;
     left: 0;
     right: 0;
-    height: 18px; /* 固定高度，避免抖动 */
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 12px 14px;
     font-size: 0.75rem;
-    color: #64748B;
+    z-index: 10;
     opacity: 0;
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     transition: all 0.3s ease;
     pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.password-helper.show {
+.password-requirements.show {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
-.password-strength-wrapper {
+.password-requirements-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+}
+
+.password-requirements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.password-requirement {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748B;
+    transition: color 0.2s ease;
+    font-size: 0.7rem;
+}
+
+.password-requirement.valid {
+    color: #16A34A;
+}
+
+.password-requirement-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-size: 8px;
+}
+
+.password-requirement.valid .password-requirement-icon {
+    background: #16A34A;
+    border-color: #16A34A;
+    color: white;
+}
+
+/* 密码强度条 */
+.password-strength-wrapper {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .password-strength-bar {
     flex: 1;
-    height: 3px;
+    height: 4px;
     background: #E5E7EB;
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
 }
 
 .password-strength-fill {
     height: 100%;
     width: 0%;
-    transition: all 0.3s ease;
-    border-radius: 2px;
+    transition: all 0.4s ease;
+    border-radius: 3px;
 }
 
 .password-strength-text {
     font-size: 0.7rem;
-    font-weight: 500;
-    min-width: 50px;
+    font-weight: 600;
+    min-width: 48px;
     text-align: right;
 }
 
@@ -219,19 +287,20 @@ html, body {
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     color: white;
     border: none;
-    padding: 14px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+    letter-spacing: 0.01em;
 }
 
 .submit-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.35);
 }
 
 .submit-button:active {
@@ -240,19 +309,21 @@ html, body {
 
 .auth-footer {
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .auth-footer-text {
     color: #6B7280;
     font-size: 0.875rem;
+    font-weight: 400;
 }
 
 .auth-footer-link {
     color: #6366F1;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     margin-left: 4px;
+    transition: color 0.2s ease;
 }
 
 .auth-footer-link:hover {
@@ -263,28 +334,76 @@ html, body {
     text-align: center;
     color: #9CA3AF;
     font-size: 0.75rem;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    font-weight: 400;
 }
 
 .terms-link {
     color: #6366F1;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .terms-link:hover {
     color: #4F46E5;
 }
 
-
-
 .success-message {
     background: #F0FDF4;
     border: 1px solid #BBF7D0;
     color: #16A34A;
-    padding: 10px 12px;
-    border-radius: 6px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+    font-weight: 500;
+}
+
+/* 统一错误样式 */
+.unified-error-container {
+    margin-top: 16px;
+}
+
+.unified-error-message {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    padding: 10px 14px;
+    border-radius: 8px;
     font-size: 0.8rem;
-    margin-bottom: 16px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.3s ease;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unified-error-message::before {
+    content: '\f071';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: #DC2626;
+    flex-shrink: 0;
+}
+
+.unified-error-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-input.field-error {
+    border-color: #DC2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-input.field-error:focus {
+    border-color: #DC2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -301,8 +420,8 @@ html, body {
     }
     
     .auth-left {
-        flex: 0 0 30%; /* 移动端左侧更小 */
-        min-height: 30vh;
+        flex: 0 0 32%; /* 移动端左侧更小 */
+        min-height: 32vh;
         padding: 20px;
     }
     
@@ -316,19 +435,23 @@ html, body {
     }
     
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
     
     .form-group.password-group {
-        margin-bottom: 24px;
+        margin-bottom: 28px;
     }
     
     .brand-title {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
     
     .auth-title {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+    }
+    
+    .password-requirements-list {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -338,16 +461,16 @@ html, body {
     }
     
     .form-input {
-        padding: 11px 12px;
-        font-size: 0.85rem;
+        padding: 12px 14px;
+        font-size: 0.875rem;
     }
     
     .submit-button {
-        padding: 12px 20px;
+        padding: 14px 20px;
     }
     
     .auth-header {
-        margin-bottom: 25px;
+        margin-bottom: 28px;
     }
 }
 </style>
@@ -408,7 +531,6 @@ html, body {
                                pattern="[\w\-\u4e00-\u9fa5]+"
                                title="用户名只能包含字母、数字、下划线、连字符和中文，至少3个字符"
                                required>
-
                     </div>
                     
                     <!-- Email Field -->
@@ -425,7 +547,6 @@ html, body {
                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                title="请输入有效的邮箱地址，如：example@email.com"
                                required>
-
                     </div>
                     
                     <!-- Password Field -->
@@ -441,7 +562,51 @@ html, body {
                                minlength="8"
                                title="密码至少需要8个字符，建议包含大小写字母、数字和特殊字符"
                                required>
-                        <div class="password-helper" id="password-helper">
+                        
+                        <!-- 密码要求提示 -->
+                        <div class="password-requirements" id="password-requirements">
+                            <div class="password-requirements-title">
+                                <i class="fas fa-shield-alt" style="color: #6366F1; font-size: 11px;"></i>
+                                密码安全要求
+                            </div>
+                            <ul class="password-requirements-list">
+                                <li class="password-requirement" data-requirement="length">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    至少8个字符
+                                </li>
+                                <li class="password-requirement" data-requirement="uppercase">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    包含大写字母
+                                </li>
+                                <li class="password-requirement" data-requirement="lowercase">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    包含小写字母
+                                </li>
+                                <li class="password-requirement" data-requirement="numbers">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    包含数字
+                                </li>
+                                <li class="password-requirement" data-requirement="symbols">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    包含特殊字符
+                                </li>
+                                <li class="password-requirement" data-requirement="common">
+                                    <span class="password-requirement-icon">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </span>
+                                    非常用密码
+                                </li>
+                            </ul>
                             <div class="password-strength-wrapper">
                                 <div class="password-strength-bar">
                                     <div class="password-strength-fill" id="strength-fill"></div>
@@ -449,7 +614,6 @@ html, body {
                                 <div class="password-strength-text" id="strength-text">弱</div>
                             </div>
                         </div>
-
                     </div>
                     
                     <!-- Confirm Password Field -->
@@ -465,7 +629,6 @@ html, body {
                                minlength="8"
                                title="请再次输入相同的密码以确认"
                                required>
-
                     </div>
 
                     <!-- Submit Button -->

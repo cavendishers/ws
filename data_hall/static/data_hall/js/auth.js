@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initPasswordResetForm();
     initPasswordStrengthIndicator();
     initFormValidation();
-    initPasswordHelper();
+    initPasswordRequirements();
     initHTML5ValidationMessages();
     initUnifiedErrorSystem();
     handleServerErrors();
@@ -169,35 +169,72 @@ function initPasswordResetForm() {
     });
 }
 
-function initPasswordHelper() {
+// 新的密码要求提示系统
+function initPasswordRequirements() {
     const passwordInput = document.querySelector('#id_password1');
-    const passwordHelper = document.querySelector('#password-helper');
+    const requirementsPanel = document.querySelector('#password-requirements');
     
-    if (!passwordInput || !passwordHelper) return;
+    if (!passwordInput || !requirementsPanel) return;
     
-    passwordInput.addEventListener('input', function() {
-        if (this.value.length > 0) {
-            passwordHelper.classList.add('show');
-            updatePasswordStrength(this.value);
-        } else {
-            passwordHelper.classList.remove('show');
-        }
+    // 常用密码列表（简化版）
+    const commonPasswords = [
+        'password', '123456', '123456789', 'qwerty', 'abc123', 'password123',
+        '12345678', '111111', '1234567890', 'admin', 'welcome', 'login',
+        'master', 'hello', 'guest', 'test', 'user', '000000', 'root'
+    ];
+    
+    // 显示/隐藏要求面板
+    passwordInput.addEventListener('focus', function() {
+        requirementsPanel.classList.add('show');
+        updatePasswordRequirements(this.value);
     });
     
-    passwordInput.addEventListener('focus', function() {
-        if (this.value.length > 0) {
-            passwordHelper.classList.add('show');
-        }
+    passwordInput.addEventListener('input', function() {
+        updatePasswordRequirements(this.value);
+        updatePasswordStrength(this.value);
     });
     
     passwordInput.addEventListener('blur', function() {
-        // 延迟隐藏，让用户有时间看到提示
+        // 延迟隐藏，让用户有时间看到最终状态
         setTimeout(() => {
-            if (document.activeElement !== passwordInput && this.value.length === 0) {
-                passwordHelper.classList.remove('show');
+            if (document.activeElement !== passwordInput) {
+                if (this.value.length === 0) {
+                    requirementsPanel.classList.remove('show');
+                }
             }
         }, 200);
     });
+    
+    function updatePasswordRequirements(password) {
+        const requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            numbers: /\d/.test(password),
+            symbols: /[^A-Za-z0-9]/.test(password),
+            common: !commonPasswords.some(common => 
+                password.toLowerCase().includes(common.toLowerCase()) && password.length > 0
+            )
+        };
+        
+        // 更新每个要求的显示状态
+        Object.keys(requirements).forEach(req => {
+            const element = requirementsPanel.querySelector(`[data-requirement="${req}"]`);
+            const icon = element?.querySelector('.password-requirement-icon i');
+            
+            if (element && icon) {
+                if (requirements[req]) {
+                    element.classList.add('valid');
+                    icon.style.display = 'block';
+                } else {
+                    element.classList.remove('valid');
+                    icon.style.display = 'none';
+                }
+            }
+        });
+        
+        return requirements;
+    }
 }
 
 function updatePasswordStrength(password) {
@@ -229,7 +266,7 @@ function updatePasswordStrength(password) {
 }
 
 function initPasswordStrengthIndicator() {
-    // This function is now handled by initPasswordHelper for the new design
+    // This function is now handled by initPasswordRequirements for the new design
     const passwordInput = document.querySelector('#id_password1');
     if (passwordInput) {
         // Additional validation for password confirmation
@@ -354,10 +391,38 @@ function validateSingleField(field) {
         }
     }
     
-    // Password validation
+    // Enhanced Password validation
     if (fieldName === 'password1') {
+        const passwordErrors = [];
+        
         if (value.length < 8) {
-            showFieldError(field, '密码至少需要8个字符');
+            passwordErrors.push('密码至少需要8个字符');
+        }
+        
+        if (!/[A-Z]/.test(value)) {
+            passwordErrors.push('需要包含大写字母');
+        }
+        
+        if (!/[a-z]/.test(value)) {
+            passwordErrors.push('需要包含小写字母');
+        }
+        
+        if (!/\d/.test(value)) {
+            passwordErrors.push('需要包含数字');
+        }
+        
+        if (!/[^A-Za-z0-9]/.test(value)) {
+            passwordErrors.push('需要包含特殊字符');
+        }
+        
+        // 检查常用密码
+        const commonPasswords = ['password', '123456', '123456789', 'qwerty', 'abc123'];
+        if (commonPasswords.some(common => value.toLowerCase().includes(common))) {
+            passwordErrors.push('请避免使用常用密码');
+        }
+        
+        if (passwordErrors.length > 0) {
+            showFieldError(field, passwordErrors.join('；'));
             return false;
         }
     }

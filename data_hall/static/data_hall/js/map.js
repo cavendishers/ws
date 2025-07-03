@@ -235,7 +235,7 @@ function drawMap() {
     const city = cityFilter ? cityFilter.value : '';
     const county = countyFilter ? countyFilter.value : '';
     
-    const cacheKey = `${industry}_${city}_${county}`;
+    const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
     
     // 检查缓存状态
     const now = Date.now();
@@ -418,7 +418,7 @@ function handleMouseMove(e) {
             const city = cityFilter ? cityFilter.value : '';
             const county = countyFilter ? countyFilter.value : '';
             
-            const cacheKey = `${industry}_${city}_${county}`;
+            const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
             
             // 从缓存中获取公司数量
             let companyCount = '加载中...';
@@ -476,7 +476,7 @@ function showTooltip(event, countyName, companyCount) {
     const county = countyFilter ? countyFilter.value : '';
     
     // 构建缓存键
-    const cacheKey = `${industry}_${city}_${county}`;
+    const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
     
     // 从缓存中获取公司数量，如果缓存中有数据
     if (dataCache.countyStats[cacheKey] && dataCache.countyStats[cacheKey][countyName] !== undefined) {
@@ -528,16 +528,16 @@ async function getCountyCompanyCount(countyName) {
     const county = countyFilter ? countyFilter.value : '';
     
     // 构建缓存键，包含筛选条件
-    const cacheKey = `${industry}_${city}_${county}`;
+    const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
     
     // 如果缓存过期（超过5分钟）或不存在，则重新获取
     if (now - dataCache.lastFetchTime > dataCache.cacheDuration || !dataCache.countyStats[cacheKey]) {
         try {
             // 构建查询参数
             const params = new URLSearchParams();
-            if (industry) params.append('industry', industry);
-            if (city) params.append('city', city);
-            if (county) params.append('county', county);
+            if (industry && industry.trim() !== '') params.append('industry', industry);
+            if (city && city.trim() !== '') params.append('city', city);
+            if (county && county.trim() !== '') params.append('county', county);
             
             // 发起API请求
             const response = await fetch(`/api/county-company-counts/?${params.toString()}`);
@@ -721,7 +721,19 @@ function initCharts() {
         animationEasing: 'cubicOut',
         tooltip: {
             trigger: 'axis',
-            axisPointer: { type: 'shadow' }
+            axisPointer: { type: 'shadow' },
+            backgroundColor: 'rgba(10, 26, 58, 0.85)',
+            borderColor: 'rgba(0, 193, 212, 0.2)',
+            textStyle: {
+                color: '#fff'
+            },
+            formatter: function(params) {
+                if (params && params.length > 0) {
+                    const data = params[0];
+                    return `${data.name}<br/>企业数量：${data.value}`;
+                }
+                return '';
+            }
         },
         grid: {
             left: '3%',
@@ -731,33 +743,46 @@ function initCharts() {
         },
         xAxis: {
             type: 'category',
-            data: ['上城区', '下城区', '江干区', '拱墅区', '西湖区', '滨江区', '萧山区', '余杭区', '富阳区', '临安区'],
+            data: ['加载中...'],
             axisLine: { lineStyle: { color: '#ccc' } },
             axisLabel: { 
                 color: '#ccc',
-                rotate: 45 // 区县名称旋转45度，避免重叠
+                rotate: 0,
+                fontSize: 10
             }
         },
         yAxis: {
             type: 'value',
+            name: '企业数量',
+            nameTextStyle: { color: '#ccc' },
             axisLine: { lineStyle: { color: '#ccc' } },
-            axisLabel: { color: '#ccc' }
+            axisLabel: { color: '#ccc' },
+            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
         },
         series: [{
             name: '企业数量',
             type: 'bar',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 初始化为0
+            data: [0], // 初始化为单个0值
             itemStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                     { offset: 0, color: '#00C1D4' },
                     { offset: 1, color: '#132144' }
                 ])
             },
+            emphasis: {
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#00E5FF' },
+                        { offset: 1, color: '#1A2B5E' }
+                    ])
+                }
+            },
             label: {
                 show: true,
                 position: 'top',
                 color: '#fff',
-                formatter: '{c}'
+                formatter: '{c}',
+                fontSize: 10
             }
         }]
     });
@@ -814,14 +839,14 @@ async function loadAllData() {
         const city = cityFilter ? cityFilter.value : '';
         const county = countyFilter ? countyFilter.value : '';
         
-        // 构建缓存键
-        const cacheKey = `${industry}_${city}_${county}`;
+        // 构建缓存键，使用更安全的方式避免空值导致的缓存冲突
+        const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
         
         // 构建请求参数
         const params = new URLSearchParams();
-        if (industry) params.append('industry', industry);
-        if (city) params.append('city', city);
-        if (county) params.append('county', county);
+        if (industry && industry.trim() !== '') params.append('industry', industry);
+        if (city && city.trim() !== '') params.append('city', city);
+        if (county && county.trim() !== '') params.append('county', county);
         
         const queryString = params.toString();
         
@@ -863,15 +888,19 @@ async function loadAllData() {
         // 处理区县公司数量数据
         if (countyCountsResponse.ok) {
             const countyData = await countyCountsResponse.json();
+            console.log('从API获取的区县数据:', countyData);
             
             // 更新缓存
             dataCache.countyStats[cacheKey] = {};
             countyData.county_stats.forEach(item => {
                 dataCache.countyStats[cacheKey][item.county] = item.count;
             });
+            console.log('更新后的缓存数据:', dataCache.countyStats[cacheKey]);
             
             // 更新区县分布图表
             updateCountyChart(countyData.county_stats);
+        } else {
+            console.error('获取区县公司数量数据失败，HTTP状态:', countyCountsResponse.status);
         }
         
         // 新增：处理新势力企业名单数据
@@ -1011,7 +1040,8 @@ function updateChartsWithCachedData() {
     const industry = document.getElementById('industryFilter').value;
     const city = document.getElementById('cityFilter').value;
     const county = document.getElementById('countyFilter').value;
-    const cacheKey = `${industry}_${city}_${county}`;
+    const cacheKey = `${industry || 'ALL'}_${city || 'ALL'}_${county || 'ALL'}`;
+    console.log('cacheKey', cacheKey);
     
     if (dataCache.countyStats[cacheKey]) {
         // 更新区县分布图表
@@ -1091,39 +1121,138 @@ function updateIndustryChart(stats) {
 
 // 更新区县分布图表
 function updateCountyChart(stats) {
-    const chartData = stats.map(item => ({
-        name: item.county || '未知区县',
-        value: item.count
-    }));
-    
-    // 根据企业数量从高到低排序
-    chartData.sort((a, b) => b.value - a.value);
-    
     if (!regionChart) {
         console.log('区县图表未初始化');
         return;
     }
     
-    // 延迟更新以避免闪烁
-    setTimeout(() => {
-        regionChart.setOption({
-            animation: true,
-            animationDuration: 800,
-            animationEasing: 'cubicOut',
-            xAxis: {
-                data: chartData.map(item => item.name)
-            },
-            series: [{
-                data: chartData.map(item => item.value),
-                label: {
-                    show: true,
-                    position: 'top',
-                    color: '#fff',
-                    formatter: '{c}'
-                }
-            }]
+    console.log('原始区县统计数据:', stats);
+    
+    // 处理数据，确保数据格式正确
+    const chartData = [];
+    
+    if (Array.isArray(stats) && stats.length > 0) {
+        // 将API数据转换为图表需要的格式
+        stats.forEach(item => {
+            if (item && (item.county || item.name) && (item.count !== undefined || item.value !== undefined)) {
+                chartData.push({
+                    name: item.county || item.name || '未知区县',
+                    value: item.count !== undefined ? item.count : item.value || 0
+                });
+            }
         });
-    }, 100);
+        
+        // 根据企业数量从高到低排序
+        chartData.sort((a, b) => b.value - a.value);
+        
+        // 限制显示前10个区县，避免图表过于拥挤
+        const displayData = chartData.slice(0, 10);
+        
+        console.log('处理后的图表数据:', displayData);
+        
+        // 延迟更新以避免闪烁
+        setTimeout(() => {
+            try {
+                regionChart.setOption({
+                    animation: true,
+                    animationDuration: 800,
+                    animationEasing: 'cubicOut',
+                    title: {
+                        show: false
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: displayData.map(item => item.name),
+                        axisLine: { lineStyle: { color: '#ccc' } },
+                        axisLabel: { 
+                            color: '#ccc',
+                            rotate: displayData.length > 5 ? 45 : 0, // 超过5个区县时旋转标签
+                            fontSize: 10
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: '企业数量',
+                        nameTextStyle: { color: '#ccc' },
+                        axisLine: { lineStyle: { color: '#ccc' } },
+                        axisLabel: { color: '#ccc' },
+                        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                    },
+                    series: [{
+                        name: '企业数量',
+                        type: 'bar',
+                        data: displayData.map(item => item.value),
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#00C1D4' },
+                                { offset: 1, color: '#132144' }
+                            ])
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                    { offset: 0, color: '#00E5FF' },
+                                    { offset: 1, color: '#1A2B5E' }
+                                ])
+                            }
+                        },
+                        label: {
+                            show: true,
+                            position: 'top',
+                            color: '#fff',
+                            formatter: '{c}',
+                            fontSize: 10
+                        }
+                    }],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { type: 'shadow' },
+                        backgroundColor: 'rgba(10, 26, 58, 0.85)',
+                        borderColor: 'rgba(0, 193, 212, 0.2)',
+                        textStyle: {
+                            color: '#fff'
+                        },
+                        formatter: function(params) {
+                            if (params && params.length > 0) {
+                                const data = params[0];
+                                return `${data.name}<br/>企业数量：${data.value}`;
+                            }
+                            return '';
+                        }
+                    }
+                }, true); // 使用merge模式更新
+                
+                console.log('区县分布图表更新成功');
+            } catch (error) {
+                console.error('更新区县分布图表失败:', error);
+            }
+        }, 100);
+    } else {
+        // 没有数据时显示空状态
+        console.log('没有区县统计数据，显示空状态');
+        setTimeout(() => {
+            regionChart.setOption({
+                xAxis: {
+                    data: ['暂无数据']
+                },
+                series: [{
+                    data: [0],
+                    label: {
+                        show: true,
+                        position: 'top',
+                        color: '#fff',
+                        formatter: '暂无数据'
+                    }
+                }]
+            }, true);
+        }, 100);
+    }
 }
 
 // 设置筛选监听器

@@ -980,21 +980,6 @@ class ChainSidebar {
     }
     
     /**
-     * 显示空状态（旧方法，保留兼容性）
-     */
-    showEmpty() {
-        const content = this.sidebar.querySelector('.chain-sidebar-content');
-        content.innerHTML = `
-            <div class="chain-sidebar-empty">
-                <div class="empty-icon">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div>暂无关联企业</div>
-            </div>
-        `;
-    }
-    
-    /**
      * 生成空状态HTML（新方法，用于保留筛选框的空状态）
      */
     generateEmptyStateHTML() {
@@ -1734,7 +1719,14 @@ class ChainSidebar {
      * 判断是否为需要忽略的地区名称
      */
     isIgnoredRegionName(name) {
-        const ignoredNames = ['市辖区', '县', '自治区直辖县级行政区划'];
+        // 重庆市辖区不忽略，因为它是有效的选择
+        if (name === '市辖区') {
+            // 可以通过检查当前筛选中是否有重庆市相关的选择来判断
+            // 但为了简化，我们暂时不忽略市辖区，让地区选择器决定
+            return false;
+        }
+        
+        const ignoredNames = ['县', '自治区直辖县级行政区划'];
         return ignoredNames.includes(name);
     }
     

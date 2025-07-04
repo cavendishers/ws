@@ -34,11 +34,15 @@
 
 /* 首页AI聊天容器 - 优化尺寸和性能 */
 #homepage-ai-chat {
-    background: linear-gradient(145deg, rgba(0, 32, 64, 0.95) 0%, rgba(0, 40, 80, 0.92) 50%, rgba(0, 28, 60, 0.95) 100%);
-    backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 191, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 191, 255, 0.15);
-    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 50%, rgba(15, 23, 42, 0.98) 100%);
+    backdrop-filter: blur(32px) saturate(120%);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.4), 
+        0 8px 24px rgba(0, 0, 0, 0.2), 
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     width: 95vw;
     max-width: 1200px; /* 增大容器尺寸，优化侧边栏比例 */
     height: 85vh;
@@ -67,7 +71,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 30%, rgba(0, 191, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+    background: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.02) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.01) 50%, transparent 100%);
     border-radius: inherit;
     pointer-events: none;
     z-index: 1;
@@ -138,16 +145,18 @@
 
 /* 首页AI聊天标题栏 */
 #homepage-chat-header {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
-    border-bottom: 1px solid rgba(0, 191, 255, 0.15);
-    padding: 20px 24px;
-    border-radius: 16px 16px 0 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 18px 24px;
+    border-radius: 20px 20px 0 0;
     flex-shrink: 0;
+    /* 🔧 增加微妙的内阴影，增强层次感 */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* 首页AI聊天消息区域 */
 #homepage-chat-messages {
-    padding: 28px 28px; /* 增加上下内边距，为减少的输入区域高度补偿 */
+    padding: 24px 28px 28px; /* 🔧 优化内边距，顶部稍少，底部保持 */
     /* 避免因为悬停按钮导致的横向滚动 */
     overflow-x: visible;
     overflow-y: auto;
@@ -156,6 +165,21 @@
     box-sizing: border-box;
     /* 防止滚动事件冒泡到背景页面 */
     overscroll-behavior: contain;
+    /* 🔧 添加微妙的内阴影，增强深度感 */
+    position: relative;
+}
+
+/* 🔧 为消息区域添加微妙的顶部阴影 */
+#homepage-chat-messages::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 #homepage-chat-messages::-webkit-scrollbar {
@@ -163,25 +187,29 @@
 }
 
 #homepage-chat-messages::-webkit-scrollbar-track {
-    background: rgba(0, 191, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05); /* 改为白色调 */
     border-radius: 4px;
 }
 
 #homepage-chat-messages::-webkit-scrollbar-thumb {
-    background: rgba(0, 191, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15); /* 改为白色调 */
     border-radius: 4px;
 }
 
 #homepage-chat-messages::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 191, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25); /* 改为白色调 */
 }
 
 /* 首页AI聊天输入区域 - 减少高度 */
 #homepage-chat-input-area {
-    padding: 14px 24px 18px; /* 减少内边距，降低输入区域高度 */
-    border-top: 1px solid rgba(0, 191, 255, 0.15);
-    border-radius: 0 0 16px 16px;
+    padding: 16px 24px 20px; /* 🔧 稍微增加内边距，提供更好的视觉平衡 */
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0 0 20px 20px;
     flex-shrink: 0;
+    /* 🔧 添加微妙的背景渐变和内阴影 */
+    background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.03) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
 }
 
 /* 输入框和发送按钮容器 - 严格对齐 */
@@ -196,13 +224,13 @@
     font-family: inherit;
     line-height: 1.25;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(145deg, rgba(0, 48, 96, 0.70) 0%, rgba(0, 32, 64, 0.75) 100%);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.70) 0%, rgba(15, 23, 42, 0.75) 100%);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     -webkit-font-smoothing: antialiased;
     color: rgba(255, 255, 255, 0.95) !important;
     resize: none;
     overflow-y: hidden;
-    border: 1px solid rgba(0, 191, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* 改用白色边框，与主题一致 */
     border-radius: 12px;
     padding: 16px 20px;
     font-size: 16px;
@@ -213,15 +241,15 @@
 
 #homepage-chat-input:focus {
     outline: none;
-    border-color: var(--button-highlight);
-    box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.1), 0 2px 8px rgba(0, 191, 255, 0.15);
-    background: var(--bg-secondary) / 80;
+    border-color: rgba(139, 92, 246, 0.6); /* 改用紫色高亮，与主题一致 */
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1), 0 2px 8px rgba(139, 92, 246, 0.15);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.80) 0%, rgba(15, 23, 42, 0.85) 100%);
     transform: translateY(-1px);
 }
 
 #homepage-chat-input:hover:not(:focus) {
-    border-color: rgba(0, 191, 255, 0.25);
-    background: var(--bg-secondary) / 70;
+    border-color: rgba(255, 255, 255, 0.25); /* 悬停时使用白色边框 */
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.80) 100%);
 }
 
 #homepage-chat-input::placeholder {
@@ -272,40 +300,82 @@
 
 /* 首页AI聊天消息样式 - 重新美化设计 */
 .homepage-chat-message-user {
-    background: linear-gradient(135deg, var(--button-highlight) / 92 0%, #0ea5e9/90 100%);
-    color: rgba(255, 255, 255, 0.97);
-    margin-left: auto;
-    margin-right: 0;
-    border-radius: 16px 16px 4px 16px; /* 调整圆角，更加协调 */
-    padding: 10px 20px; /* 增加内边距，更舒适的阅读体验 */
-    max-width: 50%; /* 🔧 与AI消息保持一致 */
-    box-shadow: 0 3px 10px rgba(0, 191, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(6px);
-    position: relative;
-    transition: none;
-    overflow: visible;
-    word-wrap: break-word;
-    font-size: 15px; /* 稍微增大字体 */
-    line-height: 1.5;
-}
-
-.homepage-chat-message-ai {
-    background: linear-gradient(145deg, rgba(0, 40, 80, 0.78) 0%, rgba(0, 32, 64, 0.82) 100%);
-    color: rgba(255, 255, 255, 0.95);
+    /* 🔧 重新设计AI消息气泡，与整体风格协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.85) 0%, 
+        rgba(15, 23, 42, 0.88) 50%, 
+        rgba(30, 41, 59, 0.85) 100%);
+    color: rgba(255, 255, 255, 0.96);
     margin-left: 0;
     margin-right: auto;
-    border-radius: 16px 16px 16px 4px; /* 调整圆角，更加协调 */
-    padding: 18px 22px; /* 增加内边距，更舒适的阅读体验 */
-    max-width: 50%; /* 🔧 从70%减少到60%，降低侧边栏展开时的视觉变化 */
-    border: 1px solid rgba(0, 191, 255, 0.15);
-    backdrop-filter: blur(8px) saturate(125%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-radius: 16px 16px 4px 16px; /* 调整圆角，更加协调 */
+    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
+    /* 🔧 重新设计边框，使用更协调的颜色 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果，提升质感 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，更加协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
     position: relative;
     transition: none;
     overflow: visible;
     font-size: 15px; /* 稍微增大字体 */
     line-height: 1.6;
+    /* 🔧 增强文字阴影，提高可读性 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.homepage-chat-message-ai {
+    /* 🔧 重新设计AI消息气泡，与整体风格协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.85) 0%, 
+        rgba(15, 23, 42, 0.88) 50%, 
+        rgba(30, 41, 59, 0.85) 100%);
+    color: rgba(255, 255, 255, 0.96);
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 16px 16px 16px 4px; /* 调整圆角，更加协调 */
+    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
+    /* 🔧 重新设计边框，使用更协调的颜色 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果，提升质感 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，更加协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    transition: none;
+    overflow: visible;
+    font-size: 15px; /* 稍微增大字体 */
+    line-height: 1.6;
+    /* 🔧 增强文字阴影，提高可读性 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔧 为AI消息气泡添加微妙的渐变纹理 */
+.homepage-chat-message-ai::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* 首页AI聊天关闭按钮 */
@@ -348,20 +418,32 @@
     width: 100%;
     height: 100%;
     position: relative;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     background: inherit;
+    /* 🔧 确保容器边缘的视觉一致性 */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 /* 侧边栏样式 - 绝对定位，不占用flex空间 */
 .chat-sidebar {
     width: 280px;
     height: 100%;
-    background: linear-gradient(145deg, rgba(0, 28, 60, 0.96) 0%, rgba(0, 32, 64, 0.94) 50%, rgba(0, 24, 56, 0.96) 100%);
-    backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
-    border-right: 1px solid rgba(0, 191, 255, 0.2);
-    border-radius: 16px 0 0 16px;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15), inset -1px 0 0 rgba(255, 255, 255, 0.05);
+    /* 🔧 优化侧边栏背景，与主界面更协调 */
+    background: linear-gradient(145deg, 
+        rgba(15, 23, 42, 0.95) 0%, 
+        rgba(30, 41, 59, 0.92) 30%, 
+        rgba(15, 23, 42, 0.95) 70%, 
+        rgba(0, 24, 56, 0.98) 100%);
+    backdrop-filter: blur(32px) saturate(120%) brightness(1.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px 0 0 20px;
+    /* 🔧 增强侧边栏阴影效果，与主界面协调 */
+    box-shadow: 
+        6px 0 25px rgba(0, 0, 0, 0.25), 
+        2px 0 12px rgba(0, 0, 0, 0.15),
+        inset -1px 0 0 rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
     /* 🔧 使用绝对定位，让侧边栏不占用flex空间 */
     position: absolute;
     left: 0;
@@ -383,6 +465,28 @@
     flex-direction: column;
     /* 🔧 避免子元素重绘影响动画 */
     contain: layout;
+}
+
+/* 🔧 侧边栏微妙的渐变纹理，与主界面一致 */
+.chat-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 60%),
+        linear-gradient(145deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.chat-sidebar > * {
+    position: relative;
+    z-index: 2;
 }
 
 .chat-sidebar.show {
@@ -452,9 +556,14 @@
 
 /* 侧边栏头部 */
 .sidebar-header {
-    padding: 20px;
-    border-bottom: 1px solid rgba(0, 191, 255, 0.15);
+    padding: 18px 20px;
+    /* 🔧 优化头部边框，与主界面协调 */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 添加微妙的背景渐变 */
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
     flex-shrink: 0;
+    /* 🔧 添加内阴影，与主界面头部保持一致 */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-title {
@@ -462,7 +571,8 @@
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin-bottom: 12px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    /* 🔧 增强文字阴影效果 */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .new-conversation-btn {
@@ -471,24 +581,28 @@
     gap: 8px;
     width: 100%;
     padding: 10px 16px;
-    background: linear-gradient(135deg, #00bfff 0%, #0ea5e9 100%);
-    border: none;
+    /* 🔧 优化按钮配色，与会话项协调 */
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 8px;
-    color: white;
+    color: rgba(255, 255, 255, 0.95);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    /* 🔧 调整按钮阴影 */
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.2);
 }
 
 .new-conversation-btn:hover {
-    background: linear-gradient(135deg, #00bfff, #0ea5e9);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(99, 102, 241, 0.9) 100%);
+    border-color: rgba(139, 92, 246, 0.5);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 191, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .new-conversation-btn svg {
-    color: white;
+    color: rgba(255, 255, 255, 0.95);
     fill: currentColor;
     width: 16px;
     height: 16px;
@@ -507,12 +621,17 @@
     cursor: pointer;
     transition: all 0.2s ease;
     color: rgba(255, 255, 255, 0.8);
+    /* 🔧 添加微妙的边框和阴影 */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-toggle-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-toggle-btn svg {
@@ -534,12 +653,12 @@
 }
 
 .sidebar-content::-webkit-scrollbar-track {
-    background: rgba(0, 191, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05); /* 改为白色调 */
     border-radius: 3px;
 }
 
 .sidebar-content::-webkit-scrollbar-thumb {
-    background: rgba(0, 191, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15); /* 改为白色调 */
     border-radius: 3px;
 }
 
@@ -556,16 +675,22 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    /* 🔧 优化会话项背景，与新会话按钮协调 */
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .conversation-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(0, 191, 255, 0.1);
+    background: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.2);
+    /* 🔧 调整悬停阴影，与新会话按钮协调 */
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.12);
 }
 
 .conversation-item.active {
-    background: rgba(0, 191, 255, 0.1);
-    border-color: rgba(0, 191, 255, 0.2);
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.35);
+    /* 🔧 增强活跃状态的阴影，与新会话按钮协调 */
+    box-shadow: 0 2px 12px rgba(139, 92, 246, 0.2);
 }
 
 .conversation-title {
@@ -620,6 +745,13 @@
     .homepage-chat-message-ai {
         max-width: 80%; /* 🔧 移动端也相应减少最大宽度 */
         font-size: 14px;
+    }
+
+    /* 🔧 移动端AI头像适配 - 使用稍小的尺寸 */
+    .homepage-chat-message-ai img,
+    #homepage-typing-indicator img {
+        width: 2rem !important; /* w-8 */
+        height: 2rem !important; /* h-8 */
     }
 
     /* 移动端侧边栏调整 */
@@ -979,44 +1111,102 @@
     display: none;
 }
 
-/* 加载状态样式 */
+/* 加载状态样式 - 🔧 重新设计typing indicator */
 .homepage-typing-indicator {
     display: flex;
     align-items: center;
+    /* 🔧 优化内边距，与AI消息气泡保持一致 */
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 18px 18px 18px 4px;
-    max-width: 100px;
+    /* 🔧 重新设计背景，与AI消息气泡协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.75) 0%, 
+        rgba(15, 23, 42, 0.80) 50%, 
+        rgba(30, 41, 59, 0.75) 100%);
+    /* 🔧 调整圆角，与AI消息气泡保持一致 */
+    border-radius: 16px 16px 16px 4px;
+    /* 🔧 调整最大宽度，更合理的尺寸 */
+    max-width: 120px;
     margin-bottom: 16px;
+    /* 🔧 添加边框，与AI消息气泡保持一致 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，与AI消息气泡协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* 🔧 添加微妙的入场动画 */
+    animation: typingIndicatorFadeIn 0.3s ease-out;
+    /* 🔧 设置相对定位，确保::before伪元素正确定位 */
+    position: relative;
+}
+
+/* 🔧 为typing indicator添加微妙的渐变纹理 */
+.homepage-typing-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .homepage-typing-dot {
-    width: 8px;
-    height: 8px;
+    /* 🔧 优化点的尺寸，更加精致 */
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: rgba(0, 191, 255, 0.6);
-    margin: 0 2px;
-    animation: homepageTypingAnimation 1.4s infinite ease-in-out;
+    /* 🔧 重新设计点的颜色，使用更协调的渐变 */
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(99, 102, 241, 0.9) 100%);
+    margin: 0 3px; /* 🔧 增加间距，更好的视觉效果 */
+    /* 🔧 优化动画，更流畅的效果 */
+    animation: homepageTypingAnimation 1.6s infinite ease-in-out;
+    /* 🔧 添加微妙的阴影效果 */
+    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.3);
+    /* 🔧 添加变换原点，确保动画居中 */
+    transform-origin: center;
 }
 
 .homepage-typing-dot:nth-child(1) {
-    animation-delay: -0.32s;
+    animation-delay: -0.4s;
 }
 .homepage-typing-dot:nth-child(2) {
-    animation-delay: -0.16s;
+    animation-delay: -0.2s;
 }
 .homepage-typing-dot:nth-child(3) {
     animation-delay: 0s;
 }
 
+/* 🔧 重新设计typing动画，更加优雅 */
 @keyframes homepageTypingAnimation {
     0%, 80%, 100% {
-        transform: scale(0);
-        opacity: 0.5;
+        transform: scale(0.6);
+        opacity: 0.4;
     }
     40% {
-        transform: scale(1);
+        transform: scale(1.1);
         opacity: 1;
+    }
+}
+
+/* 🔧 typing indicator的入场动画 */
+@keyframes typingIndicatorFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -1067,12 +1257,15 @@
     /* 🔧 固定为3列布局，确保整齐排列 */
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
-    gap: 14px;
-    margin-bottom: 28px;
-    padding: 18px;
+    gap: 12px; /* 🔧 稍微增加间距，提供更好的视觉分离 */
+    margin-bottom: 24px; /* 🔧 稍微增加底部边距，与其他元素保持协调 */
+    padding: 16px; /* 🔧 增加容器内边距，提供更好的视觉平衡 */
     /* 🔧 确保容器有足够宽度容纳3列 */
     min-width: 0;
     width: 100%;
+    /* 🔧 添加相对定位，确保z-index正确 */
+    position: relative;
+    z-index: 2;
 }
 
 /* 聊天消息项样式 - 增加底部边距为悬浮按钮留空间 */
@@ -1082,23 +1275,30 @@
 }
 
 .recommendation-card {
-    background: linear-gradient(135deg, rgba(0, 40, 80, 0.65) 0%, rgba(0, 32, 64, 0.75) 100%);
-    border: 1px solid rgba(0, 191, 255, 0.22);
-    border-radius: 14px; /* 优化圆角 */
-    padding: 20px; /* 适当增加内部padding */
-    cursor: default; /* 卡片本身不可点击 */
-    transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.75) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px; /* 🔧 稍微增大圆角，更友好 */
+    padding: 12px 14px; /* 🔧 增加内边距，提供更好的内容空间 */
+    cursor: default;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(16px) saturate(110%);
     position: relative;
     overflow: hidden;
-    /* 🔧 确保卡片内容在所有情况下都能正确显示 */
     min-width: 0;
     box-sizing: border-box;
-    /* 🔧 启用GPU加速优化悬浮效果 */
+    /* 🔧 调整宽高比和高度，提供更好的内容展示 */
+    min-height: 130px; /* 🔧 保持合适的高度 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 🔧 改为顶部对齐，避免内容被遮盖 */
     will-change: transform, box-shadow, border-color;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    /* 🔧 添加微妙的内阴影，增强深度 */
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .recommendation-card::before {
@@ -1108,7 +1308,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(99, 102, 241, 0.04) 100%);
     opacity: 0;
     transition: opacity 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     pointer-events: none;
@@ -1121,13 +1321,14 @@
 
 /* 🔧 增强卡片悬浮效果 - 简约而优雅 */
 .recommendation-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: rgba(0, 191, 255, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    border-color: rgba(255, 255, 255, 0.25);
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.15),
-        0 3px 10px rgba(0, 191, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    background: linear-gradient(135deg, rgba(0, 40, 80, 0.75) 0%, rgba(0, 32, 64, 0.85) 100%);
+        0 8px 24px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(139, 92, 246, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+    backdrop-filter: blur(20px) saturate(120%);
 }
 
 .recommendation-card:active {
@@ -1139,70 +1340,112 @@
 .card-header {
     display: flex;
     align-items: center;
-    gap: 12px; /* 优化间距 */
-    margin-bottom: 16px; /* 优化底部边距 */
+    gap: 6px; /* 减少间距 */
+    margin-bottom: 6px; /* 🔧 减少底部边距，让卡片更紧凑 */
+    flex-shrink: 0; /* 防止头部被挤压 */
 }
 
 .card-emoji {
-    font-size: 24px; /* 适当增大emoji尺寸 */
+    font-size: 16px; /* 减小emoji尺寸 */
     flex-shrink: 0;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    line-height: 1;
 }
 
 .card-title {
     color: rgba(255, 255, 255, 0.96);
-    font-size: 17px; /* 优化字体大小 */
+    font-size: 15px; /* 减小标题字体 */
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.2;
     margin: 0;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* 🔧 副标题容器 - 确保内容不被遮盖 */
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 减少副标题之间的间距 */
+    min-height: 0; /* 允许flex子元素缩小 */
+    overflow: hidden; /* 防止内容溢出 */
+}
+
 /* 可点击的副标题 - 优化布局 */
 .card-subtitle {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px; /* 优化字体大小 */
-    line-height: 1.45; /* 优化行高 */
-    margin-bottom: 8px; /* 优化底部边距 */
-    padding: 8px 12px; /* 优化内边距 */
-    border-radius: 8px; /* 优化圆角 */
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px; /* 🔧 进一步减小字体，让内容更紧凑 */
+    line-height: 1.3; /* 🔧 调整行高，优化多行显示 */
+    margin-bottom: 0; /* 🔧 移除底部边距，使用gap控制间距 */
+    padding: 6px 8px; /* 🔧 增加内边距，提供更好的点击区域 */
+    border-radius: 6px; /* 稍微增大圆角，更友好 */
     cursor: pointer;
-    transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 🔧 移除边框，使用纯背景变化 */
+    border: none;
     font-weight: 400;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    /* 🔧 文本显示优化 */
+    text-align: left;
+    word-wrap: break-word;
+    hyphens: auto;
+    /* 🔧 多行文本显示控制 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 🔧 flex布局优化 */
+    flex-shrink: 0;
+    min-height: 0;
+    /* 🔧 添加微妙的背景过渡 */
+    background: transparent;
 }
 
 .card-subtitle:hover {
-    background: rgba(0, 191, 255, 0.12);
-    border-color: rgba(0, 191, 255, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-    transform: translateX(3px) translateY(-1px);
-    box-shadow: 0 3px 12px rgba(0, 191, 255, 0.15);
+    /* 🔧 更明显的背景变化，让用户清晰知道指向的内容 */
+    background: transparent;
+    color: rgba(255, 255, 255, 0.98);
+    /* 🔧 更微妙的变换效果 */
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: none;
+    text-shadow: none;
 }
 
 .card-subtitle:active {
     transform: translateX(1px) translateY(0px);
-    background: rgba(0, 191, 255, 0.15);
+    background: rgba(139, 92, 246, 0.12);
     transition-duration: 0.1s;
 }
 
+/* 🔧 确保最后一个副标题不会被遮盖 */
 .card-subtitle:last-child {
     margin-bottom: 0;
+    flex-shrink: 1; /* 允许最后一个元素适当缩小 */
 }
 
 /* 响应式设计 */
-@media(max-width: 1200px) {
+@media(max-width: 100px) {
     .recommendation-cards-container {
         /* 🔧 中等屏幕：2列3行布局 */
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(3, auto);
         gap: 12px;
+        padding: 14px;
     }
     
     /* 🔧 确保中等屏幕侧边栏展开时保持2列布局 */
     .chat-main-container.sidebar-open .recommendation-cards-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 🔧 中等屏幕卡片优化 */
+    .recommendation-card {
+        min-height: 120px; /* 适当减少高度 */
+        padding: 10px 12px;
+    }
+    
+    .card-subtitle {
+        font-size: 12px; /* 进一步减小字体 */
     }
 }
 
@@ -1222,37 +1465,39 @@
     }
     
     .recommendation-card {
-        padding: 18px; /* 优化移动端内部padding */
+        padding: 10px 12px; /* 移动端更小巧的内边距 */
+        min-height: 100px; /* 🔧 移动端优化高度 */
+        aspect-ratio: 1.4 / 1; /* 🔧 移动端稍微调整宽高比 */
     }
     
     .recommendation-card:hover {
-        transform: translateY(-3px) scale(1.015);
+        transform: translateY(-2px) scale(1.01);
     }
     
     #homepage-chat-messages {
-        padding: 28px 20px; /* 移动端适配，但仍增加空间 */
+        padding: 20px 20px 24px; /* 移动端适配，但仍增加空间 */
     }
     
     #homepage-chat-input-area {
-        padding: 12px 20px 16px; /* 移动端进一步减少输入区域padding */
+        padding: 14px 20px 18px; /* 移动端进一步减少输入区域padding */
     }
     
     .card-emoji {
-        font-size: 22px;
+        font-size: 14px; /* 移动端适中尺寸 */
     }
     
     .card-title {
-        font-size: 16px;
+        font-size: 13px; /* 移动端适中字体 */
     }
     
     .card-subtitle {
-        font-size: 13px;
-        padding: 7px 10px; /* 移动端优化内边距 */
+        font-size: 11px; /* 移动端适中字体 */
+        padding: 4px 6px; /* 移动端适中内边距 */
     }
     
     .card-header {
-        gap: 10px;
-        margin-bottom: 14px;
+        gap: 6px; /* 移动端适中间距 */
+        margin-bottom: 6px; /* 移动端适中底部边距 */
     }
     
     .homepage-chat-message-user,
@@ -1337,8 +1582,10 @@
                                 <span class="card-emoji">📈</span>
                                 <div class="card-title">查趋势</div>
                             </div>
-                            <div class="card-subtitle" data-question="近几年新势力企业呈现怎么样的变化趋势？">近几年新势力企业呈现怎么样的变化趋势？</div>
-                            <div class="card-subtitle" data-question="哪些行业的新势力企业增长最快？">哪些行业的新势力企业增长最快？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="近几年新势力企业呈现怎么样的变化趋势？">近几年新势力企业呈现怎么样的变化趋势？</div>
+                                <div class="card-subtitle" data-question="哪些行业的新势力企业增长最快？">哪些行业的新势力企业增长最快？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1346,8 +1593,10 @@
                                 <span class="card-emoji">🏭</span>
                                 <div class="card-title">查产业</div>
                             </div>
-                            <div class="card-subtitle" data-question="合成生物哪些细分赛道的新势力企业最多？">合成生物哪些细分赛道的新势力企业最多？</div>
-                            <div class="card-subtitle" data-question="某个产业链行业的代表企业是哪些？">某个产业链行业的代表企业是哪些？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="合成生物哪些细分赛道的新势力企业最多？">合成生物哪些细分赛道的新势力企业最多？</div>
+                                <div class="card-subtitle" data-question="某个产业链行业的代表企业是哪些？">某个产业链行业的代表企业是哪些？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1355,8 +1604,10 @@
                                 <span class="card-emoji">📊</span>
                                 <div class="card-title">查市场动态</div>
                             </div>
-                            <div class="card-subtitle" data-question="最近一年获得B轮以上融资的新势力企业有哪些？">最近一年获得B轮以上融资的新势力企业有哪些？</div>
-                            <div class="card-subtitle" data-question="近期资本最关注的新兴赛道有哪些？">近期资本最关注的新兴赛道有哪些？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="最近一年获得B轮以上融资的新势力企业有哪些？">最近一年获得B轮以上融资的新势力企业有哪些？</div>
+                                <div class="card-subtitle" data-question="近期资本最关注的新兴赛道有哪些？">近期资本最关注的新兴赛道有哪些？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1364,8 +1615,10 @@
                                 <span class="card-emoji">🧪</span>
                                 <div class="card-title">查技术能力</div>
                             </div>
-                            <div class="card-subtitle" data-question="新势力企业中有哪些企业是专精特新企业？">新势力企业中有哪些企业是专精特新企业？</div>
-                            <div class="card-subtitle" data-question="有哪些解决国外卡脖子技术的产品？">有哪些解决国外卡脖子技术的产品？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="新势力企业中有哪些企业是专精特新企业？">新势力企业中有哪些企业是专精特新企业？</div>
+                                <div class="card-subtitle" data-question="有哪些解决国外卡脖子技术的产品？">有哪些解决国外卡脖子技术的产品？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1373,8 +1626,10 @@
                                 <span class="card-emoji">🔮</span>
                                 <div class="card-title">查未来趋势</div>
                             </div>
-                            <div class="card-subtitle" data-question="未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</div>
-                            <div class="card-subtitle" data-question="哪些领域可能孕育出下一轮颠覆性创新？">哪些领域可能孕育出下一轮颠覆性创新？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</div>
+                                <div class="card-subtitle" data-question="哪些领域可能孕育出下一轮颠覆性创新？">哪些领域可能孕育出下一轮颠覆性创新？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1382,8 +1637,10 @@
                                 <span class="card-emoji">🧭</span>
                                 <div class="card-title">查应用场景</div>
                             </div>
-                            <div class="card-subtitle" data-question="低空经济企业有哪些应用场景？">低空经济企业有哪些应用场景？</div>
-                            <div class="card-subtitle" data-question="政府扶持可以哪几方面展开？">政府扶持可以哪几方面展开？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="低空经济企业有哪些应用场景？">低空经济企业有哪些应用场景？</div>
+                                <div class="card-subtitle" data-question="政府扶持可以哪几方面展开？">政府扶持可以哪几方面展开？</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1852,8 +2109,10 @@
                                 <span class="card-emoji">📈</span>
                                 <div class="card-title">查趋势</div>
                             </div>
-                            <div class="card-subtitle" data-question="近几年新势力企业呈现怎么样的变化趋势？">近几年新势力企业呈现怎么样的变化趋势？</div>
-                            <div class="card-subtitle" data-question="哪些行业的新势力企业增长最快？">哪些行业的新势力企业增长最快？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="近几年新势力企业呈现怎么样的变化趋势？">近几年新势力企业呈现怎么样的变化趋势？</div>
+                                <div class="card-subtitle" data-question="哪些行业的新势力企业增长最快？">哪些行业的新势力企业增长最快？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1861,8 +2120,10 @@
                                 <span class="card-emoji">🏭</span>
                                 <div class="card-title">查产业</div>
                             </div>
-                            <div class="card-subtitle" data-question="合成生物哪些细分赛道的新势力企业最多？">合成生物哪些细分赛道的新势力企业最多？</div>
-                            <div class="card-subtitle" data-question="某个产业链行业的代表企业是哪些？">某个产业链行业的代表企业是哪些？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="合成生物哪些细分赛道的新势力企业最多？">合成生物哪些细分赛道的新势力企业最多？</div>
+                                <div class="card-subtitle" data-question="某个产业链行业的代表企业是哪些？">某个产业链行业的代表企业是哪些？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1870,8 +2131,10 @@
                                 <span class="card-emoji">📊</span>
                                 <div class="card-title">查市场动态</div>
                             </div>
-                            <div class="card-subtitle" data-question="最近一年获得B轮以上融资的新势力企业有哪些？">最近一年获得B轮以上融资的新势力企业有哪些？</div>
-                            <div class="card-subtitle" data-question="近期资本最关注的新兴赛道有哪些？">近期资本最关注的新兴赛道有哪些？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="最近一年获得B轮以上融资的新势力企业有哪些？">最近一年获得B轮以上融资的新势力企业有哪些？</div>
+                                <div class="card-subtitle" data-question="近期资本最关注的新兴赛道有哪些？">近期资本最关注的新兴赛道有哪些？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1879,8 +2142,10 @@
                                 <span class="card-emoji">🧪</span>
                                 <div class="card-title">查技术能力</div>
                             </div>
-                            <div class="card-subtitle" data-question="新势力企业中有哪些企业是专精特新企业？">新势力企业中有哪些企业是专精特新企业？</div>
-                            <div class="card-subtitle" data-question="有哪些解决国外卡脖子技术的产品？">有哪些解决国外卡脖子技术的产品？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="新势力企业中有哪些企业是专精特新企业？">新势力企业中有哪些企业是专精特新企业？</div>
+                                <div class="card-subtitle" data-question="有哪些解决国外卡脖子技术的产品？">有哪些解决国外卡脖子技术的产品？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1888,8 +2153,10 @@
                                 <span class="card-emoji">🔮</span>
                                 <div class="card-title">查未来趋势</div>
                             </div>
-                            <div class="card-subtitle" data-question="未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</div>
-                            <div class="card-subtitle" data-question="哪些领域可能孕育出下一轮颠覆性创新？">哪些领域可能孕育出下一轮颠覆性创新？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？">未来2-5年，新势力企业中哪些更有可能变为独角兽？判断依据是什么？</div>
+                                <div class="card-subtitle" data-question="哪些领域可能孕育出下一轮颠覆性创新？">哪些领域可能孕育出下一轮颠覆性创新？</div>
+                            </div>
                         </div>
 
                         <div class="recommendation-card">
@@ -1897,8 +2164,10 @@
                                 <span class="card-emoji">🧭</span>
                                 <div class="card-title">查应用场景</div>
                             </div>
-                            <div class="card-subtitle" data-question="低空经济企业有哪些应用场景？">低空经济企业有哪些应用场景？</div>
-                            <div class="card-subtitle" data-question="政府扶持可以哪几方面展开？">政府扶持可以哪几方面展开？</div>
+                            <div class="card-content">
+                                <div class="card-subtitle" data-question="低空经济企业有哪些应用场景？">低空经济企业有哪些应用场景？</div>
+                                <div class="card-subtitle" data-question="政府扶持可以哪几方面展开？">政府扶持可以哪几方面展开？</div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2063,7 +2332,7 @@
                 } else {
                     const logoUrl = '{% static "ai_assistant_logo.jpg" %}';
                     messageDiv.innerHTML = `
-                <img src="${logoUrl}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+                <img src="${logoUrl}" alt="AI" class="w-10 h-10 mt-1 opacity-85 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
                 <div class="homepage-chat-message-ai">
                     <div class="markdown-content">${
                         this.renderContent(content)
@@ -2782,7 +3051,7 @@
                 indicator.id = 'homepage-typing-indicator';
                 const logoUrl = '{% static "ai_assistant_logo.jpg" %}';
                 indicator.innerHTML = `
-            <img src="${logoUrl}" alt="AI" class="w-8 h-8 mt-1 opacity-80 flex-shrink-0" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 1px rgba(255,255,255,0.2));">
+            <img src="${logoUrl}" alt="AI" class="w-10 h-10 mt-1 opacity-85 flex-shrink-0" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(255,255,255,0.2));">
             <div class="homepage-typing-indicator">
                 <div class="homepage-typing-dot"></div>
                 <div class="homepage-typing-dot"></div>

@@ -1,0 +1,1494 @@
+/* CSS变量定义 - 对齐ai_chat_widget.css */:root
+{
+    --primary: #002040;
+    --bg-secondary: rgba(0, 40, 80, 0.8);
+    --button-highlight: #00bfff;
+    --text-primary: rgba(255, 255, 255, 0.94);
+    --text-secondary: rgba(255, 255, 255, 0.6);
+}
+/* 首页AI聊天覆盖层 */
+#homepage-ai-chat-overlay {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* 首页AI聊天容器 - 优化尺寸和性能 */
+#homepage-ai-chat {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 50%, rgba(15, 23, 42, 0.98) 100%);
+    backdrop-filter: blur(32px) saturate(120%);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.4), 
+        0 8px 24px rgba(0, 0, 0, 0.2), 
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    width: 95vw;
+    max-width: 1200px; /* 增大容器尺寸，优化侧边栏比例 */
+    height: 85vh;
+    max-height: 850px; /* 相应增加高度 */
+    min-height: 500px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* 恢复AI窗口内的文本选择功能 */
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    /* 优化容器过渡效果 */
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 开启GPU加速，优化性能 */
+    will-change: transform;
+    transform-style: preserve-3d;
+}
+
+/* 添加微妙的渐变纹理 */
+#homepage-ai-chat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.02) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.01) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#homepage-ai-chat > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 首页AI聊天进入动画 */
+#homepage-ai-chat-overlay.show {
+    animation: overlayFadeIn 0.3s ease-out;
+}
+
+#homepage-ai-chat.show {
+    animation: homepageChatSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 首页AI聊天退出动画 */
+#homepage-ai-chat-overlay.hide {
+    animation: overlayFadeOut 0.3s ease-out;
+}
+
+#homepage-ai-chat.hide {
+    animation: homepageChatSlideOut 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+@keyframes overlayFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes homepageChatSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+}
+
+@keyframes homepageChatSlideOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) translateY(20px);
+    }
+}
+
+/* 首页AI聊天标题栏 */
+#homepage-chat-header {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 18px 24px;
+    border-radius: 20px 20px 0 0;
+    flex-shrink: 0;
+    /* 🔧 增加微妙的内阴影，增强层次感 */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 首页AI聊天消息区域 */
+#homepage-chat-messages {
+    padding: 24px 28px 28px; /* 🔧 优化内边距，顶部稍少，底部保持 */
+    /* 避免因为悬停按钮导致的横向滚动 */
+    overflow-x: visible;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    box-sizing: border-box;
+    /* 防止滚动事件冒泡到背景页面 */
+    overscroll-behavior: contain;
+    /* 🔧 添加微妙的内阴影，增强深度感 */
+    position: relative;
+}
+
+/* 🔧 为消息区域添加微妙的顶部阴影 */
+#homepage-chat-messages::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+#homepage-chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); /* 改为白色调 */
+    border-radius: 4px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15); /* 改为白色调 */
+    border-radius: 4px;
+}
+
+#homepage-chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25); /* 改为白色调 */
+}
+
+/* 首页AI聊天输入区域 - 减少高度 */
+#homepage-chat-input-area {
+    padding: 16px 24px 20px; /* 🔧 稍微增加内边距，提供更好的视觉平衡 */
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0 0 20px 20px;
+    flex-shrink: 0;
+    /* 🔧 添加微妙的背景渐变和内阴影 */
+    background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.03) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+/* 输入框和发送按钮容器 - 严格对齐 */
+.homepage-input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* 首页AI聊天输入框 - 对齐ai_chat_widget.css中的#chat-input样式 */
+#homepage-chat-input {
+    font-family: inherit;
+    line-height: 1.25;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.70) 0%, rgba(15, 23, 42, 0.75) 100%);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    -webkit-font-smoothing: antialiased;
+    color: rgba(255, 255, 255, 0.95) !important;
+    resize: none;
+    overflow-y: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15); /* 改用白色边框，与主题一致 */
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 16px;
+    min-height: 60px;
+    max-height: 150px;
+    flex: 1;
+}
+
+#homepage-chat-input:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.6); /* 改用紫色高亮，与主题一致 */
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1), 0 2px 8px rgba(139, 92, 246, 0.15);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.80) 0%, rgba(15, 23, 42, 0.85) 100%);
+    transform: translateY(-1px);
+}
+
+#homepage-chat-input:hover:not(:focus) {
+    border-color: rgba(255, 255, 255, 0.25); /* 悬停时使用白色边框 */
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.80) 100%);
+}
+
+#homepage-chat-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+#homepage-chat-input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* 首页AI聊天发送按钮 - 对齐ai_chat_widget.css中的#send-btn样式 */
+#homepage-send-btn {
+    background: linear-gradient(135deg, var(--button-highlight) / 90, #0ea5e9/90);
+    box-shadow: 0 1px 4px rgba(0, 191, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 36px;
+    min-width: 36px;
+    border: none;
+    border-radius: 10px;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-bottom: 4px; /* 微调对齐 */
+}
+
+#homepage-send-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--button-highlight), #0ea5e9);
+    box-shadow: 0 2px 8px rgba(0, 191, 255, 0.3);
+    transform: translateY(-1px) scale(1.02);
+}
+
+#homepage-send-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+#homepage-send-btn:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* 首页AI聊天消息样式 - 重新美化设计 */
+.homepage-chat-message-user {
+    /* 🔧 重新设计AI消息气泡，与整体风格协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.85) 0%, 
+        rgba(15, 23, 42, 0.88) 50%, 
+        rgba(30, 41, 59, 0.85) 100%);
+    color: rgba(255, 255, 255, 0.96);
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 16px 16px 4px 16px; /* 调整圆角，更加协调 */
+    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
+    /* 🔧 重新设计边框，使用更协调的颜色 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果，提升质感 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，更加协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    transition: none;
+    overflow: visible;
+    font-size: 15px; /* 稍微增大字体 */
+    line-height: 1.6;
+    /* 🔧 增强文字阴影，提高可读性 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.homepage-chat-message-ai {
+    /* 🔧 重新设计AI消息气泡，与整体风格协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.85) 0%, 
+        rgba(15, 23, 42, 0.88) 50%, 
+        rgba(30, 41, 59, 0.85) 100%);
+    color: rgba(255, 255, 255, 0.96);
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 16px 16px 16px 4px; /* 调整圆角，更加协调 */
+    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
+    /* 🔧 重新设计边框，使用更协调的颜色 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果，提升质感 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，更加协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    transition: none;
+    overflow: visible;
+    font-size: 15px; /* 稍微增大字体 */
+    line-height: 1.6;
+    /* 🔧 增强文字阴影，提高可读性 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔧 为AI消息气泡添加微妙的渐变纹理 */
+.homepage-chat-message-ai::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* 首页AI聊天关闭按钮 */
+#homepage-chat-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 100;
+}
+
+#homepage-chat-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.1);
+}
+
+#homepage-chat-close-btn svg {
+    color: inherit;
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+
+/* 侧边栏切换按钮样式已在上方定义，移除重复 */
+
+/* 主要聊天容器 - 包含侧边栏和聊天内容 */
+.chat-main-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: inherit;
+    /* 🔧 确保容器边缘的视觉一致性 */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* 侧边栏样式 - 绝对定位，不占用flex空间 */
+.chat-sidebar {
+    width: 280px;
+    height: 100%;
+    /* 🔧 优化侧边栏背景，与主界面更协调 */
+    background: linear-gradient(145deg, 
+        rgba(15, 23, 42, 0.95) 0%, 
+        rgba(30, 41, 59, 0.92) 30%, 
+        rgba(15, 23, 42, 0.95) 70%, 
+        rgba(0, 24, 56, 0.98) 100%);
+    backdrop-filter: blur(32px) saturate(120%) brightness(1.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px 0 0 20px;
+    /* 🔧 增强侧边栏阴影效果，与主界面协调 */
+    box-shadow: 
+        6px 0 25px rgba(0, 0, 0, 0.25), 
+        2px 0 12px rgba(0, 0, 0, 0.15),
+        inset -1px 0 0 rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    /* 🔧 使用绝对定位，让侧边栏不占用flex空间 */
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    /* 侧边栏默认隐藏，通过transform控制显示 */
+    transform: translateX(-100%);
+    /* 🔧 优化动画性能，确保最丝滑的体验 */
+    transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    /* 🔧 强制GPU加速，避免卡顿 */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* 🔧 启用硬件加速 */
+    -webkit-transform: translateX(-100%);
+    -webkit-transition: -webkit-transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    flex-direction: column;
+    /* 🔧 避免子元素重绘影响动画 */
+    contain: layout;
+}
+
+/* 🔧 侧边栏微妙的渐变纹理，与主界面一致 */
+.chat-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 60%),
+        linear-gradient(145deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.chat-sidebar > * {
+    position: relative;
+    z-index: 2;
+}
+
+.chat-sidebar.show {
+    transform: translateX(0);
+    /* 🔧 优化显示状态的GPU加速 */
+    -webkit-transform: translateX(0);
+}
+
+/* 聊天内容区域 - 动态填充整个容器 */
+.chat-content-area {
+    /* 🔧 默认填充整个容器宽度 */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: inherit;
+    border-radius: inherit;
+    position: relative;
+    z-index: 5;
+    /* 🔧 优化过渡动画，与侧边栏同步，确保丝滑体验 */
+    transition: margin-left 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* 🔧 启用GPU加速 */
+    will-change: margin-left, width;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* 🔧 当侧边栏显示时，聊天内容区域向右推挤（仅桌面端） */
+.chat-main-container.sidebar-open .chat-content-area {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+}
+
+/* 🔧 确保推荐卡片容器在侧边栏展开时保持正确布局 */
+.chat-main-container.sidebar-open .recommendation-cards-container {
+    /* 保持grid布局，自动适应新的容器宽度 */
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* 侧边栏遮罩层 - 移动端覆盖模式 */
+.sidebar-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 8;
+    opacity: 0;
+    /* 🔧 与侧边栏动画同步，确保一致的体验 */
+    transition: opacity 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    border-radius: inherit;
+    /* 🔧 启用GPU加速 */
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.sidebar-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 侧边栏头部 */
+.sidebar-header {
+    padding: 18px 20px;
+    /* 🔧 优化头部边框，与主界面协调 */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 添加微妙的背景渐变 */
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    flex-shrink: 0;
+    /* 🔧 添加内阴影，与主界面头部保持一致 */
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 12px;
+    /* 🔧 增强文字阴影效果 */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.new-conversation-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    /* 🔧 优化按钮配色，与会话项协调 */
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* 🔧 调整按钮阴影 */
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.2);
+}
+
+.new-conversation-btn:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(99, 102, 241, 0.9) 100%);
+    border-color: rgba(139, 92, 246, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.new-conversation-btn svg {
+    color: rgba(255, 255, 255, 0.95);
+    fill: currentColor;
+    width: 16px;
+    height: 16px;
+}
+
+/* 侧边栏切换按钮样式 */
+.sidebar-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
+    /* 🔧 添加微妙的边框和阴影 */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-toggle-btn svg {
+    color: inherit;
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+
+/* 侧边栏内容区域 */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); /* 改为白色调 */
+    border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15); /* 改为白色调 */
+    border-radius: 3px;
+}
+
+/* 会话列表 */
+.conversation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.conversation-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    /* 🔧 优化会话项背景，与新会话按钮协调 */
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.conversation-item:hover {
+    background: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.2);
+    /* 🔧 调整悬停阴影，与新会话按钮协调 */
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.12);
+}
+
+.conversation-item.active {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.35);
+    /* 🔧 增强活跃状态的阴影，与新会话按钮协调 */
+    box-shadow: 0 2px 12px rgba(139, 92, 246, 0.2);
+}
+
+.conversation-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.conversation-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 响应式设计 - 移动端优化 */
+@media(max-width: 768px) {
+    #homepage-ai-chat {
+        width: 98vw;
+        height: 90vh;
+        max-height: none;
+        min-height: 450px; /* 稍微增加最小高度 */
+        border-radius: 12px;
+        /* 移动端性能优化 */
+        will-change: transform;
+        transform-style: preserve-3d;
+    }
+
+    #homepage-chat-header {
+        padding: 16px 20px;
+    }
+
+    #homepage-chat-messages {
+        padding: 24px 20px; /* 移动端减少内边距 */
+    }
+
+    #homepage-chat-input-area {
+        padding: 16px 20px 20px;
+    }
+
+    #homepage-chat-input {
+        font-size: 16px;
+        padding: 14px 16px;
+        min-height: 50px;
+    }
+
+    .homepage-chat-message-user,
+    .homepage-chat-message-ai {
+        max-width: 80%; /* 🔧 移动端也相应减少最大宽度 */
+        font-size: 14px;
+    }
+
+    /* 🔧 移动端AI头像适配 - 使用稍小的尺寸 */
+    .homepage-chat-message-ai img,
+    #homepage-typing-indicator img {
+        width: 2rem !important; /* w-8 */
+        height: 2rem !important; /* h-8 */
+    }
+
+    /* 移动端侧边栏调整 */
+    .chat-sidebar {
+        width: 280px;
+        z-index: 15;
+        /* 移动端确保绝对定位，覆盖在内容上方 */
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    /* 🔧 移动端聊天内容区域不推挤，保持全宽 */
+    .chat-main-container.sidebar-open .chat-content-area {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* 移动端显示遮罩层 */
+    .sidebar-overlay {
+        display: block;
+    }
+
+    .sidebar-header {
+        padding: 16px;
+    }
+
+    .sidebar-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .new-conversation-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .conversation-item {
+        padding: 10px 12px;
+    }
+
+    .conversation-title {
+        font-size: 13px;
+    }
+
+    .conversation-time {
+        font-size: 11px;
+    }
+}
+
+/* Markdown内容样式继承 */
+.homepage-chat-message-ai .markdown-content,
+.homepage-chat-message-user .markdown-content {
+    line-height: 1.6;
+    word-wrap: break-word;
+    color: inherit;
+}
+
+/* Markdown内容基本样式 */
+.homepage-chat-message-ai .markdown-content h1,
+.homepage-chat-message-ai .markdown-content h2,
+.homepage-chat-message-ai .markdown-content h3,
+.homepage-chat-message-ai .markdown-content h4,
+.homepage-chat-message-ai .markdown-content h5,
+.homepage-chat-message-ai .markdown-content h6 {
+    margin: 12px 0 8px;
+    font-weight: 600;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content h1 {
+    font-size: 1.5em;
+}
+.homepage-chat-message-ai .markdown-content h2 {
+    font-size: 1.3em;
+}
+.homepage-chat-message-ai .markdown-content h3 {
+    font-size: 1.2em;
+}
+.homepage-chat-message-ai .markdown-content h4,
+.homepage-chat-message-ai .markdown-content h5,
+.homepage-chat-message-ai .markdown-content h6 {
+    font-size: 1.1em;
+}
+
+.homepage-chat-message-ai .markdown-content p {
+    margin: 8px 0;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content ul,
+.homepage-chat-message-ai .markdown-content ol {
+    margin: 8px 0;
+    padding-left: 20px;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content li {
+    margin: 4px 0;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content code {
+    background: rgba(0, 0, 0, 0.2);
+    color: #fbbf24;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+}
+
+.homepage-chat-message-ai .markdown-content pre {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+}
+
+.homepage-chat-message-ai .markdown-content pre code {
+    background: none;
+    color: #e5e7eb;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.85em;
+}
+
+.homepage-chat-message-ai .markdown-content strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content em {
+    font-style: italic;
+    color: inherit;
+}
+
+.homepage-chat-message-ai .markdown-content blockquote {
+    border-left: 3px solid rgba(0, 191, 255, 0.5);
+    margin: 8px 0;
+    padding-left: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 用户消息的Markdown样式 */
+.homepage-chat-message-user .markdown-content h1,
+.homepage-chat-message-user .markdown-content h2,
+.homepage-chat-message-user .markdown-content h3,
+.homepage-chat-message-user .markdown-content h4,
+.homepage-chat-message-user .markdown-content h5,
+.homepage-chat-message-user .markdown-content h6,
+.homepage-chat-message-user .markdown-content p,
+.homepage-chat-message-user .markdown-content li,
+.homepage-chat-message-user .markdown-content strong,
+.homepage-chat-message-user .markdown-content em {
+    color: inherit;
+}
+
+.homepage-chat-message-user .markdown-content code {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fcd34d;
+}
+
+.homepage-chat-message-user .markdown-content pre {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 悬浮按钮样式 - 移到消息下方并调整对齐 */
+.homepage-message-hover-actions {
+    position: absolute;
+    top: calc(100% + 8px); /* 放置在消息下方 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in, visibility 0.2s ease-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 2px 0px; /* 减少内边距 */
+    gap: 6px; /* 减少按钮间距 */
+    z-index: 15;
+    font-family: inherit;
+    max-width: fit-content;
+    white-space: nowrap;
+    background: transparent; /* 移除背景色 */
+    border: none; /* 移除边框 */
+    border-radius: 0;
+    box-shadow: none; /* 移除阴影 */
+    backdrop-filter: none; /* 移除模糊效果 */
+}
+
+/* AI消息的悬浮按钮（左对齐） */
+.homepage-chat-message-ai .homepage-message-hover-actions {
+    left: 0; /* AI消息的悬浮按钮左对齐 */
+    transform: none;
+}
+
+/* 用户消息的悬浮按钮（右对齐） */
+.homepage-chat-message-user .homepage-message-hover-actions {
+    right: 0; /* 用户消息的悬浮按钮右对齐 */
+    left: auto;
+    transform: none;
+}
+
+/* AI消息的悬浮按钮 */
+.homepage-chat-message-ai:hover .homepage-message-hover-actions,
+.homepage-chat-message-ai .homepage-message-hover-actions:hover {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+}
+
+/* 用户消息的悬浮按钮 */
+.homepage-chat-message-user:hover .homepage-message-hover-actions,
+.homepage-chat-message-user .homepage-message-hover-actions:hover {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+}
+
+/* 悬浮按钮样式 - 简化设计，移除边框背景 */
+.homepage-message-action-btn {
+    width: 28px; /* 稍微减小尺寸 */
+    height: 28px;
+    border-radius: 6px;
+    border: none; /* 移除边框 */
+    background: rgba(255, 255, 255, 0.08); /* 减少背景透明度 */
+    color: rgba(255, 255, 255, 0.7); /* 减少颜色对比 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: relative;
+}
+
+.homepage-message-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15); /* 减少hover背景透明度 */
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px) scale(1.02); /* 减少变换幅度 */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 减少阴影 */
+}
+
+.homepage-message-action-btn svg {
+    width: 14px; /* 减小图标尺寸 */
+    height: 14px;
+    position: relative;
+    display: block;
+    margin: auto;
+}
+
+/* Tooltip样式 - 从下方展开 */
+.homepage-message-action-btn .btn-tooltip {
+    position: absolute;
+    top: calc(100% + 8px); /* 从按钮下方展开 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 32, 64, 0.95);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 20;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.homepage-message-action-btn:hover .btn-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 重新生成按钮 - 蓝色主题 */
+.homepage-message-action-btn.regenerate-btn:hover,
+.homepage-message-action-btn.regenerate-btn:hover .btn-tooltip,
+.homepage-message-action-btn.regenerate-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #60a5fa;
+  color: #fff;
+}
+
+.homepage-message-action-btn.regenerate-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(59, 130, 246, 0.4),
+    0 0 0 1px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 复制按钮 - 绿色主题 */
+.homepage-message-action-btn.copy-btn:hover,
+.homepage-message-action-btn.copy-btn:hover .btn-tooltip,
+.homepage-message-action-btn.copy-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #10b981 0%, #059669 100%);
+  border-color: #34d399;
+  color: #fff;
+}
+
+.homepage-message-action-btn.copy-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(16, 185, 129, 0.4),
+    0 0 0 1px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 编辑按钮 - 橙色主题 */
+.homepage-message-action-btn.edit-btn:hover,
+.homepage-message-action-btn.edit-btn:hover .btn-tooltip,
+.homepage-message-action-btn.edit-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #f59e0b 0%, #d97706 100%);
+  border-color: #fbbf24;
+  color: #fff;
+}
+
+.homepage-message-action-btn.edit-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(245, 158, 11, 0.4),
+    0 0 0 1px rgba(245, 158, 11, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 删除按钮 - 红色主题 */
+.homepage-message-action-btn.delete-btn:hover,
+.homepage-message-action-btn.delete-btn:hover .btn-tooltip,
+.homepage-message-action-btn.delete-btn:hover .btn-tooltip::before {
+  background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
+  border-color: #f87171;
+  color: #fff;
+}
+
+.homepage-message-action-btn.delete-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  transform-origin: center center; /* 确保缩放从中心开始 */
+  box-shadow: 
+    0 6px 16px rgba(239, 68, 68, 0.4),
+    0 0 0 1px rgba(239, 68, 68, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 移除扩展悬停检测区域，因为按钮已移到下方 */
+.homepage-chat-message-ai::after,
+.homepage-chat-message-user::after {
+    display: none;
+}
+
+/* 加载状态样式 - 🔧 重新设计typing indicator */
+.homepage-typing-indicator {
+    display: flex;
+    align-items: center;
+    /* 🔧 优化内边距，与AI消息气泡保持一致 */
+    padding: 16px 20px;
+    /* 🔧 重新设计背景，与AI消息气泡协调 */
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.75) 0%, 
+        rgba(15, 23, 42, 0.80) 50%, 
+        rgba(30, 41, 59, 0.75) 100%);
+    /* 🔧 调整圆角，与AI消息气泡保持一致 */
+    border-radius: 16px 16px 16px 4px;
+    /* 🔧 调整最大宽度，更合理的尺寸 */
+    max-width: 120px;
+    margin-bottom: 16px;
+    /* 🔧 添加边框，与AI消息气泡保持一致 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* 🔧 增强backdrop-filter效果 */
+    backdrop-filter: blur(16px) saturate(120%) brightness(1.05);
+    /* 🔧 重新设计阴影系统，与AI消息气泡协调 */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* 🔧 添加微妙的入场动画 */
+    animation: typingIndicatorFadeIn 0.3s ease-out;
+    /* 🔧 设置相对定位，确保::before伪元素正确定位 */
+    position: relative;
+}
+
+/* 🔧 为typing indicator添加微妙的渐变纹理 */
+.homepage-typing-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.homepage-typing-dot {
+    /* 🔧 优化点的尺寸，更加精致 */
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    /* 🔧 重新设计点的颜色，使用更协调的渐变 */
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(99, 102, 241, 0.9) 100%);
+    margin: 0 3px; /* 🔧 增加间距，更好的视觉效果 */
+    /* 🔧 优化动画，更流畅的效果 */
+    animation: homepageTypingAnimation 1.6s infinite ease-in-out;
+    /* 🔧 添加微妙的阴影效果 */
+    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.3);
+    /* 🔧 添加变换原点，确保动画居中 */
+    transform-origin: center;
+}
+
+.homepage-typing-dot:nth-child(1) {
+    animation-delay: -0.4s;
+}
+.homepage-typing-dot:nth-child(2) {
+    animation-delay: -0.2s;
+}
+.homepage-typing-dot:nth-child(3) {
+    animation-delay: 0s;
+}
+
+/* 🔧 重新设计typing动画，更加优雅 */
+@keyframes homepageTypingAnimation {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+    40% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* 🔧 typing indicator的入场动画 */
+@keyframes typingIndicatorFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 🔧 编辑状态下的消息气泡 - 无缝融合设计 */
+.homepage-chat-message-user:has(.message-edit-input) {
+    position: relative;
+    padding: 0 !important; /* 编辑时移除气泡内边距 */
+    background: transparent !important; /* 编辑时让编辑框背景显示 */
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+.homepage-chat-message-user:has(.message-edit-input) .markdown-content,
+.homepage-chat-message-user:has(.message-edit-input) p {
+    display: none !important; /* 完全隐藏原文本，避免布局冲突 */
+}
+
+.homepage-chat-message-user .message-edit-input {
+    position: relative;
+    z-index: 10;
+    margin: 0 !important; /* 重置边距，让编辑框完全接管布局 */
+    border-radius: 12px !important; /* 保持与气泡一致的圆角 */
+}
+
+/* 🎯 编辑状态指示器 */
+.homepage-chat-message-user:has(.message-edit-input)::before {
+    content: "✏️ 编辑中...";
+    position: absolute;
+    top: -24px;
+    right: 0;
+    font-size: 11px;
+    color: rgba(0, 191, 255, 0.8);
+    background: rgba(0, 191, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+    pointer-events: none;
+    font-weight: 500;
+    opacity: 0;
+    animation: fadeInEditIndicator 0.3s ease-out 0.1s forwards;
+}
+
+/* 推荐问题卡片样式 - 固定两行三列布局 */
+.recommendation-cards-container {
+    display: grid;
+    /* 🔧 固定为3列布局，确保整齐排列 */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 12px; /* 🔧 稍微增加间距，提供更好的视觉分离 */
+    margin-bottom: 24px; /* 🔧 稍微增加底部边距，与其他元素保持协调 */
+    padding: 16px; /* 🔧 增加容器内边距，提供更好的视觉平衡 */
+    /* 🔧 确保容器有足够宽度容纳3列 */
+    min-width: 0;
+    width: 100%;
+    /* 🔧 添加相对定位，确保z-index正确 */
+    position: relative;
+    z-index: 2;
+}
+
+/* 聊天消息项样式 - 增加底部边距为悬浮按钮留空间 */
+.chat-message-item {
+    margin-top: 36px; /* 稍微减少 */
+    margin-bottom: 8px; /* 为悬浮按钮留出空间 */
+}
+
+.recommendation-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.75) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px; /* 🔧 稍微增大圆角，更友好 */
+    padding: 12px 14px; /* 🔧 增加内边距，提供更好的内容空间 */
+    cursor: default;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(16px) saturate(110%);
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    box-sizing: border-box;
+    /* 🔧 调整宽高比和高度，提供更好的内容展示 */
+    min-height: 130px; /* 🔧 保持合适的高度 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 🔧 改为顶部对齐，避免内容被遮盖 */
+    will-change: transform, box-shadow, border-color;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* 🔧 添加微妙的内阴影，增强深度 */
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.recommendation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(99, 102, 241, 0.04) 100%);
+    opacity: 0;
+    transition: opacity 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.recommendation-card:hover::before {
+    opacity: 1;
+}
+
+/* 🔧 增强卡片悬浮效果 - 简约而优雅 */
+.recommendation-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(139, 92, 246, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+    backdrop-filter: blur(20px) saturate(120%);
+}
+
+.recommendation-card:active {
+    transform: translateY(-2px) scale(1.01);
+    transition-duration: 0.1s;
+}
+
+/* 卡片头部：emoji和title在同一行 - 优化布局 */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 减少间距 */
+    margin-bottom: 6px; /* 🔧 减少底部边距，让卡片更紧凑 */
+    flex-shrink: 0; /* 防止头部被挤压 */
+}
+
+.card-emoji {
+    font-size: 16px; /* 减小emoji尺寸 */
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    line-height: 1;
+}
+
+.card-title {
+    color: rgba(255, 255, 255, 0.96);
+    font-size: 15px; /* 减小标题字体 */
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔧 副标题容器 - 确保内容不被遮盖 */
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 减少副标题之间的间距 */
+    min-height: 0; /* 允许flex子元素缩小 */
+    overflow: hidden; /* 防止内容溢出 */
+}
+
+/* 可点击的副标题 - 优化布局 */
+.card-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px; /* 🔧 进一步减小字体，让内容更紧凑 */
+    line-height: 1.3; /* 🔧 调整行高，优化多行显示 */
+    margin-bottom: 0; /* 🔧 移除底部边距，使用gap控制间距 */
+    padding: 6px 8px; /* 🔧 增加内边距，提供更好的点击区域 */
+    border-radius: 6px; /* 稍微增大圆角，更友好 */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 🔧 移除边框，使用纯背景变化 */
+    border: none;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    /* 🔧 文本显示优化 */
+    text-align: left;
+    word-wrap: break-word;
+    hyphens: auto;
+    /* 🔧 多行文本显示控制 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 🔧 flex布局优化 */
+    flex-shrink: 0;
+    min-height: 0;
+    /* 🔧 添加微妙的背景过渡 */
+    background: transparent;
+}
+
+.card-subtitle:hover {
+    /* 🔧 更明显的背景变化，让用户清晰知道指向的内容 */
+    background: transparent;
+    color: rgba(255, 255, 255, 0.98);
+    /* 🔧 更微妙的变换效果 */
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.card-subtitle:active {
+    transform: translateX(1px) translateY(0px);
+    background: rgba(139, 92, 246, 0.12);
+    transition-duration: 0.1s;
+}
+
+/* 🔧 确保最后一个副标题不会被遮盖 */
+.card-subtitle:last-child {
+    margin-bottom: 0;
+    flex-shrink: 1; /* 允许最后一个元素适当缩小 */
+}
+
+/* 响应式设计 */
+@media(max-width: 100px) {
+    .recommendation-cards-container {
+        /* 🔧 中等屏幕：2列3行布局 */
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, auto);
+        gap: 12px;
+        padding: 14px;
+    }
+    
+    /* 🔧 确保中等屏幕侧边栏展开时保持2列布局 */
+    .chat-main-container.sidebar-open .recommendation-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 🔧 中等屏幕卡片优化 */
+    .recommendation-card {
+        min-height: 120px; /* 适当减少高度 */
+        padding: 10px 12px;
+    }
+    
+    .card-subtitle {
+        font-size: 12px; /* 进一步减小字体 */
+    }
+}
+
+@media(max-width: 768px) {
+    .recommendation-cards-container {
+        /* 🔧 移动端：1列6行布局 */
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6, auto);
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+    
+    /* 🔧 移动端侧边栏展开时仍保持单列布局 */
+    .chat-main-container.sidebar-open .recommendation-cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .recommendation-card {
+        padding: 10px 12px; /* 移动端更小巧的内边距 */
+        min-height: 100px; /* 🔧 移动端优化高度 */
+        aspect-ratio: 1.4 / 1; /* 🔧 移动端稍微调整宽高比 */
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+    
+    #homepage-chat-messages {
+        padding: 20px 20px 24px; /* 移动端适配，但仍增加空间 */
+    }
+    
+    #homepage-chat-input-area {
+        padding: 14px 20px 18px; /* 移动端进一步减少输入区域padding */
+    }
+    
+    .card-emoji {
+        font-size: 14px; /* 移动端适中尺寸 */
+    }
+    
+    .card-title {
+        font-size: 13px; /* 移动端适中字体 */
+    }
+    
+    .card-subtitle {
+        font-size: 11px; /* 移动端适中字体 */
+        padding: 4px 6px; /* 移动端适中内边距 */
+    }
+    
+    .card-header {
+        gap: 6px; /* 移动端适中间距 */
+        margin-bottom: 6px; /* 移动端适中底部边距 */
+    }
+    
+    .homepage-chat-message-user,
+    .homepage-chat-message-ai {
+        max-width: 80%; /* 🔧 移动端也相应减少最大宽度 */
+        font-size: 14px;
+    }
+}

@@ -299,9 +299,14 @@ class TencentAgentService:
 # 单例模式
 _tencent_service = None
 
-def get_tencent_service() -> TencentAgentService:
-    """获取腾讯智能体服务实例（单例模式）"""
+def get_tencent_service(force_reload: bool = False) -> TencentAgentService:
+    """
+    获取腾讯智能体服务实例（单例模式）
+    
+    Args:
+        force_reload: 是否强制重新加载配置和服务实例
+    """
     global _tencent_service
-    if _tencent_service is None:
+    if _tencent_service is None or force_reload:
         _tencent_service = TencentAgentService()
     return _tencent_service 

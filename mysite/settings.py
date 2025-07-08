@@ -128,13 +128,6 @@ TENCENT_VISITOR_BIZ_ID = os.getenv('TENCENT_VISITOR_BIZ_ID', '666')
 TENCENT_CONN_TYPE_API = 5
 TENCENT_WEBSOCKET_URL = 'wss://wss.lke.cloud.tencent.com/v1/qbot/chat/conn/?EIO=4&transport=websocket'
 
-# 保留原有DeepSeek配置（作为备用）
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')  # 从环境变量读取API密钥
-DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
-DEEPSEEK_MODEL = 'deepseek-chat'
-DEEPSEEK_MAX_TOKENS = 1000
-DEEPSEEK_TEMPERATURE = 0.7
-DEEPSEEK_SYSTEM_PROMPT = '你是一个产业研究智能助手，专注于分析新势力企业和产业链数据。请基于数据提供准确、专业的回答。'
 
 ROOT_URLCONF = 'mysite.urls'
 

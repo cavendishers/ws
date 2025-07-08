@@ -286,37 +286,59 @@ class AIChatAPIView(TencentChatAPIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class ChatHistoryAPIView(TencentSessionsAPIView):
     """
-    兼容性聊天历史API视图
-    现在返回会话列表而不是消息历史
+    重定向到会话列表API视图
+    保持兼容性
     """
-    
     def get(self, request):
-        """重写get方法以保持兼容性"""
-        # 调用父类方法获取会话列表
-        response = super().get(request)
-        
-        if response.status_code == 200:
-            # 调整响应格式以兼容前端
-            data = response.data
-            return Response({
-                'results': data.get('sessions', []),
-                'has_next': False,
-                'has_previous': False,
-                'total': data.get('total', 0),
-                'page': 1,
-                'page_size': data.get('total', 0),
-                'total_pages': 1,
-            })
-        
-        return response
+        """获取会话列表"""
+        # 重定向到父类方法
+        return super().get(request)
     
     def delete(self, request):
-        """删除操作不再支持（因为使用腾讯API管理）"""
+        """删除所有会话（模拟操作）"""
+        # 腾讯云LKE API暂不支持会话删除功能
+        logger.info("收到删除会话请求，但腾讯云LKE API暂不支持此功能")
         return Response({
-            'success': False,
-            'error': '该功能暂不支持，请通过腾讯云控制台管理会话'
-        }, status=status.HTTP_400_BAD_REQUEST)
+            'success': True,
+            'message': '腾讯云LKE API暂不支持会话删除功能',
+            'note': '这是一个模拟操作，实际上没有删除任何数据'
+        }, status=status.HTTP_200_OK)
 
 
 # 健康检查的兼容性视图
 ai_health_check = tencent_ai_health_check 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TencentConfigReloadAPIView(APIView):
+    """
+    腾讯智能体配置重载API视图
+    
+    POST /ai/api/config/reload/ - 重新加载腾讯AI配置
+    """
+    
+    permission_classes = [AllowAny]  # 生产环境建议改为需要认证
+    
+    def post(self, request):
+        """重新加载腾讯AI配置"""
+        try:
+            # 强制重新加载配置
+            tencent_service = get_tencent_service(force_reload=True)
+            
+            logger.info("腾讯AI配置重载成功")
+            
+            return Response({
+                'success': True,
+                'message': '腾讯AI配置重载成功',
+                'bot_app_key': tencent_service.bot_app_key[:8] + '...' if tencent_service.bot_app_key else None,  # 只显示前8位
+                'region': tencent_service.region,
+                'timestamp': timezone.now().isoformat()
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"腾讯AI配置重载失败: {str(e)}", exc_info=True)
+            return Response({
+                'success': False,
+                'error': '配置重载失败',
+                'error_detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 

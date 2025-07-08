@@ -295,7 +295,8 @@
     margin-left: 0;
     margin-right: auto;
     border-radius: 16px 16px 4px 16px; /* 调整圆角，更加协调 */
-    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    padding: 10px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    min-height: 50px;
     max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
     /* 🔧 重新设计边框，使用更协调的颜色 */
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -326,7 +327,8 @@
     margin-left: 0;
     margin-right: auto;
     border-radius: 16px 16px 16px 4px; /* 调整圆角，更加协调 */
-    padding: 16px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    padding: 10px 20px; /* 🔧 优化内边距，更舒适的阅读体验 */
+    min-height: 50px;
     max-width: 50%; /* 🔧 从70%减少到50%，保持一致性 */
     /* 🔧 重新设计边框，使用更协调的颜色 */
     border: 1px solid rgba(255, 255, 255, 0.15);

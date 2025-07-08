@@ -56,6 +56,7 @@
             0 1px 6px rgba(0, 191, 255, 0.15),
             inset 0 1px 0 rgba(255, 255, 255, 0.15),
             inset 0 -1px 0 rgba(0, 191, 255, 0.1);
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
     #ai-search-trigger #ai-poda {
@@ -70,15 +71,16 @@
     
     #ai-search-trigger .input:focus {
         outline: none;
-        border-color: rgba(0, 191, 255, 0.6);
+        border-color: rgba(0, 191, 255, 0.7);
         box-shadow: 
-            0 6px 25px rgba(0, 0, 0, 0.2), 
-            0 0 0 3px rgba(0, 191, 255, 0.2),
-            0 2px 12px rgba(0, 191, 255, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2),
-            inset 0 -1px 0 rgba(0, 191, 255, 0.15);
-        background: linear-gradient(145deg, rgba(10, 26, 58, 0.88) 0%, rgba(0, 32, 64, 0.92) 100%);
-        transform: translateY(-1px);
+            0 8px 32px rgba(0, 0, 0, 0.25), 
+            0 0 0 4px rgba(0, 191, 255, 0.15),
+            0 4px 20px rgba(0, 191, 255, 0.3),
+            inset 0 2px 0 rgba(255, 255, 255, 0.25),
+            inset 0 -2px 0 rgba(0, 191, 255, 0.2);
+        background: linear-gradient(145deg, rgba(12, 32, 72, 0.95) 0%, rgba(0, 40, 80, 0.98) 100%);
+        transform: translateY(-2px);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
     #ai-search-trigger #ai-main:focus-within > #ai-input-mask {
@@ -113,18 +115,29 @@
         background: linear-gradient(45deg, rgba(0, 191, 255, 0.85), rgba(255, 193, 7, 0.7));
     }
     
-    /* 悬浮时增强光效 */
+    /* 悬浮时增强光效 - 更精细的层次控制 */
     #ai-search-trigger #ai-poda:hover .glow {
-        animation: ai-glow-pulse 2.2s ease-in-out infinite;
-        opacity: 0.9;
+        animation: ai-glow-pulse 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        opacity: 0.95;
+        filter: blur(26px) brightness(1.4);
+        transform: scale(1.08);
     }
     
     #ai-search-trigger #ai-poda:hover .white {
-        filter: blur(1px) brightness(1.5);
+        filter: blur(1px) brightness(1.6);
+        animation: ai-border-shimmer 4s ease-in-out infinite;
     }
     
     #ai-search-trigger #ai-poda:hover .border {
-        filter: blur(0.3px) brightness(1.4);
+        filter: blur(0.2px) brightness(1.7);
+        animation: ai-border-shimmer 5s ease-in-out infinite reverse;
+    }
+    
+    #ai-search-trigger #ai-poda:hover #ai-pink-mask {
+        opacity: 0.6;
+        transform: scale(1.2) translateX(0px);
+        background: linear-gradient(45deg, rgba(0, 191, 255, 0.9), rgba(255, 193, 7, 0.7));
+        animation: ai-particle-flow 2.5s ease-in-out infinite;
     }
     
     #ai-search-trigger .white {
@@ -300,9 +313,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: clamp(4px, 0.5vw, 6px);
         z-index: 2;
         height: clamp(25px, 2.8vw, 40px);
-        width: clamp(24px, 2.7vw, 38px);
+        width: clamp(52px, 5.8vw, 78px);
+        padding: 0 clamp(8px, 1vw, 12px);
         isolation: isolate;
         overflow: hidden;
         border-radius: 10px;
@@ -316,16 +331,27 @@
     }
     
     #ai-search-trigger #ai-filter-icon:hover {
-        background: linear-gradient(135deg, rgba(0, 191, 255, 0.85) 0%, rgba(59, 130, 246, 0.9) 100%);
-        box-shadow: 0 2px 8px rgba(0, 191, 255, 0.2);
-        border-color: rgba(0, 191, 255, 0.5);
-        color: rgba(255, 255, 255, 0.95);
-        /* 移除transform动画，避免过多动效 */
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.9) 0%, rgba(59, 130, 246, 0.95) 100%);
+        box-shadow: 
+            0 4px 16px rgba(0, 191, 255, 0.3),
+            0 0 0 2px rgba(0, 191, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        border-color: rgba(0, 191, 255, 0.7);
+        color: rgba(255, 255, 255, 1);
+        transform: translateY(-50%) scale(1.05);
+    }
+    
+    #ai-search-trigger #ai-filter-icon:active {
+        transform: translateY(-50%) scale(0.98);
+        box-shadow: 
+            0 2px 8px rgba(0, 191, 255, 0.4),
+            inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: all 0.1s ease;
     }
     
     #ai-search-trigger .filterBorder {
         height: clamp(27px, 3vw, 42px);
-        width: clamp(25px, 2.9vw, 40px);
+        width: clamp(54px, 6vw, 80px);
         position: absolute;
         overflow: hidden;
         top: 50%;
@@ -385,28 +411,108 @@
     
     #ai-search-trigger #ai-filter-icon i {
         font-size: clamp(12px, 1.3vw, 16px);
+        flex-shrink: 0;
+    }
+    
+    #ai-search-trigger #ai-filter-icon .send-text {
+        font-size: clamp(11px, 1.2vw, 14px);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
     }
     
     @keyframes ai-rotate {
+        0% {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+        25% {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+        50% {
+            transform: translate(-50%, -50%) rotate(270deg);
+        }
+        75% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
         100% {
             transform: translate(-50%, -50%) rotate(450deg);
         }
     }
     
-    /* 增加呼吸光效动画 */
+    /* 聚焦时的高级光效增强 */
+    #ai-search-trigger #ai-poda:focus-within .glow {
+        animation: ai-glow-pulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        opacity: 1;
+        filter: blur(22px) brightness(1.6);
+        transform: scale(1.12);
+    }
+    
+    #ai-search-trigger #ai-poda:focus-within #ai-pink-mask {
+        opacity: 0.4;
+        transform: scale(1.3) translateX(2px);
+        background: linear-gradient(45deg, rgba(0, 191, 255, 1), rgba(255, 193, 7, 0.8));
+        animation: ai-particle-flow 2s ease-in-out infinite;
+    }
+    
+    /* 优化后的呼吸光效动画 - 基于黄金比例节奏 */
     @keyframes ai-glow-pulse {
         0%, 100% {
-            opacity: 0.4;
+            opacity: 0.3;
             transform: scale(1);
+            filter: blur(30px) brightness(0.8);
+        }
+        38.2% {
+            opacity: 0.6;
+            transform: scale(1.02);
+            filter: blur(28px) brightness(1.1);
+        }
+        61.8% {
+            opacity: 0.8;
+            transform: scale(1.04);
+            filter: blur(25px) brightness(1.3);
+        }
+    }
+    
+    /* 微妙的边界光效动画 */
+    @keyframes ai-border-shimmer {
+        0%, 100% {
+            filter: blur(0.5px) brightness(1.35);
         }
         50% {
+            filter: blur(0.3px) brightness(1.6);
+        }
+    }
+    
+    /* 内部光粒子效果 */
+    @keyframes ai-particle-flow {
+        0% {
+            opacity: 0.7;
+            transform: translateX(-2px);
+        }
+        33% {
+            opacity: 1;
+            transform: translateX(0px);
+        }
+        66% {
             opacity: 0.8;
-            transform: scale(1.05);
+            transform: translateX(1px);
+        }
+        100% {
+            opacity: 0.7;
+            transform: translateX(-2px);
         }
     }
     
     #ai-search-trigger .glow {
-        animation: ai-glow-pulse 3s ease-in-out infinite;
+        animation: ai-glow-pulse 4.8s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+    }
+    
+    #ai-search-trigger .border {
+        animation: ai-border-shimmer 6s ease-in-out infinite;
+    }
+    
+    #ai-search-trigger #ai-pink-mask {
+        animation: ai-particle-flow 3.2s ease-in-out infinite;
     }
 </style>
 {% endblock %}
@@ -438,6 +544,7 @@
                             <div class="filterBorder"></div>
                             <div id="ai-filter-icon">
                                 <i class="fas fa-paper-plane"></i>
+                                <span class="send-text">发送</span>
                             </div>
                             <div id="ai-search-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" height="24" fill="none" class="feather feather-search">

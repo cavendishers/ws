@@ -109,8 +109,32 @@ class RegionSelector {
         this.modal = this._createModalElement();
         this.modal.innerHTML = this._getModalTemplate();
         
-        document.body.appendChild(this.modal);
+        // 根据是否在全屏模式选择正确的容器
+        this._appendToCorrectContainer();
         this._cacheModalElements();
+    }
+    
+    /**
+     * 将模态框添加到正确的容器
+     * 在全屏模式下添加到全屏元素，否则添加到body
+     * @private
+     */
+    _appendToCorrectContainer() {
+        const container = this._getAppendContainer();
+        container.appendChild(this.modal);
+    }
+    
+    /**
+     * 获取应该添加模态框的容器
+     * @private
+     * @returns {Element} 目标容器
+     */
+    _getAppendContainer() {
+        // 检查是否在全屏模式
+        if (document.fullscreenElement) {
+            return document.fullscreenElement;
+        }
+        return document.body;
     }
     
     /**
@@ -281,6 +305,40 @@ class RegionSelector {
                 this.hide();
             }
         });
+        
+        // 监听全屏状态变化
+        document.addEventListener('fullscreenchange', () => this._handleFullscreenChange());
+        document.addEventListener('webkitfullscreenchange', () => this._handleFullscreenChange());
+        document.addEventListener('mozfullscreenchange', () => this._handleFullscreenChange());
+        document.addEventListener('msfullscreenchange', () => this._handleFullscreenChange());
+    }
+    
+    /**
+     * 处理全屏状态变化
+     * @private
+     */
+    _handleFullscreenChange() {
+        // 使用 requestAnimationFrame 延迟处理，避免与全屏动画冲突
+        requestAnimationFrame(() => {
+            if (this.modal && this.modal.classList.contains('active')) {
+                const newContainer = this._getAppendContainer();
+                
+                // 如果当前容器不是目标容器，则重新挂载
+                if (this.modal.parentElement !== newContainer) {
+                    console.log('全屏状态变化，重新挂载地区选择器到正确容器');
+                    
+                    // 优化DOM操作：临时隐藏元素，减少重排重绘
+                    const originalDisplay = this.modal.style.display;
+                    this.modal.style.display = 'none';
+                    
+                    // 重新挂载到正确的容器
+                    newContainer.appendChild(this.modal);
+                    
+                    // 恢复显示
+                    this.modal.style.display = originalDisplay;
+                }
+            }
+        });
     }
     
     /**
@@ -336,11 +394,29 @@ class RegionSelector {
             this.searchInput.value = '';
         }
         
-        this.modal.classList.add('active');
-        this.loadProvinces();
-        this.updateSelectedCount();
+        // 优化：预先确保模态框在正确的容器中
+        const correctContainer = this._getAppendContainer();
+        if (this.modal.parentElement !== correctContainer) {
+            // 优化DOM操作：临时隐藏元素，减少重排重绘
+            const originalDisplay = this.modal.style.display;
+            this.modal.style.display = 'none';
+            correctContainer.appendChild(this.modal);
+            this.modal.style.display = originalDisplay;
+        }
         
-        setTimeout(() => this.searchInput.focus(), 300);
+        // 使用 requestAnimationFrame 优化显示过程
+        requestAnimationFrame(() => {
+            this.modal.classList.add('active');
+            
+            // 异步加载数据，避免阻塞UI
+            setTimeout(() => {
+                this.loadProvinces();
+                this.updateSelectedCount();
+            }, 16); // 约1帧的时间
+            
+            // 延迟聚焦，确保动画流畅
+            setTimeout(() => this.searchInput.focus(), 150);
+        });
     }
     
     /**

@@ -181,27 +181,38 @@ class ChainSidebar {
      * 处理全屏状态变化
      */
     handleFullscreenChange() {
-        // 如果侧边栏已打开，需要重新附加到正确的容器
-        if (this.isOpen && this.sidebar && this.overlay) {
-            const newContainer = this.getAppendContainer();
-            
-            // 如果当前容器不是目标容器，则重新附加
-            if (this.sidebar.parentElement !== newContainer) {
-                console.log('全屏状态变化，重新附加侧边栏到正确容器');
+        // 使用 requestAnimationFrame 延迟处理，避免与全屏动画冲突
+        requestAnimationFrame(() => {
+            // 如果侧边栏已打开，需要重新附加到正确的容器
+            if (this.isOpen && this.sidebar && this.overlay) {
+                const newContainer = this.getAppendContainer();
                 
-                // 保存当前状态
-                const sidebarClasses = this.sidebar.className;
-                const overlayClasses = this.overlay.className;
-                
-                // 重新附加到正确的容器
-                newContainer.appendChild(this.overlay);
-                newContainer.appendChild(this.sidebar);
-                
-                // 恢复状态
-                this.sidebar.className = sidebarClasses;
-                this.overlay.className = overlayClasses;
+                // 如果当前容器不是目标容器，则重新附加
+                if (this.sidebar.parentElement !== newContainer) {
+                    console.log('全屏状态变化，重新附加侧边栏到正确容器');
+                    
+                    // 使用 DocumentFragment 优化DOM操作
+                    const fragment = document.createDocumentFragment();
+                    
+                    // 临时隐藏元素，减少重排重绘
+                    const originalOverlayDisplay = this.overlay.style.display;
+                    const originalSidebarDisplay = this.sidebar.style.display;
+                    this.overlay.style.display = 'none';
+                    this.sidebar.style.display = 'none';
+                    
+                    // 批量移动到DocumentFragment
+                    fragment.appendChild(this.overlay);
+                    fragment.appendChild(this.sidebar);
+                    
+                    // 一次性添加到新容器
+                    newContainer.appendChild(fragment);
+                    
+                    // 恢复显示
+                    this.overlay.style.display = originalOverlayDisplay;
+                    this.sidebar.style.display = originalSidebarDisplay;
+                }
             }
-        }
+        });
     }
     
     /**
@@ -477,7 +488,7 @@ class ChainSidebar {
         this.currentPage = 1;
         this.isOpen = true;
         
-        // 确保侧边栏在正确的容器中
+        // 优化：预先确保侧边栏在正确的容器中，避免后续DOM操作
         this.ensureCorrectContainer();
         
         // 重置筛选条件
@@ -486,16 +497,16 @@ class ChainSidebar {
         // 更新标题
         this.updateHeader(chainPointName, '正在加载企业数据...');
         
-        // 显示侧边栏和遮罩层
-        this.overlay.classList.add('active');
-        this.sidebar.classList.add('active');
-        
-        // 延迟加载企业数据，避免与动画同时进行
+        // 使用批量DOM操作优化性能
         requestAnimationFrame(() => {
-            // 再次使用requestAnimationFrame确保动画已开始
-            requestAnimationFrame(async () => {
+            // 批量添加类，减少重排重绘
+            this.overlay.classList.add('active');
+            this.sidebar.classList.add('active');
+            
+            // 使用 setTimeout 而不是嵌套的 requestAnimationFrame，避免过度延迟
+            setTimeout(async () => {
                 await this.loadEnterpriseData();
-            });
+            }, 50); // 50ms延迟足够让动画开始
         });
     }
     

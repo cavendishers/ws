@@ -263,7 +263,7 @@ body, button, input, select, textarea {
     border-radius: 0.5rem;
     font-weight: 600;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.9375rem; /* 统一字体大小 */
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
     letter-spacing: -0.005em;
 }
@@ -298,11 +298,11 @@ body, button, input, select, textarea {
     background-color: rgba(45, 58, 92, 0.8);
     border: 0.0625rem solid rgba(95, 125, 190, 0.2);
     border-radius: 0.5rem;
-    padding: 1.25rem;
-    margin-top: 0.3125rem;
+    padding: 1.2rem;
+    margin-top: 0.125rem;
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: 0.3125rem;
 }
 
 /* 确保Node3的子节点有正确的间距 */

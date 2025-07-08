@@ -27,6 +27,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setTransform() {
         container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        
+        // 根据缩放比例动态调整字体大小，确保文字始终清晰可读
+        updateAdaptiveFontSize(scale);
+    }
+    
+    /**
+     * 根据缩放比例更新自适应字体大小
+     * @param {number} currentScale - 当前缩放比例
+     */
+    function updateAdaptiveFontSize(currentScale) {
+        // 设置CSS自定义属性，让CSS处理字体缩放
+        container.style.setProperty('--scale-factor', currentScale);
+        
+        // 根据缩放范围设置不同的字体策略
+        let scaleRange;
+        if (currentScale < 0.8) {
+            scaleRange = 'small';
+        } else if (currentScale > 1.2) {
+            scaleRange = 'large';
+        } else {
+            scaleRange = 'normal';
+        }
+        
+        // 更新容器的scale-range属性，触发相应的CSS规则
+        container.setAttribute('data-scale-range', scaleRange);
+        
+        // 为了确保字体渲染的一致性，在缩放变化时触发重排
+        if (Math.abs(currentScale - (container.dataset.lastScale || 1)) > 0.1) {
+            container.dataset.lastScale = currentScale;
+            // 使用requestAnimationFrame确保在下一帧更新，避免性能问题
+            requestAnimationFrame(() => {
+                container.style.fontSmooth = 'auto';
+                container.style.webkitFontSmoothing = 'auto';
+            });
+        }
     }
 
     // 自动适应视窗，展示全局视图
@@ -79,9 +114,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 页面加载时立即适应视窗，不使用延时
     fitToViewport();
+    
+    // 初始化字体大小适配
+    initializeFontAdaptation();
 
     // 窗口大小改变时重新适应
-    window.addEventListener('resize', fitToViewport);
+    window.addEventListener('resize', () => {
+        fitToViewport();
+        // 确保在窗口大小变化后也更新字体适配
+        setTimeout(() => updateAdaptiveFontSize(scale), 100);
+    });
+    
+    /**
+     * 初始化字体大小适配系统
+     */
+    function initializeFontAdaptation() {
+        // 确保容器有初始的字体适配属性
+        updateAdaptiveFontSize(scale);
+        
+        // 监听容器大小变化，动态调整字体
+        if (window.ResizeObserver) {
+            const resizeObserver = new ResizeObserver((entries) => {
+                for (const entry of entries) {
+                    // 当容器尺寸发生变化时，重新评估字体大小
+                    requestAnimationFrame(() => {
+                        updateAdaptiveFontSize(scale);
+                    });
+                }
+            });
+            resizeObserver.observe(container);
+        }
+        
+        // 添加平滑的字体渲染
+        container.style.textRendering = 'optimizeLegibility';
+        container.style.webkitFontSmoothing = 'antialiased';
+        container.style.mozOsxFontSmoothing = 'grayscale';
+    }
 
     // 刷新按钮点击事件
     document.querySelector('.graph-sidebar-item[title="刷新"]').addEventListener('click', function() {

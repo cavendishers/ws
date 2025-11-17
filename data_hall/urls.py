@@ -57,10 +57,4 @@ urlpatterns = [
     # 调试路由
     path('debug/region-selector/', views.region_selector_debug, name='region_selector_debug'),
 
-    # ICIndustry 页面
-    path('ic/companies/', views.ic_companies, name='ic_companies'),
-    path('ic/technical/', views.ic_technical_complement, name='ic_technical'),
-    path('ic/supply/', views.ic_supply_dependency, name='ic_supply'),
-    path('ic/capital/', views.ic_capital_association, name='ic_capital'),
-    path('risk-warning/', views.ic_risk_warning, name='risk_warning'),
-] 
+]

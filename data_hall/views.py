@@ -94,22 +94,6 @@ def news_iframe(request):
 def precision_iframe(request):
     return precision(request, iframe_mode=True)
 
-# ========== ICIndustry 集成页面 ==========
-def ic_companies(request):
-    return render(request, 'data_hall/ic_companies.html')
-
-def ic_technical_complement(request):
-    return render(request, 'data_hall/ic_technical_complement.html')
-
-def ic_supply_dependency(request):
-    return render(request, 'data_hall/ic_supply_dependency.html')
-
-def ic_capital_association(request):
-    return render(request, 'data_hall/ic_capital_association.html')
-
-def ic_risk_warning(request):
-    return render(request, 'data_hall/ic_risk_warning.html')
-
 def get_filter_data(request):
     """获取筛选选项数据"""
     # 获取所有不重复的行业

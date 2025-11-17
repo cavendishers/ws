@@ -173,32 +173,6 @@
                 <a href="{% url 'data_hall:report' %}" class="{% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
                 <a href="{% url 'data_hall:precision' %}" class="{% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
                 <a href="{% url 'data_hall:news' %}" class="{% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
-                <div class="relative group" id="analysis-dropdown-container">
-                    <button id="analysis-dropdown-btn" class="hover:text-[var(--button-highlight)] flex items-center px-4 py-2 -mx-4 -my-2 rounded-lg transition-all duration-200 hover:bg-[rgba(0,191,255,0.08)]">
-                        产业链分析 <i class="ml-1 fas fa-chevron-down text-xs transition-transform duration-200" id="analysis-dropdown-icon"></i>
-                    </button>
-                    <div id="analysis-dropdown" class="absolute hidden bg-[var(--bg-secondary)] rounded-xl shadow-2xl w-60 mt-3 border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden backdrop-blur-md">
-                        <div class="py-2">
-                            <a href="{% url 'data_hall:ic_companies' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
-                                <i class="fas fa-building mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
-                                潜在招引企业
-                            </a>
-                            <a href="{% url 'data_hall:ic_technical' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
-                                <i class="fas fa-microchip mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
-                                技术性互补
-                            </a>
-                            <a href="{% url 'data_hall:ic_supply' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
-                                <i class="fas fa-link mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
-                                供应链依赖
-                            </a>
-                            <a href="{% url 'data_hall:ic_capital' %}" class="flex items-center px-4 py-3 text-sm text-[var(--text-secondary)] hover:bg-[rgba(0,191,255,0.08)] hover:text-[var(--button-highlight)] transition-all duration-200 group">
-                                <i class="fas fa-chart-line mr-3 text-base w-5 group-hover:scale-110 transition-transform"></i>
-                                资本关联性
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <a href="{% url 'data_hall:risk_warning' %}" class="{% if request.resolver_match.url_name == 'risk_warning' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">风险预警</a>
             </div>
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
@@ -281,19 +255,6 @@
                 <a href="{% url 'data_hall:report' %}" class="text-lg {% if request.resolver_match.url_name == 'report' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">产业报告</a>
                 <a href="{% url 'data_hall:precision' %}" class="text-lg {% if request.resolver_match.url_name == 'precision' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">精准招商</a>
                 <a href="{% url 'data_hall:news' %}" class="text-lg {% if request.resolver_match.url_name == 'news' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">商业快讯</a>
-                <div class="relative">
-                    <button id="mobile-analysis-btn" class="text-lg hover:text-[var(--button-highlight)] flex items-center justify-between w-full">
-                        <span>产业链分析</span>
-                        <i class="fas fa-chevron-down text-xs"></i>
-                    </button>
-                    <div id="mobile-analysis-dropdown" class="pl-4 space-y-3 mt-2 hidden">
-                        <a href="{% url 'data_hall:ic_companies' %}" class="block hover:text-blue-400 text-sm py-2">潜在招引企业</a>
-                        <a href="{% url 'data_hall:ic_technical' %}" class="block hover:text-blue-400 text-sm py-2">技术性互补</a>
-                        <a href="{% url 'data_hall:ic_supply' %}" class="block hover:text-blue-400 text-sm py-2">供应链依赖</a>
-                        <a href="{% url 'data_hall:ic_capital' %}" class="block hover:text-blue-400 text-sm py-2">资本关联性</a>
-                    </div>
-                </div>
-                <a href="{% url 'data_hall:risk_warning' %}" class="text-lg {% if request.resolver_match.url_name == 'risk_warning' %}text-[var(--button-highlight)] font-semibold{% else %}hover:text-[var(--button-highlight)]{% endif %}">风险预警</a>
                 {% if user.is_authenticated %}
                 <div class="border-t border-[rgba(255,255,255,0.1)] pt-4 mt-4">
                     <p class="text-lg text-[var(--button-highlight)]">{{ user.username }}</p>
@@ -387,46 +348,6 @@
                             industryDropdownIcon.style.transform = 'rotate(0deg)';
                         }
                     }
-                });
-            }
-
-            // 产业链分析下拉（桌面）
-            const analysisContainer = document.getElementById('analysis-dropdown-container');
-            const analysisBtn = document.getElementById('analysis-dropdown-btn');
-            const analysisDropdown = document.getElementById('analysis-dropdown');
-            const analysisDropdownIcon = document.getElementById('analysis-dropdown-icon');
-            if (analysisBtn) {
-                analysisBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const isHidden = analysisDropdown.classList.contains('hidden');
-                    if (userDropdown) {
-                        userDropdown.classList.add('hidden');
-                        if (userDropdownIcon) userDropdownIcon.style.transform = 'rotate(0deg)';
-                    }
-                    if (industryDropdown) {
-                        industryDropdown.classList.add('hidden');
-                        if (industryDropdownIcon) industryDropdownIcon.style.transform = 'rotate(0deg)';
-                    }
-                    analysisDropdown.classList.toggle('hidden');
-                    if (analysisDropdownIcon) analysisDropdownIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-                });
-            }
-
-            // 点击外部关闭分析下拉
-            document.addEventListener('click', (e) => {
-                if (analysisContainer && !analysisContainer.contains(e.target)) {
-                    analysisDropdown.classList.add('hidden');
-                    if (analysisDropdownIcon) analysisDropdownIcon.style.transform = 'rotate(0deg)';
-                }
-            });
-
-            // 移动端：产业链分析折叠
-            const mobileAnalysisBtn = document.getElementById('mobile-analysis-btn');
-            const mobileAnalysisDropdown = document.getElementById('mobile-analysis-dropdown');
-            if (mobileAnalysisBtn) {
-                mobileAnalysisBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    mobileAnalysisDropdown.classList.toggle('hidden');
                 });
             }
 

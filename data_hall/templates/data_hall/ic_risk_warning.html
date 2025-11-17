@@ -1,0 +1,135 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}风险预警 - 浙江省企业风险监测{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'icindustry/css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'icindustry/css/risk_warning.css' %}">
+<style>
+  .main-layout { grid-template-columns: 1fr !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="main-layout">
+    <main class="main-content">
+      <section class="card" style="min-height: 560px;">
+        <div class="card-header">浙江省企业风险热力图</div>
+        <div class="card-body">
+          <div class="map-kpi" id="zjTotal">浙江省风险：--</div>
+          <div id="zjMap" style="width: 100%; height: 600px;"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">风险企业列表</div>
+        <div class="card-body">
+          <div class="ticker-board">
+            <div class="ticker-row ticker-danger">
+              <ul class="ticker-list" id="dangerTicker">
+                <li><span>重大风险警报：杉杉集团于2024年8月成为被执行人</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：宁波某制造业企业面临债务危机</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：温州某知名企业拖欠税款被查处</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：杭州某科技公司大规模裁员</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：绍兴某纺织企业面临重大法律诉讼</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：湖州某化工企业发生安全事故</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：嘉兴某外贸企业面临汇率风险</span><span class="ticker-link">全部动态</span></li>
+                <li><span>重大风险警报：金华某建筑公司资金链断裂</span><span class="ticker-link">全部动态</span></li>
+              </ul>
+            </div>
+            <div class="ticker-row ticker-system">
+              <ul class="ticker-list" id="systemTicker">
+                <li><span>系统性风险警报：浙江省嘉兴市桐乡市·新能源汽车产业链·整车链点·龙头企业·哪吒暴雷！</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：台州市汽车零部件产业链出现供应链断链风险</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：湖州市新能源电池产业链面临原材料短缺</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：金华市医药产业链面临监管政策调整</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：衢州市新材料产业链面临环保压力</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：舟山市船舶制造业面临订单下滑</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：丽水市生态农业面临气候变化挑战</span><span class="ticker-link">全部动态</span></li>
+                <li><span>系统性风险警报：杭州市数字经济产业面临人才短缺</span><span class="ticker-link">全部动态</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-row">
+              <select id="filterLevel" class="filter-select">
+                <option value="">全部风险等级</option>
+                <option value="重大暴雷风险">重大暴雷风险</option>
+                <option value="系统性风险">系统性风险</option>
+              </select>
+              <select id="filterFactor" class="filter-select">
+                <option value="">全部风险因素</option>
+                <option value="债务">债务</option>
+                <option value="大规模裁员">大规模裁员</option>
+                <option value="欠税">欠税</option>
+                <option value="重大法律诉讼">重大法律诉讼</option>
+              </select>
+              <select id="filterTiming" class="filter-select">
+                <option value="">全部时间性</option>
+                <option value="实时">实时</option>
+                <option value="近7天">近7天</option>
+                <option value="近15天">近15天</option>
+                <option value="近30天">近30天</option>
+              </select>
+              <input id="filterSearch" class="filter-input" placeholder="搜索企业名称" />
+              <button id="filterApply" class="btn btn-primary">应用</button>
+              <button id="filterReset" class="btn">重置</button>
+            </div>
+          </div>
+          <table class="table-like" id="riskTable">
+            <thead>
+              <tr>
+                <th>企业名称</th>
+                <th>重点事件</th>
+                <th>风险等级</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="riskTableBody">
+              <tr><td colspan="4" class="muted">加载中...</td></tr>
+            </tbody>
+          </table>
+          <div id="pagination"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- 新闻详情弹窗 -->
+<div id="newsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">新闻详情</h3>
+      <button class="modal-close" id="modalClose">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="news-meta">
+        <span class="news-source" id="newsSource">来源：风险监测系统</span>
+        <span class="news-time" id="newsTime">2024-08-17</span>
+      </div>
+      <div class="news-content" id="newsContent">
+        <p>正在加载新闻内容...</p>
+      </div>
+      <div class="news-tags" id="newsTags">
+        <span class="tag">风险预警</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="{% static 'icindustry/risk_warning.js' %}"></script>
+{% endblock %}
+
+

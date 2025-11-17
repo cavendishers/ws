@@ -1,0 +1,231 @@
+{% extends 'data_hall/base.html' %}
+{% load static %}
+
+{% block title %}供应链依赖企业 - 产业链分析{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'icindustry/css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'icindustry/css/companies.css' %}">
+<style>
+  .main-layout { grid-template-columns: 1fr !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="main-layout">
+    <main class="main-content">
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h1 class="page-title" style="margin-bottom: 0;">供应链依赖企业</h1>
+          <div id="pageSummary" style="font-size: 16px; color: #666; font-weight: 500;">供应链依赖企业总数0家</div>
+        </div>
+        <p class="page-subtitle">围绕供应商与客户网络，识别关键供应链依赖企业</p>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-number" id="technicalCount">0</div>
+          <div class="stat-label">供应商</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="supplyCount">0</div>
+          <div class="stat-label">客户</div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-header">
+          <h3 class="filter-title">数据筛选</h3>
+          <div class="filter-actions">
+            <button class="btn btn-secondary" id="resetFilter">重置筛选</button>
+          </div>
+        </div>
+
+        <div class="filter-content">
+          <div class="filter-row">
+            <div class="filter-item">
+              <label class="filter-label">产业链</label>
+              <select class="filter-select" id="filterIndustry">
+                <option value="">全部</option>
+                <option value="新能源汽车">新能源汽车</option>
+                <option value="集成电路">集成电路</option>
+                <option value="生物医药">生物医药</option>
+                <option value="新材料">新材料</option>
+                <option value="人工智能">人工智能</option>
+                <option value="低空经济">低空经济</option>
+                <option value="智能机器人">智能机器人</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label class="filter-label">链点</label>
+              <div class="chain-cascader" id="chainCascader">
+                <div class="cascader-trigger" id="chainCascaderTrigger">
+                  <input type="text" id="chainCascaderDisplay" class="cascader-display" placeholder="输入关键词" readonly />
+                  <span class="cascader-caret" aria-hidden="true"></span>
+                </div>
+                <div class="cascader-dropdown" id="chainCascaderDropdown">
+                  <div class="cascader-search">
+                    <input type="text" id="chainCascaderSearch" placeholder="输入关键词" />
+                  </div>
+                  <div class="cascader-body">
+                    <ul class="cascader-list cascader-level1" id="chainCascaderLevel1"></ul>
+                    <ul class="cascader-list cascader-level2" id="chainCascaderLevel2"></ul>
+                  </div>
+                  <div class="cascader-footer">
+                    <button type="button" class="cascader-action" data-action="clear">清空</button>
+                    <button type="button" class="cascader-action primary" data-action="confirm">确定</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-item">
+              <label class="filter-label">关联性</label>
+              <select class="filter-select" id="filterRelationTypes">
+                <option value="">全部</option>
+                <option value="technical">技术互补型</option>
+                <option value="supply">供应链依赖型</option>
+                <option value="capital">资本关联型</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label class="filter-label">企业性质</label>
+              <select class="filter-select" id="filterCompanyTypes">
+                <option value="">全部</option>
+                <option value="listed">上市企业</option>
+                <option value="world500">世界五百强</option>
+                <option value="private500">民营五百强</option>
+                <option value="giant">专精特新小巨人</option>
+                <option value="sme">专精特新中小企业</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label class="filter-label">所在地</label>
+              <select class="filter-select" id="filterLocation">
+                <option value="">全部</option>
+                <option value="杭州">杭州</option>
+                <option value="宁波">宁波</option>
+                <option value="温州">温州</option>
+                <option value="嘉兴">嘉兴</option>
+                <option value="湖州">湖州</option>
+                <option value="绍兴">绍兴</option>
+                <option value="金华">金华</option>
+                <option value="衢州">衢州</option>
+                <option value="舟山">舟山</option>
+                <option value="台州">台州</option>
+                <option value="丽水">丽水</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-info" id="filterInfo"><span style="color: #666;">显示全部数据</span></div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">供应链依赖企业列表</h2>
+          <div class="table-actions">
+            <button class="btn btn-secondary" id="exportBtn">导出Excel</button>
+            <button class="btn btn-primary" id="analyzeBtn">分析报告</button>
+          </div>
+        </div>
+
+        <table class="data-table" id="companyTable">
+          <thead>
+            <tr>
+              <th>企业名称</th>
+              <th>国别</th>
+              <th>城市</th>
+              <th>所在链条</th>
+              <th>链点</th>
+              <th>企业性质</th>
+              <th>关联方式</th>
+              <th>采购事件</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="8" class="loading"><div class="spinner"></div>正在加载数据...</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination" id="pagination">
+          <button class="pagination-btn" id="prevBtn" disabled>上一页</button>
+          <div class="pagination-info" id="pageInfo">第 1 页，共 1 页</div>
+          <button class="pagination-btn" id="nextBtn">下一页</button>
+        </div>
+      </div>
+
+      <section id="detailView" style="display:none;">
+        <div class="detail-header">
+          <button id="backToList" class="btn btn-secondary">返回列表</button>
+          <div>
+            <h1 id="detailName"></h1>
+            <div id="detailTags" class="tag-list"></div>
+          </div>
+        </div>
+
+        <div class="company-tab-nav container">
+          <div class="app-tab-nav">
+            <div class="nav-bar">
+              <div class="nav-head">
+                <a href="javascript:;" class="nav-tab active" data-tab="basic"><div class="nav-tab-item"><div>基本信息 <span class="count">22</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="legal"><div class="nav-tab-item"><div>法律诉讼 <span class="count">0</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="risk"><div class="nav-tab-item"><div>经营风险 <span class="count">0</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="run"><div class="nav-tab-item"><div>经营信息 <span class="count">0</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="develop"><div class="nav-tab-item"><div>企业发展 <span class="count">0</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="ip"><div class="nav-tab-item"><div>知识产权 <span class="count">0</span></div></div></a>
+                <a href="javascript:;" class="nav-tab" data-tab="history"><div class="nav-tab-item"><div>历史信息 <span class="count">0</span></div></div></a>
+              </div>
+            </div>
+            <div class="nav-contain new-contain" id="subNavContainer"></div>
+          </div>
+        </div>
+
+        <nav class="detail-anchor" style="display:none;"></nav>
+
+        <div class="detail-sections">
+          <section id="base" class="card"></section>
+          <section id="key" class="card"></section>
+          <section id="patent" class="card"></section>
+          <section id="soft" class="card"></section>
+          <section id="fin" class="card"></section>
+          <section id="talent" class="card"></section>
+          <section id="supplier" class="card"></section>
+          <section id="customer" class="card"></section>
+          <section id="invest" class="card"></section>
+          <section id="news" class="card"></section>
+          <section id="score" class="card"></section>
+          <section id="updates" class="card"></section>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.__PAGE_MODE__ = {
+    mode: 'supply',
+    relationFilter: 'supply',
+    summaryLabel: '供应链依赖企业总数',
+    tableTitle: '供应链依赖企业列表',
+    tableHeaders: ['企业名称', '国别', '城市', '所在链条', '链点', '企业性质', '关联方式', '采购事件'],
+    stats: [
+      { id: 'technicalCount', subtype: 'supplier' },
+      { id: 'supplyCount', subtype: 'customer' }
+    ]
+  };
+  </script>
+<script src="{% static 'icindustry/page_mode.js' %}"></script>
+<script src="{% static 'icindustry/companies.js' %}"></script>
+{% endblock %}
+
+

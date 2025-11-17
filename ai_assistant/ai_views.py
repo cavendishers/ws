@@ -1,121 +1,207 @@
-"""
-简化的AI视图 - 备用实现
-主要功能已迁移到 tencent_ai_views.py
-此文件仅保留基本接口定义，不依赖ChatMessage模型
-"""
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from django.utils import timezone
+"""REST API views for the local AI assistant."""
 
 import logging
+from typing import Any, Dict, List
 
-logger = logging.getLogger('ai_chat')
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from .ai_serializers import (
+    ChatConfigSerializer,
+    ChatHistoryResponseSerializer,
+    ChatRequestSerializer,
+    ChatResponseSerializer,
+    ErrorResponseSerializer,
+    SessionSerializer,
+)
+from .ai_services import MessageProcessor, get_local_ai_service
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AIChatAPIView(APIView):
-    """
-    备用AI聊天API视图 - 已废弃
-    请使用 tencent_ai_views.TencentChatAPIView
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-        """返回服务已迁移的提示"""
-        return Response({
-            'success': False,
-            'error': 'AI聊天服务已迁移到腾讯智能体',
-            'message': '请使用新的API接口 /ai/api/chat/',
-            'migration_note': '原DeepSeek服务已停用，请使用腾讯智能体服务'
-        }, status=status.HTTP_410_GONE)
-
-
-@method_decorator(csrf_exempt, name='dispatch')
-class ChatHistoryAPIView(APIView):
-    """
-    备用聊天历史API视图 - 已废弃
-    请使用腾讯智能体API
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        """返回服务已迁移的提示"""
-        return Response({
-            'success': False,
-            'error': '聊天历史服务已迁移到腾讯智能体',
-            'message': '请使用新的API接口',
-            'migration_note': '历史记录现在由腾讯云管理'
-        }, status=status.HTTP_410_GONE)
-    
-    def delete(self, request):
-        """返回服务已迁移的提示"""
-        return Response({
-            'success': False,
-            'error': '聊天历史管理已迁移到腾讯智能体',
-            'message': '请通过腾讯云控制台管理聊天记录'
-        }, status=status.HTTP_410_GONE)
+logger = logging.getLogger("ai_chat")
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class SingleChatMessageAPIView(APIView):
-    """
-    备用单条消息API视图 - 已废弃
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def delete(self, request, pk):
-        """返回服务已迁移的提示"""
-        return Response({
-            'success': False,
-            'error': '消息管理已迁移到腾讯智能体',
-            'message': '请通过腾讯云控制台管理消息'
-        }, status=status.HTTP_410_GONE)
-    
-    def put(self, request, pk):
-        """返回服务已迁移的提示"""
-        return Response({
-            'success': False,
-            'error': '消息编辑已迁移到腾讯智能体',
-            'message': '请通过腾讯云控制台编辑消息'
-        }, status=status.HTTP_410_GONE)
+class SessionPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 50
+    page_query_param = "page"
 
-
-@method_decorator(csrf_exempt, name='dispatch')
-class AIChatConfigAPIView(APIView):
-    """
-    备用AI配置API视图 - 已废弃
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        """返回基本配置信息"""
-        return Response({
-            'success': True,
-            'config': {
-                'provider': 'deprecated',
-                'status': 'migrated',
-                'message': 'AI服务已迁移到腾讯智能体',
-                'new_endpoint': '/ai/api/config/'
+    def get_paginated_response(self, data):
+        return Response(
+            {
+                "results": data,
+                "page": self.page.number,
+                "page_size": self.page.paginator.per_page,
+                "total": self.page.paginator.count,
+                "total_pages": self.page.paginator.num_pages,
+                "has_next": self.page.has_next(),
+                "has_previous": self.page.has_previous(),
             }
-        }, status=status.HTTP_200_OK)
+        )
 
 
-@api_view(['GET'])
+def _serialize_messages(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Normalize cached messages to the API schema."""
+    serialized = []
+    for index, item in enumerate(items, start=1):
+        serialized.append(
+            {
+                "id": f"{item.get('timestamp', 'unknown')}#{index}",
+                "role": item.get("role", "assistant"),
+                "content": item.get("content", ""),
+                "created_at": item.get("timestamp", timezone.now().isoformat()),
+                "metadata": item.get("metadata", {}),
+            }
+        )
+    return serialized
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AIChatAPIView(APIView):
+    """Handle chat completion style requests."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ChatRequestSerializer(data=request.data)
+        if not serializer.is_valid():
+            logger.warning("invalid chat request payload: %s", serializer.errors)
+            error = ErrorResponseSerializer(
+                {
+                    "success": False,
+                    "error": "请求数据格式错误",
+                    "error_detail": serializer.errors,
+                }
+            )
+            return Response(error.data, status=status.HTTP_400_BAD_REQUEST)
+
+        user_message = serializer.get_user_message()
+        if not MessageProcessor.validate_message(user_message):
+            error = ErrorResponseSerializer(
+                {
+                    "success": False,
+                    "error": "请输入有效的消息内容",
+                }
+            )
+            return Response(error.data, status=status.HTTP_400_BAD_REQUEST)
+
+        service = get_local_ai_service()
+        session_id = request.data.get("session_id")
+        result = service.send_message(user_message, session_id=session_id)
+
+        response = ChatResponseSerializer(result)
+        status_code = status.HTTP_200_OK if result.get("success") else status.HTTP_500_INTERNAL_SERVER_ERROR
+        return Response(response.data, status=status_code)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class SessionListAPIView(APIView):
+    """Return the cached session list."""
+
+    permission_classes = [AllowAny]
+    pagination_class = SessionPagination
+
+    def get(self, request):
+        service = get_local_ai_service()
+        sessions = service.list_sessions()
+
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(sessions, request, view=self)
+        serializer = SessionSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    def delete(self, request):
+        """Clear every cached session."""
+        service = get_local_ai_service()
+        service.reset_sessions()
+        return Response({"success": True, "message": "所有会话已清除"}, status=status.HTTP_200_OK)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class ChatHistoryAPIView(APIView):
+    """Expose conversation history for a given session."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, session_id: str):
+        service = get_local_ai_service()
+        messages = service.get_chat_history(session_id)
+        payload = {
+            "success": True,
+            "messages": _serialize_messages(messages),
+            "session_id": session_id,
+            "total": len(messages),
+        }
+        serializer = ChatHistoryResponseSerializer(payload)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, session_id: str):
+        service = get_local_ai_service()
+        removed = service.delete_session(session_id)
+        if removed:
+            return Response({"success": True, "session_id": session_id}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": False, "error": "会话不存在", "session_id": session_id},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AIChatConfigAPIView(APIView):
+    """Return static configuration metadata for the UI."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        service = get_local_ai_service()
+        payload = {
+            "provider": service.provider,
+            "model": service.model,
+            "status": "active",
+        }
+        serializer = ChatConfigSerializer(payload)
+        return Response({"success": True, "config": serializer.data}, status=status.HTTP_200_OK)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AIConfigReloadAPIView(APIView):
+    """Force reload of the singleton service."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        service = get_local_ai_service()
+        service.reset_sessions()
+        # Recreate the singleton to pick up potential setting changes
+        refreshed = get_local_ai_service(force_reload=True)
+        return Response(
+            {
+                "success": True,
+                "message": "配置已刷新，本地会话缓存已清空",
+                "provider": refreshed.provider,
+                "model": refreshed.model,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+@api_view(["GET"])
 @permission_classes([AllowAny])
-def ai_health_check(request):
-    """备用健康检查接口"""
-    return Response({
-        'status': 'deprecated',
-        'message': 'AI服务已迁移到腾讯智能体',
-        'new_endpoint': '/ai/api/health/',
-        'timestamp': timezone.now().isoformat()
-    }, status=status.HTTP_200_OK) 
+def ai_health_check(_: Any):
+    """Simple health check endpoint for external monitors."""
+    service = get_local_ai_service()
+    return Response(
+        {
+            "status": "healthy",
+            "provider": service.provider,
+            "model": service.model,
+            "timestamp": timezone.now().isoformat(),
+        },
+        status=status.HTTP_200_OK,
+    )

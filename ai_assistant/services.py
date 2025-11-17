@@ -1,312 +1,384 @@
-"""
-腾讯智能体服务层
-处理与腾讯智能体API的交互逻辑
-"""
-import asyncio
-import re
-import json
-import uuid
-import ssl
-import certifi
+"""AI services for chat: local rule-based and optional external provider."""
+
 import logging
-from typing import List, Dict, Any, Optional
-import websockets
+import os
+import uuid
+from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional
+
 from django.conf import settings
-from tencentcloud.common import credential
-from tencentcloud.common.profile.client_profile import ClientProfile
-from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
-from tencentcloud.lke.v20231130 import lke_client, models
+from django.core.cache import cache
+from django.utils import timezone
 
-logger = logging.getLogger('ai_chat')
+logger = logging.getLogger("ai_chat")
 
 
-class TencentAgentService:
-    """腾讯智能体服务"""
-    
-    def __init__(self):
-        """初始化腾讯智能体服务"""
-        # 从配置中读取参数
-        self.secret_id = settings.TENCENT_SECRET_ID
-        self.secret_key = settings.TENCENT_SECRET_KEY
-        self.region = settings.TENCENT_REGION
-        self.bot_app_key = settings.TENCENT_BOT_APP_KEY
-        self.visitor_biz_id = settings.TENCENT_VISITOR_BIZ_ID
-        self.conn_type_api = settings.TENCENT_CONN_TYPE_API
-        self.websocket_url = settings.TENCENT_WEBSOCKET_URL
-        
-        # 验证必要配置
-        if not all([self.secret_id, self.secret_key, self.bot_app_key]):
-            error_msg = "腾讯云配置不完整，请检查 TENCENT_SECRET_ID, TENCENT_SECRET_KEY, TENCENT_BOT_APP_KEY"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        # 初始化腾讯云客户端
-        try:
-            cred = credential.Credential(self.secret_id, self.secret_key)
-            httpProfile = HttpProfile()
-            httpProfile.endpoint = "lke.tencentcloudapi.com"
-            
-            clientProfile = ClientProfile()
-            clientProfile.httpProfile = httpProfile
-            
-            self.client = lke_client.LkeClient(cred, self.region, clientProfile)
-            logger.info("腾讯智能体服务初始化成功")
-        except Exception as e:
-            error_msg = f"初始化腾讯云客户端失败: {str(e)}"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-        
-        # SSL上下文
-        self.ssl_context = ssl.create_default_context()
-        self.ssl_context.load_verify_locations(certifi.where())
-        
-        # 消息解析正则
-        self.pattern = r'\d+(.*)'
-    
-    def _get_session_id(self) -> str:
-        """生成会话ID"""
-        return str(uuid.uuid1())
-    
-    def _get_request_id(self) -> str:
-        """生成请求ID"""
-        return str(uuid.uuid1())
-    
-    def _get_ws_token(self) -> str:
-        """获取WebSocket令牌"""
-        try:
-            req = models.GetWsTokenRequest()
-            params = {
-                "Type": self.conn_type_api,
-                "BotAppKey": self.bot_app_key,
-                "VisitorBizId": self.visitor_biz_id
-            }
-            req.from_json_string(json.dumps(params))
-            
-            resp = self.client.GetWsToken(req)
-            logger.info("获取WebSocket令牌成功")
-            return resp.Token
-        except TencentCloudSDKException as err:
-            logger.error(f"获取WebSocket令牌失败: {err}")
-            raise Exception(f"获取WebSocket令牌失败: {err}")
-    
-    def list_sessions(self) -> List[Dict[str, Any]]:
-        """
-        获取所有历史会话列表
-        注意：腾讯云智能体LKE API不提供会话列表功能
-        这里返回模拟数据或空列表
-        
-        Returns:
-            List[Dict]: 会话列表（模拟数据）
-        """
-        try:
-            # 腾讯云LKE API目前不提供会话列表功能
-            # 返回模拟数据说明情况
-            logger.info("腾讯云LKE API暂不支持会话列表查询")
-            return [
+def _now_iso() -> str:
+    """Return the current timestamp in ISO 8601 format."""
+    return timezone.now().isoformat()
+
+
+@dataclass
+class Message:
+    """Lightweight chat message representation."""
+
+    role: str
+    content: str
+    timestamp: str
+
+    @classmethod
+    def build(cls, role: str, content: str) -> "Message":
+        cleaned = (content or "").strip()
+        if not cleaned:
+            raise ValueError("message content cannot be empty")
+        return cls(role=role, content=cleaned, timestamp=_now_iso())
+
+
+class LocalConversationStore:
+    """Cache backed storage that keeps lightweight session data."""
+
+    INDEX_KEY = "local_ai_sessions_index"
+    SESSION_PREFIX = "local_ai_session:"
+    DEFAULT_TIMEOUT = getattr(settings, "LOCAL_AI_SESSION_TIMEOUT", 60 * 60 * 24)
+
+    @classmethod
+    def _session_key(cls, session_id: str) -> str:
+        return f"{cls.SESSION_PREFIX}{session_id}"
+
+    @classmethod
+    def list_sessions(cls) -> List[Dict[str, Any]]:
+        sessions = cache.get(cls.INDEX_KEY, [])
+        return [dict(item) for item in sessions or []]
+
+    @classmethod
+    def get_history(cls, session_id: str) -> List[Dict[str, Any]]:
+        history = cache.get(cls._session_key(session_id), [])
+        return [dict(item) for item in history or []]
+
+    @classmethod
+    def _save_history(cls, session_id: str, history: List[Dict[str, Any]]) -> None:
+        cache.set(cls._session_key(session_id), history, cls.DEFAULT_TIMEOUT)
+
+    @classmethod
+    def _save_sessions(cls, sessions: List[Dict[str, Any]]) -> None:
+        cache.set(cls.INDEX_KEY, sessions, cls.DEFAULT_TIMEOUT)
+
+    @classmethod
+    def append_message(cls, session_id: str, message: Message) -> int:
+        history = cache.get(cls._session_key(session_id), [])
+        if history is None:
+            history = []
+        history.append(asdict(message))
+        cls._save_history(session_id, history)
+        cls._update_session_index(session_id, message.content, len(history))
+        return len(history)
+
+    @classmethod
+    def _update_session_index(
+        cls, session_id: str, preview: str, message_count: int
+    ) -> None:
+        sessions = cache.get(cls.INDEX_KEY, [])
+        if not sessions:
+            sessions = []
+        now_text = _now_iso()
+        existing: Optional[Dict[str, Any]] = next(
+            (item for item in sessions if item.get("session_id") == session_id), None
+        )
+        preview_text = (preview or "").strip()
+        preview_safe = preview_text[:60] if preview_text else "会话暂无摘要"
+        if existing:
+            existing["update_time"] = now_text
+            existing["message_count"] = message_count
+            existing["last_preview"] = preview_safe
+        else:
+            sessions.append(
                 {
-                    'session_id': 'demo-session-1',
-                    'title': '智能体演示会话',
-                    'created_time': '2024-01-01 00:00:00',
-                    'update_time': '2024-01-01 00:00:00',
-                    'message_count': 0,
-                    'note': '腾讯云LKE API暂不支持会话列表查询功能'
-                }
-            ]
-            
-        except Exception as err:
-            logger.error(f"会话列表模拟返回失败: {err}")
-            return []
-    
-    def get_chat_history(self, session_id: str) -> List[Dict[str, Any]]:
-        """
-        获取指定会话的聊天记录
-        调用腾讯 GetMsgRecord API
-        
-        Args:
-            session_id: 会话ID
-            
-        Returns:
-            List[Dict]: 聊天记录列表
-        """
-        try:
-            req = models.GetMsgRecordRequest()
-            # 设置正确的参数
-            req.BotBizId = self.visitor_biz_id  # 使用访客业务ID
-            req.SessionId = session_id
-            req.Count = 50  # 必传参数：获取消息条数
-            req.StartTime = "2024-01-01 00:00:00"  # 开始时间
-            req.EndTime = "2025-12-31 23:59:59"    # 结束时间
-            
-            resp = self.client.GetMsgRecord(req)
-            
-            messages = []
-            if hasattr(resp, 'Records') and resp.Records:
-                for record in resp.Records:
-                    messages.append({
-                        'id': getattr(record, 'RecordId', ''),
-                        'role': 'user' if getattr(record, 'UserId', '') != 'assistant' else 'assistant',
-                        'content': getattr(record, 'Content', ''),
-                        'created_at': getattr(record, 'CreateTime', ''),
-                        'metadata': {
-                            'user_id': getattr(record, 'UserId', ''),
-                            'session_id': session_id
-                        }
-                    })
-            
-            logger.info(f"获取会话 {session_id} 的 {len(messages)} 条消息")
-            return messages
-            
-        except TencentCloudSDKException as err:
-            logger.error(f"获取聊天记录失败: {err}")
-            logger.error(f"错误详情: {err}")
-            return []
-    
-    async def send_message(self, message: str, session_id: Optional[str] = None) -> Dict[str, Any]:
-        """
-        发送消息并接收AI回复
-        使用WebSocket进行实时通信
-        
-        Args:
-            message: 用户消息
-            session_id: 会话ID，为空时创建新会话
-            
-        Returns:
-            Dict: 包含AI回复和会话信息的字典
-        """
-        if not message or not message.strip():
-            raise ValueError("消息内容不能为空")
-        
-        # 如果没有提供session_id，生成新的
-        if not session_id:
-            session_id = self._get_session_id()
-            logger.info(f"创建新会话: {session_id}")
-        
-        try:
-            # 获取WebSocket令牌
-            token = self._get_ws_token()
-            
-            # 建立WebSocket连接并发送消息
-            response = await self._websocket_chat(token, message, session_id)
-            
-            return {
-                'success': True,
-                'response': response,
-                'session_id': session_id,
-                'model': 'tencent-agent',
-                'timestamp': None,  # 腾讯API返回的时间戳
-                'metadata': {
-                    'provider': 'tencent',
-                    'session_id': session_id
-                }
-            }
-            
-        except Exception as e:
-            logger.error(f"发送消息失败: {str(e)}")
-            return {
-                'success': False,
-                'response': f"抱歉，AI服务暂时不可用。错误信息：{str(e)}",
-                'error': str(e),
-                'session_id': session_id
-            }
-    
-    async def _websocket_chat(self, token: str, message: str, session_id: str) -> str:
-        """
-        通过WebSocket进行聊天
-        
-        Args:
-            token: WebSocket认证令牌
-            message: 用户消息
-            session_id: 会话ID
-            
-        Returns:
-            str: AI回复内容
-        """
-        async with websockets.connect(self.websocket_url, ssl=self.ssl_context) as ws:
-            # 连接建立
-            response = await ws.recv()
-            logger.info(f"WebSocket连接建立: {response}")
-            
-            # 发送认证信息
-            auth = {"token": token}
-            auth_message = f"40{json.dumps(auth)}"
-            await ws.send(auth_message)
-            
-            # 接收认证结果
-            response = await ws.recv()
-            logger.info(f"WebSocket认证结果: {response}")
-            
-            # 构建请求消息 (严格按照示例代码格式)
-            request_id = self._get_request_id()
-            payload = {
-                "payload": {
-                    "request_id": request_id,
                     "session_id": session_id,
-                    "content": f"{message}",  # 确保是字符串格式
+                    "title": preview_safe[:16] or "新的会话",
+                    "created_time": now_text,
+                    "update_time": now_text,
+                    "message_count": message_count,
+                    "last_preview": preview_safe,
                 }
+            )
+        cls._save_sessions(sessions)
+
+    @classmethod
+    def delete_session(cls, session_id: str) -> bool:
+        """Remove a session and its history from the cache."""
+        removed = False
+        sessions = cache.get(cls.INDEX_KEY, [])
+        if sessions:
+            filtered = [item for item in sessions if item.get("session_id") != session_id]
+            removed = len(filtered) != len(sessions)
+            cls._save_sessions(filtered)
+        cache.delete(cls._session_key(session_id))
+        return removed
+
+    @classmethod
+    def clear_all(cls) -> None:
+        """Remove every cached session; used by tests and administration endpoints."""
+        sessions = cache.get(cls.INDEX_KEY, [])
+        for item in sessions or []:
+            cache.delete(cls._session_key(item.get("session_id")))
+        cache.delete(cls.INDEX_KEY)
+
+
+class LocalAgentService:
+    """Rule-based assistant used for local development and testing."""
+
+    def __init__(self) -> None:
+        self.provider = getattr(settings, "LOCAL_AI_PROVIDER_NAME", "local-simulator")
+        self.model = getattr(settings, "LOCAL_AI_MODEL_NAME", "rule-based-v1")
+        self.max_history = max(getattr(settings, "LOCAL_AI_MAX_HISTORY", 20), 1)
+
+    def list_sessions(self) -> List[Dict[str, Any]]:
+        return LocalConversationStore.list_sessions()
+
+    def get_chat_history(self, session_id: str) -> List[Dict[str, Any]]:
+        history = LocalConversationStore.get_history(session_id)
+        if len(history) > self.max_history:
+            history = history[-self.max_history :]
+        return history
+
+    def send_message(
+        self, message: str, session_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        try:
+            if not message or not message.strip():
+                raise ValueError("user message cannot be empty")
+
+            session_id = session_id or uuid.uuid4().hex
+
+            # keep truncated history for lightweight context
+            history = LocalConversationStore.get_history(session_id)
+            history_tail = history[-self.max_history :] if history else []
+
+            user_message = Message.build("user", message)
+            LocalConversationStore.append_message(session_id, user_message)
+
+            reply_text = self._generate_response(message, history_tail)
+
+            assistant_message = Message.build("assistant", reply_text)
+            LocalConversationStore.append_message(session_id, assistant_message)
+
+            return {
+                "success": True,
+                "response": reply_text,
+                "session_id": session_id,
+                "model": self.model,
+                "metadata": {
+                    "provider": self.provider,
+                    "message_count": len(self.get_chat_history(session_id)),
+                },
             }
-            req_data = ["send", payload]
-            
-            send_data = f"42{json.dumps(req_data, ensure_ascii=False)}"
-            logger.info(f"发送消息: {message}")
-            logger.debug(f"发送数据格式: {send_data}")
-            await ws.send(send_data)
-            
-            # 接收响应
-            ai_response = ""
-            while True:
-                rsp = await ws.recv()
-                
-                # 处理心跳包
-                if rsp == '2':
-                    await ws.send("3")
-                    continue
-                
-                # 解析响应
-                try:
-                    rsp_re_result = re.search(self.pattern, rsp).group(1)
-                    rsp_dict = json.loads(rsp_re_result)
-                    
-                    if rsp_dict[0] == "error":
-                        logger.error(f"WebSocket错误: {rsp_dict}")
-                        raise Exception(f"WebSocket错误: {rsp_dict[1]}")
-                    
-                    elif rsp_dict[0] == "reply":
-                        payload = rsp_dict[1]["payload"]
-                        
-                        # 跳过自己发送的消息
-                        if payload.get("is_from_self", False):
-                            logger.info(f"跳过自己的消息: {payload['content']}")
-                            continue
-                        
-                        # 检查是否是最终消息
-                        if payload.get("is_final", False):
-                            ai_response = payload["content"]
-                            logger.info(f"接收到最终AI回复: {ai_response}")
-                            break
-                        else:
-                            # 流式消息，可以在这里处理增量内容
-                            logger.debug(f"接收到流式消息: {payload}")
-                            continue
-                
-                except (AttributeError, json.JSONDecodeError, KeyError) as e:
-                    logger.warning(f"解析WebSocket响应失败: {e}, 原始响应: {rsp}")
-                    continue
-            
-            return ai_response if ai_response else "抱歉，没有收到有效的AI回复。"
+        except Exception as exc:
+            logger.error("local AI service failed to process message: %s", exc, exc_info=True)
+            return {
+                "success": False,
+                "error": str(exc),
+                "response": "对不起，本地助手暂时不可用，请稍后再试。",
+                "session_id": session_id,
+            }
+
+    def _generate_response(
+        self, message: str, history: List[Dict[str, Any]]
+    ) -> str:
+        """Very small rule-based response engine tuned for the industry-chain domain."""
+        text = (message or "").strip()
+        text_lower = text.lower()
+
+        if not text:
+            return "请告诉我您想了解的产业链或企业信息，我会尽力回答。"
+
+        if "产业链" in text or "industry chain" in text_lower:
+            return (
+                "本系统聚合了产业链基础数据、链点结构与企业画像，"
+                "可在数据大厅中查看重要节点、上下游分布以及重点企业清单。"
+                "继续提供具体产业或链点名称，我可以帮你梳理关键环节。"
+            )
+
+        if "企业" in text or "company" in text_lower:
+            return (
+                "企业信息模块支持按照地区、规模、融资阶段等条件检索，"
+                "并包含企业评分、标签与产业链关联链点。"
+                "如需对比或导出，请告知企业名称或筛选条件。"
+            )
+
+        if "分析" in text or "report" in text_lower:
+            return (
+                "分析中心提供项目概览、风险提示与重点指标监控，"
+                "可以结合地图与链路视图快速锁定关键节点。"
+                "如需生成报告，请说明行业、区域或企业集合范围。"
+            )
+
+        if "融资" in text or "investment" in text_lower:
+            return (
+                "融资情报模块记录了企业融资轮次、金额与投资机构，"
+                "能够帮助判断资本关注度和增长潜力。"
+                "告诉我目标企业或产业，我可以返回对应的融资摘要。"
+            )
+
+        if "帮助" in text or "help" in text_lower:
+            return (
+                "可以从以下角度提问：\n"
+                "1. 了解某条产业链的结构与核心环节。\n"
+                "2. 查询目标企业的基本面、评分和链点关系。\n"
+                "3. 查看地区或行业的企业分布与投资趋势。\n"
+                "请尝试提供更多上下文，我会返回更具体的建议。"
+            )
+
+        if history:
+            last_user = next(
+                (item for item in reversed(history) if item.get("role") == "user"),
+                None,
+            )
+            if last_user:
+                return (
+                    "我已经记录了您的问题，并会结合之前的对话继续提供信息。"
+                    "若需要更精确的分析，请给出企业或链点关键词。"
+                )
+
+        return (
+            "收到您的问题。当前本地助手提供产业链导航、企业画像和融资情报的基础说明。"
+            "请提供更明确的产业、地域或企业名称，我可以进一步整理要点。"
+        )
+
+    def delete_session(self, session_id: str) -> bool:
+        """Remove a session and return True if something was deleted."""
+        return LocalConversationStore.delete_session(session_id)
+
+    def reset_sessions(self) -> None:
+        """Clear all cached sessions; primarily used in tests."""
+        LocalConversationStore.clear_all()
 
 
-# 单例模式
-_tencent_service = None
+class ExternalAIService:
+    """OpenAI-compatible external AI service using API key/base URL from settings."""
 
-def get_tencent_service(force_reload: bool = False) -> TencentAgentService:
+    def __init__(self) -> None:
+        # Lazy import to avoid mandatory dependency when running local mode only
+        try:
+            from openai import OpenAI  # type: ignore
+        except Exception as exc:  # pragma: no cover
+            raise RuntimeError("openai SDK 未安装或不可用") from exc
+
+        self.provider = getattr(settings, "AI_PROVIDER", "openai")
+        self.model = getattr(settings, "AI_MODEL_NAME", "gpt-4o-mini") or "gpt-4o-mini"
+        self.base_url = getattr(settings, "AI_API_BASE_URL", "").strip()
+        self.api_key = getattr(settings, "AI_API_KEY", "").strip()
+
+        if not self.api_key:
+            raise RuntimeError("缺少 AI_API_KEY 配置")
+        # 规范化 base_url（DeepSeek 等需要 /v1）
+        normalized_base_url = None
+        if self.base_url:
+            url = self.base_url.rstrip('/')
+            if not url.lower().endswith('/v1'):
+                url = url + '/v1'
+            normalized_base_url = url
+        # base_url 可为空（官方默认），兼容 OpenAI/兼容生态
+        self._client = OpenAI(api_key=self.api_key, base_url=normalized_base_url)
+        # 适度截断历史，沿用本地存储
+        self.max_history = max(getattr(settings, "LOCAL_AI_MAX_HISTORY", 20), 1)
+
+    def list_sessions(self) -> List[Dict[str, Any]]:
+        return LocalConversationStore.list_sessions()
+
+    def get_chat_history(self, session_id: str) -> List[Dict[str, Any]]:
+        history = LocalConversationStore.get_history(session_id)
+        if len(history) > self.max_history:
+            history = history[-self.max_history :]
+        return history
+
+    def send_message(
+        self, message: str, session_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        if not message or not message.strip():
+            return {"success": False, "error": "消息为空"}
+
+        session_id = session_id or uuid.uuid4().hex
+        history = LocalConversationStore.get_history(session_id)
+        history_tail = history[-self.max_history :] if history else []
+
+        # 构造 messages（system + 历史 + 当前）
+        messages: List[Dict[str, str]] = [
+            {"role": "system", "content": "你是产业研究助手，回答简洁准确。"}
+        ]
+        for item in history_tail:
+            role = item.get("role", "user")
+            content = item.get("content", "")
+            if content:
+                messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": message})
+
+        # 先写入用户消息
+        LocalConversationStore.append_message(session_id, Message.build("user", message))
+
+        try:
+            resp = self._client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+            )
+            reply = resp.choices[0].message.content or ""
+        except Exception as exc:
+            logger.error("external AI request failed: %s", exc, exc_info=True)
+            return {
+                "success": False,
+                "error": str(exc),
+                "response": "外部AI服务不可用，请稍后再试。",
+                "session_id": session_id,
+            }
+
+        LocalConversationStore.append_message(session_id, Message.build("assistant", reply))
+        return {
+            "success": True,
+            "response": reply,
+            "session_id": session_id,
+            "model": self.model,
+            "metadata": {"provider": self.provider, "message_count": len(self.get_chat_history(session_id))},
+        }
+
+    def delete_session(self, session_id: str) -> bool:
+        return LocalConversationStore.delete_session(session_id)
+
+    def reset_sessions(self) -> None:
+        LocalConversationStore.clear_all()
+
+
+_service_singleton: Optional[Any] = None
+
+
+def get_local_service(force_reload: bool = False) -> LocalAgentService:
+    """Return a singleton instance of the local AI service."""
+    global _service_singleton
+    if isinstance(_service_singleton, LocalAgentService) and not force_reload:
+        return _service_singleton
+    _service_singleton = LocalAgentService()
+    return _service_singleton
+
+
+def get_ai_service(force_reload: bool = False):
+    """Return active AI service based on settings.AI_PROVIDER.
+
+    Falls back to LocalAgentService if provider is 'local' or configuration is incomplete.
     """
-    获取腾讯智能体服务实例（单例模式）
-    
-    Args:
-        force_reload: 是否强制重新加载配置和服务实例
-    """
-    global _tencent_service
-    if _tencent_service is None or force_reload:
-        _tencent_service = TencentAgentService()
-    return _tencent_service 
+    global _service_singleton
+
+    if not force_reload and _service_singleton is not None:
+        return _service_singleton
+
+    provider = getattr(settings, "AI_PROVIDER", "local").strip().lower()
+    api_key = getattr(settings, "AI_API_KEY", "").strip()
+
+    if provider != "local" and api_key:
+        try:
+            _service_singleton = ExternalAIService()
+            logger.info("AI service initialized: provider=%s, model=%s", provider, getattr(_service_singleton, "model", ""))
+            return _service_singleton
+        except Exception as exc:
+            logger.warning("External AI init failed, fallback to local: %s", exc)
+
+    _service_singleton = LocalAgentService()
+    logger.info("AI service initialized: provider=local, model=%s", _service_singleton.model)
+    return _service_singleton

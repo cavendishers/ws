@@ -9,6 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 
+def _env_int(name: str, default: int) -> int:
+    """Safely parse integer environment variables."""
+    try:
+        return int(os.getenv(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -119,14 +127,24 @@ REST_FRAMEWORK = {
     ],
 }
 
-# AI配置 - 腾讯智能体
-TENCENT_SECRET_ID = os.getenv('TENCENT_SECRET_ID')
-TENCENT_SECRET_KEY = os.getenv('TENCENT_SECRET_KEY')
-TENCENT_REGION = os.getenv('TENCENT_REGION', 'ap-guangzhou')
-TENCENT_BOT_APP_KEY = os.getenv('TENCENT_BOT_APP_KEY')
-TENCENT_VISITOR_BIZ_ID = os.getenv('TENCENT_VISITOR_BIZ_ID', '666')
-TENCENT_CONN_TYPE_API = 5
-TENCENT_WEBSOCKET_URL = 'wss://wss.lke.cloud.tencent.com/v1/qbot/chat/conn/?EIO=4&transport=websocket'
+# AI configuration - local rule-based assistant
+LOCAL_AI_PROVIDER_NAME = os.getenv('LOCAL_AI_PROVIDER_NAME', 'local-simulator')
+LOCAL_AI_MODEL_NAME = os.getenv('LOCAL_AI_MODEL_NAME', 'rule-based-v1')
+LOCAL_AI_MAX_HISTORY = _env_int('LOCAL_AI_MAX_HISTORY', 20)
+LOCAL_AI_SESSION_TIMEOUT = _env_int('LOCAL_AI_SESSION_TIMEOUT', 60 * 60 * 24)
+
+# External AI configuration (optional)
+# AI_PROVIDER=local|openai|deepseek|other
+AI_PROVIDER = os.getenv('AI_PROVIDER', 'local')
+AI_API_BASE_URL = os.getenv('AI_API_BASE_URL', '')
+AI_API_KEY = os.getenv('AI_API_KEY', '')
+AI_MODEL_NAME = os.getenv('AI_MODEL_NAME', '')
+
+# Fallbacks for alternative env var names
+if not AI_API_KEY:
+    AI_API_KEY = os.getenv('API_KEY', AI_API_KEY)
+if not AI_API_KEY:
+    AI_API_KEY = os.getenv('API-KEY', AI_API_KEY)
 
 
 ROOT_URLCONF = 'mysite.urls'
